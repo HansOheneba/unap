@@ -72,38 +72,25 @@ export default function HeroSection() {
       )}
 
       {/* Cinematic vignette overlay */}
-      <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
-      <div className="absolute inset-0 bg-linear-to-b from-black/10 via-transparent to-transparent pointer-events-none" />
+      <div className="absolute inset-0 bg-linear-to-t from-transparent via-black/60 to-transparent pointer-events-none" />
+      <div className="absolute inset-0 bg-linear-to-b from-transparent via-black/10 to-transparent pointer-events-none" />
 
       {/* Hero copy */}
-      <div className="absolute bottom-16 left-0 right-0 flex flex-col items-center gap-4 px-8 text-white text-center">
-        <p className="text-xs tracking-[0.4em] uppercase opacity-50 font-light">
-          Est. 2024 &mdash; A Global Movement
+      <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 px-8 text-white text-center">
+        <p
+          className="eyebrow animate-fade-up"
+          style={{ animationDelay: "0.3s" }}
+        >
+          Est. 2024  |  A Global Movement
         </p>
-        <h1 className="font-light tracking-tighter leading-none uppercase text-white">
+        <h1
+          className="text-white animate-fade-up"
+          style={{ animationDelay: "0.6s" }}
+        >
           You Were Never Meant
           <br />
           To Apologize
         </h1>
-      </div>
-
-      {/* Video progress dots */}
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2">
-        {videos.map((_, i) => (
-          <button
-            key={i}
-            onClick={() => {
-              if (i !== currentIndex) {
-                setNextIndex(i);
-                setTransitioning(true);
-              }
-            }}
-            aria-label={`Go to video ${i + 1}`}
-            className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
-              i === currentIndex ? "bg-white scale-125" : "bg-white/40"
-            }`}
-          />
-        ))}
       </div>
     </section>
   );

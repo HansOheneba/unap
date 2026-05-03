@@ -40,7 +40,7 @@ export default function Header() {
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out ${
         scrolled
           ? "bg-black"
-          : "bg-linear-to-b from-black/55 via-black/20 to-transparent"
+          : "bg-linear-to-b from-black/55 via-black/15 to-transparent"
       }`}
     >
       <div className="flex items-center justify-between px-8 py-5">
