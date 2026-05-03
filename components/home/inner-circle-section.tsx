@@ -64,7 +64,6 @@ export default function InnerCircleSection() {
 
   return (
     <section className="bg-black text-white overflow-hidden">
-
       {/* ── FULL-BLEED HEADER ─────────────────────────── */}
       <div className="relative flex flex-col items-center justify-center text-center py-56 px-8 overflow-hidden">
         <Image
@@ -81,7 +80,10 @@ export default function InnerCircleSection() {
             <h1 className="text-white">The Inner Circle</h1>
           </FadeIn>
           <FadeIn delay={0.2}>
-            <p className="text-white/50 text-lg italic max-w-md leading-relaxed" style={{ fontFamily: "var(--font-sora)" }}>
+            <p
+              className="text-white/50 text-lg italic max-w-md leading-relaxed"
+              style={{ fontFamily: "var(--font-sora)" }}
+            >
               For those who do not just wear the brand. They embody it.
             </p>
           </FadeIn>
@@ -133,7 +135,6 @@ export default function InnerCircleSection() {
 
       {/* ── SPLIT: statement + signup ─────────────────── */}
       <div className="grid grid-cols-1 md:grid-cols-2">
-
         {/* Image side */}
         <div className="relative min-h-96 md:min-h-0 order-2 md:order-1">
           <Image
@@ -142,7 +143,10 @@ export default function InnerCircleSection() {
             fill
             className="object-cover brightness-40"
           />
-          <div className="absolute inset-0 bg-linear-to-r from-transparent to-black hidden md:block" style={{ clipPath: "polygon(65% 0, 100% 0, 100% 100%, 45% 100%)" }} />
+          <div
+            className="absolute inset-0 bg-linear-to-r from-transparent to-black hidden md:block"
+            style={{ clipPath: "polygon(65% 0, 100% 0, 100% 100%, 45% 100%)" }}
+          />
           <div className="absolute inset-0 flex flex-col justify-end p-10">
             <p className="eyebrow text-white/30">The Circle</p>
             <p className="text-white/20 text-sm mt-2 max-w-xs leading-relaxed">
@@ -162,9 +166,9 @@ export default function InnerCircleSection() {
 
           <FadeIn delay={0.15}>
             <p className="text-white/40 max-w-sm leading-relaxed">
-              Drop your email. No spam. No noise. Only what matters. When we move, you will be
-              the first to know. When we drop, you will have first access. When we speak,
-              it will be worth reading.
+              Drop your email. No spam. No noise. Only what matters. When we
+              move, you will be the first to know. When we drop, you will have
+              first access. When we speak, it will be worth reading.
             </p>
           </FadeIn>
 
@@ -182,7 +186,10 @@ export default function InnerCircleSection() {
                 </p>
               </motion.div>
             ) : (
-              <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3">
+              <form
+                onSubmit={handleSubmit}
+                className="flex flex-col sm:flex-row gap-3"
+              >
                 <input
                   type="email"
                   required
@@ -220,7 +227,6 @@ export default function InnerCircleSection() {
           <span className="text-white"> We are building a congregation.</span>
         </h4>
       </FadeIn>
-
     </section>
   );
 }
