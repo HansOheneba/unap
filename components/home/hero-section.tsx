@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import Link from "next/link";
+import { Button, buttonVariants } from "@/components/ui/button";
 
 const videos = [
   "/hero/hero_vid1.mp4",
@@ -81,7 +83,7 @@ export default function HeroSection() {
           className="eyebrow animate-fade-up"
           style={{ animationDelay: "0.3s" }}
         >
-          Est. 2024  |  A Global Movement
+          Est. 2024 | A Global Movement
         </p>
         <h1
           className="text-white animate-fade-up"
@@ -91,6 +93,11 @@ export default function HeroSection() {
           <br />
           To Apologize
         </h1>
+        <div className="animate-fade-up" style={{ animationDelay: "0.9s" }}>
+          <Link href="/collections">
+            <Button>Shop Collections</Button>
+          </Link>
+        </div>
       </div>
     </section>
   );

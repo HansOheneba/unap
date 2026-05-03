@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Button, buttonVariants } from "@/components/ui/button";
 
 export default function CreedCta() {
   return (
@@ -21,11 +22,8 @@ export default function CreedCta() {
             <p className="italic">We exist to destroy that lie.</p>
           </div>
 
-          <Link
-            href="/the-creed"
-            className="self-start border border-white/40 text-white text-xs tracking-widest uppercase px-8 py-3 hover:bg-white hover:text-black transition-colors duration-300"
-          >
-            Read the Creed
+          <Link href="/the-creed">
+          <Button variant="outline">Read the Creed</Button>
           </Link>
         </div>
 
