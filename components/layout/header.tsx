@@ -17,10 +17,8 @@ type NavLink =
   | { label: string; href: string; dropdown: typeof collectionItems };
 
 const navLinks: NavLink[] = [
+    { label: "Collections", href: "/collections", dropdown: collectionItems },
   { label: "The Creed", href: "/the-creed" },
-  { label: "Collections", href: "/collections", dropdown: collectionItems },
-  { label: "Movement", href: "/movement" },
-  { label: "Future", href: "/future" },
   { label: "Inner Circle", href: "/inner-circle" },
 ];
 
