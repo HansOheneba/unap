@@ -2,12 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import {
-  motion,
-  useScroll,
-  useTransform,
-  useInView,
-} from "framer-motion";
+import { motion, useScroll, useTransform, useInView } from "framer-motion";
 import { useRef } from "react";
 import { buttonVariants } from "@/components/ui/button";
 
@@ -48,11 +43,21 @@ function ParallaxImage({
   overlay?: React.ReactNode;
 }) {
   const ref = useRef(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-  const y = useTransform(scrollYProgress, [0, 1], [`${-speed * 100}%`, `${speed * 100}%`]);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"],
+  });
+  const y = useTransform(
+    scrollYProgress,
+    [0, 1],
+    [`${-speed * 100}%`, `${speed * 100}%`],
+  );
   return (
     <div ref={ref} className={`relative overflow-hidden ${className}`}>
-      <motion.div style={{ y }} className="absolute inset-[-20%] w-full h-[140%]">
+      <motion.div
+        style={{ y }}
+        className="absolute inset-[-20%] w-full h-[140%]"
+      >
         <Image src={src} alt="" fill className="object-cover" />
       </motion.div>
       {overlay}
@@ -82,11 +87,18 @@ export default function TheCreedPage() {
 
   return (
     <main className="bg-black text-white overflow-x-hidden">
-
       {/* ── 01  HERO — full-screen image with parallax ── */}
-      <section ref={heroRef} className="relative h-screen overflow-hidden flex items-center justify-center">
+      <section
+        ref={heroRef}
+        className="relative h-screen overflow-hidden flex items-center justify-center"
+      >
         <motion.div style={{ y: heroImgY }} className="absolute inset-0">
-          <Image src="/creed/creed.jpg" alt="" fill className="object-cover brightness-60" />
+          <Image
+            src="/creed/creed.jpg"
+            alt=""
+            fill
+            className="object-cover brightness-60"
+          />
           <div className="absolute inset-0 bg-linear-to-b from-black/30 via-transparent to-black/80" />
         </motion.div>
 
@@ -128,10 +140,19 @@ export default function TheCreedPage() {
         </FadeIn>
         <div className="flex flex-col gap-10">
           {[
-            { word: "Too Much.", sub: "They said your energy was overwhelming." },
+            {
+              word: "Too Much.",
+              sub: "They said your energy was overwhelming.",
+            },
             { word: "Too Loud.", sub: "They said your voice needed lowering." },
-            { word: "Too Proud.", sub: "They called your confidence arrogance." },
-            { word: "Too Bold.", sub: "They mistook your fire for recklessness." },
+            {
+              word: "Too Proud.",
+              sub: "They called your confidence arrogance.",
+            },
+            {
+              word: "Too Bold.",
+              sub: "They mistook your fire for recklessness.",
+            },
           ].map((item, i) => (
             <FadeIn key={item.word} delay={i * 0.08}>
               <div className="flex flex-col md:flex-row md:items-baseline gap-3 md:gap-8 border-t border-white/10 pt-10">
@@ -154,7 +175,8 @@ export default function TheCreedPage() {
             <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-8">
               <FadeIn>
                 <h2 className="max-w-2xl text-white">
-                  They were wrong about you. They have always been wrong about you.
+                  They were wrong about you. They have always been wrong about
+                  you.
                 </h2>
               </FadeIn>
             </div>
@@ -276,20 +298,16 @@ export default function TheCreedPage() {
       <section className="py-56 px-8 flex flex-col items-center text-center gap-8">
         <FadeIn className="flex flex-col items-center gap-8">
           <p className="eyebrow">You Already Know</p>
-          <h2 className="max-w-xl text-white">
-            Now Dress Like It.
-          </h2>
+          <h2 className="max-w-xl text-white">Now Dress Like It.</h2>
           <p className="text-white/45 max-w-sm text-lg font-light leading-relaxed">
-            The collection is not for everyone. It never was. It is for the
-            ones who stopped pretending and started arriving.
+            The collection is not for everyone. It never was. It is for the ones
+            who stopped pretending and started arriving.
           </p>
           <Link href="/collections" className={buttonVariants()}>
             Enter the Collection
           </Link>
         </FadeIn>
       </section>
-
     </main>
   );
 }
-
