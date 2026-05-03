@@ -120,7 +120,7 @@ export default function FutureSection() {
 
       {/* ── MANIFESTO STRIP ───────────────────────────── */}
       <FadeIn className="px-8 md:px-20 py-20 max-w-5xl mx-auto text-center">
-        <h3 className="text-white/20">
+        <h3 className="text-[#564787]">
           Fashion. Beauty. Fragrance. Wellness. Culture. Media. Influence.
           <span className="text-white">
             {" "}
@@ -175,8 +175,8 @@ export default function FutureSection() {
                 fontFamily: "var(--font-sora)",
               }}
             >
-              "In ten years they will study this brand the way they study
-              movements. Not trends. Movements."
+              &quot;In ten years they will study this brand the way they study
+              movements. Not trends. Movements.&quot;
             </blockquote>
           </FadeIn>
           <FadeIn delay={0.2}>

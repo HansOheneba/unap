@@ -123,14 +123,7 @@ export default function CollectionsPage() {
     <main className="bg-black text-white min-h-screen">
       {/* ── HEADER ── */}
       <section className="pt-48 pb-20 px-8 md:px-20 text-center flex flex-col items-center gap-6">
-        <motion.p
-          className="eyebrow"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1 }}
-        >
-          003 | The Symbols
-        </motion.p>
+       
         <motion.h1
           className="max-w-3xl"
           initial={{ opacity: 0, y: 20 }}

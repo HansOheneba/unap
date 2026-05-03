@@ -95,7 +95,7 @@ export default function InnerCircleSection() {
 
       {/* ── TENSION COPY ──────────────────────────────── */}
       <FadeIn className="py-20 px-8 md:px-20 max-w-5xl mx-auto text-center">
-        <h3 className="text-white/15">
+        <h3 className="text-[#564787]">
           Most communities are built on transactions.
           <span className="text-white"> This one is built on conviction.</span>
         </h3>
@@ -222,7 +222,7 @@ export default function InnerCircleSection() {
       {/* ── CLOSING STATEMENT ─────────────────────────── */}
       <FadeIn className="py-28 px-8 text-center flex flex-col gap-3 items-center">
         <p className="eyebrow text-white/20">The Standard</p>
-        <h4 className="text-white/10 max-w-2xl">
+        <h4 className="text-[#564787] max-w-2xl">
           The world has enough audiences.
           <span className="text-white"> We are building a congregation.</span>
         </h4>
