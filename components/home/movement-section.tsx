@@ -33,9 +33,7 @@ function Counter({
   }, [inView, target]);
 
   return (
-    <span ref={ref}>
-      {symbol !== undefined ? symbol : `${count}${suffix}`}
-    </span>
+    <span ref={ref}>{symbol !== undefined ? symbol : `${count}${suffix}`}</span>
   );
 }
 
@@ -120,7 +118,6 @@ const testimonials = [
 export default function MovementSection() {
   return (
     <section className="bg-black text-white overflow-hidden">
-
       {/* ── SPLIT HERO ────────────────────────────────────── */}
       <div className="grid grid-cols-1 md:grid-cols-2 min-h-[70vh]">
         {/* Left: Image */}
@@ -132,7 +129,10 @@ export default function MovementSection() {
             className="object-cover brightness-50"
           />
           {/* diagonal cut overlay */}
-          <div className="absolute inset-0 bg-linear-to-r from-transparent to-black hidden md:block" style={{ clipPath: "polygon(60% 0, 100% 0, 100% 100%, 40% 100%)" }} />
+          <div
+            className="absolute inset-0 bg-linear-to-r from-transparent to-black hidden md:block"
+            style={{ clipPath: "polygon(60% 0, 100% 0, 100% 100%, 40% 100%)" }}
+          />
         </div>
 
         {/* Right: Statement */}
@@ -168,9 +168,25 @@ export default function MovementSection() {
       {/* ── STATS ────────────────────────────────────────── */}
       <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-y md:divide-y-0 divide-white/5">
         {stats.map((stat, i) => (
-          <FadeIn key={stat.label} delay={i * 0.1} className="px-10 py-16 flex flex-col gap-4">
-            <div className="text-white" style={{ fontSize: "clamp(3rem, 6vw, 5rem)", fontWeight: 800, lineHeight: 1, letterSpacing: "-0.04em" }}>
-              <Counter target={stat.value} suffix={stat.suffix} symbol={stat.symbol} />
+          <FadeIn
+            key={stat.label}
+            delay={i * 0.1}
+            className="px-10 py-16 flex flex-col gap-4"
+          >
+            <div
+              className="text-white"
+              style={{
+                fontSize: "clamp(3rem, 6vw, 5rem)",
+                fontWeight: 800,
+                lineHeight: 1,
+                letterSpacing: "-0.04em",
+              }}
+            >
+              <Counter
+                target={stat.value}
+                suffix={stat.suffix}
+                symbol={stat.symbol}
+              />
             </div>
             <p className="eyebrow text-white/60">{stat.label}</p>
             <p className="text-white/35 text-sm leading-relaxed">{stat.sub}</p>
@@ -196,8 +212,9 @@ export default function MovementSection() {
             They tried to dim the light. The light got louder.
           </h2>
           <p className="text-white/40 max-w-md">
-            Every insult became a blueprint. Every dismissal became fuel. You do not build
-            a movement by asking nicely. You build it by refusing to be quiet.
+            Every insult became a blueprint. Every dismissal became fuel. You do
+            not build a movement by asking nicely. You build it by refusing to
+            be quiet.
           </p>
         </FadeIn>
       </div>
@@ -222,12 +239,24 @@ export default function MovementSection() {
             />
             <div className="absolute inset-0 bg-linear-to-t from-black via-black/50 to-transparent" />
             <div className="relative z-10 p-8 flex flex-col gap-4">
-              <span className="text-white/20" style={{ fontSize: "5rem", lineHeight: 0.8, fontFamily: "var(--font-space-grotesk)", fontWeight: 800 }}>"</span>
+              <span
+                className="text-white/20"
+                style={{
+                  fontSize: "5rem",
+                  lineHeight: 0.8,
+                  fontFamily: "var(--font-space-grotesk)",
+                  fontWeight: 800,
+                }}
+              >
+                "
+              </span>
               <p className="text-white/90 text-lg leading-relaxed italic">
                 {testimonials[0].quote}
               </p>
               <div className="pt-2">
-                <p className="eyebrow text-white/50">{testimonials[0].name} / {testimonials[0].location}</p>
+                <p className="eyebrow text-white/50">
+                  {testimonials[0].name} / {testimonials[0].location}
+                </p>
               </div>
             </div>
           </FadeIn>
@@ -235,18 +264,33 @@ export default function MovementSection() {
           {/* Two stacked cards */}
           <div className="md:col-span-7 flex flex-col gap-px bg-white/5">
             {testimonials.slice(1).map((t, i) => (
-              <FadeIn key={t.name} delay={0.15 * (i + 1)} className="bg-black p-10 flex flex-col gap-5 justify-between min-h-52">
-                <span className="text-white/10" style={{ fontSize: "4rem", lineHeight: 0.8, fontFamily: "var(--font-space-grotesk)", fontWeight: 800 }}>"</span>
+              <FadeIn
+                key={t.name}
+                delay={0.15 * (i + 1)}
+                className="bg-black p-10 flex flex-col gap-5 justify-between min-h-52"
+              >
+                <span
+                  className="text-white/10"
+                  style={{
+                    fontSize: "4rem",
+                    lineHeight: 0.8,
+                    fontFamily: "var(--font-space-grotesk)",
+                    fontWeight: 800,
+                  }}
+                >
+                  "
+                </span>
                 <p className="text-white/75 text-lg leading-relaxed italic">
                   {t.quote}
                 </p>
-                <p className="eyebrow text-white/40">{t.name} / {t.location}</p>
+                <p className="eyebrow text-white/40">
+                  {t.name} / {t.location}
+                </p>
               </FadeIn>
             ))}
           </div>
         </div>
       </div>
-
     </section>
   );
 }

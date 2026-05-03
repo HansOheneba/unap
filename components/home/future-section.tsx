@@ -86,7 +86,6 @@ const verticals = [
 export default function FutureSection() {
   return (
     <section className="bg-black text-white overflow-hidden">
-
       {/* ── FULL-BLEED INTRO ───────────────────────────── */}
       <div className="relative py-56 px-8 flex flex-col items-center justify-center text-center overflow-hidden">
         <Image
@@ -108,9 +107,9 @@ export default function FutureSection() {
           </FadeIn>
           <FadeIn delay={0.25}>
             <p className="text-white/45 max-w-xl text-lg leading-relaxed">
-              Unapologetic is not a clothing brand with a website. It is a global lifestyle empire
-              in its first chapter. Fashion was the door. What comes next will redefine
-              every room you walk into.
+              Unapologetic is not a clothing brand with a website. It is a
+              global lifestyle empire in its first chapter. Fashion was the
+              door. What comes next will redefine every room you walk into.
             </p>
           </FadeIn>
         </div>
@@ -123,7 +122,11 @@ export default function FutureSection() {
       <FadeIn className="px-8 md:px-20 py-20 max-w-5xl mx-auto text-center">
         <h3 className="text-white/20">
           Fashion. Beauty. Fragrance. Wellness. Culture. Media. Influence.
-          <span className="text-white"> Every category reimagined through the lens of radical self-expression.</span>
+          <span className="text-white">
+            {" "}
+            Every category reimagined through the lens of radical
+            self-expression.
+          </span>
         </h3>
       </FadeIn>
 
@@ -165,9 +168,15 @@ export default function FutureSection() {
         <div className="px-10 md:px-20 py-32 flex flex-col justify-center gap-8">
           <FadeIn>
             <p className="eyebrow text-white/30 mb-8">The Long Game</p>
-            <blockquote className="text-white/80 italic leading-snug" style={{ fontSize: "clamp(1.5rem, 3vw, 2.5rem)", fontFamily: "var(--font-sora)" }}>
-              "In ten years they will study this brand the way they study movements. Not trends.
-              Movements."
+            <blockquote
+              className="text-white/80 italic leading-snug"
+              style={{
+                fontSize: "clamp(1.5rem, 3vw, 2.5rem)",
+                fontFamily: "var(--font-sora)",
+              }}
+            >
+              "In ten years they will study this brand the way they study
+              movements. Not trends. Movements."
             </blockquote>
           </FadeIn>
           <FadeIn delay={0.2}>
@@ -188,7 +197,10 @@ export default function FutureSection() {
             fill
             className="object-cover brightness-60"
           />
-          <div className="absolute inset-0 bg-linear-to-l from-transparent to-black hidden md:block" style={{ clipPath: "polygon(0 0, 35% 0, 55% 100%, 0 100%)" }} />
+          <div
+            className="absolute inset-0 bg-linear-to-l from-transparent to-black hidden md:block"
+            style={{ clipPath: "polygon(0 0, 35% 0, 55% 100%, 0 100%)" }}
+          />
           {/* Corner label */}
           <div className="absolute bottom-6 right-6">
             <p className="eyebrow text-white/30">Est. 2024</p>
@@ -204,10 +216,12 @@ export default function FutureSection() {
         <p className="eyebrow text-white/20">The Trajectory</p>
         <h4 className="text-white/10 max-w-2xl">
           We are not aiming for the top.
-          <span className="text-white"> We are redefining what the top looks like.</span>
+          <span className="text-white">
+            {" "}
+            We are redefining what the top looks like.
+          </span>
         </h4>
       </FadeIn>
-
     </section>
   );
 }
