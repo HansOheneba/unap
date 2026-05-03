@@ -6,7 +6,13 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { buttonVariants } from "@/components/ui/button";
 
-const categories = ["All", "Tops", "Head Wears", "Pants", "Sunglasses"] as const;
+const categories = [
+  "All",
+  "Tops",
+  "Head Wears",
+  "Pants",
+  "Sunglasses",
+] as const;
 type Category = (typeof categories)[number];
 
 type Product = {
@@ -22,7 +28,8 @@ const products: Product[] = [
   {
     id: 1,
     name: "Revolt Oversized Tee",
-    tagline: "The anti-uniform. Oversized silhouette for those who refuse to conform.",
+    tagline:
+      "The anti-uniform. Oversized silhouette for those who refuse to conform.",
     price: 85,
     category: "Tops",
     href: "/collections/tops",
@@ -30,7 +37,8 @@ const products: Product[] = [
   {
     id: 2,
     name: "Phantom Long Sleeve",
-    tagline: "Move in silence. Engineered for those who let the fabric do the talking.",
+    tagline:
+      "Move in silence. Engineered for those who let the fabric do the talking.",
     price: 110,
     category: "Tops",
     href: "/collections/tops",
@@ -38,7 +46,8 @@ const products: Product[] = [
   {
     id: 3,
     name: "Sovereign Hoodie",
-    tagline: "Worn by those who rule their own world. Zero compromise on presence.",
+    tagline:
+      "Worn by those who rule their own world. Zero compromise on presence.",
     price: 165,
     category: "Tops",
     href: "/collections/tops",
@@ -46,7 +55,8 @@ const products: Product[] = [
   {
     id: 4,
     name: "Shadow Cargo",
-    tagline: "Technical construction. Statement silhouette. Built for the unapologetic.",
+    tagline:
+      "Technical construction. Statement silhouette. Built for the unapologetic.",
     price: 195,
     category: "Pants",
     href: "/collections/pants",
@@ -78,7 +88,8 @@ const products: Product[] = [
   {
     id: 8,
     name: "Eclipse Shades",
-    tagline: "The world looks different when you stop apologizing for the view.",
+    tagline:
+      "The world looks different when you stop apologizing for the view.",
     price: 145,
     category: "Sunglasses",
     href: "/collections/sunglasses",
@@ -86,7 +97,8 @@ const products: Product[] = [
   {
     id: 9,
     name: "Obsidian Lens",
-    tagline: "Worn by those who have already decided. The rest is just scenery.",
+    tagline:
+      "Worn by those who have already decided. The rest is just scenery.",
     price: 160,
     category: "Sunglasses",
     href: "/collections/sunglasses",
@@ -156,7 +168,10 @@ export default function CollectionsPage() {
 
       {/* ── PRODUCT GRID ── */}
       <div className="px-8 md:px-20 max-w-7xl mx-auto pb-32">
-        <motion.div layout className="grid grid-cols-1 md:grid-cols-3 gap-px bg-white/5">
+        <motion.div
+          layout
+          className="grid grid-cols-1 md:grid-cols-3 gap-px bg-white/5"
+        >
           <AnimatePresence mode="popLayout">
             {filtered.map((product) => (
               <motion.div
@@ -169,7 +184,10 @@ export default function CollectionsPage() {
                 className="group bg-black"
               >
                 {/* Image */}
-                <Link href={product.href} className="block relative aspect-3/4 overflow-hidden">
+                <Link
+                  href={product.href}
+                  className="block relative aspect-3/4 overflow-hidden"
+                >
                   <Image
                     src="/creed/creed.jpg"
                     alt={product.name}
@@ -185,9 +203,13 @@ export default function CollectionsPage() {
                 {/* Info */}
                 <div className="p-7 flex flex-col gap-3 border-t border-white/5">
                   <h5 className="text-white">{product.name}</h5>
-                  <p className="text-white/45 text-sm leading-relaxed">{product.tagline}</p>
+                  <p className="text-white/45 text-sm leading-relaxed">
+                    {product.tagline}
+                  </p>
                   <div className="flex items-center justify-between pt-2">
-                    <span className="text-white text-sm tracking-wider">${product.price}</span>
+                    <span className="text-white text-sm tracking-wider">
+                      ${product.price}
+                    </span>
                     <Link
                       href={product.href}
                       className="eyebrow text-white/40 hover:text-white transition-colors duration-300"
@@ -211,12 +233,8 @@ export default function CollectionsPage() {
               transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
               className="flex flex-col items-center gap-5 pt-20 text-center"
             >
-              <p className="eyebrow text-white/40">
-                Viewing {active}
-              </p>
-              <h4 className="text-white max-w-sm">
-                Everything in {active}
-              </h4>
+              <p className="eyebrow text-white/40">Viewing {active}</p>
+              <h4 className="text-white max-w-sm">Everything in {active}</h4>
               <Link href={categoryHrefs[active]} className={buttonVariants()}>
                 Shop All {active}
               </Link>
@@ -232,7 +250,8 @@ export default function CollectionsPage() {
           Every Piece Is a Decision. Make Yours.
         </h3>
         <p className="text-white/40 max-w-sm">
-          Browse the full range or start with what calls to you. There is no wrong entry point into who you are.
+          Browse the full range or start with what calls to you. There is no
+          wrong entry point into who you are.
         </p>
         <Link href="/collections" className={buttonVariants()}>
           View Everything

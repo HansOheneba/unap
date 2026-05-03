@@ -70,14 +70,11 @@ export default function CollectionsPreview() {
   return (
     <section className="bg-black text-white py-32 px-8 md:px-20">
       <div className="max-w-7xl mx-auto flex flex-col gap-16">
-
         {/* Header row */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <FadeIn>
             <p className="eyebrow mb-4">The Collection</p>
-            <h2 className="max-w-lg">
-              Dressed for the Unapologetic
-            </h2>
+            <h2 className="max-w-lg">Dressed for the Unapologetic</h2>
           </FadeIn>
           <FadeIn delay={0.15} className="shrink-0">
             <Link href="/collections" className={buttonVariants()}>
@@ -89,10 +86,13 @@ export default function CollectionsPreview() {
         {/* Product grid */}
         {/* Desktop: hero card left (2 cols tall) + 3 stacked/side right */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-px bg-white/5">
-
           {/* Hero card — spans 7 cols */}
           <FadeIn className="md:col-span-7 bg-black group">
-            <Link href={featured[0].href} className="block relative w-full" style={{ aspectRatio: "3/4" }}>
+            <Link
+              href={featured[0].href}
+              className="block relative w-full"
+              style={{ aspectRatio: "3/4" }}
+            >
               <Image
                 src="/creed/creed.jpg"
                 alt={featured[0].name}
@@ -112,8 +112,16 @@ export default function CollectionsPreview() {
           {/* Right col — 3 smaller cards stacked */}
           <div className="md:col-span-5 flex flex-col gap-px bg-white/5">
             {featured.slice(1).map((product, i) => (
-              <FadeIn key={product.id} delay={0.1 * (i + 1)} className="bg-black group">
-                <Link href={product.href} className="block relative w-full" style={{ aspectRatio: "4/3" }}>
+              <FadeIn
+                key={product.id}
+                delay={0.1 * (i + 1)}
+                className="bg-black group"
+              >
+                <Link
+                  href={product.href}
+                  className="block relative w-full"
+                  style={{ aspectRatio: "4/3" }}
+                >
                   <Image
                     src="/creed/creed.jpg"
                     alt={product.name}
@@ -131,7 +139,6 @@ export default function CollectionsPreview() {
               </FadeIn>
             ))}
           </div>
-
         </div>
 
         {/* Bottom line */}
@@ -140,7 +147,6 @@ export default function CollectionsPreview() {
             Every piece carries intention. None of it is accidental.
           </p>
         </FadeIn>
-
       </div>
     </section>
   );
