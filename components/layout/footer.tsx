@@ -34,7 +34,6 @@ export default function Footer() {
         <p className="eyebrow text-black/60 text-center md:text-left">
           Presence is power. Silence is a lie. The cloth speaks first.
         </p>
-       
       </div>
 
       {/* ── MAIN BODY ──────────────────────────────── */}
