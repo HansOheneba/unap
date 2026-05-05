@@ -37,8 +37,10 @@ const collections: Collection[] = [
     id: "sunglasses",
     subtitle: "Sunglasses",
     title: "The Eclipse Edit",
-    tagline: "The world looks different when you stop apologizing for the view.",
-    description: "Worn by those who have already decided. The rest is just scenery.",
+    tagline:
+      "The world looks different when you stop apologizing for the view.",
+    description:
+      "Worn by those who have already decided. The rest is just scenery.",
     featured: "/collections/glases/outlawGlasses1.jpg",
     href: "/collections/sunglasses",
     align: "left",
@@ -82,7 +84,8 @@ const collections: Collection[] = [
     id: "headwear",
     subtitle: "Head Wears",
     title: "Bold Society",
-    tagline: "A statement for those who stopped asking for a seat at the table.",
+    tagline:
+      "A statement for those who stopped asking for a seat at the table.",
     description: "Every cap tells a story. Make sure yours is worth telling.",
     featured: "/collections/headwear/boldSocietyCapBlack.jpeg",
     href: "/collections/headwear",
@@ -229,7 +232,6 @@ export default function CollectionsPage() {
 
   return (
     <main className="bg-black text-white min-h-screen overflow-x-hidden">
-
       {/* ── CINEMATIC VIDEO INTRO ────────────────────────────────────────── */}
       <section className="relative w-full h-screen overflow-hidden">
         <video
@@ -310,7 +312,6 @@ export default function CollectionsPage() {
       {/* ── COLLECTION SECTIONS ──────────────────────────────────────────── */}
       {collections.map((col, i) => (
         <section key={col.id} id={col.id}>
-
           {/* Cinematic featured banner */}
           <div className="relative w-full h-[78vh] overflow-hidden">
             <Image
@@ -351,7 +352,11 @@ export default function CollectionsPage() {
                   initial={{ opacity: 0, x: -30 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 1, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+                  transition={{
+                    duration: 1,
+                    delay: 0.1,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
                 >
                   {col.title}
                 </motion.h2>
@@ -394,7 +399,11 @@ export default function CollectionsPage() {
                   initial={{ opacity: 0, x: 30 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 1, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+                  transition={{
+                    duration: 1,
+                    delay: 0.1,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
                 >
                   {col.title}
                 </motion.h2>
@@ -423,7 +432,6 @@ export default function CollectionsPage() {
 
           {/* Product grid */}
           <div className="max-w-420 mx-auto px-6 md:px-12 lg:px-16 py-14 pb-24">
-
             {/* Grid header */}
             <div className="flex items-end justify-between mb-10">
               <motion.div
@@ -487,7 +495,9 @@ export default function CollectionsPage() {
 
                     {/* Info */}
                     <div className="p-5 border-t border-white/5">
-                      <p className="eyebrow text-white/35 mb-1.5">{col.subtitle}</p>
+                      <p className="eyebrow text-white/35 mb-1.5">
+                        {col.subtitle}
+                      </p>
                       <h5 className="text-white text-[1rem] font-medium leading-snug">
                         {product.name}
                       </h5>
