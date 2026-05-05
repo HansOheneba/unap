@@ -2,253 +2,560 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useRef, useEffect } from "react";
+import { motion } from "framer-motion";
 import { buttonVariants } from "@/components/ui/button";
 
-const categories = [
-  "All",
-  "Tops",
-  "Head Wears",
-  "Pants",
-  "Sunglasses",
-] as const;
-type Category = (typeof categories)[number];
+// ── TYPES ─────────────────────────────────────────────────────────────────────
 
 type Product = {
   id: number;
   name: string;
-  tagline: string;
-  price: number;
-  category: Exclude<Category, "All">;
+  tag: string;
+  price: string;
+  img: string;
   href: string;
 };
 
-const products: Product[] = [
+type Collection = {
+  id: string;
+  subtitle: string;
+  title: string;
+  tagline: string;
+  description: string;
+  featured: string;
+  href: string;
+  align: "left" | "right";
+  cols: 3 | 4;
+  products: Product[];
+};
+
+// ── DATA ──────────────────────────────────────────────────────────────────────
+
+const collections: Collection[] = [
   {
-    id: 1,
-    name: "Revolt Oversized Tee",
-    tagline:
-      "The anti-uniform. Oversized silhouette for those who refuse to conform.",
-    price: 85,
-    category: "Tops",
-    href: "/collections/tops",
-  },
-  {
-    id: 2,
-    name: "Phantom Long Sleeve",
-    tagline:
-      "Move in silence. Engineered for those who let the fabric do the talking.",
-    price: 110,
-    category: "Tops",
-    href: "/collections/tops",
-  },
-  {
-    id: 3,
-    name: "Sovereign Hoodie",
-    tagline:
-      "Worn by those who rule their own world. Zero compromise on presence.",
-    price: 165,
-    category: "Tops",
-    href: "/collections/tops",
-  },
-  {
-    id: 4,
-    name: "Shadow Cargo",
-    tagline:
-      "Technical construction. Statement silhouette. Built for the unapologetic.",
-    price: 195,
-    category: "Pants",
-    href: "/collections/pants",
-  },
-  {
-    id: 5,
-    name: "Void Wide Leg",
-    tagline: "Space is not given — it is taken. Wear accordingly.",
-    price: 175,
-    category: "Pants",
-    href: "/collections/pants",
-  },
-  {
-    id: 6,
-    name: "Refusal Brim",
-    tagline: "A cap for those who stopped asking for a seat at the table.",
-    price: 65,
-    category: "Head Wears",
-    href: "/collections/head-wears",
-  },
-  {
-    id: 7,
-    name: "Signal Beanie",
-    tagline: "Quiet on the outside. Everything on the inside.",
-    price: 55,
-    category: "Head Wears",
-    href: "/collections/head-wears",
-  },
-  {
-    id: 8,
-    name: "Eclipse Shades",
-    tagline:
-      "The world looks different when you stop apologizing for the view.",
-    price: 145,
-    category: "Sunglasses",
+    id: "sunglasses",
+    subtitle: "Sunglasses",
+    title: "The Eclipse Edit",
+    tagline: "The world looks different when you stop apologizing for the view.",
+    description: "Worn by those who have already decided. The rest is just scenery.",
+    featured: "/collections/glases/outlawGlasses1.jpg",
     href: "/collections/sunglasses",
+    align: "left",
+    cols: 4,
+    products: [
+      {
+        id: 1,
+        name: "Eclipse Shades",
+        tag: "Signature",
+        price: "US$145",
+        img: "/collections/glases/outlawGlasses1.jpg",
+        href: "/collections/sunglasses",
+      },
+      {
+        id: 2,
+        name: "Obsidian Lens",
+        tag: "Statement",
+        price: "US$160",
+        img: "/collections/glases/outlawGlasses3.jpg",
+        href: "/collections/sunglasses",
+      },
+      {
+        id: 3,
+        name: "Outlaw I",
+        tag: "Classic",
+        price: "US$135",
+        img: "/collections/glases/outlawGlases4.jpg",
+        href: "/collections/sunglasses",
+      },
+      {
+        id: 4,
+        name: "Outlaw II",
+        tag: "Limited",
+        price: "US$150",
+        img: "/collections/glases/outlawGlasses5.jpg",
+        href: "/collections/sunglasses",
+      },
+    ],
   },
   {
-    id: 9,
-    name: "Obsidian Lens",
-    tagline:
-      "Worn by those who have already decided. The rest is just scenery.",
-    price: 160,
-    category: "Sunglasses",
-    href: "/collections/sunglasses",
+    id: "headwear",
+    subtitle: "Head Wears",
+    title: "Bold Society",
+    tagline: "A statement for those who stopped asking for a seat at the table.",
+    description: "Every cap tells a story. Make sure yours is worth telling.",
+    featured: "/collections/headwear/boldSocietyCapBlack.jpeg",
+    href: "/collections/headwear",
+    align: "right",
+    cols: 4,
+    products: [
+      {
+        id: 5,
+        name: "Bold Society — Black",
+        tag: "Signature",
+        price: "US$65",
+        img: "/collections/headwear/boldSocietyCapBlack.jpeg",
+        href: "/collections/headwear",
+      },
+      {
+        id: 6,
+        name: "Bold Society — Cream",
+        tag: "Classic",
+        price: "US$65",
+        img: "/collections/headwear/boldSocietyCapCream.jpeg",
+        href: "/collections/headwear",
+      },
+      {
+        id: 7,
+        name: "Bold Society — Red",
+        tag: "Bold",
+        price: "US$65",
+        img: "/collections/headwear/boldSocietyCapRed.jpeg",
+        href: "/collections/headwear",
+      },
+      {
+        id: 8,
+        name: "Suede Cap — Black",
+        tag: "Premium",
+        price: "US$75",
+        img: "/collections/headwear/suedeCapBlack.jpg",
+        href: "/collections/headwear",
+      },
+    ],
+  },
+  {
+    id: "tops",
+    subtitle: "Tops",
+    title: "The Anti-Uniform",
+    tagline: "Move in silence. Let the fabric do the talking.",
+    description: "Oversized silhouettes. Zero compromise on presence.",
+    featured: "/collections/men_shirt/shirtCollection.jpeg",
+    href: "/collections/tops",
+    align: "left",
+    cols: 3,
+    products: [
+      {
+        id: 9,
+        name: "Revolt Oversized Tee",
+        tag: "Mens",
+        price: "US$85",
+        img: "/collections/men_shirt/shirtCollection.jpeg",
+        href: "/collections/tops",
+      },
+      {
+        id: 10,
+        name: "Phantom Long Sleeve",
+        tag: "Womens",
+        price: "US$110",
+        img: "/collections/female_shirts/shirtBrown.jpeg",
+        href: "/collections/tops",
+      },
+      {
+        id: 11,
+        name: "Sovereign Crop",
+        tag: "Womens",
+        price: "US$95",
+        img: "/collections/female_shirts/shirtCream.jpeg",
+        href: "/collections/tops",
+      },
+    ],
+  },
+  {
+    id: "intimates",
+    subtitle: "Intimates & Boxers",
+    title: "Beneath The Surface",
+    tagline: "Confidence starts where no one else can see.",
+    description: "Built for comfort. Worn by the unapologetic.",
+    featured: "/collections/boxers/boxersMixed.jpeg",
+    href: "/collections/boxers",
+    align: "right",
+    cols: 4,
+    products: [
+      {
+        id: 12,
+        name: "Classic White",
+        tag: "Essential",
+        price: "US$45",
+        img: "/collections/boxers/boxersWhite.jpeg",
+        href: "/collections/boxers",
+      },
+      {
+        id: 13,
+        name: "Midnight Blue",
+        tag: "Statement",
+        price: "US$45",
+        img: "/collections/boxers/boxersBlue.jpg",
+        href: "/collections/boxers",
+      },
+      {
+        id: 14,
+        name: "Bourbon Brown",
+        tag: "Signature",
+        price: "US$45",
+        img: "/collections/boxers/boxersBrown.jpeg",
+        href: "/collections/boxers",
+      },
+      {
+        id: 15,
+        name: "Storm Gray",
+        tag: "Classic",
+        price: "US$45",
+        img: "/collections/boxers/boxersGray.jpg",
+        href: "/collections/boxers",
+      },
+    ],
   },
 ];
 
-const categoryHrefs: Record<Category, string> = {
-  All: "/collections",
-  Tops: "/collections/tops",
-  "Head Wears": "/collections/head-wears",
-  Pants: "/collections/pants",
-  Sunglasses: "/collections/sunglasses",
-};
+const navItems = [
+  { id: "sunglasses", label: "Sunglasses" },
+  { id: "headwear", label: "Head Wears" },
+  { id: "tops", label: "Tops" },
+  { id: "intimates", label: "Intimates" },
+];
+
+// ── PAGE ──────────────────────────────────────────────────────────────────────
 
 export default function CollectionsPage() {
-  const [active, setActive] = useState<Category>("All");
+  const videoRef = useRef<HTMLVideoElement>(null);
 
-  const filtered =
-    active === "All" ? products : products.filter((p) => p.category === active);
+  useEffect(() => {
+    videoRef.current?.play().catch(() => {});
+  }, []);
+
+  const scrollTo = (id: string) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+  };
 
   return (
-    <main className="bg-black text-white min-h-screen">
-      {/* ── HEADER ── */}
-      <section className="pt-48 pb-20 px-8 md:px-20 text-center flex flex-col items-center gap-6">
-       
-        <motion.h1
-          className="max-w-3xl"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-        >
-          Not Products. Symbols of Identity.
-        </motion.h1>
-        <motion.p
-          className="text-white/45 max-w-sm"
+    <main className="bg-black text-white min-h-screen overflow-x-hidden">
+
+      {/* ── CINEMATIC VIDEO INTRO ────────────────────────────────────────── */}
+      <section className="relative w-full h-screen overflow-hidden">
+        <video
+          ref={videoRef}
+          src="/hero/hero_vid2.mp4"
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+
+        {/* Layered cinematic overlays */}
+        <div className="absolute inset-0 bg-black/45" />
+        <div className="absolute inset-0 bg-linear-to-b from-black/30 via-transparent to-black/80" />
+
+        {/* Letterbox bars for cinematic framing */}
+        <div className="absolute top-0 inset-x-0 h-[5vh] bg-black pointer-events-none" />
+        <div className="absolute bottom-0 inset-x-0 h-[5vh] bg-black pointer-events-none" />
+
+        {/* Copy */}
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
+          <motion.p
+            className="eyebrow text-white/50 mb-6"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.4 }}
+          >
+            The Full Collection
+          </motion.p>
+          <motion.h1
+            className="text-white max-w-4xl"
+            initial={{ opacity: 0, y: 28 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.3, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          >
+            Not Products.
+            <br />
+            Symbols of Identity.
+          </motion.h1>
+          <motion.p
+            className="text-white/45 mt-6 max-w-sm"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1, delay: 1.1 }}
+          >
+            Every piece carries meaning. Every thread tells a story.
+          </motion.p>
+        </div>
+
+        {/* Scroll line */}
+        <motion.div
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 0.5 }}
+          transition={{ delay: 1.8, duration: 1 }}
         >
-          Every piece carries meaning. Every thread tells a story.
-        </motion.p>
+          <span className="eyebrow text-white/25 text-[0.6rem]">Scroll</span>
+          <div className="w-px h-10 bg-linear-to-b from-white/25 to-transparent" />
+        </motion.div>
       </section>
 
-      {/* ── FILTER TABS ── */}
-      <div className="flex items-center justify-center gap-3 flex-wrap px-8 pb-20">
-        {categories.map((cat) => (
-          <button
-            key={cat}
-            onClick={() => setActive(cat)}
-            className={`text-[0.7rem] tracking-widest uppercase px-6 py-2.5 border transition-colors duration-300 ${
-              active === cat
-                ? "border-white bg-white text-black"
-                : "border-white/20 text-white/50 hover:border-white/50 hover:text-white"
-            }`}
-          >
-            {cat}
-          </button>
-        ))}
-      </div>
-
-      {/* ── PRODUCT GRID ── */}
-      <div className="px-8 md:px-20 max-w-7xl mx-auto pb-32">
-        <motion.div
-          layout
-          className="grid grid-cols-1 md:grid-cols-3 gap-px bg-white/5"
-        >
-          <AnimatePresence mode="popLayout">
-            {filtered.map((product) => (
-              <motion.div
-                key={product.id}
-                layout
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                className="group bg-black"
-              >
-                {/* Image */}
-                <Link
-                  href={product.href}
-                  className="block relative aspect-3/4 overflow-hidden"
-                >
-                  <Image
-                    src="/creed/creed.jpg"
-                    alt={product.name}
-                    fill
-                    className="object-cover brightness-75 group-hover:brightness-100 transition-[filter] duration-700"
-                  />
-                  {/* category pill */}
-                  <span className="absolute top-5 left-5 eyebrow text-white/60">
-                    {product.category}
-                  </span>
-                </Link>
-
-                {/* Info */}
-                <div className="p-7 flex flex-col gap-3 border-t border-white/5">
-                  <h5 className="text-white">{product.name}</h5>
-                  <p className="text-white/45 text-sm leading-relaxed">
-                    {product.tagline}
-                  </p>
-                  <div className="flex items-center justify-between pt-2">
-                    <span className="text-white text-sm tracking-wider">
-                      ${product.price}
-                    </span>
-                    <Link
-                      href={product.href}
-                      className="eyebrow text-white/40 hover:text-white transition-colors duration-300"
-                    >
-                      View
-                    </Link>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        </motion.div>
-
-        {/* Collection CTA — shown when a specific category is active */}
-        <AnimatePresence>
-          {active !== "All" && (
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 8 }}
-              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-              className="flex flex-col items-center gap-5 pt-20 text-center"
+      {/* ── STICKY SECTION NAV ───────────────────────────────────────────── */}
+      <nav className="sticky top-16 z-30 bg-black/90 backdrop-blur-md border-b border-white/8">
+        <div className="max-w-420 mx-auto px-8 md:px-16 flex items-center gap-10 h-14 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {navItems.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => scrollTo(item.id)}
+              className="eyebrow text-white/40 hover:text-white transition-colors duration-300 whitespace-nowrap shrink-0 cursor-pointer"
             >
-              <p className="eyebrow text-white/40">Viewing {active}</p>
-              <h4 className="text-white max-w-sm">Everything in {active}</h4>
-              <Link href={categoryHrefs[active]} className={buttonVariants()}>
-                Shop All {active}
-              </Link>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+              {item.label}
+            </button>
+          ))}
+        </div>
+      </nav>
 
-      {/* ── BOTTOM CTA ── */}
+      {/* ── COLLECTION SECTIONS ──────────────────────────────────────────── */}
+      {collections.map((col, i) => (
+        <section key={col.id} id={col.id}>
+
+          {/* Cinematic featured banner */}
+          <div className="relative w-full h-[78vh] overflow-hidden">
+            <Image
+              src={col.featured}
+              alt={col.title}
+              fill
+              className="object-cover"
+              priority={i < 2}
+            />
+
+            {/* Directional gradient overlay */}
+            {col.align === "left" ? (
+              <>
+                <div className="absolute inset-0 bg-linear-to-r from-black/80 via-black/30 to-transparent" />
+                <div className="absolute inset-0 bg-linear-to-t from-black/50 via-transparent to-transparent" />
+              </>
+            ) : (
+              <>
+                <div className="absolute inset-0 bg-linear-to-l from-black/80 via-black/30 to-transparent" />
+                <div className="absolute inset-0 bg-linear-to-t from-black/50 via-transparent to-transparent" />
+              </>
+            )}
+
+            {/* Text — left-aligned */}
+            {col.align === "left" && (
+              <div className="absolute bottom-0 left-0 flex flex-col gap-5 p-10 md:p-16 lg:p-20 max-w-2xl">
+                <motion.p
+                  className="eyebrow text-white/60"
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8 }}
+                >
+                  {col.subtitle}
+                </motion.p>
+                <motion.h2
+                  className="text-white leading-none"
+                  initial={{ opacity: 0, x: -30 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 1, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  {col.title}
+                </motion.h2>
+                <motion.p
+                  className="text-white/55 text-base max-w-sm"
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 1, delay: 0.25 }}
+                >
+                  {col.tagline}
+                </motion.p>
+                <motion.div
+                  initial={{ opacity: 0, y: 12 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8, delay: 0.4 }}
+                >
+                  <Link href={col.href} className={buttonVariants()}>
+                    Shop {col.subtitle}
+                  </Link>
+                </motion.div>
+              </div>
+            )}
+
+            {/* Text — right-aligned */}
+            {col.align === "right" && (
+              <div className="absolute bottom-0 right-0 flex flex-col gap-5 p-10 md:p-16 lg:p-20 max-w-2xl items-end text-right">
+                <motion.p
+                  className="eyebrow text-white/60"
+                  initial={{ opacity: 0, x: 20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8 }}
+                >
+                  {col.subtitle}
+                </motion.p>
+                <motion.h2
+                  className="text-white leading-none"
+                  initial={{ opacity: 0, x: 30 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 1, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  {col.title}
+                </motion.h2>
+                <motion.p
+                  className="text-white/55 text-base max-w-sm"
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 1, delay: 0.25 }}
+                >
+                  {col.tagline}
+                </motion.p>
+                <motion.div
+                  initial={{ opacity: 0, y: 12 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8, delay: 0.4 }}
+                >
+                  <Link href={col.href} className={buttonVariants()}>
+                    Shop {col.subtitle}
+                  </Link>
+                </motion.div>
+              </div>
+            )}
+          </div>
+
+          {/* Product grid */}
+          <div className="max-w-420 mx-auto px-6 md:px-12 lg:px-16 py-14 pb-24">
+
+            {/* Grid header */}
+            <div className="flex items-end justify-between mb-10">
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <p className="eyebrow text-white/35 mb-2">{col.subtitle}</p>
+                <h4 className="text-white">{col.description}</h4>
+              </motion.div>
+              <Link
+                href={col.href}
+                className="eyebrow text-white/35 hover:text-white transition-colors duration-300 hidden md:block"
+              >
+                View All
+              </Link>
+            </div>
+
+            {/* Cards */}
+            <motion.div
+              className={`grid gap-px bg-white/5 ${
+                col.cols === 3
+                  ? "grid-cols-2 md:grid-cols-3"
+                  : "grid-cols-2 md:grid-cols-4"
+              }`}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-60px" }}
+              variants={{
+                hidden: {},
+                visible: { transition: { staggerChildren: 0.08 } },
+              }}
+            >
+              {col.products.map((product) => (
+                <motion.div
+                  key={product.id}
+                  variants={{
+                    hidden: { opacity: 0, y: 20 },
+                    visible: {
+                      opacity: 1,
+                      y: 0,
+                      transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] },
+                    },
+                  }}
+                  className="group bg-black"
+                >
+                  <Link href={product.href} className="block">
+                    {/* Image */}
+                    <div className="relative overflow-hidden aspect-3/4">
+                      <Image
+                        src={product.img}
+                        alt={product.name}
+                        fill
+                        className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                      />
+                      <span className="absolute top-4 left-4 eyebrow text-white/80 bg-black/35 backdrop-blur-sm px-2 py-1">
+                        {product.tag}
+                      </span>
+                    </div>
+
+                    {/* Info */}
+                    <div className="p-5 border-t border-white/5">
+                      <p className="eyebrow text-white/35 mb-1.5">{col.subtitle}</p>
+                      <h5 className="text-white text-[1rem] font-medium leading-snug">
+                        {product.name}
+                      </h5>
+                      <p className="text-white/50 text-sm mt-1.5 tracking-wide">
+                        {product.price}
+                      </p>
+                    </div>
+                  </Link>
+                </motion.div>
+              ))}
+            </motion.div>
+
+            {/* Mobile view all */}
+            <div className="flex justify-center mt-10 md:hidden">
+              <Link
+                href={col.href}
+                className={buttonVariants({ variant: "outline" })}
+              >
+                View All {col.subtitle}
+              </Link>
+            </div>
+          </div>
+
+          {i < collections.length - 1 && (
+            <div className="w-full h-px bg-white/5" />
+          )}
+        </section>
+      ))}
+
+      {/* ── BOTTOM CTA ───────────────────────────────────────────────────── */}
       <section className="border-t border-white/10 py-40 px-8 flex flex-col items-center text-center gap-8">
-        <p className="eyebrow text-white/40">The Full Collection</p>
-        <h3 className="max-w-lg text-white">
+        <motion.p
+          className="eyebrow text-white/40"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+        >
+          The Full Collection
+        </motion.p>
+        <motion.h3
+          className="max-w-lg text-white"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+        >
           Every Piece Is a Decision. Make Yours.
-        </h3>
-        <p className="text-white/40 max-w-sm">
+        </motion.h3>
+        <motion.p
+          className="text-white/40 max-w-sm"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.2 }}
+        >
           Browse the full range or start with what calls to you. There is no
           wrong entry point into who you are.
-        </p>
-        <Link href="/collections" className={buttonVariants()}>
-          View Everything
-        </Link>
+        </motion.p>
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.3 }}
+        >
+          <Link href="/collections" className={buttonVariants()}>
+            View Everything
+          </Link>
+        </motion.div>
       </section>
     </main>
   );
