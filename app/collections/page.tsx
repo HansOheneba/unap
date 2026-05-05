@@ -22,15 +22,42 @@ type Collection = {
   subtitle: string;
   title: string;
   tagline: string;
-  description: string;
   featured: string;
-  href: string;
   align: "left" | "right";
+  href: string;
   cols: 3 | 4;
   products: Product[];
 };
 
 // ── DATA ──────────────────────────────────────────────────────────────────────
+
+const overviewCards = [
+  {
+    id: "sunglasses",
+    label: "Sunglasses",
+    img: "/collections/glases/outlawGlasses1.jpg",
+  },
+  {
+    id: "headwear",
+    label: "Head Wears",
+    img: "/collections/headwear/boldSocietyCapBlack.jpeg",
+  },
+  {
+    id: "tops",
+    label: "Tops",
+    img: "/collections/men_shirt/shirtCollection.jpeg",
+  },
+  {
+    id: "intimates",
+    label: "Boxers",
+    img: "/collections/boxers/boxersMixed.jpeg",
+  },
+  {
+    id: "intimates",
+    label: "Intimates",
+    img: "/collections/female_undergarments/lingerie.jpeg",
+  },
+];
 
 const collections: Collection[] = [
   {
@@ -39,11 +66,9 @@ const collections: Collection[] = [
     title: "The Eclipse Edit",
     tagline:
       "The world looks different when you stop apologizing for the view.",
-    description:
-      "Worn by those who have already decided. The rest is just scenery.",
     featured: "/collections/glases/outlawGlasses1.jpg",
-    href: "/collections/sunglasses",
     align: "left",
+    href: "/collections/sunglasses",
     cols: 4,
     products: [
       {
@@ -86,10 +111,9 @@ const collections: Collection[] = [
     title: "Bold Society",
     tagline:
       "A statement for those who stopped asking for a seat at the table.",
-    description: "Every cap tells a story. Make sure yours is worth telling.",
     featured: "/collections/headwear/boldSocietyCapBlack.jpeg",
-    href: "/collections/headwear",
     align: "right",
+    href: "/collections/headwear",
     cols: 4,
     products: [
       {
@@ -131,10 +155,9 @@ const collections: Collection[] = [
     subtitle: "Tops",
     title: "The Anti-Uniform",
     tagline: "Move in silence. Let the fabric do the talking.",
-    description: "Oversized silhouettes. Zero compromise on presence.",
     featured: "/collections/men_shirt/shirtCollection.jpeg",
-    href: "/collections/tops",
     align: "left",
+    href: "/collections/tops",
     cols: 3,
     products: [
       {
@@ -168,10 +191,9 @@ const collections: Collection[] = [
     subtitle: "Intimates & Boxers",
     title: "Beneath The Surface",
     tagline: "Confidence starts where no one else can see.",
-    description: "Built for comfort. Worn by the unapologetic.",
     featured: "/collections/boxers/boxersMixed.jpeg",
-    href: "/collections/boxers",
     align: "right",
+    href: "/collections/boxers",
     cols: 4,
     products: [
       {
@@ -232,8 +254,8 @@ export default function CollectionsPage() {
 
   return (
     <main className="bg-black text-white min-h-screen overflow-x-hidden">
-      {/* ── CINEMATIC VIDEO INTRO ────────────────────────────────────────── */}
-      <section className="relative w-full h-screen overflow-hidden">
+      {/* ── VIDEO STRIP ─────────────────────────────────────────────────── */}
+      <section className="relative w-full h-[52vh] overflow-hidden">
         <video
           ref={videoRef}
           src="/hero/hero_vid2.mp4"
@@ -243,19 +265,12 @@ export default function CollectionsPage() {
           playsInline
           className="absolute inset-0 w-full h-full object-cover"
         />
+        <div className="absolute inset-0 bg-black/50" />
+        <div className="absolute inset-0 bg-linear-to-b from-black/20 via-transparent to-black/70" />
 
-        {/* Layered cinematic overlays */}
-        <div className="absolute inset-0 bg-black/45" />
-        <div className="absolute inset-0 bg-linear-to-b from-black/30 via-transparent to-black/80" />
-
-        {/* Letterbox bars for cinematic framing */}
-        <div className="absolute top-0 inset-x-0 h-[5vh] bg-black pointer-events-none" />
-        <div className="absolute bottom-0 inset-x-0 h-[5vh] bg-black pointer-events-none" />
-
-        {/* Copy */}
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
           <motion.p
-            className="eyebrow text-white/50 mb-6"
+            className="eyebrow text-white mb-5"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.4 }}
@@ -273,7 +288,7 @@ export default function CollectionsPage() {
             Symbols of Identity.
           </motion.h1>
           <motion.p
-            className="text-white/45 mt-6 max-w-sm"
+            className="text-white/70 mt-5 max-w-sm"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1, delay: 1.1 }}
@@ -281,33 +296,81 @@ export default function CollectionsPage() {
             Every piece carries meaning. Every thread tells a story.
           </motion.p>
         </div>
-
-        {/* Scroll line */}
-        <motion.div
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.8, duration: 1 }}
-        >
-          <span className="eyebrow text-white/25 text-[0.6rem]">Scroll</span>
-          <div className="w-px h-10 bg-linear-to-b from-white/25 to-transparent" />
-        </motion.div>
       </section>
 
-      {/* ── STICKY SECTION NAV ───────────────────────────────────────────── */}
+      {/* ── STICKY NAV ──────────────────────────────────────────────────── */}
       <nav className="sticky top-16 z-30 bg-black/90 backdrop-blur-md border-b border-white/8">
         <div className="max-w-420 mx-auto px-8 md:px-16 flex items-center gap-10 h-14 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {navItems.map((item) => (
             <button
               key={item.id}
               onClick={() => scrollTo(item.id)}
-              className="eyebrow text-white/40 hover:text-white transition-colors duration-300 whitespace-nowrap shrink-0 cursor-pointer"
+              className="eyebrow text-white/70 hover:text-white transition-colors duration-300 whitespace-nowrap shrink-0 cursor-pointer"
             >
               {item.label}
             </button>
           ))}
         </div>
       </nav>
+
+      {/* ── COLLECTION OVERVIEW CARDS ────────────────────────────────────── */}
+      <section className="max-w-420 mx-auto px-6 md:px-12 lg:px-16 pt-16 pb-20">
+        <div className="flex items-end justify-between mb-10">
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <p className="eyebrow text-white mb-3">Shop By Category</p>
+            <h3 className="text-white">Everything We Make</h3>
+          </motion.div>
+        </div>
+
+        <motion.div
+          className="grid grid-cols-2 md:grid-cols-5 gap-px bg-white/5"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={{
+            hidden: {},
+            visible: { transition: { staggerChildren: 0.07 } },
+          }}
+        >
+          {overviewCards.map((card, i) => (
+            <motion.button
+              key={i}
+              onClick={() => scrollTo(card.id)}
+              variants={{
+                hidden: { opacity: 0, y: 16 },
+                visible: {
+                  opacity: 1,
+                  y: 0,
+                  transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
+                },
+              }}
+              className="group relative bg-black overflow-hidden aspect-3/4 cursor-pointer text-left"
+            >
+              <Image
+                src={card.img}
+                alt={card.label}
+                fill
+                sizes="(max-width: 768px) 50vw, 20vw"
+                className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+              />
+              <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent" />
+              <div className="absolute bottom-0 left-0 p-4">
+                <p className="eyebrow text-white mb-1">{card.label}</p>
+                <span className="eyebrow text-white/60 group-hover:text-white transition-colors duration-300">
+                  Shop →
+                </span>
+              </div>
+            </motion.button>
+          ))}
+        </motion.div>
+      </section>
+
+      <div className="w-full h-px bg-white/8" />
 
       {/* ── COLLECTION SECTIONS ──────────────────────────────────────────── */}
       {collections.map((col, i) => (
@@ -318,11 +381,10 @@ export default function CollectionsPage() {
               src={col.featured}
               alt={col.title}
               fill
+              sizes="100vw"
               className="object-cover"
               priority={i < 2}
             />
-
-            {/* Directional gradient overlay */}
             {col.align === "left" ? (
               <>
                 <div className="absolute inset-0 bg-linear-to-r from-black/80 via-black/30 to-transparent" />
@@ -335,11 +397,10 @@ export default function CollectionsPage() {
               </>
             )}
 
-            {/* Text — left-aligned */}
             {col.align === "left" && (
               <div className="absolute bottom-0 left-0 flex flex-col gap-5 p-10 md:p-16 lg:p-20 max-w-2xl">
                 <motion.p
-                  className="eyebrow text-white/60"
+                  className="eyebrow text-white"
                   initial={{ opacity: 0, x: -20 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
@@ -361,7 +422,7 @@ export default function CollectionsPage() {
                   {col.title}
                 </motion.h2>
                 <motion.p
-                  className="text-white/55 text-base max-w-sm"
+                  className="text-white/75 max-w-sm"
                   initial={{ opacity: 0 }}
                   whileInView={{ opacity: 1 }}
                   viewport={{ once: true }}
@@ -382,11 +443,10 @@ export default function CollectionsPage() {
               </div>
             )}
 
-            {/* Text — right-aligned */}
             {col.align === "right" && (
               <div className="absolute bottom-0 right-0 flex flex-col gap-5 p-10 md:p-16 lg:p-20 max-w-2xl items-end text-right">
                 <motion.p
-                  className="eyebrow text-white/60"
+                  className="eyebrow text-white"
                   initial={{ opacity: 0, x: 20 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
@@ -408,7 +468,7 @@ export default function CollectionsPage() {
                   {col.title}
                 </motion.h2>
                 <motion.p
-                  className="text-white/55 text-base max-w-sm"
+                  className="text-white/75 max-w-sm"
                   initial={{ opacity: 0 }}
                   whileInView={{ opacity: 1 }}
                   viewport={{ once: true }}
@@ -431,27 +491,7 @@ export default function CollectionsPage() {
           </div>
 
           {/* Product grid */}
-          <div className="max-w-420 mx-auto px-6 md:px-12 lg:px-16 py-14 pb-24">
-            {/* Grid header */}
-            <div className="flex items-end justify-between mb-10">
-              <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-              >
-                <p className="eyebrow text-white/35 mb-2">{col.subtitle}</p>
-                <h4 className="text-white">{col.description}</h4>
-              </motion.div>
-              <Link
-                href={col.href}
-                className="eyebrow text-white/35 hover:text-white transition-colors duration-300 hidden md:block"
-              >
-                View All
-              </Link>
-            </div>
-
-            {/* Cards */}
+          <div className="max-w-420 mx-auto px-6 md:px-12 lg:px-16 pt-14 pb-24">
             <motion.div
               className={`grid gap-px bg-white/5 ${
                 col.cols === 3
@@ -480,37 +520,35 @@ export default function CollectionsPage() {
                   className="group bg-black"
                 >
                   <Link href={product.href} className="block">
-                    {/* Image */}
                     <div className="relative overflow-hidden aspect-3/4">
                       <Image
                         src={product.img}
                         alt={product.name}
                         fill
+                        sizes={
+                          col.cols === 3
+                            ? "(max-width: 768px) 50vw, 33vw"
+                            : "(max-width: 768px) 50vw, 25vw"
+                        }
                         className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
                       />
-                      <span className="absolute top-4 left-4 eyebrow text-white/80 bg-black/35 backdrop-blur-sm px-2 py-1">
+                      <span className="absolute top-4 left-4 eyebrow text-white bg-black/40 backdrop-blur-sm px-2 py-1">
                         {product.tag}
                       </span>
                     </div>
 
-                    {/* Info */}
-                    <div className="p-5 border-t border-white/5">
-                      <p className="eyebrow text-white/35 mb-1.5">
+                    <div className="p-5 border-t border-white/8">
+                      <p className="eyebrow text-white/70 mb-2">
                         {col.subtitle}
                       </p>
-                      <h5 className="text-white text-[1rem] font-medium leading-snug">
-                        {product.name}
-                      </h5>
-                      <p className="text-white/50 text-sm mt-1.5 tracking-wide">
-                        {product.price}
-                      </p>
+                      <h5 className="text-white">{product.name}</h5>
+                      <p className="text-white/70 mt-2">{product.price}</p>
                     </div>
                   </Link>
                 </motion.div>
               ))}
             </motion.div>
 
-            {/* Mobile view all */}
             <div className="flex justify-center mt-10 md:hidden">
               <Link
                 href={col.href}
@@ -530,7 +568,7 @@ export default function CollectionsPage() {
       {/* ── BOTTOM CTA ───────────────────────────────────────────────────── */}
       <section className="border-t border-white/10 py-40 px-8 flex flex-col items-center text-center gap-8">
         <motion.p
-          className="eyebrow text-white/40"
+          className="eyebrow text-white"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
@@ -547,7 +585,7 @@ export default function CollectionsPage() {
           Every Piece Is a Decision. Make Yours.
         </motion.h3>
         <motion.p
-          className="text-white/40 max-w-sm"
+          className="text-white/65 max-w-sm"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
