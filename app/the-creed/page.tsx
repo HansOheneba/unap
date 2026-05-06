@@ -94,7 +94,7 @@ export default function TheCreedPage() {
       >
         <motion.div style={{ y: heroImgY }} className="absolute inset-0">
           <Image
-            src="/creed/creed.jpg"
+            src="/home/manBeach.jpg"
             alt=""
             fill
             className="object-cover brightness-60"
@@ -166,7 +166,7 @@ export default function TheCreedPage() {
 
       {/* ── 03  FULL-BLEED PARALLAX STATEMENT ── */}
       <ParallaxImage
-        src="/creed/creed.jpg"
+        src="/home/womanXman.jpg"
         speed={0.2}
         className="h-[85vh]"
         overlay={
@@ -226,7 +226,7 @@ export default function TheCreedPage() {
           </FadeIn>
         </div>
         <ParallaxImage
-          src="/creed/creed.jpg"
+          src="/home/manXmanModels.jpg"
           speed={0.15}
           className="min-h-96 md:min-h-0 order-1 md:order-2"
         />
@@ -286,7 +286,7 @@ export default function TheCreedPage() {
 
       {/* ── 08  SECOND PARALLAX ── */}
       <ParallaxImage
-        src="/creed/creed.jpg"
+        src="/home/manStudio.jpg"
         speed={0.18}
         className="h-[60vh]"
         overlay={
