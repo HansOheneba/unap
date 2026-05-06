@@ -94,10 +94,10 @@ export default function CollectionsPreview() {
               style={{ aspectRatio: "3/4" }}
             >
               <Image
-                src="/creed/creed.jpg"
+                src="/home/manStudio.jpg"
                 alt={featured[0].name}
                 fill
-                className="object-cover brightness-75 group-hover:brightness-95 transition-[filter] duration-700"
+                className="object-cover brightness-90 group-hover:brightness-100 transition-[filter] duration-700"
               />
               <span className="absolute top-6 left-6 eyebrow text-white/50">
                 {featured[0].category}
@@ -123,10 +123,16 @@ export default function CollectionsPreview() {
                   style={{ aspectRatio: "4/3" }}
                 >
                   <Image
-                    src="/creed/creed.jpg"
+                    src={
+                      product.id === 2
+                        ? "/home/track.jpg"
+                        : product.id === 3
+                        ? "/home/shadesMan.jpg"
+                        : "/home/manBlackCap.jpg"
+                    }
                     alt={product.name}
                     fill
-                    className="object-cover brightness-65 group-hover:brightness-90 transition-[filter] duration-700"
+                    className="object-cover brightness-85 group-hover:brightness-100 transition-[filter] duration-700"
                   />
                   <span className="absolute top-4 left-4 eyebrow text-white/50">
                     {product.category}
@@ -143,7 +149,7 @@ export default function CollectionsPreview() {
 
         {/* Bottom line */}
         <FadeIn delay={0.2}>
-          <p className="text-white/25 text-center text-sm tracking-wider uppercase">
+          <p className="text-white/55 text-center text-sm tracking-wider uppercase">
             Every piece carries intention. None of it is accidental.
           </p>
         </FadeIn>

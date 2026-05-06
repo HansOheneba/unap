@@ -123,10 +123,10 @@ export default function MovementSection() {
         {/* Left: Image */}
         <div className="relative min-h-[50vh] md:min-h-0">
           <Image
-            src="/creed/creed.jpg"
+            src="/home/manXmanModels.jpg"
             alt="The Movement"
             fill
-            className="object-cover brightness-50"
+            className="object-cover brightness-70"
           />
           {/* diagonal cut overlay */}
           <div
@@ -138,17 +138,17 @@ export default function MovementSection() {
         {/* Right: Statement */}
         <div className="flex flex-col justify-center px-10 md:px-16 py-20 gap-8">
           <FadeIn>
-            <p className="eyebrow text-white/40 mb-6">004 | The Movement</p>
+            <p className="eyebrow text-white/65 mb-6">004 | The Movement</p>
             <h2 className="leading-none">
               We Are Not
               <br />
-              <span className="text-white/30">a Brand.</span>
+              <span className="text-white/55">a Brand.</span>
               <br />
               We Are a Tribe.
             </h2>
           </FadeIn>
           <FadeIn delay={0.2}>
-            <p className="text-white/50 max-w-sm">
+            <p className="text-white/75 max-w-sm">
               Started in 2024 by those who were told to tone it down. Built for
               everyone who never did. This is not fashion. This is a frequency.
               Either you resonate or you do not.
@@ -189,7 +189,7 @@ export default function MovementSection() {
               />
             </div>
             <p className="eyebrow text-white/60">{stat.label}</p>
-            <p className="text-white/35 text-sm leading-relaxed">{stat.sub}</p>
+            <p className="text-white/65 text-sm leading-relaxed">{stat.sub}</p>
           </FadeIn>
         ))}
       </div>
@@ -200,18 +200,18 @@ export default function MovementSection() {
       {/* ── FULL-BLEED STATEMENT ─────────────────────────── */}
       <div className="relative py-40 px-8 flex items-center justify-center overflow-hidden">
         <Image
-          src="/creed/creed.jpg"
+          src="/home/womanXman.jpg"
           alt="The World Noticed"
           fill
-          className="object-cover brightness-20"
+            className="object-cover brightness-40"
         />
         <div className="absolute inset-0 bg-linear-to-t from-black via-black/60 to-black" />
         <FadeIn className="relative z-10 text-center max-w-3xl flex flex-col gap-6 items-center">
-          <p className="eyebrow text-white/40">The World Noticed</p>
+          <p className="eyebrow text-white/65">The World Noticed</p>
           <h2 className="text-white">
             They tried to dim the light. The light got louder.
           </h2>
-          <p className="text-white/40 max-w-md">
+          <p className="text-white/70 max-w-md">
             Every insult became a blueprint. Every dismissal became fuel. You do
             not build a movement by asking nicely. You build it by refusing to
             be quiet.
@@ -225,22 +225,22 @@ export default function MovementSection() {
       {/* ── TESTIMONIALS ─────────────────────────────────── */}
       <div className="px-8 md:px-20 py-32 max-w-7xl mx-auto flex flex-col gap-16">
         <FadeIn>
-          <p className="eyebrow text-white/40">Voices from the Tribe</p>
+          <p className="eyebrow text-white/65">Voices from the Tribe</p>
         </FadeIn>
 
         <div className="grid grid-cols-1 md:grid-cols-12 gap-px bg-white/5">
           {/* Large card with image background */}
           <FadeIn className="md:col-span-5 bg-black relative overflow-hidden min-h-80 flex flex-col justify-end">
             <Image
-              src="/creed/creed.jpg"
+              src="/home/boxModel.jpg"
               alt={testimonials[0].name}
               fill
-              className="object-cover brightness-30"
+              className="object-cover brightness-75"
             />
-            <div className="absolute inset-0 bg-linear-to-t from-black via-black/50 to-transparent" />
+            <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/30 to-transparent" />
             <div className="relative z-10 p-8 flex flex-col gap-4">
               <span
-                className="text-white/20"
+                className="text-white/50"
                 style={{
                   fontSize: "5rem",
                   lineHeight: 0.8,
@@ -254,7 +254,7 @@ export default function MovementSection() {
                 {testimonials[0].quote}
               </p>
               <div className="pt-2">
-                <p className="eyebrow text-white/50">
+                <p className="eyebrow text-white/75">
                   {testimonials[0].name} / {testimonials[0].location}
                 </p>
               </div>
@@ -267,10 +267,10 @@ export default function MovementSection() {
               <FadeIn
                 key={t.name}
                 delay={0.15 * (i + 1)}
-                className="bg-black p-10 flex flex-col gap-5 justify-between min-h-52"
+                className="bg-white/5 p-10 flex flex-col gap-5 justify-between min-h-52"
               >
                 <span
-                  className="text-white/10"
+                  className="text-white/40"
                   style={{
                     fontSize: "4rem",
                     lineHeight: 0.8,
@@ -280,10 +280,10 @@ export default function MovementSection() {
                 >
                   "
                 </span>
-                <p className="text-white/75 text-lg leading-relaxed italic">
+                <p className="text-white/90 text-lg leading-relaxed italic">
                   {t.quote}
                 </p>
-                <p className="eyebrow text-white/40">
+                <p className="eyebrow text-white/75">
                   {t.name} / {t.location}
                 </p>
               </FadeIn>

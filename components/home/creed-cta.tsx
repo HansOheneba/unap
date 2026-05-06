@@ -30,7 +30,7 @@ export default function CreedCta() {
         {/* Right: image */}
         <div className="relative aspect-4/5 overflow-hidden group">
           <Image
-            src="/creed/creed.jpg"
+            src="/home/manStudio.jpg"
             alt="The Creed"
             fill
             className="object-cover grayscale group-hover:grayscale-0 transition-[filter] duration-700"

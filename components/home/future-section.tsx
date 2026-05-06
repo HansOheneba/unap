@@ -89,16 +89,16 @@ export default function FutureSection() {
       {/* ── FULL-BLEED INTRO ───────────────────────────── */}
       <div className="relative py-56 px-8 flex flex-col items-center justify-center text-center overflow-hidden">
         <Image
-          src="/creed/creed.jpg"
+          src="/home/manBeach.jpg"
           alt="The Future"
           fill
-          className="object-cover brightness-15"
+          className="object-cover brightness-30"
         />
         <div className="absolute inset-0 bg-linear-to-b from-black via-transparent to-black" />
 
         <div className="relative z-10 flex flex-col items-center gap-6 max-w-4xl">
           <FadeIn>
-            <p className="eyebrow text-white/40 mb-4">005 | The Future</p>
+            <p className="eyebrow text-white/65 mb-4">005 | The Future</p>
             <h1 className="text-white">
               This Is Just
               <br />
@@ -106,7 +106,7 @@ export default function FutureSection() {
             </h1>
           </FadeIn>
           <FadeIn delay={0.25}>
-            <p className="text-white/45 max-w-xl text-lg leading-relaxed">
+            <p className="text-white/80 max-w-xl text-lg leading-relaxed">
               Unapologetic is not a clothing brand with a website. It is a
               global lifestyle empire in its first chapter. Fashion was the
               door. What comes next will redefine every room you walk into.
@@ -146,12 +146,12 @@ export default function FutureSection() {
               <Icon
                 size={28}
                 strokeWidth={1}
-                className="text-white/30 group-hover:text-white transition-colors duration-500"
+                className="text-white/55 group-hover:text-white transition-colors duration-500"
               />
-              <p className="eyebrow text-white/50 group-hover:text-white transition-colors duration-500">
+              <p className="eyebrow text-white/75 group-hover:text-white transition-colors duration-500">
                 {v.name}
               </p>
-              <p className="text-white/25 text-sm leading-relaxed group-hover:text-white/50 transition-colors duration-500">
+              <p className="text-white/55 text-sm leading-relaxed group-hover:text-white/80 transition-colors duration-500">
                 {v.line}
               </p>
             </FadeIn>
@@ -167,7 +167,7 @@ export default function FutureSection() {
         {/* Pull quote */}
         <div className="px-10 md:px-20 py-32 flex flex-col justify-center gap-8">
           <FadeIn>
-            <p className="eyebrow text-white/30 mb-8">The Long Game</p>
+            <p className="eyebrow text-white/60 mb-8">The Long Game</p>
             <blockquote
               className="text-white/80 italic leading-snug"
               style={{
@@ -180,7 +180,7 @@ export default function FutureSection() {
             </blockquote>
           </FadeIn>
           <FadeIn delay={0.2}>
-            <p className="eyebrow text-white/30">Hans Opoku | Founder</p>
+            <p className="eyebrow text-white/65">Hans Opoku | Founder</p>
           </FadeIn>
           <FadeIn delay={0.35}>
             <Link href="/future" className={buttonVariants()}>
@@ -192,7 +192,7 @@ export default function FutureSection() {
         {/* Image */}
         <div className="relative min-h-96 md:min-h-0">
           <Image
-            src="/creed/creed.jpg"
+            src="/home/womanXman.jpg"
             alt="The Future of Unapologetic"
             fill
             className="object-cover brightness-60"
@@ -203,7 +203,7 @@ export default function FutureSection() {
           />
           {/* Corner label */}
           <div className="absolute bottom-6 right-6">
-            <p className="eyebrow text-white/30">Est. 2024</p>
+            <p className="eyebrow text-white/60">Est. 2024</p>
           </div>
         </div>
       </div>
@@ -213,8 +213,8 @@ export default function FutureSection() {
 
       {/* ── BOTTOM STATEMENT ──────────────────────────── */}
       <FadeIn className="py-32 px-8 flex flex-col items-center text-center gap-4">
-        <p className="eyebrow text-white/20">The Trajectory</p>
-        <h4 className="text-white/10 max-w-2xl">
+        <p className="eyebrow text-white/55">The Trajectory</p>
+        <h4 className="text-white/50 max-w-2xl">
           We are not aiming for the top.
           <span className="text-white">
             {" "}

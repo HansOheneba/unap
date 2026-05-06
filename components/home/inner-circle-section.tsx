@@ -67,21 +67,21 @@ export default function InnerCircleSection() {
       {/* ── FULL-BLEED HEADER ─────────────────────────── */}
       <div className="relative flex flex-col items-center justify-center text-center py-56 px-8 overflow-hidden">
         <Image
-          src="/creed/creed.jpg"
+          src="/home/manXmanModels.jpg"
           alt="The Inner Circle"
           fill
-          className="object-cover brightness-10"
+          className="object-cover brightness-25"
         />
         <div className="absolute inset-0 bg-linear-to-b from-black via-black/40 to-black" />
 
         <div className="relative z-10 flex flex-col items-center gap-6 max-w-3xl">
           <FadeIn>
-            <p className="eyebrow text-white/40 mb-4">Exclusive Access</p>
+            <p className="eyebrow text-white/65 mb-4">Exclusive Access</p>
             <h1 className="text-white">The Inner Circle</h1>
           </FadeIn>
           <FadeIn delay={0.2}>
             <p
-              className="text-white/50 text-lg italic max-w-md leading-relaxed"
+              className="text-white/80 text-lg italic max-w-md leading-relaxed"
               style={{ fontFamily: "var(--font-sora)" }}
             >
               For those who do not just wear the brand. They embody it.
@@ -117,12 +117,12 @@ export default function InnerCircleSection() {
               <Icon
                 size={26}
                 strokeWidth={1}
-                className="text-white/25 group-hover:text-white transition-colors duration-500"
+                className="text-white/55 group-hover:text-white transition-colors duration-500"
               />
-              <p className="eyebrow text-white/50 group-hover:text-white transition-colors duration-500">
+              <p className="eyebrow text-white/75 group-hover:text-white transition-colors duration-500">
                 {p.name}
               </p>
-              <p className="text-white/30 text-sm leading-relaxed group-hover:text-white/55 transition-colors duration-500 max-w-sm">
+              <p className="text-white/60 text-sm leading-relaxed group-hover:text-white/85 transition-colors duration-500 max-w-sm">
                 {p.line}
               </p>
             </FadeIn>
@@ -138,7 +138,7 @@ export default function InnerCircleSection() {
         {/* Image side */}
         <div className="relative min-h-96 md:min-h-0 order-2 md:order-1">
           <Image
-            src="/creed/creed.jpg"
+            src="/home/beanieRed.jpg"
             alt="Join the Inner Circle"
             fill
             className="object-cover brightness-40"
@@ -148,8 +148,8 @@ export default function InnerCircleSection() {
             style={{ clipPath: "polygon(65% 0, 100% 0, 100% 100%, 45% 100%)" }}
           />
           <div className="absolute inset-0 flex flex-col justify-end p-10">
-            <p className="eyebrow text-white/30">The Circle</p>
-            <p className="text-white/20 text-sm mt-2 max-w-xs leading-relaxed">
+            <p className="eyebrow text-white/65">The Circle</p>
+            <p className="text-white/55 text-sm mt-2 max-w-xs leading-relaxed">
               Not everyone gets in. Not because of status. Because of standards.
             </p>
           </div>
@@ -158,14 +158,14 @@ export default function InnerCircleSection() {
         {/* Signup side */}
         <div className="order-1 md:order-2 px-10 md:px-16 py-24 flex flex-col justify-center gap-10">
           <FadeIn>
-            <p className="eyebrow text-white/40 mb-4">Step Inside</p>
+            <p className="eyebrow text-white/65 mb-4">Step Inside</p>
             <h2 className="text-white max-w-sm">
               Your Name Belongs on This List.
             </h2>
           </FadeIn>
 
           <FadeIn delay={0.15}>
-            <p className="text-white/40 max-w-sm leading-relaxed">
+            <p className="text-white/70 max-w-sm leading-relaxed">
               Drop your email. No spam. No noise. Only what matters. When we
               move, you will be the first to know. When we drop, you will have
               first access. When we speak, it will be worth reading.
@@ -181,7 +181,7 @@ export default function InnerCircleSection() {
                 className="flex flex-col gap-3"
               >
                 <p className="eyebrow text-white">You are in.</p>
-                <p className="text-white/40 text-sm">
+                <p className="text-white/65 text-sm">
                   Welcome to the Inner Circle. Watch your inbox.
                 </p>
               </motion.div>
@@ -196,7 +196,7 @@ export default function InnerCircleSection() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Your email"
-                  className="flex-1 bg-white/5 border border-white/15 text-white placeholder:text-white/25 px-6 py-3 text-[0.7rem] tracking-widest uppercase outline-none focus:border-white/50 transition-colors duration-300"
+                  className="flex-1 bg-white/8 border border-white/25 text-white placeholder:text-white/45 px-6 py-3 text-[0.7rem] tracking-widest uppercase outline-none focus:border-white/50 transition-colors duration-300"
                 />
                 <button
                   type="submit"
@@ -209,7 +209,7 @@ export default function InnerCircleSection() {
           </FadeIn>
 
           <FadeIn delay={0.4}>
-            <p className="text-white/15 text-xs tracking-wider uppercase">
+            <p className="text-white/50 text-xs tracking-wider uppercase">
               No spam. No selling your data. Just signal.
             </p>
           </FadeIn>
@@ -221,7 +221,7 @@ export default function InnerCircleSection() {
 
       {/* ── CLOSING STATEMENT ─────────────────────────── */}
       <FadeIn className="py-28 px-8 text-center flex flex-col gap-3 items-center">
-        <p className="eyebrow text-white/20">The Standard</p>
+        <p className="eyebrow text-white/55">The Standard</p>
         <h4 className="text-[#564787] max-w-2xl">
           The world has enough audiences.
           <span className="text-white"> We are building a congregation.</span>

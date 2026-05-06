@@ -53,9 +53,9 @@ const overviewCards = [
     img: "/collections/boxers/boxersMixed.jpeg",
   },
   {
-    id: "intimates",
-    label: "Intimates",
-    img: "/collections/female_undergarments/lingerie.jpeg",
+    id: "tracks",
+    label: "Tracks",
+    img: "/collections/tracks/track.jpg",
   },
 ];
 
@@ -230,6 +230,34 @@ const collections: Collection[] = [
       },
     ],
   },
+  {
+    id: "tracks",
+    subtitle: "Tracks",
+    title: "In Motion",
+    tagline: "Movement is not optional. Neither is the standard you carry while doing it.",
+    featured: "/collections/tracks/track.jpg",
+    align: "left",
+    href: "/collections/tracks",
+    cols: 3,
+    products: [
+      {
+        id: 16,
+        name: "Sovereign Track",
+        tag: "Signature",
+        price: "US$120",
+        img: "/collections/tracks/track.jpg",
+        href: "/collections/tracks",
+      },
+      {
+        id: 17,
+        name: "Sovereign Track II",
+        tag: "Limited",
+        price: "US$120",
+        img: "/collections/tracks/track2.jpg",
+        href: "/collections/tracks",
+      },
+    ],
+  },
 ];
 
 const navItems = [
@@ -237,6 +265,7 @@ const navItems = [
   { id: "headwear", label: "Head Wears" },
   { id: "tops", label: "Tops" },
   { id: "intimates", label: "Intimates" },
+  { id: "tracks", label: "Tracks" },
 ];
 
 // ── PAGE ──────────────────────────────────────────────────────────────────────
