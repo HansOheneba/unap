@@ -234,7 +234,8 @@ const collections: Collection[] = [
     id: "tracks",
     subtitle: "Tracks",
     title: "In Motion",
-    tagline: "Movement is not optional. Neither is the standard you carry while doing it.",
+    tagline:
+      "Movement is not optional. Neither is the standard you carry while doing it.",
     featured: "/collections/tracks/track.jpg",
     align: "left",
     href: "/collections/tracks",

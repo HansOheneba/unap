@@ -203,7 +203,7 @@ export default function MovementSection() {
           src="/home/womanXman.jpg"
           alt="The World Noticed"
           fill
-            className="object-cover brightness-40"
+          className="object-cover brightness-40"
         />
         <div className="absolute inset-0 bg-linear-to-t from-black via-black/60 to-black" />
         <FadeIn className="relative z-10 text-center max-w-3xl flex flex-col gap-6 items-center">

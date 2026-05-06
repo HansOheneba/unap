@@ -23,7 +23,7 @@ export default function CreedCta() {
           </div>
 
           <Link href="/the-creed">
-          <Button variant="outline">Read the Creed</Button>
+            <Button variant="outline">Read the Creed</Button>
           </Link>
         </div>
 

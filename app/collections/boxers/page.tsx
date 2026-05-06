@@ -124,8 +124,8 @@ export default function BoxersPage() {
           <div>
             <p className="eyebrow text-white mb-2">Size Reference</p>
             <p className="text-white/50 text-sm max-w-sm">
-              Our boxers run true to size. S / M / L / XL / XXL available.
-              Check the size chart for exact measurements.
+              Our boxers run true to size. S / M / L / XL / XXL available. Check
+              the size chart for exact measurements.
             </p>
           </div>
           <div className="relative w-full md:w-64 aspect-video shrink-0">

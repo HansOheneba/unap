@@ -127,8 +127,8 @@ export default function CollectionsPreview() {
                       product.id === 2
                         ? "/home/track.jpg"
                         : product.id === 3
-                        ? "/home/shadesMan.jpg"
-                        : "/home/manBlackCap.jpg"
+                          ? "/home/shadesMan.jpg"
+                          : "/home/manBlackCap.jpg"
                     }
                     alt={product.name}
                     fill
