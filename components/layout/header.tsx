@@ -17,7 +17,7 @@ type NavLink =
   | { label: string; href: string; dropdown: typeof collectionItems };
 
 const navLinks: NavLink[] = [
-    { label: "Collections", href: "/collections", dropdown: collectionItems },
+  { label: "Collections", href: "/collections", dropdown: collectionItems },
   { label: "The Creed", href: "/the-creed" },
   { label: "Inner Circle", href: "/inner-circle" },
 ];
@@ -236,7 +236,7 @@ export default function Header() {
             />
           </Link>
 
-          {/* ── Right: Search + Cart ── */}
+          {/* ── Right: Search + Track + User + Cart ── */}
           <div className="flex items-center gap-5">
             <button
               aria-label="Search"
@@ -255,6 +255,46 @@ export default function Header() {
               >
                 <circle cx="11" cy="11" r="8" />
                 <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+            </button>
+            <Link
+              href="/tracking"
+              aria-label="Track order"
+              className="text-white hover:opacity-60 transition-opacity duration-200"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="19"
+                height="19"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v3" />
+                <rect x="9" y="11" width="14" height="10" rx="2" />
+                <path d="M9 15h4M9 19h4" />
+              </svg>
+            </Link>
+            <button
+              aria-label="Account"
+              className="text-white hover:opacity-60 transition-opacity duration-200"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="19"
+                height="19"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <circle cx="12" cy="8" r="4" />
+                <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
               </svg>
             </button>
             <button
