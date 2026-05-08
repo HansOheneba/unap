@@ -66,7 +66,7 @@ export default function TrackingPage() {
           </button>
         </form>
         <p className="text-white/35 text-[0.6rem] tracking-widest uppercase mb-12">
-          Demo — try: UNAP-000001 · UNAP-000002 · UNAP-000003 · UNAP-000004
+          Demo: try UNAP-000001 · UNAP-000002 · UNAP-000003 · UNAP-000004
         </p>
 
         {/* ── Result ── */}
@@ -179,7 +179,7 @@ export default function TrackingPage() {
                 </p>
                 {result.estimatedDelivery && result.status !== "delivered" && (
                   <p className="text-white/70 text-sm mt-3">
-                    Estimated arrival —{" "}
+                    Estimated arrival:{" "}
                     <span className="text-white font-medium">
                       {result.estimatedDelivery}
                     </span>
@@ -236,7 +236,7 @@ export default function TrackingPage() {
                         }`}
                       >
                         {i === 0 ? (
-                          /* active — truck / location pin */
+                          /* active - truck / location pin */
                           <svg
                             className="w-3.5 h-3.5 text-black"
                             aria-hidden="true"
@@ -262,7 +262,7 @@ export default function TrackingPage() {
                             />
                           </svg>
                         ) : (
-                          /* past — calendar dot */
+                          /* past - calendar dot */
                           <svg
                             className="w-3 h-3 text-white/60"
                             aria-hidden="true"

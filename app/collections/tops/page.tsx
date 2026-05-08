@@ -17,7 +17,7 @@ const products = [
   },
   {
     id: 2,
-    name: "Phantom Long Sleeve — Brown",
+    name: "Phantom Long Sleeve Brown",
     tag: "Womens",
     price: "US$110",
     img: "/collections/female_shirts/shirtBrown.jpeg",
@@ -25,7 +25,7 @@ const products = [
   },
   {
     id: 3,
-    name: "Sovereign Crop — Cream",
+    name: "Sovereign Crop Cream",
     tag: "Womens",
     price: "US$95",
     img: "/collections/female_shirts/shirtCream.jpeg",

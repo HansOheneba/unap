@@ -9,7 +9,7 @@ import { ArrowLeft } from "lucide-react";
 const products = [
   {
     id: 1,
-    name: "Bold Society — Black",
+    name: "Bold Society Black",
     tag: "Signature",
     price: "US$65",
     img: "/collections/headwear/boldSocietyCapBlack.jpeg",
@@ -20,7 +20,7 @@ const products = [
   },
   {
     id: 2,
-    name: "Bold Society — Cream",
+    name: "Bold Society Cream",
     tag: "Classic",
     price: "US$65",
     img: "/collections/headwear/boldSocietyCapCream.jpeg",
@@ -31,7 +31,7 @@ const products = [
   },
   {
     id: 3,
-    name: "Bold Society — Red",
+    name: "Bold Society Red",
     tag: "Bold",
     price: "US$65",
     img: "/collections/headwear/boldSocietyCapRed.jpeg",
@@ -44,7 +44,7 @@ const products = [
   },
   {
     id: 4,
-    name: "Suede Cap — Black",
+    name: "Suede Cap Black",
     tag: "Premium",
     price: "US$75",
     img: "/collections/headwear/suedeCapBlack.jpg",
@@ -60,7 +60,7 @@ const products = [
   },
   {
     id: 6,
-    name: "Sovereign Beanie — Red",
+    name: "Sovereign Beanie Red",
     tag: "Bold",
     price: "US$55",
     img: "/collections/headwear/beanieRed.jpg",

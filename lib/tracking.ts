@@ -79,7 +79,7 @@ const mockOrders: Record<
         date: "2026-05-07",
         time: "6:14 AM",
         location: "Frankfurt, Germany",
-        description: "Departed sort facility — en route to destination",
+        description: "Departed sort facility. En route to destination",
       },
       {
         date: "2026-05-06",
@@ -131,7 +131,7 @@ const mockOrders: Record<
         date: "2026-05-07",
         time: "8:05 AM",
         location: "Lagos, Nigeria",
-        description: "Out for delivery — expected by end of day",
+        description: "Out for delivery. Expected by end of day",
       },
       {
         date: "2026-05-07",
@@ -189,7 +189,7 @@ const mockOrders: Record<
         date: "2026-05-05",
         time: "1:47 PM",
         location: "Kumasi, Ghana",
-        description: "Delivered — signed for by recipient",
+        description: "Delivered. Signed for by recipient",
       },
       {
         date: "2026-05-05",

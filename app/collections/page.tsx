@@ -118,7 +118,7 @@ const collections: Collection[] = [
     products: [
       {
         id: 5,
-        name: "Bold Society — Black",
+        name: "Bold Society Black",
         tag: "Signature",
         price: "US$65",
         img: "/collections/headwear/boldSocietyCapBlack.jpeg",
@@ -126,7 +126,7 @@ const collections: Collection[] = [
       },
       {
         id: 6,
-        name: "Bold Society — Cream",
+        name: "Bold Society Cream",
         tag: "Classic",
         price: "US$65",
         img: "/collections/headwear/boldSocietyCapCream.jpeg",
@@ -134,7 +134,7 @@ const collections: Collection[] = [
       },
       {
         id: 7,
-        name: "Bold Society — Red",
+        name: "Bold Society Red",
         tag: "Bold",
         price: "US$65",
         img: "/collections/headwear/boldSocietyCapRed.jpeg",
@@ -142,7 +142,7 @@ const collections: Collection[] = [
       },
       {
         id: 8,
-        name: "Suede Cap — Black",
+        name: "Suede Cap Black",
         tag: "Premium",
         price: "US$75",
         img: "/collections/headwear/suedeCapBlack.jpg",

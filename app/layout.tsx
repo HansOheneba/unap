@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, Sora, Geist } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/layout/header";
-import Footer from "@/components/layout/footer";
+import ConditionalNav from "@/components/layout/conditional-nav";
 import { cn } from "@/lib/utils";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
@@ -51,9 +50,7 @@ export default function RootLayout({
       )}
     >
       <body className="min-h-full flex flex-col">
-        <Header />
-        {children}
-        <Footer />
+        <ConditionalNav>{children}</ConditionalNav>
       </body>
     </html>
   );

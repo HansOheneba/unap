@@ -278,7 +278,8 @@ export default function Header() {
                 <path d="M9 15h4M9 19h4" />
               </svg>
             </Link>
-            <button
+            <Link
+              href="/account"
               aria-label="Account"
               className="text-white hover:opacity-60 transition-opacity duration-200"
             >
@@ -296,7 +297,7 @@ export default function Header() {
                 <circle cx="12" cy="8" r="4" />
                 <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
               </svg>
-            </button>
+            </Link>
             <button
               aria-label="Cart"
               className="relative text-white hover:opacity-60 transition-opacity duration-200"
@@ -404,7 +405,7 @@ export default function Header() {
         </nav>
 
         {/* Bottom: brand tagline + CTA */}
-        <div className="px-8 py-10 border-t border-white/8 flex flex-col gap-5">
+        <div className="px-8 py-10 border-t border-white/8 flex flex-col gap-4">
           <p className="eyebrow text-white/25">Est. 2024 | A Global Movement</p>
           <Link
             href="/collections"
@@ -413,6 +414,22 @@ export default function Header() {
           >
             Shop Now
           </Link>
+          <div className="flex gap-3">
+            <Link
+              href="/auth/login"
+              onClick={() => setMobileOpen(false)}
+              className="flex-1 border border-white/15 text-white/60 px-4 py-2.5 text-[0.6rem] tracking-widest uppercase hover:text-white hover:border-white/35 transition-colors duration-200 text-center"
+            >
+              Sign In
+            </Link>
+            <Link
+              href="/tracking"
+              onClick={() => setMobileOpen(false)}
+              className="flex-1 border border-white/15 text-white/60 px-4 py-2.5 text-[0.6rem] tracking-widest uppercase hover:text-white hover:border-white/35 transition-colors duration-200 text-center"
+            >
+              Track Order
+            </Link>
+          </div>
         </div>
       </div>
     </>
