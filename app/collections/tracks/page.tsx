@@ -5,6 +5,9 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { buttonVariants } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
+import AddToCartButton from "@/components/ui/add-to-cart-button";
+
+const parsePrice = (p: string) => parseInt(p.replace(/[^0-9]/g, ""), 10);
 
 const products = [
   {
@@ -138,6 +141,14 @@ export default function TracksPage() {
                   {product.detail}
                 </p>
                 <p className="text-white/70 mt-1">{product.price}</p>
+                <AddToCartButton
+                  id={`tracks-${product.id}`}
+                  name={product.name}
+                  price={product.price}
+                  priceNum={parsePrice(product.price)}
+                  img={product.img}
+                  category="Tracks"
+                />
               </div>
             </motion.div>
           ))}

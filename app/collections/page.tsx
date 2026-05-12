@@ -5,6 +5,9 @@ import Link from "next/link";
 import { useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { buttonVariants } from "@/components/ui/button";
+import AddToCartButton from "@/components/ui/add-to-cart-button";
+
+const parsePrice = (p: string) => parseInt(p.replace(/[^0-9]/g, ""), 10);
 
 // ── TYPES ─────────────────────────────────────────────────────────────────────
 
@@ -575,6 +578,16 @@ export default function CollectionsPage() {
                       <p className="text-white/70 mt-2">{product.price}</p>
                     </div>
                   </Link>
+                  <div className="px-5 pb-5">
+                    <AddToCartButton
+                      id={`${col.id}-${product.id}`}
+                      name={product.name}
+                      price={product.price}
+                      priceNum={parsePrice(product.price)}
+                      img={product.img}
+                      category={col.subtitle}
+                    />
+                  </div>
                 </motion.div>
               ))}
             </motion.div>

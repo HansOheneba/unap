@@ -5,6 +5,9 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { buttonVariants } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
+import AddToCartButton from "@/components/ui/add-to-cart-button";
+
+const parsePrice = (p: string) => parseInt(p.replace(/[^0-9]/g, ""), 10);
 
 const products = [
   {
@@ -177,6 +180,16 @@ export default function HeadwearPage() {
                 <p className="eyebrow text-white/50 mb-2">Head Wears</p>
                 <h5 className="text-white">{product.name}</h5>
                 <p className="text-white/60 mt-2">{product.price}</p>
+                <div className="mt-3">
+                  <AddToCartButton
+                    id={`headwear-${product.id}`}
+                    name={product.name}
+                    price={product.price}
+                    priceNum={parsePrice(product.price)}
+                    img={product.img}
+                    category="Head Wears"
+                  />
+                </div>
               </div>
             </motion.div>
           ))}

@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { useCartStore } from "@/lib/stores/cart-store";
 
 const collectionItems = [
   { label: "Tops", href: "/collections/tops" },
@@ -75,6 +76,7 @@ function MobileCollections({ onClose }: { onClose: () => void }) {
 
 export default function Header() {
   const pathname = usePathname();
+  const totalItems = useCartStore((s) => s.totalItems);
   const [scrolled, setScrolled] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -298,7 +300,8 @@ export default function Header() {
                 <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
               </svg>
             </Link>
-            <button
+            <Link
+              href="/cart"
               aria-label="Cart"
               className="relative text-white hover:opacity-60 transition-opacity duration-200"
             >
@@ -317,7 +320,12 @@ export default function Header() {
                 <line x1="3" y1="6" x2="21" y2="6" />
                 <path d="M16 10a4 4 0 0 1-8 0" />
               </svg>
-            </button>
+              {totalItems() > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 min-w-4 h-4 flex items-center justify-center bg-white text-black text-[0.5rem] font-bold rounded-full px-0.5">
+                  {totalItems()}
+                </span>
+              )}
+            </Link>
           </div>
         </div>
       </header>
