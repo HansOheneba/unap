@@ -223,7 +223,7 @@ export default function MovementSection() {
       <div className="border-t border-white/5" />
 
       {/* ── TESTIMONIALS ─────────────────────────────────── */}
-      <div className="px-8 md:px-20 py-32 max-w-7xl mx-auto flex flex-col gap-16">
+      <div className="px-8 md:px-20 py-32 max-w-360 mx-auto flex flex-col gap-16">
         <FadeIn>
           <p className="eyebrow text-white/65">Voices from the Tribe</p>
         </FadeIn>

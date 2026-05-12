@@ -37,7 +37,7 @@ export default function Footer() {
       </div>
 
       {/* ── MAIN BODY ──────────────────────────────── */}
-      <div className="px-8 md:px-20 pt-20 pb-14 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-16">
+      <div className="px-8 md:px-20 pt-20 pb-14 max-w-360 mx-auto grid grid-cols-1 md:grid-cols-12 gap-16">
         {/* Brand column */}
         <div className="md:col-span-4 flex flex-col gap-8">
           <Link href="/" className="inline-block">

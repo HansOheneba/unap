@@ -183,7 +183,7 @@ export default function CheckoutPage() {
 
   return (
     <main className="dark min-h-screen bg-black text-white pt-24 pb-32">
-      <div className="max-w-5xl mx-auto px-6 md:px-12">
+      <div className="max-w-360 mx-auto px-6 md:px-12">
         {/* Header */}
         <div className="mb-10">
           <p className="eyebrow text-white/60 mb-2">
@@ -209,7 +209,11 @@ export default function CheckoutPage() {
         <div className="flex items-center gap-2 mb-10 text-[0.6rem] tracking-widest uppercase">
           <button
             onClick={() => step === "review" && setStep("details")}
-            className={step === "details" ? "text-white" : "text-white/40 hover:text-white transition-colors duration-200"}
+            className={
+              step === "details"
+                ? "text-white"
+                : "text-white/40 hover:text-white transition-colors duration-200"
+            }
           >
             1. Details
           </button>
@@ -329,9 +333,7 @@ export default function CheckoutPage() {
                       <input
                         type="text"
                         value={form.region}
-                        onChange={(e) =>
-                          setFormField("region", e.target.value)
-                        }
+                        onChange={(e) => setFormField("region", e.target.value)}
                         placeholder="Greater Accra"
                         autoComplete="address-level1"
                         className={inputCls}

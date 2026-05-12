@@ -57,7 +57,7 @@ export default function CartPage() {
 
   return (
     <main className="dark min-h-screen bg-black text-white pt-24 pb-32">
-      <div className="max-w-4xl mx-auto px-6 md:px-12">
+      <div className="max-w-360 mx-auto px-6 md:px-12">
         {/* Header */}
         <div className="mb-10">
           <p className="eyebrow text-white/60 mb-2">Your Selection</p>
@@ -78,14 +78,18 @@ export default function CartPage() {
               transition={{ duration: 0.6 }}
               className="flex flex-col items-center text-center gap-6 py-20"
             >
-              <ShoppingBag size={40} strokeWidth={1} className="text-white/20" />
+              <ShoppingBag
+                size={40}
+                strokeWidth={1}
+                className="text-white/20"
+              />
               <div>
                 <p className="text-white text-lg font-light mb-2">
                   Nothing here yet.
                 </p>
                 <p className="text-white/50 text-sm max-w-xs leading-relaxed">
-                  You have not added anything to your cart. Go find something that
-                  speaks to you.
+                  You have not added anything to your cart. Go find something
+                  that speaks to you.
                 </p>
               </div>
               <Link
@@ -159,7 +163,11 @@ export default function CartPage() {
                     layout
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, x: -20, transition: { duration: 0.25 } }}
+                    exit={{
+                      opacity: 0,
+                      x: -20,
+                      transition: { duration: 0.25 },
+                    }}
                     transition={{ duration: 0.3 }}
                     className="bg-black flex gap-5 p-5"
                   >
@@ -247,7 +255,9 @@ export default function CartPage() {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-white/60">Shipping</span>
-                    <span className="text-white/60">Calculated at checkout</span>
+                    <span className="text-white/60">
+                      Calculated at checkout
+                    </span>
                   </div>
                 </div>
 

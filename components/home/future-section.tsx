@@ -119,7 +119,7 @@ export default function FutureSection() {
       <div className="border-t border-white/5" />
 
       {/* ── MANIFESTO STRIP ───────────────────────────── */}
-      <FadeIn className="px-8 md:px-20 py-20 max-w-5xl mx-auto text-center">
+      <FadeIn className="px-8 md:px-20 py-20 max-w-360 mx-auto text-center">
         <h3 className="text-[#564787]">
           Fashion. Beauty. Fragrance. Wellness. Culture. Media. Influence.
           <span className="text-white">

@@ -115,7 +115,7 @@ export default function HeadwearPage() {
       </section>
 
       {/* ── BREADCRUMB ──────────────────────────────────────────────── */}
-      <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-16 pt-10 pb-2">
+      <div className="max-w-360 mx-auto px-6 md:px-12 lg:px-16 pt-10 pb-2">
         <Link
           href="/collections"
           className="inline-flex items-center gap-2 eyebrow text-white/40 hover:text-white transition-colors duration-300"
@@ -126,7 +126,7 @@ export default function HeadwearPage() {
       </div>
 
       {/* ── PRODUCTS GRID ────────────────────────────────────────────── */}
-      <section className="max-w-7xl mx-auto px-6 md:px-12 lg:px-16 pt-10 pb-32">
+      <section className="max-w-360 mx-auto px-6 md:px-12 lg:px-16 pt-10 pb-32">
         <div className="flex items-end justify-between mb-10">
           <motion.div
             initial={{ opacity: 0, y: 16 }}

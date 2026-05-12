@@ -333,7 +333,7 @@ export default function CollectionsPage() {
 
       {/* ── STICKY NAV ──────────────────────────────────────────────────── */}
       <nav className="sticky top-16 z-30 bg-black/90 backdrop-blur-md border-b border-white/8">
-        <div className="max-w-420 mx-auto px-8 md:px-16 flex items-center gap-10 h-14 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <div className="max-w-360 mx-auto px-8 md:px-16 flex items-center gap-10 h-14 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {navItems.map((item) => (
             <button
               key={item.id}
@@ -347,7 +347,7 @@ export default function CollectionsPage() {
       </nav>
 
       {/* ── COLLECTION OVERVIEW CARDS ────────────────────────────────────── */}
-      <section className="max-w-420 mx-auto px-6 md:px-12 lg:px-16 pt-16 pb-20">
+      <section className="max-w-360 mx-auto px-6 md:px-12 lg:px-16 pt-16 pb-20">
         <div className="flex items-end justify-between mb-10">
           <motion.div
             initial={{ opacity: 0, y: 16 }}
@@ -524,7 +524,7 @@ export default function CollectionsPage() {
           </div>
 
           {/* Product grid */}
-          <div className="max-w-420 mx-auto px-6 md:px-12 lg:px-16 pt-14 pb-24">
+          <div className="max-w-360 mx-auto px-6 md:px-12 lg:px-16 pt-14 pb-24">
             <motion.div
               className={`grid gap-px bg-white/5 ${
                 col.cols === 3

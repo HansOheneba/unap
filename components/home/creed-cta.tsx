@@ -5,7 +5,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 export default function CreedCta() {
   return (
     <section className="bg-black text-white py-32 px-8 md:px-20">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+      <div className="max-w-360 mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
         {/* Left: text */}
         <div className="flex flex-col gap-8">
           <p className="eyebrow">The Awakening</p>

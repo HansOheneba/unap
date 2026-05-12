@@ -94,7 +94,7 @@ export default function InnerCircleSection() {
       <div className="border-t border-white/5" />
 
       {/* ── TENSION COPY ──────────────────────────────── */}
-      <FadeIn className="py-20 px-8 md:px-20 max-w-5xl mx-auto text-center">
+      <FadeIn className="py-20 px-8 md:px-20 max-w-360 mx-auto text-center">
         <h3 className="text-[#564787]">
           Most communities are built on transactions.
           <span className="text-white"> This one is built on conviction.</span>
@@ -105,7 +105,7 @@ export default function InnerCircleSection() {
       <div className="border-t border-white/5" />
 
       {/* ── PRIVILEGES GRID ───────────────────────────── */}
-      <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-x md:divide-y-0 divide-white/5 max-w-7xl mx-auto">
+      <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-x md:divide-y-0 divide-white/5 max-w-360 mx-auto">
         {privileges.map((p, i) => {
           const Icon = p.icon;
           return (

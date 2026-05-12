@@ -26,7 +26,7 @@ export default function TrackingPage() {
 
   return (
     <main className="min-h-screen bg-black text-white px-6 py-28 md:px-10">
-      <div className="max-w-5xl mx-auto">
+      <div className="max-w-360 mx-auto">
         {/* ── Page header ── */}
         <div className="mb-10">
           <p className="text-white/50 text-[0.65rem] tracking-[0.25em] uppercase mb-3">

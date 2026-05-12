@@ -134,7 +134,7 @@ export default function TheCreedPage() {
       </section>
 
       {/* ── 02  THE ACCUSATION — what the world said ── */}
-      <section className="py-40 px-8 md:px-24 max-w-5xl mx-auto">
+      <section className="py-40 px-8 md:px-24 max-w-360 mx-auto">
         <FadeIn>
           <p className="eyebrow mb-10">What They Said</p>
         </FadeIn>
@@ -185,7 +185,7 @@ export default function TheCreedPage() {
       />
 
       {/* ── 04  THE CREED — revealed line by line ── */}
-      <section className="py-48 px-8 md:px-20 max-w-7xl mx-auto">
+      <section className="py-48 px-8 md:px-20 max-w-360 mx-auto">
         <FadeIn className="mb-20">
           <p className="eyebrow">The Creed</p>
         </FadeIn>
@@ -251,7 +251,7 @@ export default function TheCreedPage() {
       </section>
 
       {/* ── 07  THE THREE LAWS — staggered cards ── */}
-      <section className="py-32 px-8 md:px-20 max-w-7xl mx-auto">
+      <section className="py-32 px-8 md:px-20 max-w-360 mx-auto">
         <FadeIn className="mb-20">
           <p className="eyebrow">Three Laws We Live By</p>
         </FadeIn>
