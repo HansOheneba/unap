@@ -117,7 +117,7 @@ export default function InnerCircleSection() {
               <Icon
                 size={26}
                 strokeWidth={1}
-                className="text-white/55 group-hover:text-white transition-colors duration-500"
+                className="text-white/65 group-hover:text-white transition-colors duration-500"
               />
               <p className="eyebrow text-white/75 group-hover:text-white transition-colors duration-500">
                 {p.name}
@@ -149,7 +149,7 @@ export default function InnerCircleSection() {
           />
           <div className="absolute inset-0 flex flex-col justify-end p-10">
             <p className="eyebrow text-white/65">The Circle</p>
-            <p className="text-white/55 text-sm mt-2 max-w-xs leading-relaxed">
+            <p className="text-white/70 text-sm mt-2 max-w-xs leading-relaxed">
               Not everyone gets in. Not because of status. Because of standards.
             </p>
           </div>
@@ -196,7 +196,7 @@ export default function InnerCircleSection() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Your email"
-                  className="flex-1 bg-white/8 border border-white/25 text-white placeholder:text-white/45 px-6 py-3 text-[0.7rem] tracking-widest uppercase outline-none focus:border-white/50 transition-colors duration-300"
+                  className="flex-1 bg-white/8 border border-white/25 text-white placeholder:text-white/55 px-6 py-3 text-[0.7rem] tracking-widest uppercase outline-none focus:border-white/50 transition-colors duration-300"
                 />
                 <button
                   type="submit"
@@ -209,7 +209,7 @@ export default function InnerCircleSection() {
           </FadeIn>
 
           <FadeIn delay={0.4}>
-            <p className="text-white/50 text-xs tracking-wider uppercase">
+            <p className="text-white/65 text-xs tracking-wider uppercase">
               No spam. No selling your data. Just signal.
             </p>
           </FadeIn>
@@ -221,7 +221,7 @@ export default function InnerCircleSection() {
 
       {/* ── CLOSING STATEMENT ─────────────────────────── */}
       <FadeIn className="py-28 px-8 text-center flex flex-col gap-3 items-center">
-        <p className="eyebrow text-white/55">The Standard</p>
+        <p className="eyebrow text-white/70">The Standard</p>
         <h4 className="text-[#564787] max-w-2xl">
           The world has enough audiences.
           <span className="text-white"> We are building a congregation.</span>

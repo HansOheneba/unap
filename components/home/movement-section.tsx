@@ -142,7 +142,7 @@ export default function MovementSection() {
             <h2 className="leading-none">
               We Are Not
               <br />
-              <span className="text-white/55">a Brand.</span>
+              <span className="text-white/70">a Brand.</span>
               <br />
               We Are a Tribe.
             </h2>
@@ -240,7 +240,7 @@ export default function MovementSection() {
             <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/30 to-transparent" />
             <div className="relative z-10 p-8 flex flex-col gap-4">
               <span
-                className="text-white/50"
+                className="text-white/60"
                 style={{
                   fontSize: "5rem",
                   lineHeight: 0.8,
@@ -270,7 +270,7 @@ export default function MovementSection() {
                 className="bg-white/5 p-10 flex flex-col gap-5 justify-between min-h-52"
               >
                 <span
-                  className="text-white/40"
+                  className="text-white/55"
                   style={{
                     fontSize: "4rem",
                     lineHeight: 0.8,

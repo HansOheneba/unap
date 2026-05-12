@@ -37,7 +37,7 @@ export default function CreedCta() {
           />
           {/* subtle corner label */}
           <div className="absolute bottom-5 right-5 pointer-events-none">
-            <p className="eyebrow text-white/50">Unapologetic Since Birth</p>
+            <p className="eyebrow text-white/70">Unapologetic Since Birth</p>
           </div>
         </div>
       </div>

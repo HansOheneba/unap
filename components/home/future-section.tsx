@@ -146,12 +146,12 @@ export default function FutureSection() {
               <Icon
                 size={28}
                 strokeWidth={1}
-                className="text-white/55 group-hover:text-white transition-colors duration-500"
+                className="text-white/65 group-hover:text-white transition-colors duration-500"
               />
               <p className="eyebrow text-white/75 group-hover:text-white transition-colors duration-500">
                 {v.name}
               </p>
-              <p className="text-white/55 text-sm leading-relaxed group-hover:text-white/80 transition-colors duration-500">
+              <p className="text-white/70 text-sm leading-relaxed group-hover:text-white/90 transition-colors duration-500">
                 {v.line}
               </p>
             </FadeIn>
@@ -213,8 +213,8 @@ export default function FutureSection() {
 
       {/* ── BOTTOM STATEMENT ──────────────────────────── */}
       <FadeIn className="py-32 px-8 flex flex-col items-center text-center gap-4">
-        <p className="eyebrow text-white/55">The Trajectory</p>
-        <h4 className="text-white/50 max-w-2xl">
+        <p className="eyebrow text-white/70">The Trajectory</p>
+        <h4 className="text-white/70 max-w-2xl">
           We are not aiming for the top.
           <span className="text-white">
             {" "}

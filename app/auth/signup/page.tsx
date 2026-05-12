@@ -540,6 +540,7 @@ export default function SignupPage() {
                 value={city}
                 onChange={(e) => setField("city", e.target.value)}
                 placeholder="e.g. Accra"
+                autoComplete="address-level2"
                 className={inputCls}
               />
             </Field>
@@ -551,6 +552,7 @@ export default function SignupPage() {
                 value={address}
                 onChange={(e) => setField("address", e.target.value)}
                 placeholder="Street name, house number, area"
+                autoComplete="street-address"
                 className={inputCls}
               />
             </Field>
@@ -562,6 +564,7 @@ export default function SignupPage() {
                 value={landmark}
                 onChange={(e) => setField("landmark", e.target.value)}
                 placeholder="e.g. Near Total filling station, Osu"
+                autoComplete="off"
                 className={inputCls}
               />
               <p className="text-white/30 text-[0.6rem] leading-relaxed">
@@ -611,6 +614,7 @@ export default function SignupPage() {
                       setField("whatsapp", formatPhoneInput(e.target.value))
                     }
                     placeholder="+233 059 207 8493"
+                    autoComplete="off"
                     className={inputCls}
                   />
                   <p className="text-white/50 text-[0.6rem]">

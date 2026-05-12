@@ -99,13 +99,13 @@ export default function CollectionsPreview() {
                 fill
                 className="object-cover brightness-90 group-hover:brightness-100 transition-[filter] duration-700"
               />
-              <span className="absolute top-6 left-6 eyebrow text-white/50">
+              <span className="absolute top-6 left-6 eyebrow text-white/70">
                 {featured[0].category}
               </span>
             </Link>
             <div className="flex items-center justify-between px-6 py-5 bg-black border-t border-white/5">
               <h5 className="text-white">{featured[0].name}</h5>
-              <span className="eyebrow text-white/50">{featured[0].price}</span>
+              <span className="eyebrow text-white/70">{featured[0].price}</span>
             </div>
           </FadeIn>
 
@@ -134,13 +134,13 @@ export default function CollectionsPreview() {
                     fill
                     className="object-cover brightness-85 group-hover:brightness-100 transition-[filter] duration-700"
                   />
-                  <span className="absolute top-4 left-4 eyebrow text-white/50">
+                  <span className="absolute top-4 left-4 eyebrow text-white/70">
                     {product.category}
                   </span>
                 </Link>
                 <div className="flex items-center justify-between px-5 py-4 bg-black border-t border-white/5">
                   <h5 className="text-white text-sm">{product.name}</h5>
-                  <span className="eyebrow text-white/50">{product.price}</span>
+                  <span className="eyebrow text-white/70">{product.price}</span>
                 </div>
               </FadeIn>
             ))}
@@ -149,7 +149,7 @@ export default function CollectionsPreview() {
 
         {/* Bottom line */}
         <FadeIn delay={0.2}>
-          <p className="text-white/55 text-center text-sm tracking-wider uppercase">
+          <p className="text-white/70 text-center text-sm tracking-wider uppercase">
             Every piece carries intention. None of it is accidental.
           </p>
         </FadeIn>
