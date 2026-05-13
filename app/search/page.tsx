@@ -248,6 +248,44 @@ const ALL_PRODUCTS = [
     category: "Tracks",
     href: "/collections/tracks",
   },
+  // Hoodies
+  {
+    id: "hoodies-1",
+    name: "Sovereign Hoodie",
+    price: "US$135",
+    priceNum: 135,
+    img: "/collections/hoodies/hoodieBlackMan.jpg",
+    category: "Hoodies",
+    href: "/collections/hoodies",
+  },
+  {
+    id: "hoodies-2",
+    name: "Spectrum Hoodie",
+    price: "US$135",
+    priceNum: 135,
+    img: "/collections/hoodies/hoodieColors.jpg",
+    category: "Hoodies",
+    href: "/collections/hoodies",
+  },
+  {
+    id: "hoodies-3",
+    name: "Rebel Hoodie",
+    price: "US$140",
+    priceNum: 140,
+    img: "/collections/hoodies/hoodieManXMan.jpg",
+    category: "Hoodies",
+    href: "/collections/hoodies",
+  },
+  // Lingerie
+  {
+    id: "lingerie-1",
+    name: "Soft Power Set",
+    price: "US$95",
+    priceNum: 95,
+    img: "/collections/female_undergarments/lingerie.jpeg",
+    category: "Lingerie",
+    href: "/collections/lingerie",
+  },
 ];
 
 const CATEGORIES = [
@@ -257,6 +295,8 @@ const CATEGORIES = [
   "Headwear",
   "Sunglasses",
   "Tracks",
+  "Hoodies",
+  "Lingerie",
 ];
 
 function parsePrice(p: string) {

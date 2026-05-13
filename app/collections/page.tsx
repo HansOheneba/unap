@@ -60,6 +60,16 @@ const overviewCards = [
     label: "Tracks",
     img: "/collections/tracks/track.jpg",
   },
+  {
+    id: "hoodies",
+    label: "Hoodies",
+    img: "/collections/hoodies/hoodieBlackMan.jpg",
+  },
+  {
+    id: "lingerie",
+    label: "Lingerie",
+    img: "/collections/female_undergarments/lingerie.jpeg",
+  },
 ];
 
 const collections: Collection[] = [
@@ -262,6 +272,62 @@ const collections: Collection[] = [
       },
     ],
   },
+  {
+    id: "hoodies",
+    subtitle: "Hoodies",
+    title: "Sovereign Warmth",
+    tagline: "The weight on your back should feel like armor, not obligation.",
+    featured: "/collections/hoodies/hoodieBlackMan.jpg",
+    align: "right",
+    href: "/collections/hoodies",
+    cols: 3,
+    products: [
+      {
+        id: 18,
+        name: "Sovereign Hoodie",
+        tag: "Signature",
+        price: "US$135",
+        img: "/collections/hoodies/hoodieBlackMan.jpg",
+        href: "/collections/hoodies",
+      },
+      {
+        id: 19,
+        name: "Spectrum Hoodie",
+        tag: "Statement",
+        price: "US$135",
+        img: "/collections/hoodies/hoodieColors.jpg",
+        href: "/collections/hoodies",
+      },
+      {
+        id: 20,
+        name: "Rebel Hoodie",
+        tag: "Limited",
+        price: "US$140",
+        img: "/collections/hoodies/hoodieManXMan.jpg",
+        href: "/collections/hoodies",
+      },
+    ],
+  },
+  {
+    id: "lingerie",
+    subtitle: "Lingerie",
+    title: "Soft Power",
+    tagline: "What you wear beneath says everything about how you carry yourself.",
+    featured: "/collections/female_undergarments/lingerie.jpeg",
+    align: "left",
+    href: "/collections/lingerie",
+    cols: 3,
+    products: [
+      {
+        id: 21,
+        name: "Soft Power Set",
+        tag: "Signature",
+        price: "US$95",
+        img: "/collections/female_undergarments/lingerie.jpeg",
+        href: "/collections/lingerie",
+      },
+    ],
+  },
 ];
 
 const navItems = [
@@ -270,6 +336,8 @@ const navItems = [
   { id: "tops", label: "Tops" },
   { id: "intimates", label: "Intimates" },
   { id: "tracks", label: "Tracks" },
+  { id: "hoodies", label: "Hoodies" },
+  { id: "lingerie", label: "Lingerie" },
 ];
 
 // ── PAGE ──────────────────────────────────────────────────────────────────────
