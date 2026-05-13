@@ -81,9 +81,9 @@ export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const isDark = isHome && !scrolled; // transparent overlay on dark hero video
-  const navCls = isDark ? "text-white" : "text-zinc-900";
-  const iconCls = isDark ? "text-white" : "text-zinc-900";
+  const isDark = true; // nav is always black
+  const navCls = "text-white";
+  const iconCls = "text-white";
   const closeTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
@@ -136,11 +136,9 @@ export default function Header() {
     <>
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out ${
-          isHome
-            ? scrolled
-              ? "bg-white border-b border-zinc-100 shadow-sm"
-              : "bg-linear-to-b from-black/55 via-black/15 to-transparent"
-            : "bg-white border-b border-zinc-100"
+          isHome && !scrolled
+            ? "bg-linear-to-b from-black/80 via-black/40 to-transparent"
+            : "bg-black"
         }`}
       >
         <div className="flex items-center justify-between px-6 md:px-8 py-5">
@@ -214,17 +212,17 @@ export default function Header() {
             aria-label="Toggle menu"
           >
             <span
-              className={`block h-px transition-all duration-300 ease-in-out origin-center ${isDark ? "bg-white" : "bg-zinc-900"} ${
+              className={`block h-px transition-all duration-300 ease-in-out origin-center bg-white ${
                 mobileOpen ? "w-6 translate-y-1.5 rotate-45" : "w-6"
               }`}
             />
             <span
-              className={`block h-px transition-all duration-300 ease-in-out ${isDark ? "bg-white" : "bg-zinc-900"} ${
+              className={`block h-px transition-all duration-300 ease-in-out bg-white ${
                 mobileOpen ? "w-0 opacity-0" : "w-4 opacity-100"
               }`}
             />
             <span
-              className={`block h-px transition-all duration-300 ease-in-out origin-center ${isDark ? "bg-white" : "bg-zinc-900"} ${
+              className={`block h-px transition-all duration-300 ease-in-out origin-center bg-white ${
                 mobileOpen ? "w-6 -translate-y-1.5 -rotate-45" : "w-6"
               }`}
             />
@@ -237,11 +235,7 @@ export default function Header() {
             aria-label="Unapologetic home"
           >
             <Image
-              src={
-                isDark
-                  ? "/logos/unap_logo_white.png"
-                  : "/logos/unap_logo_black.png"
-              }
+              src="/logos/unap_logo_white.png"
               alt="Unapologetic"
               width={44}
               height={44}
@@ -333,7 +327,7 @@ export default function Header() {
                 <path d="M16 10a4 4 0 0 1-8 0" />
               </svg>
               {totalItems() > 0 && (
-                <span className="absolute -top-1.5 -right-1.5 min-w-4 h-4 flex items-center justify-center bg-zinc-900 text-white text-[0.5rem] font-bold rounded-full px-0.5">
+                <span className="absolute -top-1.5 -right-1.5 min-w-4 h-4 flex items-center justify-center bg-white text-black text-[0.5rem] font-bold rounded-full px-0.5">
                   {totalItems()}
                 </span>
               )}

@@ -58,10 +58,10 @@ export default function Footer() {
 
           {/* Newsletter micro-CTA */}
           <div className="flex flex-col gap-3 pt-2">
-            <p className="eyebrow text-black/80">Join the Inner Circle</p>
+            <p className="eyebrow text-black">Join the Inner Circle</p>
             <Link
               href="/inner-circle"
-              className="eyebrow text-black border border-black/30 px-6 py-3 inline-block hover:bg-black hover:text-white transition-colors duration-300"
+              className="eyebrow text-white bg-black border border-black px-6 py-3 inline-block hover:bg-white hover:text-black transition-colors duration-300"
             >
               Get First Access
             </Link>

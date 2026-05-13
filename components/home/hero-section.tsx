@@ -95,7 +95,7 @@ export default function HeroSection() {
         </h1>
         <div className="animate-fade-up" style={{ animationDelay: "0.9s" }}>
           <Link href="/collections">
-            <Button>Shop Collections</Button>
+            <Button variant="outline-white">Shop Collections</Button>
           </Link>
         </div>
       </div>

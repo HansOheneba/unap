@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { type MockOrder, orderStatusColor, orderStatusDot } from "@/lib/auth";
 import { useOnboardingStore } from "@/lib/stores/onboarding-store";
+import { Button } from "@/components/ui/button";
 
 type Tab = "orders" | "addresses" | "profile";
 
@@ -260,9 +261,7 @@ export default function AccountPage() {
                     {address ? "1 address" : "0 addresses"}
                   </p>
                 </div>
-                <button className="text-[0.6rem] tracking-widest uppercase text-zinc-500 border border-zinc-200 px-4 py-2 hover:border-zinc-400 hover:text-zinc-900 transition-colors duration-200">
-                  + Add New
-                </button>
+                <Button variant="secondary" size="xs">+ Add New</Button>
               </div>
 
               {address ? (
@@ -291,9 +290,7 @@ export default function AccountPage() {
                           </p>
                         )}
                       </div>
-                      <button className="text-[0.6rem] tracking-widest uppercase text-zinc-500 hover:text-zinc-900 transition-colors shrink-0">
-                        Edit
-                      </button>
+                      <Button variant="secondary" size="xs">Edit</Button>
                     </div>
                   </div>
                 </div>
@@ -322,9 +319,7 @@ export default function AccountPage() {
                     {firstName} {lastName}
                   </p>
                 </div>
-                <button className="text-[0.6rem] tracking-widest uppercase text-zinc-500 border border-zinc-200 px-4 py-2 hover:border-zinc-400 hover:text-zinc-900 transition-colors duration-200">
-                  Edit
-                </button>
+                <Button variant="secondary" size="xs">Edit</Button>
               </div>
 
               <div className="grid grid-cols-2 md:grid-cols-3 gap-px bg-zinc-100">
@@ -347,9 +342,7 @@ export default function AccountPage() {
                     &#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;
                   </p>
                 </div>
-                <button className="text-[0.6rem] tracking-widest uppercase text-zinc-500 border border-zinc-200 px-4 py-2 hover:border-zinc-400 hover:text-zinc-900 transition-colors duration-200">
-                  Change
-                </button>
+                <Button variant="secondary" size="xs">Change</Button>
               </div>
             </div>
           )}

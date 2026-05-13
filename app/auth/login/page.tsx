@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { mockLogin } from "@/lib/auth";
+import { Button } from "@/components/ui/button";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -96,13 +97,9 @@ export default function LoginPage() {
             </p>
           )}
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="mt-2 w-full border border-zinc-900 bg-transparent text-zinc-900 px-8 py-3.5 text-[0.7rem] tracking-widest uppercase hover:bg-zinc-900 hover:text-white transition-colors duration-300 disabled:opacity-40 disabled:cursor-not-allowed"
-          >
+          <Button type="submit" disabled={loading} className="mt-2 w-full">
             {loading ? "Signing in…" : "Sign In"}
-          </button>
+          </Button>
         </form>
 
         {/* Divider */}

@@ -8,6 +8,7 @@ import {
   type SignupData,
 } from "@/lib/auth";
 import { useOnboardingStore } from "@/lib/stores/onboarding-store";
+import { Button } from "@/components/ui/button";
 
 const inputCls =
   "bg-zinc-50 border border-zinc-200 text-zinc-900 placeholder-zinc-400 px-4 py-3 text-sm focus:outline-none focus:border-zinc-400 transition-colors duration-200";
@@ -358,12 +359,9 @@ export default function SignupPage() {
               )}
             </div>
 
-            <button
-              type="submit"
-              className="mt-2 w-full border border-zinc-900 bg-transparent text-zinc-900 px-8 py-3.5 text-[0.7rem] tracking-widest uppercase hover:bg-zinc-900 hover:text-white transition-colors duration-300"
-            >
+            <Button type="submit" className="mt-2 w-full">
               Continue
-            </button>
+            </Button>
 
             <p className="text-center text-zinc-400 text-xs mt-2">
               Already have an account?{" "}
@@ -432,19 +430,12 @@ export default function SignupPage() {
             </Field>
 
             <div className="flex gap-3 mt-2">
-              <button
-                type="button"
-                onClick={prevStep}
-                className="flex-1 border border-zinc-200 bg-transparent text-zinc-600 px-8 py-3.5 text-[0.7rem] tracking-widest uppercase hover:border-zinc-400 hover:text-zinc-900 transition-colors duration-300"
-              >
+              <Button type="button" variant="secondary" className="flex-1" onClick={prevStep}>
                 Back
-              </button>
-              <button
-                type="submit"
-                className="flex-1 border border-zinc-900 bg-transparent text-zinc-900 px-8 py-3.5 text-[0.7rem] tracking-widest uppercase hover:bg-zinc-900 hover:text-white transition-colors duration-300"
-              >
+              </Button>
+              <Button type="submit" className="flex-1">
                 Continue
-              </button>
+              </Button>
             </div>
           </form>
         )}
@@ -629,20 +620,12 @@ export default function SignupPage() {
             </div>
 
             <div className="flex gap-3 mt-2">
-              <button
-                type="button"
-                onClick={prevStep}
-                className="flex-1 border border-zinc-200 bg-transparent text-zinc-600 px-8 py-3.5 text-[0.7rem] tracking-widest uppercase hover:border-zinc-400 hover:text-zinc-900 transition-colors duration-300"
-              >
+              <Button type="button" variant="secondary" className="flex-1" onClick={prevStep}>
                 Back
-              </button>
-              <button
-                type="submit"
-                disabled={loading}
-                className="flex-1 border border-zinc-900 bg-transparent text-zinc-900 px-8 py-3.5 text-[0.7rem] tracking-widest uppercase hover:bg-zinc-900 hover:text-white transition-colors duration-300 disabled:opacity-40 disabled:cursor-not-allowed"
-              >
+              </Button>
+              <Button type="submit" className="flex-1" disabled={loading}>
                 {loading ? "Creating…" : "Finish"}
-              </button>
+              </Button>
             </div>
           </form>
         )}

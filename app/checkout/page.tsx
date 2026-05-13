@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronRight } from "lucide-react";
 import { useCartStore } from "@/lib/stores/cart-store";
 import { useOnboardingStore } from "@/lib/stores/onboarding-store";
+import { Button, buttonVariants } from "@/components/ui/button";
 
 type CheckoutStep = "details" | "review" | "confirmed";
 
@@ -90,10 +91,7 @@ export default function CheckoutPage() {
     return (
       <main className="min-h-screen bg-white text-zinc-900 flex flex-col items-center justify-center gap-6 px-6">
         <p className="text-zinc-500 text-sm">Your cart is empty.</p>
-        <Link
-          href="/collections"
-          className="border border-zinc-900 text-zinc-900 px-8 py-3 text-[0.65rem] tracking-widest uppercase hover:bg-zinc-900 hover:text-white transition-colors duration-300"
-        >
+        <Link href="/collections" className={buttonVariants({ variant: "outline" })}>
           Shop Collections
         </Link>
       </main>
@@ -163,16 +161,10 @@ export default function CheckoutPage() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 w-full mt-4">
-            <Link
-              href="/collections"
-              className="flex-1 border border-zinc-900 bg-transparent text-zinc-900 px-6 py-3 text-[0.6rem] tracking-widest uppercase hover:bg-zinc-900 hover:text-white transition-colors duration-300 text-center"
-            >
+            <Link href="/collections" className={buttonVariants({ variant: "outline", size: "sm" }) + " flex-1 justify-center"}>
               Keep Shopping
             </Link>
-            <Link
-              href="/tracking"
-              className="flex-1 border border-zinc-200 text-zinc-600 px-6 py-3 text-[0.6rem] tracking-widest uppercase hover:border-zinc-400 hover:text-zinc-900 transition-colors duration-300 text-center"
-            >
+            <Link href="/tracking" className={buttonVariants({ variant: "secondary", size: "sm" }) + " flex-1 justify-center"}>
               Track Order
             </Link>
           </div>
@@ -405,12 +397,9 @@ export default function CheckoutPage() {
                     </div>
                   </div>
 
-                  <button
-                    type="submit"
-                    className="mt-2 w-full border border-zinc-900 bg-transparent text-zinc-900 py-3.5 text-[0.65rem] tracking-widest uppercase hover:bg-zinc-900 hover:text-white transition-colors duration-300"
-                  >
+                  <Button type="submit" className="mt-2 w-full">
                     Review Order
-                  </button>
+                  </Button>
                 </motion.form>
               )}
 
@@ -496,19 +485,12 @@ export default function CheckoutPage() {
                   </div>
 
                   <div className="flex gap-3">
-                    <button
-                      onClick={() => setStep("details")}
-                      className="flex-1 border border-zinc-200 text-zinc-600 py-3.5 text-[0.65rem] tracking-widest uppercase hover:border-zinc-400 hover:text-zinc-900 transition-colors duration-300"
-                    >
+                    <Button variant="secondary" className="flex-1" onClick={() => setStep("details")}>
                       Back
-                    </button>
-                    <button
-                      onClick={handlePlaceOrder}
-                      disabled={loading}
-                      className="flex-1 border border-zinc-900 bg-transparent text-zinc-900 py-3.5 text-[0.65rem] tracking-widest uppercase hover:bg-zinc-900 hover:text-white transition-colors duration-300 disabled:opacity-40 disabled:cursor-not-allowed"
-                    >
+                    </Button>
+                    <Button className="flex-1" onClick={handlePlaceOrder} disabled={loading}>
                       {loading ? "Placing Order…" : "Place Order"}
-                    </button>
+                    </Button>
                   </div>
                 </motion.div>
               )}

@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Minus, Plus, X, ShoppingBag } from "lucide-react";
 import { useCartStore } from "@/lib/stores/cart-store";
 import AddToCartButton from "@/components/ui/add-to-cart-button";
+import { Button, buttonVariants } from "@/components/ui/button";
 
 const featured = [
   {
@@ -92,10 +93,7 @@ export default function CartPage() {
                   that speaks to you.
                 </p>
               </div>
-              <Link
-                href="/collections"
-                className="border border-zinc-900 bg-transparent text-zinc-900 px-8 py-3 text-[0.65rem] tracking-widest uppercase hover:bg-zinc-900 hover:text-white transition-colors duration-300"
-              >
+              <Link href="/collections" className={buttonVariants({ variant: "outline" })}>
                 Shop Collections
               </Link>
             </motion.div>
@@ -272,12 +270,9 @@ export default function CartPage() {
                   </span>
                 </div>
 
-                <button
-                  onClick={() => router.push("/checkout")}
-                  className="w-full border border-zinc-900 bg-transparent text-zinc-900 py-3.5 text-[0.65rem] tracking-widest uppercase hover:bg-zinc-900 hover:text-white transition-colors duration-300"
-                >
+                <Button variant="outline" className="w-full" onClick={() => router.push("/checkout")}>
                   Proceed to Checkout
-                </button>
+                </Button>
 
                 <Link
                   href="/collections"
