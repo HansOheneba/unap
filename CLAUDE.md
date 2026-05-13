@@ -28,6 +28,12 @@
 
 - Always set `autoComplete` on all inputs in a form to prevent browsers from applying suggestions to the wrong fields (e.g. password suggestions on email inputs).
 
+### No Em Dashes
+
+- NEVER use em dashes (—) in any copy, headings, or UI text. Replace with a period, a new sentence, or restructure the phrase. This applies everywhere: page copy, components, labels, hero text, footers.
+- Wrong: `"For those who don't just wear the brand — they embody it."`
+- Right: `"For those who don't just wear the brand. They embody it."`
+
 ### Checkout
 
 - Checkout page is at `app/checkout/page.tsx`. It pre-fills from `useOnboardingStore`, supports MoMo/Card/Cash, generates an order ID, and clears the cart on confirm.
