@@ -167,7 +167,9 @@ export default function SignupPage() {
             { label: "Inner Circle", desc: "Exclusive members only offers" },
           ].map((p) => (
             <div key={p.label} className="bg-white px-5 py-4">
-              <p className="text-zinc-900 text-xs font-medium mb-0.5">{p.label}</p>
+              <p className="text-zinc-900 text-xs font-medium mb-0.5">
+                {p.label}
+              </p>
               <p className="text-zinc-400 text-[0.65rem]">{p.desc}</p>
             </div>
           ))}
@@ -579,7 +581,9 @@ export default function SignupPage() {
                 <div
                   onClick={() => setField("sameAsPhone", !sameAsPhone)}
                   className={`w-4 h-4 shrink-0 border flex items-center justify-center transition-colors duration-200 ${
-                    sameAsPhone ? "border-zinc-900 bg-zinc-900" : "border-zinc-300"
+                    sameAsPhone
+                      ? "border-zinc-900 bg-zinc-900"
+                      : "border-zinc-300"
                   }`}
                 >
                   {sameAsPhone && (

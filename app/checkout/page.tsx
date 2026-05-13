@@ -154,8 +154,8 @@ export default function CheckoutPage() {
             You&apos;re in the system.
           </h1>
           <p className="text-zinc-600 text-sm leading-relaxed">
-            Order <span className="text-zinc-900 font-medium">{orderId}</span> is
-            confirmed. We&apos;ll send updates to{" "}
+            Order <span className="text-zinc-900 font-medium">{orderId}</span>{" "}
+            is confirmed. We&apos;ll send updates to{" "}
             <span className="text-zinc-900">{form.email}</span> and WhatsApp.
           </p>
           <p className="text-zinc-400 text-xs leading-relaxed">
@@ -218,7 +218,9 @@ export default function CheckoutPage() {
             1. Details
           </button>
           <ChevronRight size={10} className="text-zinc-300" aria-hidden />
-          <span className={step === "review" ? "text-zinc-900" : "text-zinc-300"}>
+          <span
+            className={step === "review" ? "text-zinc-900" : "text-zinc-300"}
+          >
             2. Review
           </span>
         </div>
@@ -395,7 +397,9 @@ export default function CheckoutPage() {
                             onChange={() => setPaymentMethod(pm.id)}
                             className="sr-only"
                           />
-                          <span className="text-sm text-zinc-900">{pm.label}</span>
+                          <span className="text-sm text-zinc-900">
+                            {pm.label}
+                          </span>
                         </label>
                       ))}
                     </div>
@@ -531,7 +535,9 @@ export default function CheckoutPage() {
                       />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-zinc-900 text-xs truncate">{item.name}</p>
+                      <p className="text-zinc-900 text-xs truncate">
+                        {item.name}
+                      </p>
                       <p className="text-zinc-400 text-[0.6rem]">
                         ×{item.quantity}
                       </p>
@@ -546,7 +552,9 @@ export default function CheckoutPage() {
               <div className="border-t border-zinc-100 pt-4 flex flex-col gap-2 text-sm">
                 <div className="flex justify-between">
                   <span className="text-zinc-500">Subtotal</span>
-                  <span className="text-zinc-900">US${subtotal.toFixed(0)}</span>
+                  <span className="text-zinc-900">
+                    US${subtotal.toFixed(0)}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-zinc-500">Shipping</span>
@@ -554,7 +562,9 @@ export default function CheckoutPage() {
                 </div>
                 <div className="flex justify-between font-medium mt-1">
                   <span className="text-zinc-900">Total</span>
-                  <span className="text-zinc-900">US${subtotal.toFixed(0)}</span>
+                  <span className="text-zinc-900">
+                    US${subtotal.toFixed(0)}
+                  </span>
                 </div>
               </div>
             </div>

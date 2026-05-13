@@ -570,7 +570,7 @@ export default function CollectionsPage() {
                       </span>
                     </div>
 
-                      <div className="p-5 border-t border-zinc-100">
+                    <div className="p-5 border-t border-zinc-100">
                       <p className="eyebrow text-zinc-500 mb-2">
                         {col.subtitle}
                       </p>

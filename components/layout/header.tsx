@@ -154,7 +154,9 @@ export default function Header() {
                   onMouseEnter={() => openDD(link.label)}
                   onMouseLeave={closeDD}
                 >
-                  <button className={`flex items-center gap-1 ${navCls} text-xs font-medium tracking-widest uppercase hover:opacity-60 transition-opacity duration-200`}>
+                  <button
+                    className={`flex items-center gap-1 ${navCls} text-xs font-medium tracking-widest uppercase hover:opacity-60 transition-opacity duration-200`}
+                  >
                     {link.label}
                     <svg
                       width="8"
@@ -235,7 +237,11 @@ export default function Header() {
             aria-label="Unapologetic home"
           >
             <Image
-              src={isDark ? "/logos/unap_logo_white.png" : "/logos/unap_logo_black.png"}
+              src={
+                isDark
+                  ? "/logos/unap_logo_white.png"
+                  : "/logos/unap_logo_black.png"
+              }
               alt="Unapologetic"
               width={44}
               height={44}
@@ -327,9 +333,7 @@ export default function Header() {
                 <path d="M16 10a4 4 0 0 1-8 0" />
               </svg>
               {totalItems() > 0 && (
-                <span
-                  className="absolute -top-1.5 -right-1.5 min-w-4 h-4 flex items-center justify-center bg-zinc-900 text-white text-[0.5rem] font-bold rounded-full px-0.5"
-                >
+                <span className="absolute -top-1.5 -right-1.5 min-w-4 h-4 flex items-center justify-center bg-zinc-900 text-white text-[0.5rem] font-bold rounded-full px-0.5">
                   {totalItems()}
                 </span>
               )}

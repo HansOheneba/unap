@@ -97,7 +97,10 @@ export default function InnerCircleSection() {
       <FadeIn className="py-20 px-8 md:px-20 max-w-360 mx-auto text-center">
         <h3 className="text-[#564787]">
           Most communities are built on transactions.
-          <span className="text-zinc-900"> This one is built on conviction.</span>
+          <span className="text-zinc-900">
+            {" "}
+            This one is built on conviction.
+          </span>
         </h3>
       </FadeIn>
 
@@ -224,7 +227,10 @@ export default function InnerCircleSection() {
         <p className="eyebrow text-zinc-500">The Standard</p>
         <h4 className="text-[#564787] max-w-2xl">
           The world has enough audiences.
-          <span className="text-zinc-900"> We are building a congregation.</span>
+          <span className="text-zinc-900">
+            {" "}
+            We are building a congregation.
+          </span>
         </h4>
       </FadeIn>
     </section>

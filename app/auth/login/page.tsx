@@ -33,8 +33,6 @@ export default function LoginPage() {
 
   return (
     <main className="min-h-screen bg-white text-zinc-900 flex flex-col items-center justify-center px-6 py-20">
-
-
       <div className="w-full max-w-sm">
         <p className="text-zinc-500 text-[0.65rem] tracking-[0.25em] uppercase mb-3">
           Welcome Back

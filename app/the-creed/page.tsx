@@ -236,7 +236,7 @@ export default function TheCreedPage() {
       <section className="py-56 px-8 text-center">
         <FadeIn className="max-w-4xl mx-auto flex flex-col gap-8">
           <blockquote>
-              <p className="text-3xl md:text-5xl font-light text-zinc-800 leading-snug tracking-tight italic">
+            <p className="text-3xl md:text-5xl font-light text-zinc-800 leading-snug tracking-tight italic">
               &ldquo;Boldness is not arrogance.
               <br />
               Confidence is not vanity.

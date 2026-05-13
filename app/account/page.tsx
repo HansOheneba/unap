@@ -271,7 +271,9 @@ export default function AccountPage() {
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex flex-col gap-1.5">
                         <div className="flex items-center gap-2 mb-1">
-                          <p className="text-zinc-900 text-sm font-medium">Home</p>
+                          <p className="text-zinc-900 text-sm font-medium">
+                            Home
+                          </p>
                           <span className="text-[0.55rem] tracking-widest uppercase bg-zinc-100 border border-zinc-200 px-2 py-0.5 text-zinc-600">
                             Default
                           </span>

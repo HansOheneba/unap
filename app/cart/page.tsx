@@ -107,7 +107,7 @@ export default function CartPage() {
               transition={{ duration: 0.7, delay: 0.2 }}
               className="mt-4 pb-8"
             >
-                <div className="border-t border-zinc-100 pt-14">
+              <div className="border-t border-zinc-100 pt-14">
                 <p className="eyebrow text-zinc-400 mb-2">You May Also Like</p>
                 <h3 className="text-zinc-900 text-xl font-light mb-10">
                   Start With These
@@ -130,7 +130,9 @@ export default function CartPage() {
                           <p className="eyebrow text-zinc-400 mb-1 text-[0.55rem]">
                             {product.category}
                           </p>
-                          <h5 className="text-zinc-900 text-sm">{product.name}</h5>
+                          <h5 className="text-zinc-900 text-sm">
+                            {product.name}
+                          </h5>
                           <p className="text-zinc-600 text-sm mt-1">
                             {product.price}
                           </p>
@@ -155,7 +157,7 @@ export default function CartPage() {
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
             {/* ── Item List ── */}
-              <div className="lg:col-span-2 flex flex-col gap-px bg-zinc-100">
+            <div className="lg:col-span-2 flex flex-col gap-px bg-zinc-100">
               <AnimatePresence initial={false}>
                 {items.map((item) => (
                   <motion.div
@@ -251,7 +253,9 @@ export default function CartPage() {
                     <span className="text-zinc-500">
                       Subtotal ({count} item{count !== 1 ? "s" : ""})
                     </span>
-                    <span className="text-zinc-900">US${subtotal.toFixed(0)}</span>
+                    <span className="text-zinc-900">
+                      US${subtotal.toFixed(0)}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-zinc-500">Shipping</span>
