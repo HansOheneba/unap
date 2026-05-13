@@ -246,7 +246,8 @@ export default function Header() {
 
           {/* ── Right: Search + Track + User + Cart ── */}
           <div className="flex items-center gap-5">
-            <button
+            <Link
+              href="/search"
               aria-label="Search"
               className={`${iconCls} hover:opacity-60 transition-opacity duration-200`}
             >
@@ -264,7 +265,7 @@ export default function Header() {
                 <circle cx="11" cy="11" r="8" />
                 <line x1="21" y1="21" x2="16.65" y2="16.65" />
               </svg>
-            </button>
+            </Link>
             <Link
               href="/tracking"
               aria-label="Track order"
