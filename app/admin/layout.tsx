@@ -7,7 +7,12 @@ import { LayoutDashboard, Package, Layers, ChevronRight } from "lucide-react";
 
 const navLinks = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
-  { href: "/admin/collections", label: "Collections", icon: Layers, exact: false },
+  {
+    href: "/admin/collections",
+    label: "Collections",
+    icon: Layers,
+    exact: false,
+  },
   { href: "/admin/products", label: "Products", icon: Package, exact: false },
 ];
 
@@ -41,7 +46,9 @@ export default function AdminLayout({
         {/* Nav */}
         <nav className="flex-1 px-3 py-6 flex flex-col gap-1">
           {navLinks.map(({ href, label, icon: Icon, exact }) => {
-            const active = exact ? pathname === href : pathname.startsWith(href);
+            const active = exact
+              ? pathname === href
+              : pathname.startsWith(href);
             return (
               <Link
                 key={href}

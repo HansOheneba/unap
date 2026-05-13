@@ -17,7 +17,9 @@ export default function LingeriePage() {
       {/* ── HERO BANNER ────────────────────────────────────────────── */}
       <section className="relative w-full h-[65vh] overflow-hidden">
         <Image
-          src={col?.featured ?? "/collections/female_undergarments/lingerie.jpeg"}
+          src={
+            col?.featured ?? "/collections/female_undergarments/lingerie.jpeg"
+          }
           alt={col?.title ?? "Soft Power"}
           fill
           priority
@@ -49,7 +51,8 @@ export default function LingeriePage() {
             animate={{ opacity: 1 }}
             transition={{ duration: 1, delay: 0.25 }}
           >
-            {col?.tagline ?? "What you wear beneath says everything about how you carry yourself."}
+            {col?.tagline ??
+              "What you wear beneath says everything about how you carry yourself."}
           </motion.p>
         </div>
       </section>
@@ -104,7 +107,10 @@ export default function LingeriePage() {
               }}
               className="group bg-white"
             >
-              <Link href={`/collections/lingerie/${product.id}`} className="block">
+              <Link
+                href={`/collections/lingerie/${product.id}`}
+                className="block"
+              >
                 <div className="relative overflow-hidden aspect-3/4">
                   <Image
                     src={product.images[0]}

@@ -71,7 +71,10 @@ export default function AdminCollectionsPage() {
                 <div className="flex items-center gap-2">
                   <Link
                     href={`/admin/collections/${col.id}`}
-                    className={buttonVariants({ variant: "secondary", size: "xs" })}
+                    className={buttonVariants({
+                      variant: "secondary",
+                      size: "xs",
+                    })}
                   >
                     <Pencil size={12} className="mr-1" />
                     Edit
@@ -86,7 +89,10 @@ export default function AdminCollectionsPage() {
                         removeCollection(col.id);
                       }
                     }}
-                    className={buttonVariants({ variant: "ghost", size: "icon-xs" }) + " text-zinc-400 hover:text-red-500"}
+                    className={
+                      buttonVariants({ variant: "ghost", size: "icon-xs" }) +
+                      " text-zinc-400 hover:text-red-500"
+                    }
                   >
                     <Trash2 size={14} />
                   </button>

@@ -46,7 +46,13 @@ export default function EditCollectionPage() {
     return (
       <div className="p-10">
         <p className="text-zinc-500">Collection not found.</p>
-        <Link href="/admin/collections" className={buttonVariants({ variant: "secondary", size: "sm" }) + " mt-4 inline-block"}>
+        <Link
+          href="/admin/collections"
+          className={
+            buttonVariants({ variant: "secondary", size: "sm" }) +
+            " mt-4 inline-block"
+          }
+        >
           Back
         </Link>
       </div>
@@ -158,7 +164,9 @@ export default function EditCollectionPage() {
               </label>
               <select
                 value={form.align}
-                onChange={(e) => set("align", e.target.value as "left" | "right")}
+                onChange={(e) =>
+                  set("align", e.target.value as "left" | "right")
+                }
                 className={inputCls}
               >
                 <option value="left">Left</option>
@@ -232,7 +240,10 @@ export default function EditCollectionPage() {
                 <div className="flex items-center gap-1.5 shrink-0">
                   <Link
                     href={`/admin/products/${p.id}`}
-                    className={buttonVariants({ variant: "ghost", size: "icon-xs" }) + " text-zinc-400 hover:text-zinc-900"}
+                    className={
+                      buttonVariants({ variant: "ghost", size: "icon-xs" }) +
+                      " text-zinc-400 hover:text-zinc-900"
+                    }
                   >
                     <Pencil size={12} />
                   </Link>
@@ -240,7 +251,10 @@ export default function EditCollectionPage() {
                     onClick={() => {
                       if (confirm(`Remove "${p.name}"?`)) removeProduct(p.id);
                     }}
-                    className={buttonVariants({ variant: "ghost", size: "icon-xs" }) + " text-zinc-400 hover:text-red-500"}
+                    className={
+                      buttonVariants({ variant: "ghost", size: "icon-xs" }) +
+                      " text-zinc-400 hover:text-red-500"
+                    }
                   >
                     <Trash2 size={12} />
                   </button>

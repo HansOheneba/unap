@@ -49,7 +49,8 @@ export default function HoodiesPage() {
             animate={{ opacity: 1 }}
             transition={{ duration: 1, delay: 0.25 }}
           >
-            {col?.tagline ?? "The weight on your back should feel like armor, not obligation."}
+            {col?.tagline ??
+              "The weight on your back should feel like armor, not obligation."}
           </motion.p>
         </div>
       </section>
@@ -104,7 +105,10 @@ export default function HoodiesPage() {
               }}
               className="group bg-white"
             >
-              <Link href={`/collections/hoodies/${product.id}`} className="block">
+              <Link
+                href={`/collections/hoodies/${product.id}`}
+                className="block"
+              >
                 <div className="relative overflow-hidden aspect-3/4">
                   <Image
                     src={product.images[0]}

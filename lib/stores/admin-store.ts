@@ -8,12 +8,18 @@ interface AdminState {
 
   // Collection actions
   addCollection: (col: Omit<Collection, "products">) => void;
-  updateCollection: (id: string, updates: Partial<Omit<Collection, "id" | "products">>) => void;
+  updateCollection: (
+    id: string,
+    updates: Partial<Omit<Collection, "id" | "products">>,
+  ) => void;
   removeCollection: (id: string) => void;
 
   // Product actions
   addProduct: (collectionId: string, product: Product) => void;
-  updateProduct: (productId: string, updates: Partial<Omit<Product, "id" | "collectionId">>) => void;
+  updateProduct: (
+    productId: string,
+    updates: Partial<Omit<Product, "id" | "collectionId">>,
+  ) => void;
   removeProduct: (productId: string) => void;
 
   // Selectors (computed helpers)
@@ -85,8 +91,7 @@ export const useAdminStore = create<AdminState>()(
           return undefined;
         },
 
-        allProducts: () =>
-          get().collections.flatMap((c) => c.products),
+        allProducts: () => get().collections.flatMap((c) => c.products),
       }),
       { name: "unap-admin" },
     ),

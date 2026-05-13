@@ -6,7 +6,8 @@ export const DEFAULT_COLLECTIONS: Collection[] = [
     id: "sunglasses",
     subtitle: "Sunglasses",
     title: "The Eclipse Edit",
-    tagline: "The world looks different when you stop apologizing for the view.",
+    tagline:
+      "The world looks different when you stop apologizing for the view.",
     featured: "/collections/glases/outlawGlasses1.jpg",
     align: "left",
     href: "/collections/sunglasses",
@@ -108,7 +109,8 @@ export const DEFAULT_COLLECTIONS: Collection[] = [
     id: "headwear",
     subtitle: "Head Wears",
     title: "Bold Society",
-    tagline: "A statement for those who stopped asking for a seat at the table.",
+    tagline:
+      "A statement for those who stopped asking for a seat at the table.",
     featured: "/collections/headwear/boldSocietyCapBlack.jpeg",
     align: "right",
     href: "/collections/headwear",
@@ -497,7 +499,8 @@ export const DEFAULT_COLLECTIONS: Collection[] = [
     id: "lingerie",
     subtitle: "Lingerie",
     title: "Soft Power",
-    tagline: "What you wear beneath says everything about how you carry yourself.",
+    tagline:
+      "What you wear beneath says everything about how you carry yourself.",
     featured: "/collections/female_undergarments/lingerie.jpeg",
     align: "left",
     href: "/collections/lingerie",

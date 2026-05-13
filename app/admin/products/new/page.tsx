@@ -53,7 +53,10 @@ function NewProductForm() {
       description: form.description,
       price: form.price,
       priceNum: parseInt(form.price.replace(/[^0-9]/g, ""), 10),
-      images: filteredImages.length > 0 ? filteredImages : ["/collections/boxers/boxersWhite.jpeg"],
+      images:
+        filteredImages.length > 0
+          ? filteredImages
+          : ["/collections/boxers/boxersWhite.jpeg"],
       colors: colors.length > 0 ? colors : undefined,
       tag: form.tag,
       collectionId: form.collectionId,
@@ -104,7 +107,12 @@ function NewProductForm() {
               required
               autoComplete="off"
               value={form.id}
-              onChange={(e) => setField("id", e.target.value.toLowerCase().replace(/\s+/g, "-"))}
+              onChange={(e) =>
+                setField(
+                  "id",
+                  e.target.value.toLowerCase().replace(/\s+/g, "-"),
+                )
+              }
               placeholder="e.g. hoodies-4"
               className={inputCls}
             />
@@ -251,7 +259,10 @@ function NewProductForm() {
               type="button"
               onClick={() => {
                 if (newColorName.trim()) {
-                  setColors([...colors, { name: newColorName.trim(), hex: newColorHex }]);
+                  setColors([
+                    ...colors,
+                    { name: newColorName.trim(), hex: newColorHex },
+                  ]);
                   setNewColorName("");
                 }
               }}

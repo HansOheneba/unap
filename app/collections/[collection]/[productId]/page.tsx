@@ -21,7 +21,7 @@ export default function ProductDetailPage() {
 
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [selectedColor, setSelectedColor] = useState<string | null>(
-    product?.colors?.[0]?.name ?? null
+    product?.colors?.[0]?.name ?? null,
   );
   const [quantity, setQuantity] = useState(1);
 
@@ -68,7 +68,10 @@ export default function ProductDetailPage() {
       {/* ── BREADCRUMB ──────────────────────────────────────────────── */}
       <div className="max-w-360 mx-auto px-6 md:px-12 lg:px-16 pt-8 pb-4">
         <nav className="flex items-center gap-2 text-sm text-zinc-400">
-          <Link href="/collections" className="hover:text-zinc-900 transition-colors">
+          <Link
+            href="/collections"
+            className="hover:text-zinc-900 transition-colors"
+          >
             Collections
           </Link>
           <span>/</span>
@@ -142,13 +145,17 @@ export default function ProductDetailPage() {
             <div className="space-y-3">
               <span className="eyebrow text-zinc-400">{product.tag}</span>
               <h2 className="text-zinc-900 leading-tight">{product.name}</h2>
-              <p className="text-2xl font-light text-zinc-900">{product.price}</p>
+              <p className="text-2xl font-light text-zinc-900">
+                {product.price}
+              </p>
             </div>
 
             {/* Description */}
             <div className="space-y-2">
               <p className="eyebrow text-zinc-500 mb-3">About</p>
-              <p className="text-zinc-600 leading-relaxed">{product.description}</p>
+              <p className="text-zinc-600 leading-relaxed">
+                {product.description}
+              </p>
             </div>
 
             {/* Color swatches */}

@@ -49,7 +49,8 @@ export default function SunglassesPage() {
             animate={{ opacity: 1 }}
             transition={{ duration: 1, delay: 0.25 }}
           >
-            {col?.tagline ?? "The world looks different when you stop apologizing for the view."}
+            {col?.tagline ??
+              "The world looks different when you stop apologizing for the view."}
           </motion.p>
         </div>
       </section>
@@ -104,7 +105,10 @@ export default function SunglassesPage() {
               }}
               className="group bg-white"
             >
-              <Link href={`/collections/sunglasses/${product.id}`} className="block">
+              <Link
+                href={`/collections/sunglasses/${product.id}`}
+                className="block"
+              >
                 <div className="relative overflow-hidden aspect-3/4">
                   <Image
                     src={product.images[0]}

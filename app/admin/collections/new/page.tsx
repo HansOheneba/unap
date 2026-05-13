@@ -61,7 +61,9 @@ export default function NewCollectionPage() {
               required
               autoComplete="off"
               value={form.id}
-              onChange={(e) => set("id", e.target.value.toLowerCase().replace(/\s+/g, "-"))}
+              onChange={(e) =>
+                set("id", e.target.value.toLowerCase().replace(/\s+/g, "-"))
+              }
               placeholder="e.g. jackets"
               className={inputCls}
             />

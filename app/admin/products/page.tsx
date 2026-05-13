@@ -13,9 +13,7 @@ export default function AdminProductsPage() {
   const [filter, setFilter] = useState("all");
 
   const visibleCollections =
-    filter === "all"
-      ? collections
-      : collections.filter((c) => c.id === filter);
+    filter === "all" ? collections : collections.filter((c) => c.id === filter);
 
   const allProductCount = collections.reduce(
     (sum, c) => sum + c.products.length,
@@ -128,7 +126,12 @@ export default function AdminProductsPage() {
                     <div className="flex items-center justify-end gap-1.5">
                       <Link
                         href={`/admin/products/${p.id}`}
-                        className={buttonVariants({ variant: "ghost", size: "icon-xs" }) + " text-zinc-400 hover:text-zinc-900"}
+                        className={
+                          buttonVariants({
+                            variant: "ghost",
+                            size: "icon-xs",
+                          }) + " text-zinc-400 hover:text-zinc-900"
+                        }
                       >
                         <Pencil size={13} />
                       </Link>
@@ -137,7 +140,12 @@ export default function AdminProductsPage() {
                           if (confirm(`Remove "${p.name}"?`))
                             removeProduct(p.id);
                         }}
-                        className={buttonVariants({ variant: "ghost", size: "icon-xs" }) + " text-zinc-400 hover:text-red-500"}
+                        className={
+                          buttonVariants({
+                            variant: "ghost",
+                            size: "icon-xs",
+                          }) + " text-zinc-400 hover:text-red-500"
+                        }
                       >
                         <Trash2 size={13} />
                       </button>

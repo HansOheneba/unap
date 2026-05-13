@@ -14,7 +14,10 @@ function capitalize(s: string) {
 
 export default function SearchPage() {
   const allProducts = useAdminStore((s) => s.allProducts());
-  const categories = ["All", ...Array.from(new Set(allProducts.map((p) => capitalize(p.collectionId))))];
+  const categories = [
+    "All",
+    ...Array.from(new Set(allProducts.map((p) => capitalize(p.collectionId)))),
+  ];
 
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");

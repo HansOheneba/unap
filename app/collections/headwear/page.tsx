@@ -17,7 +17,9 @@ export default function HeadwearPage() {
       {/* ── HERO BANNER ────────────────────────────────────────────── */}
       <section className="relative w-full h-[65vh] overflow-hidden">
         <Image
-          src={col?.featured ?? "/collections/headwear/boldSocietyCapBlack.jpeg"}
+          src={
+            col?.featured ?? "/collections/headwear/boldSocietyCapBlack.jpeg"
+          }
           alt={col?.title ?? "Bold Society"}
           fill
           priority
@@ -49,7 +51,8 @@ export default function HeadwearPage() {
             animate={{ opacity: 1 }}
             transition={{ duration: 1, delay: 0.25 }}
           >
-            {col?.tagline ?? "A statement for those who stopped asking for a seat at the table."}
+            {col?.tagline ??
+              "A statement for those who stopped asking for a seat at the table."}
           </motion.p>
         </div>
       </section>
@@ -104,7 +107,10 @@ export default function HeadwearPage() {
               }}
               className="group bg-white"
             >
-              <Link href={`/collections/headwear/${product.id}`} className="block">
+              <Link
+                href={`/collections/headwear/${product.id}`}
+                className="block"
+              >
                 <div className="relative overflow-hidden aspect-3/4">
                   <Image
                     src={product.images[0]}

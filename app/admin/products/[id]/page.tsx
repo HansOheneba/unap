@@ -51,7 +51,10 @@ export default function EditProductPage() {
         <p className="text-zinc-500">Product not found.</p>
         <Link
           href="/admin/products"
-          className={buttonVariants({ variant: "secondary", size: "sm" }) + " mt-4 inline-block"}
+          className={
+            buttonVariants({ variant: "secondary", size: "sm" }) +
+            " mt-4 inline-block"
+          }
         >
           Back
         </Link>
@@ -255,7 +258,10 @@ export default function EditProductPage() {
               type="button"
               onClick={() => {
                 if (newColorName.trim()) {
-                  setColors([...colors, { name: newColorName.trim(), hex: newColorHex }]);
+                  setColors([
+                    ...colors,
+                    { name: newColorName.trim(), hex: newColorHex },
+                  ]);
                   setNewColorName("");
                 }
               }}

@@ -49,7 +49,8 @@ export default function TracksPage() {
             animate={{ opacity: 1 }}
             transition={{ duration: 1, delay: 0.25 }}
           >
-            {col?.tagline ?? "Movement is not optional. Neither is the standard you carry while doing it."}
+            {col?.tagline ??
+              "Movement is not optional. Neither is the standard you carry while doing it."}
           </motion.p>
         </div>
       </section>
@@ -104,7 +105,10 @@ export default function TracksPage() {
               }}
               className="group bg-white"
             >
-              <Link href={`/collections/tracks/${product.id}`} className="block">
+              <Link
+                href={`/collections/tracks/${product.id}`}
+                className="block"
+              >
                 <div className="relative overflow-hidden aspect-3/4">
                   <Image
                     src={product.images[0]}

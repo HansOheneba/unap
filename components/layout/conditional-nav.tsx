@@ -18,8 +18,7 @@ export default function ConditionalNav({
 
   // Collection landing pages (e.g. /collections/boxers) have full-bleed heroes.
   // Product detail pages (/collections/boxers/boxers-1) do need the offset.
-  const isCollectionLanding =
-    /^\/collections\/[^/]+$/.test(pathname ?? "");
+  const isCollectionLanding = /^\/collections\/[^/]+$/.test(pathname ?? "");
 
   const needsHeaderOffset =
     !noNav &&
@@ -30,7 +29,9 @@ export default function ConditionalNav({
     <>
       {!noNav && <Header />}
       {/* Spacer that pushes page content below the fixed header (84px = logo 44px + py-5×2) */}
-      {needsHeaderOffset && <div className="h-[84px] shrink-0" aria-hidden="true" />}
+      {needsHeaderOffset && (
+        <div className="h-[84px] shrink-0" aria-hidden="true" />
+      )}
       {children}
       {!noNav && <Footer />}
     </>

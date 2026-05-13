@@ -131,7 +131,10 @@ export default function BoxersPage() {
               }}
               className="group bg-white"
             >
-              <Link href={`/collections/boxers/${product.id}`} className="block">
+              <Link
+                href={`/collections/boxers/${product.id}`}
+                className="block"
+              >
                 <div className="relative overflow-hidden aspect-3/4">
                   <Image
                     src={product.images[0]}
