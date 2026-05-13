@@ -10,9 +10,9 @@ import {
 import { useOnboardingStore } from "@/lib/stores/onboarding-store";
 
 const inputCls =
-  "bg-white/5 border border-white/20 text-white placeholder-white/30 px-4 py-3 text-sm focus:outline-none focus:border-white/60 transition-colors duration-200";
+  "bg-zinc-50 border border-zinc-200 text-zinc-900 placeholder-zinc-400 px-4 py-3 text-sm focus:outline-none focus:border-zinc-400 transition-colors duration-200";
 const selectCls =
-  "bg-[#0a0a0a] border border-white/20 text-white px-4 py-3 text-sm focus:outline-none focus:border-white/60 transition-colors duration-200 appearance-none";
+  "bg-white border border-zinc-200 text-zinc-900 px-4 py-3 text-sm focus:outline-none focus:border-zinc-400 transition-colors duration-200 appearance-none";
 
 function Field({
   label,
@@ -25,7 +25,7 @@ function Field({
 }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <label className="text-[0.65rem] tracking-widest uppercase text-white/60">
+      <label className="text-[0.65rem] tracking-widest uppercase text-zinc-500">
         {label}
       </label>
       {children}
@@ -146,29 +146,29 @@ export default function SignupPage() {
   /* ── Welcome screen ── */
   if (step === 4) {
     return (
-      <main className="dark min-h-screen bg-black text-white flex flex-col items-center justify-center px-6 py-20 text-center">
-        <p className="text-white/40 text-[0.65rem] tracking-[0.3em] uppercase mb-4">
+      <main className="min-h-screen bg-white text-zinc-900 flex flex-col items-center justify-center px-6 py-20 text-center">
+        <p className="text-zinc-400 text-[0.65rem] tracking-[0.3em] uppercase mb-4">
           You&apos;re one of us now
         </p>
         <h1 className="text-3xl md:text-4xl font-light tracking-tight mb-4">
           Welcome, {firstName}.
         </h1>
-        <p className="text-white/60 text-sm max-w-sm leading-relaxed mb-10">
+        <p className="text-zinc-600 text-sm max-w-sm leading-relaxed mb-10">
           The rules were never made for people like us. Shop freely, move
           boldly. We handle the rest.
         </p>
 
         {/* Perks */}
-        <div className="grid grid-cols-2 gap-px bg-white/10 border border-white/15 w-full max-w-sm mb-10 text-left">
+        <div className="grid grid-cols-2 gap-px bg-zinc-100 border border-zinc-100 w-full max-w-sm mb-10 text-left">
           {[
             { label: "WhatsApp Updates", desc: "Real-time delivery alerts" },
             { label: "Ships Everywhere", desc: "Ghana, Nigeria and beyond" },
             { label: "Early Access", desc: "New drops before anyone else" },
             { label: "Inner Circle", desc: "Exclusive members only offers" },
           ].map((p) => (
-            <div key={p.label} className="bg-black px-5 py-4">
-              <p className="text-white text-xs font-medium mb-0.5">{p.label}</p>
-              <p className="text-white/40 text-[0.65rem]">{p.desc}</p>
+            <div key={p.label} className="bg-white px-5 py-4">
+              <p className="text-zinc-900 text-xs font-medium mb-0.5">{p.label}</p>
+              <p className="text-zinc-400 text-[0.65rem]">{p.desc}</p>
             </div>
           ))}
         </div>
@@ -176,13 +176,13 @@ export default function SignupPage() {
         <div className="flex gap-3 w-full max-w-sm">
           <Link
             href="/collections"
-            className="flex-1 border border-white/40 bg-transparent text-white px-6 py-3 text-[0.65rem] tracking-widest uppercase hover:bg-white hover:text-black transition-colors duration-300 text-center whitespace-nowrap"
+            className="flex-1 border border-zinc-900 bg-transparent text-zinc-900 px-6 py-3 text-[0.65rem] tracking-widest uppercase hover:bg-zinc-900 hover:text-white transition-colors duration-300 text-center whitespace-nowrap"
           >
             Shop Now
           </Link>
           <Link
             href="/account"
-            className="flex-1 border border-white/20 bg-transparent text-white/70 px-6 py-3 text-[0.65rem] tracking-widest uppercase hover:border-white/50 hover:text-white transition-colors duration-300 text-center whitespace-nowrap"
+            className="flex-1 border border-zinc-200 bg-transparent text-zinc-600 px-6 py-3 text-[0.65rem] tracking-widest uppercase hover:border-zinc-400 hover:text-zinc-900 transition-colors duration-300 text-center whitespace-nowrap"
           >
             My Account
           </Link>
@@ -192,7 +192,7 @@ export default function SignupPage() {
   }
 
   return (
-    <main className="dark min-h-screen bg-black text-white flex flex-col items-center justify-center px-6 py-20">
+    <main className="min-h-screen bg-white text-zinc-900 flex flex-col items-center justify-center px-6 py-20">
       <div className="w-full max-w-sm">
         {/* Step indicator */}
         <div className="flex items-center gap-0 mb-10">
@@ -202,10 +202,10 @@ export default function SignupPage() {
                 <div
                   className={`w-6 h-6 rounded-full flex items-center justify-center text-[0.6rem] font-medium transition-colors duration-300 ${
                     step > s.n
-                      ? "bg-white text-black"
+                      ? "bg-zinc-900 text-white"
                       : step === s.n
-                        ? "border border-white text-white"
-                        : "border border-white/20 text-white/30"
+                        ? "border border-zinc-900 text-zinc-900"
+                        : "border border-zinc-200 text-zinc-300"
                   }`}
                 >
                   {step > s.n ? (
@@ -230,7 +230,7 @@ export default function SignupPage() {
                 </div>
                 <span
                   className={`text-[0.55rem] tracking-widest uppercase transition-colors duration-300 ${
-                    step === s.n ? "text-white" : "text-white/30"
+                    step === s.n ? "text-zinc-900" : "text-zinc-300"
                   }`}
                 >
                   {s.label}
@@ -239,7 +239,7 @@ export default function SignupPage() {
               {i < STEPS.length - 1 && (
                 <div
                   className={`flex-1 h-px mx-2 mb-4 transition-colors duration-300 ${
-                    step > s.n ? "bg-white/40" : "bg-white/10"
+                    step > s.n ? "bg-zinc-400" : "bg-zinc-200"
                   }`}
                 />
               )}
@@ -257,7 +257,7 @@ export default function SignupPage() {
             className="flex flex-col gap-4"
           >
             <div className="mb-2">
-              <p className="text-white/50 text-[0.65rem] tracking-[0.25em] uppercase mb-1">
+              <p className="text-zinc-500 text-[0.65rem] tracking-[0.25em] uppercase mb-1">
                 Step 1 of 3
               </p>
               <h1 className="text-2xl font-light tracking-tight">
@@ -289,7 +289,7 @@ export default function SignupPage() {
                 <button
                   type="button"
                   onClick={() => setField("showPassword", !showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[0.55rem] tracking-widest uppercase text-white/40 hover:text-white"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[0.55rem] tracking-widest uppercase text-zinc-400 hover:text-zinc-900"
                 >
                   {showPassword ? "Hide" : "Show"}
                 </button>
@@ -313,7 +313,7 @@ export default function SignupPage() {
                 <div
                   onClick={() => setField("agreed", !agreed)}
                   className={`mt-0.5 w-4 h-4 shrink-0 border flex items-center justify-center transition-colors duration-200 ${
-                    agreed ? "border-white bg-white" : "border-white/30"
+                    agreed ? "border-zinc-900 bg-zinc-900" : "border-zinc-300"
                   }`}
                 >
                   {agreed && (
@@ -334,18 +334,18 @@ export default function SignupPage() {
                     </svg>
                   )}
                 </div>
-                <span className="text-white/60 text-xs leading-relaxed">
+                <span className="text-zinc-600 text-xs leading-relaxed">
                   I agree to the{" "}
                   <Link
                     href="/terms"
-                    className="text-white underline underline-offset-2"
+                    className="text-zinc-900 underline underline-offset-2"
                   >
                     Terms of Service
                   </Link>{" "}
                   and{" "}
                   <Link
                     href="/privacy"
-                    className="text-white underline underline-offset-2"
+                    className="text-zinc-900 underline underline-offset-2"
                   >
                     Privacy Policy
                   </Link>
@@ -358,16 +358,16 @@ export default function SignupPage() {
 
             <button
               type="submit"
-              className="mt-2 w-full border border-white/40 bg-transparent text-white px-8 py-3.5 text-[0.7rem] tracking-widest uppercase hover:bg-white hover:text-black transition-colors duration-300"
+              className="mt-2 w-full border border-zinc-900 bg-transparent text-zinc-900 px-8 py-3.5 text-[0.7rem] tracking-widest uppercase hover:bg-zinc-900 hover:text-white transition-colors duration-300"
             >
               Continue
             </button>
 
-            <p className="text-center text-white/40 text-xs mt-2">
+            <p className="text-center text-zinc-400 text-xs mt-2">
               Already have an account?{" "}
               <Link
                 href="/auth/login"
-                className="text-white underline underline-offset-4 hover:opacity-70"
+                className="text-zinc-900 underline underline-offset-4 hover:opacity-70"
               >
                 Sign in
               </Link>
@@ -385,7 +385,7 @@ export default function SignupPage() {
             className="flex flex-col gap-4"
           >
             <div className="mb-2">
-              <p className="text-white/50 text-[0.65rem] tracking-[0.25em] uppercase mb-1">
+              <p className="text-zinc-500 text-[0.65rem] tracking-[0.25em] uppercase mb-1">
                 Step 2 of 3
               </p>
               <h1 className="text-2xl font-light tracking-tight">About You</h1>
@@ -433,13 +433,13 @@ export default function SignupPage() {
               <button
                 type="button"
                 onClick={prevStep}
-                className="flex-1 border border-white/20 bg-transparent text-white/70 px-8 py-3.5 text-[0.7rem] tracking-widest uppercase hover:border-white/50 hover:text-white transition-colors duration-300"
+                className="flex-1 border border-zinc-200 bg-transparent text-zinc-600 px-8 py-3.5 text-[0.7rem] tracking-widest uppercase hover:border-zinc-400 hover:text-zinc-900 transition-colors duration-300"
               >
                 Back
               </button>
               <button
                 type="submit"
-                className="flex-1 border border-white/40 bg-transparent text-white px-8 py-3.5 text-[0.7rem] tracking-widest uppercase hover:bg-white hover:text-black transition-colors duration-300"
+                className="flex-1 border border-zinc-900 bg-transparent text-zinc-900 px-8 py-3.5 text-[0.7rem] tracking-widest uppercase hover:bg-zinc-900 hover:text-white transition-colors duration-300"
               >
                 Continue
               </button>
@@ -451,13 +451,13 @@ export default function SignupPage() {
         {step === 3 && (
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div className="mb-2">
-              <p className="text-white/50 text-[0.65rem] tracking-[0.25em] uppercase mb-1">
+              <p className="text-zinc-500 text-[0.65rem] tracking-[0.25em] uppercase mb-1">
                 Step 3 of 3
               </p>
               <h1 className="text-2xl font-light tracking-tight">
                 Delivery Details
               </h1>
-              <p className="text-white/50 text-xs mt-1.5 leading-relaxed">
+              <p className="text-zinc-500 text-xs mt-1.5 leading-relaxed">
                 We ship across West Africa and beyond. This helps us get your
                 order to you faster.
               </p>
@@ -481,7 +481,7 @@ export default function SignupPage() {
                   ))}
                 </select>
                 <svg
-                  className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-white/40"
+                  className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400"
                   width="10"
                   height="10"
                   viewBox="0 0 8 8"
@@ -515,7 +515,7 @@ export default function SignupPage() {
                   ))}
                 </select>
                 <svg
-                  className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-white/40"
+                  className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400"
                   width="10"
                   height="10"
                   viewBox="0 0 8 8"
@@ -567,7 +567,7 @@ export default function SignupPage() {
                 autoComplete="off"
                 className={inputCls}
               />
-              <p className="text-white/30 text-[0.6rem] leading-relaxed">
+              <p className="text-zinc-300 text-[0.6rem] leading-relaxed">
                 Helps our delivery team find you faster. Especially useful where
                 street addresses are not exact.
               </p>
@@ -579,7 +579,7 @@ export default function SignupPage() {
                 <div
                   onClick={() => setField("sameAsPhone", !sameAsPhone)}
                   className={`w-4 h-4 shrink-0 border flex items-center justify-center transition-colors duration-200 ${
-                    sameAsPhone ? "border-white bg-white" : "border-white/30"
+                    sameAsPhone ? "border-zinc-900 bg-zinc-900" : "border-zinc-300"
                   }`}
                 >
                   {sameAsPhone && (
@@ -600,7 +600,7 @@ export default function SignupPage() {
                     </svg>
                   )}
                 </div>
-                <span className="text-white/60 text-xs">
+                <span className="text-zinc-600 text-xs">
                   My WhatsApp number is the same as my phone number
                 </span>
               </label>
@@ -617,7 +617,7 @@ export default function SignupPage() {
                     autoComplete="off"
                     className={inputCls}
                   />
-                  <p className="text-white/50 text-[0.6rem]">
+                  <p className="text-zinc-400 text-[0.6rem]">
                     We send real-time delivery updates via WhatsApp.
                   </p>
                 </Field>
@@ -628,14 +628,14 @@ export default function SignupPage() {
               <button
                 type="button"
                 onClick={prevStep}
-                className="flex-1 border border-white/20 bg-transparent text-white/70 px-8 py-3.5 text-[0.7rem] tracking-widest uppercase hover:border-white/50 hover:text-white transition-colors duration-300"
+                className="flex-1 border border-zinc-200 bg-transparent text-zinc-600 px-8 py-3.5 text-[0.7rem] tracking-widest uppercase hover:border-zinc-400 hover:text-zinc-900 transition-colors duration-300"
               >
                 Back
               </button>
               <button
                 type="submit"
                 disabled={loading}
-                className="flex-1 border border-white/40 bg-transparent text-white px-8 py-3.5 text-[0.7rem] tracking-widest uppercase hover:bg-white hover:text-black transition-colors duration-300 disabled:opacity-40 disabled:cursor-not-allowed"
+                className="flex-1 border border-zinc-900 bg-transparent text-zinc-900 px-8 py-3.5 text-[0.7rem] tracking-widest uppercase hover:bg-zinc-900 hover:text-white transition-colors duration-300 disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 {loading ? "Creating…" : "Finish"}
               </button>

@@ -85,7 +85,7 @@ const verticals = [
 
 export default function FutureSection() {
   return (
-    <section className="bg-black text-white overflow-hidden">
+    <section className="bg-white text-zinc-900 overflow-hidden">
       {/* ── FULL-BLEED INTRO ───────────────────────────── */}
       <div className="relative py-56 px-8 flex flex-col items-center justify-center text-center overflow-hidden">
         <Image
@@ -116,13 +116,13 @@ export default function FutureSection() {
       </div>
 
       {/* ── DIVIDER ───────────────────────────────────── */}
-      <div className="border-t border-white/5" />
+      <div className="border-t border-zinc-100" />
 
-      {/* ── MANIFESTO STRIP ───────────────────────────── */}
+      {/* ── MANIFESTO STRIP ─────────────────────────────── */}
       <FadeIn className="px-8 md:px-20 py-20 max-w-360 mx-auto text-center">
         <h3 className="text-[#564787]">
           Fashion. Beauty. Fragrance. Wellness. Culture. Media. Influence.
-          <span className="text-white">
+          <span className="text-zinc-900">
             {" "}
             Every category reimagined through the lens of radical
             self-expression.
@@ -131,10 +131,10 @@ export default function FutureSection() {
       </FadeIn>
 
       {/* ── DIVIDER ───────────────────────────────────── */}
-      <div className="border-t border-white/5" />
+      <div className="border-t border-zinc-100" />
 
-      {/* ── VERTICALS GRID ────────────────────────────── */}
-      <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-y divide-white/5">
+      {/* ── VERTICALS GRID ───────────────────────────────── */}
+      <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-y divide-zinc-100">
         {verticals.map((v, i) => {
           const Icon = v.icon;
           return (
@@ -146,12 +146,12 @@ export default function FutureSection() {
               <Icon
                 size={28}
                 strokeWidth={1}
-                className="text-white/65 group-hover:text-white transition-colors duration-500"
+                className="text-zinc-400 group-hover:text-zinc-900 transition-colors duration-500"
               />
-              <p className="eyebrow text-white/75 group-hover:text-white transition-colors duration-500">
+              <p className="eyebrow text-zinc-600 group-hover:text-zinc-900 transition-colors duration-500">
                 {v.name}
               </p>
-              <p className="text-white/70 text-sm leading-relaxed group-hover:text-white/90 transition-colors duration-500">
+              <p className="text-zinc-500 text-sm leading-relaxed group-hover:text-zinc-800 transition-colors duration-500">
                 {v.line}
               </p>
             </FadeIn>
@@ -160,16 +160,16 @@ export default function FutureSection() {
       </div>
 
       {/* ── DIVIDER ───────────────────────────────────── */}
-      <div className="border-t border-white/5" />
+      <div className="border-t border-zinc-100" />
 
-      {/* ── SPLIT: image + pull quote ─────────────────── */}
+      {/* ── SPLIT: image + pull quote ─────────────────────── */}
       <div className="grid grid-cols-1 md:grid-cols-2">
         {/* Pull quote */}
         <div className="px-10 md:px-20 py-32 flex flex-col justify-center gap-8">
           <FadeIn>
-            <p className="eyebrow text-white/60 mb-8">The Long Game</p>
+            <p className="eyebrow text-zinc-500 mb-8">The Long Game</p>
             <blockquote
-              className="text-white/80 italic leading-snug"
+              className="text-zinc-700 italic leading-snug"
               style={{
                 fontSize: "clamp(1.5rem, 3vw, 2.5rem)",
                 fontFamily: "var(--font-sora)",
@@ -180,7 +180,7 @@ export default function FutureSection() {
             </blockquote>
           </FadeIn>
           <FadeIn delay={0.2}>
-            <p className="eyebrow text-white/65">Hans Opoku | Founder</p>
+            <p className="eyebrow text-zinc-500">Hans Opoku | Founder</p>
           </FadeIn>
           <FadeIn delay={0.35}>
             <Link href="/future" className={buttonVariants()}>
@@ -198,7 +198,7 @@ export default function FutureSection() {
             className="object-cover brightness-60"
           />
           <div
-            className="absolute inset-0 bg-linear-to-l from-transparent to-black hidden md:block"
+            className="absolute inset-0 bg-linear-to-l from-transparent to-white hidden md:block"
             style={{ clipPath: "polygon(0 0, 35% 0, 55% 100%, 0 100%)" }}
           />
           {/* Corner label */}
@@ -209,14 +209,14 @@ export default function FutureSection() {
       </div>
 
       {/* ── DIVIDER ───────────────────────────────────── */}
-      <div className="border-t border-white/5" />
+      <div className="border-t border-zinc-100" />
 
-      {/* ── BOTTOM STATEMENT ──────────────────────────── */}
+      {/* ── BOTTOM STATEMENT ───────────────────────────────── */}
       <FadeIn className="py-32 px-8 flex flex-col items-center text-center gap-4">
-        <p className="eyebrow text-white/70">The Trajectory</p>
-        <h4 className="text-white/70 max-w-2xl">
+        <p className="eyebrow text-zinc-500">The Trajectory</p>
+        <h4 className="text-zinc-400 max-w-2xl">
           We are not aiming for the top.
-          <span className="text-white">
+          <span className="text-zinc-900">
             {" "}
             We are redefining what the top looks like.
           </span>

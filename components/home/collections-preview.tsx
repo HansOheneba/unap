@@ -68,7 +68,7 @@ function FadeIn({
 
 export default function CollectionsPreview() {
   return (
-    <section className="bg-black text-white py-32 px-8 md:px-20">
+    <section className="bg-white text-zinc-900 py-32 px-8 md:px-20">
       <div className="max-w-360 mx-auto flex flex-col gap-16">
         {/* Header row */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
@@ -85,9 +85,9 @@ export default function CollectionsPreview() {
 
         {/* Product grid */}
         {/* Desktop: hero card left (2 cols tall) + 3 stacked/side right */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-px bg-white/5">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-px bg-zinc-100">
           {/* Hero card — spans 7 cols */}
-          <FadeIn className="md:col-span-7 bg-black group">
+          <FadeIn className="md:col-span-7 bg-white group">
             <Link
               href={featured[0].href}
               className="block relative w-full"
@@ -103,19 +103,19 @@ export default function CollectionsPreview() {
                 {featured[0].category}
               </span>
             </Link>
-            <div className="flex items-center justify-between px-6 py-5 bg-black border-t border-white/5">
-              <h5 className="text-white">{featured[0].name}</h5>
-              <span className="eyebrow text-white/70">{featured[0].price}</span>
+            <div className="flex items-center justify-between px-6 py-5 bg-white border-t border-zinc-100">
+              <h5 className="text-zinc-900">{featured[0].name}</h5>
+              <span className="eyebrow text-zinc-500">{featured[0].price}</span>
             </div>
           </FadeIn>
 
           {/* Right col — 3 smaller cards stacked */}
-          <div className="md:col-span-5 flex flex-col gap-px bg-white/5">
+          <div className="md:col-span-5 flex flex-col gap-px bg-zinc-100">
             {featured.slice(1).map((product, i) => (
               <FadeIn
                 key={product.id}
                 delay={0.1 * (i + 1)}
-                className="bg-black group"
+                className="bg-white group"
               >
                 <Link
                   href={product.href}
@@ -138,9 +138,9 @@ export default function CollectionsPreview() {
                     {product.category}
                   </span>
                 </Link>
-                <div className="flex items-center justify-between px-5 py-4 bg-black border-t border-white/5">
-                  <h5 className="text-white text-sm">{product.name}</h5>
-                  <span className="eyebrow text-white/70">{product.price}</span>
+                <div className="flex items-center justify-between px-5 py-4 bg-white border-t border-zinc-100">
+                  <h5 className="text-zinc-900 text-sm">{product.name}</h5>
+                  <span className="eyebrow text-zinc-500">{product.price}</span>
                 </div>
               </FadeIn>
             ))}
@@ -149,7 +149,7 @@ export default function CollectionsPreview() {
 
         {/* Bottom line */}
         <FadeIn delay={0.2}>
-          <p className="text-white/70 text-center text-sm tracking-wider uppercase">
+          <p className="text-zinc-500 text-center text-sm tracking-wider uppercase">
             Every piece carries intention. None of it is accidental.
           </p>
         </FadeIn>

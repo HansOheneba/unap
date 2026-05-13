@@ -56,15 +56,15 @@ export default function CartPage() {
   const subtotal = totalPrice();
 
   return (
-    <main className="dark min-h-screen bg-black text-white pt-24 pb-32">
+    <main className="min-h-screen bg-white text-zinc-900 pt-24 pb-32">
       <div className="max-w-360 mx-auto px-6 md:px-12">
         {/* Header */}
         <div className="mb-10">
-          <p className="eyebrow text-white/60 mb-2">Your Selection</p>
+          <p className="eyebrow text-zinc-500 mb-2">Your Selection</p>
           <h1 className="text-3xl font-light tracking-tight">
             Cart
             {count > 0 && (
-              <span className="text-white/40 text-xl ml-3">({count})</span>
+              <span className="text-zinc-400 text-xl ml-3">({count})</span>
             )}
           </h1>
         </div>
@@ -81,20 +81,20 @@ export default function CartPage() {
               <ShoppingBag
                 size={40}
                 strokeWidth={1}
-                className="text-white/20"
+                className="text-zinc-200"
               />
               <div>
-                <p className="text-white text-lg font-light mb-2">
+                <p className="text-zinc-900 text-lg font-light mb-2">
                   Nothing here yet.
                 </p>
-                <p className="text-white/50 text-sm max-w-xs leading-relaxed">
+                <p className="text-zinc-400 text-sm max-w-xs leading-relaxed">
                   You have not added anything to your cart. Go find something
                   that speaks to you.
                 </p>
               </div>
               <Link
                 href="/collections"
-                className="border border-white/40 bg-transparent text-white px-8 py-3 text-[0.65rem] tracking-widest uppercase hover:bg-white hover:text-black transition-colors duration-300"
+                className="border border-zinc-900 bg-transparent text-zinc-900 px-8 py-3 text-[0.65rem] tracking-widest uppercase hover:bg-zinc-900 hover:text-white transition-colors duration-300"
               >
                 Shop Collections
               </Link>
@@ -107,15 +107,15 @@ export default function CartPage() {
               transition={{ duration: 0.7, delay: 0.2 }}
               className="mt-4 pb-8"
             >
-              <div className="border-t border-white/8 pt-14">
-                <p className="eyebrow text-white/50 mb-2">You May Also Like</p>
-                <h3 className="text-white text-xl font-light mb-10">
+                <div className="border-t border-zinc-100 pt-14">
+                <p className="eyebrow text-zinc-400 mb-2">You May Also Like</p>
+                <h3 className="text-zinc-900 text-xl font-light mb-10">
                   Start With These
                 </h3>
 
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-white/8">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-zinc-100">
                   {featured.map((product) => (
-                    <div key={product.id} className="bg-black group">
+                    <div key={product.id} className="bg-white group">
                       <Link href={product.href} className="block">
                         <div className="relative overflow-hidden aspect-3/4">
                           <Image
@@ -126,12 +126,12 @@ export default function CartPage() {
                             className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
                           />
                         </div>
-                        <div className="p-4 border-t border-white/8">
-                          <p className="eyebrow text-white/50 mb-1 text-[0.55rem]">
+                        <div className="p-4 border-t border-zinc-100">
+                          <p className="eyebrow text-zinc-400 mb-1 text-[0.55rem]">
                             {product.category}
                           </p>
-                          <h5 className="text-white text-sm">{product.name}</h5>
-                          <p className="text-white/60 text-sm mt-1">
+                          <h5 className="text-zinc-900 text-sm">{product.name}</h5>
+                          <p className="text-zinc-600 text-sm mt-1">
                             {product.price}
                           </p>
                         </div>
@@ -155,7 +155,7 @@ export default function CartPage() {
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
             {/* ── Item List ── */}
-            <div className="lg:col-span-2 flex flex-col gap-px bg-white/8">
+              <div className="lg:col-span-2 flex flex-col gap-px bg-zinc-100">
               <AnimatePresence initial={false}>
                 {items.map((item) => (
                   <motion.div
@@ -169,7 +169,7 @@ export default function CartPage() {
                       transition: { duration: 0.25 },
                     }}
                     transition={{ duration: 0.3 }}
-                    className="bg-black flex gap-5 p-5"
+                    className="bg-white flex gap-5 p-5"
                   >
                     {/* Thumbnail */}
                     <div className="relative shrink-0 w-20 h-24 md:w-24 md:h-28 overflow-hidden">
@@ -185,37 +185,37 @@ export default function CartPage() {
                     {/* Info */}
                     <div className="flex-1 flex flex-col justify-between min-w-0">
                       <div>
-                        <p className="eyebrow text-white/50 mb-1">
+                        <p className="eyebrow text-zinc-500 mb-1">
                           {item.category}
                         </p>
-                        <h5 className="text-white text-sm font-medium leading-snug">
+                        <h5 className="text-zinc-900 text-sm font-medium leading-snug">
                           {item.name}
                         </h5>
-                        <p className="text-white/70 text-sm mt-1">
+                        <p className="text-zinc-600 text-sm mt-1">
                           {item.price}
                         </p>
                       </div>
 
                       {/* Qty + Remove */}
                       <div className="flex items-center justify-between mt-4">
-                        <div className="flex items-center border border-white/20">
+                        <div className="flex items-center border border-zinc-200">
                           <button
                             onClick={() =>
                               updateQuantity(item.id, item.quantity - 1)
                             }
-                            className="w-8 h-8 flex items-center justify-center text-white/60 hover:text-white hover:bg-white/10 transition-colors duration-150"
+                            className="w-8 h-8 flex items-center justify-center text-zinc-400 hover:text-zinc-900 hover:bg-zinc-50 transition-colors duration-150"
                             aria-label="Decrease quantity"
                           >
                             <Minus size={12} />
                           </button>
-                          <span className="w-8 text-center text-sm text-white">
+                          <span className="w-8 text-center text-sm text-zinc-900">
                             {item.quantity}
                           </span>
                           <button
                             onClick={() =>
                               updateQuantity(item.id, item.quantity + 1)
                             }
-                            className="w-8 h-8 flex items-center justify-center text-white/60 hover:text-white hover:bg-white/10 transition-colors duration-150"
+                            className="w-8 h-8 flex items-center justify-center text-zinc-400 hover:text-zinc-900 hover:bg-zinc-50 transition-colors duration-150"
                             aria-label="Increase quantity"
                           >
                             <Plus size={12} />
@@ -223,12 +223,12 @@ export default function CartPage() {
                         </div>
 
                         <div className="flex items-center gap-4">
-                          <p className="text-white text-sm font-medium">
+                          <p className="text-zinc-900 text-sm font-medium">
                             US${(item.priceNum * item.quantity).toFixed(0)}
                           </p>
                           <button
                             onClick={() => removeItem(item.id)}
-                            className="text-white/30 hover:text-white transition-colors duration-150"
+                            className="text-zinc-300 hover:text-zinc-900 transition-colors duration-150"
                             aria-label="Remove item"
                           >
                             <X size={14} />
@@ -243,41 +243,41 @@ export default function CartPage() {
 
             {/* ── Order Summary ── */}
             <div className="lg:col-span-1">
-              <div className="border border-white/10 p-6 flex flex-col gap-5 sticky top-24">
-                <p className="eyebrow text-white/60">Order Summary</p>
+              <div className="border border-zinc-100 p-6 flex flex-col gap-5 sticky top-24">
+                <p className="eyebrow text-zinc-500">Order Summary</p>
 
                 <div className="flex flex-col gap-3 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-white/60">
+                    <span className="text-zinc-500">
                       Subtotal ({count} item{count !== 1 ? "s" : ""})
                     </span>
-                    <span className="text-white">US${subtotal.toFixed(0)}</span>
+                    <span className="text-zinc-900">US${subtotal.toFixed(0)}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-white/60">Shipping</span>
-                    <span className="text-white/60">
+                    <span className="text-zinc-500">Shipping</span>
+                    <span className="text-zinc-400">
                       Calculated at checkout
                     </span>
                   </div>
                 </div>
 
-                <div className="border-t border-white/10 pt-4 flex justify-between">
-                  <span className="text-white font-medium">Total</span>
-                  <span className="text-white font-medium">
+                <div className="border-t border-zinc-100 pt-4 flex justify-between">
+                  <span className="text-zinc-900 font-medium">Total</span>
+                  <span className="text-zinc-900 font-medium">
                     US${subtotal.toFixed(0)}
                   </span>
                 </div>
 
                 <button
                   onClick={() => router.push("/checkout")}
-                  className="w-full border border-white/40 bg-transparent text-white py-3.5 text-[0.65rem] tracking-widest uppercase hover:bg-white hover:text-black transition-colors duration-300"
+                  className="w-full border border-zinc-900 bg-transparent text-zinc-900 py-3.5 text-[0.65rem] tracking-widest uppercase hover:bg-zinc-900 hover:text-white transition-colors duration-300"
                 >
                   Proceed to Checkout
                 </button>
 
                 <Link
                   href="/collections"
-                  className="text-center text-[0.6rem] tracking-widest uppercase text-white/40 hover:text-white transition-colors duration-200"
+                  className="text-center text-[0.6rem] tracking-widest uppercase text-zinc-400 hover:text-zinc-900 transition-colors duration-200"
                 >
                   Continue Shopping
                 </Link>

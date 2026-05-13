@@ -286,7 +286,7 @@ export default function CollectionsPage() {
   };
 
   return (
-    <main className="bg-black text-white min-h-screen overflow-x-hidden">
+    <main className="bg-white text-zinc-900 min-h-screen overflow-x-hidden">
       {/* ── VIDEO STRIP ─────────────────────────────────────────────────── */}
       <section className="relative w-full h-[52vh] overflow-hidden">
         <video
@@ -332,13 +332,13 @@ export default function CollectionsPage() {
       </section>
 
       {/* ── STICKY NAV ──────────────────────────────────────────────────── */}
-      <nav className="sticky top-16 z-30 bg-black/90 backdrop-blur-md border-b border-white/8">
+      <nav className="sticky top-16 z-30 bg-white/90 backdrop-blur-md border-b border-zinc-100">
         <div className="max-w-360 mx-auto px-8 md:px-16 flex items-center gap-10 h-14 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {navItems.map((item) => (
             <button
               key={item.id}
               onClick={() => scrollTo(item.id)}
-              className="eyebrow text-white/70 hover:text-white transition-colors duration-300 whitespace-nowrap shrink-0 cursor-pointer"
+              className="eyebrow text-zinc-500 hover:text-zinc-900 transition-colors duration-300 whitespace-nowrap shrink-0 cursor-pointer"
             >
               {item.label}
             </button>
@@ -355,13 +355,13 @@ export default function CollectionsPage() {
             viewport={{ once: true }}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           >
-            <p className="eyebrow text-white mb-3">Shop By Category</p>
-            <h3 className="text-white">Everything We Make</h3>
+            <p className="eyebrow text-zinc-500 mb-3">Shop By Category</p>
+            <h3 className="text-zinc-900">Everything We Make</h3>
           </motion.div>
         </div>
 
         <motion.div
-          className="grid grid-cols-2 md:grid-cols-5 gap-px bg-white/5"
+          className="grid grid-cols-2 md:grid-cols-5 gap-px bg-zinc-100"
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
@@ -382,7 +382,7 @@ export default function CollectionsPage() {
                   transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
                 },
               }}
-              className="group relative bg-black overflow-hidden aspect-3/4 cursor-pointer text-left"
+              className="group relative bg-white overflow-hidden aspect-3/4 cursor-pointer text-left"
             >
               <Image
                 src={card.img}
@@ -403,7 +403,7 @@ export default function CollectionsPage() {
         </motion.div>
       </section>
 
-      <div className="w-full h-px bg-white/8" />
+      <div className="w-full h-px bg-zinc-100" />
 
       {/* ── COLLECTION SECTIONS ──────────────────────────────────────────── */}
       {collections.map((col, i) => (
@@ -526,7 +526,7 @@ export default function CollectionsPage() {
           {/* Product grid */}
           <div className="max-w-360 mx-auto px-6 md:px-12 lg:px-16 pt-14 pb-24">
             <motion.div
-              className={`grid gap-px bg-white/5 ${
+              className={`grid gap-px bg-zinc-100 ${
                 col.cols === 3
                   ? "grid-cols-2 md:grid-cols-3"
                   : "grid-cols-2 md:grid-cols-4"
@@ -550,7 +550,7 @@ export default function CollectionsPage() {
                       transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] },
                     },
                   }}
-                  className="group bg-black"
+                  className="group bg-white"
                 >
                   <Link href={product.href} className="block">
                     <div className="relative overflow-hidden aspect-3/4">
@@ -570,12 +570,12 @@ export default function CollectionsPage() {
                       </span>
                     </div>
 
-                    <div className="p-5 border-t border-white/8">
-                      <p className="eyebrow text-white/70 mb-2">
+                      <div className="p-5 border-t border-zinc-100">
+                      <p className="eyebrow text-zinc-500 mb-2">
                         {col.subtitle}
                       </p>
-                      <h5 className="text-white">{product.name}</h5>
-                      <p className="text-white/70 mt-2">{product.price}</p>
+                      <h5 className="text-zinc-900">{product.name}</h5>
+                      <p className="text-zinc-600 mt-2">{product.price}</p>
                     </div>
                   </Link>
                   <div className="px-5 pb-5">
@@ -603,15 +603,15 @@ export default function CollectionsPage() {
           </div>
 
           {i < collections.length - 1 && (
-            <div className="w-full h-px bg-white/5" />
+            <div className="w-full h-px bg-zinc-100" />
           )}
         </section>
       ))}
 
       {/* ── BOTTOM CTA ───────────────────────────────────────────────────── */}
-      <section className="border-t border-white/10 py-40 px-8 flex flex-col items-center text-center gap-8">
+      <section className="border-t border-zinc-100 py-40 px-8 flex flex-col items-center text-center gap-8">
         <motion.p
-          className="eyebrow text-white"
+          className="eyebrow text-zinc-500"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
@@ -619,7 +619,7 @@ export default function CollectionsPage() {
           The Full Collection
         </motion.p>
         <motion.h3
-          className="max-w-lg text-white"
+          className="max-w-lg text-zinc-900"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -628,7 +628,7 @@ export default function CollectionsPage() {
           Every Piece Is a Decision. Make Yours.
         </motion.h3>
         <motion.p
-          className="text-white/65 max-w-sm"
+          className="text-zinc-500 max-w-sm"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}

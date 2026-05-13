@@ -28,7 +28,7 @@ function Field({
 }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <label className="text-[0.6rem] tracking-widest uppercase text-white/50">
+      <label className="text-[0.6rem] tracking-widest uppercase text-zinc-500">
         {label}
       </label>
       {children}
@@ -38,7 +38,7 @@ function Field({
 }
 
 const inputCls =
-  "bg-white/5 border border-white/20 text-white placeholder-white/30 px-4 py-3 text-sm focus:outline-none focus:border-white/60 transition-colors duration-200 w-full";
+  "bg-zinc-50 border border-zinc-200 text-zinc-900 placeholder-zinc-400 px-4 py-3 text-sm focus:outline-none focus:border-zinc-400 transition-colors duration-200 w-full";
 
 function generateOrderId() {
   return (
@@ -88,11 +88,11 @@ export default function CheckoutPage() {
   /* Redirect empty cart */
   if (count === 0 && step !== "confirmed") {
     return (
-      <main className="dark min-h-screen bg-black text-white flex flex-col items-center justify-center gap-6 px-6">
-        <p className="text-white/60 text-sm">Your cart is empty.</p>
+      <main className="min-h-screen bg-white text-zinc-900 flex flex-col items-center justify-center gap-6 px-6">
+        <p className="text-zinc-500 text-sm">Your cart is empty.</p>
         <Link
           href="/collections"
-          className="border border-white/40 text-white px-8 py-3 text-[0.65rem] tracking-widest uppercase hover:bg-white hover:text-black transition-colors duration-300"
+          className="border border-zinc-900 text-zinc-900 px-8 py-3 text-[0.65rem] tracking-widest uppercase hover:bg-zinc-900 hover:text-white transition-colors duration-300"
         >
           Shop Collections
         </Link>
@@ -126,7 +126,7 @@ export default function CheckoutPage() {
   /* ── Confirmed Screen ── */
   if (step === "confirmed") {
     return (
-      <main className="dark min-h-screen bg-black text-white flex flex-col items-center justify-center px-6 py-20 text-center">
+      <main className="min-h-screen bg-white text-zinc-900 flex flex-col items-center justify-center px-6 py-20 text-center">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -134,7 +134,7 @@ export default function CheckoutPage() {
           className="flex flex-col items-center gap-6 max-w-sm"
         >
           {/* Checkmark */}
-          <div className="w-16 h-16 border border-white/30 flex items-center justify-center">
+          <div className="w-16 h-16 border border-zinc-200 flex items-center justify-center">
             <svg
               width="24"
               height="24"
@@ -149,29 +149,29 @@ export default function CheckoutPage() {
             </svg>
           </div>
 
-          <p className="eyebrow text-white/50">Order Placed</p>
+          <p className="eyebrow text-zinc-500">Order Placed</p>
           <h1 className="text-2xl font-light tracking-tight">
             You&apos;re in the system.
           </h1>
-          <p className="text-white/60 text-sm leading-relaxed">
-            Order <span className="text-white font-medium">{orderId}</span> is
+          <p className="text-zinc-600 text-sm leading-relaxed">
+            Order <span className="text-zinc-900 font-medium">{orderId}</span> is
             confirmed. We&apos;ll send updates to{" "}
-            <span className="text-white">{form.email}</span> and WhatsApp.
+            <span className="text-zinc-900">{form.email}</span> and WhatsApp.
           </p>
-          <p className="text-white/40 text-xs leading-relaxed">
+          <p className="text-zinc-400 text-xs leading-relaxed">
             Expect delivery in 3–7 business days depending on your location.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 w-full mt-4">
             <Link
               href="/collections"
-              className="flex-1 border border-white/40 bg-transparent text-white px-6 py-3 text-[0.6rem] tracking-widest uppercase hover:bg-white hover:text-black transition-colors duration-300 text-center"
+              className="flex-1 border border-zinc-900 bg-transparent text-zinc-900 px-6 py-3 text-[0.6rem] tracking-widest uppercase hover:bg-zinc-900 hover:text-white transition-colors duration-300 text-center"
             >
               Keep Shopping
             </Link>
             <Link
               href="/tracking"
-              className="flex-1 border border-white/20 text-white/70 px-6 py-3 text-[0.6rem] tracking-widest uppercase hover:border-white/50 hover:text-white transition-colors duration-300 text-center"
+              className="flex-1 border border-zinc-200 text-zinc-600 px-6 py-3 text-[0.6rem] tracking-widest uppercase hover:border-zinc-400 hover:text-zinc-900 transition-colors duration-300 text-center"
             >
               Track Order
             </Link>
@@ -182,14 +182,14 @@ export default function CheckoutPage() {
   }
 
   return (
-    <main className="dark min-h-screen bg-black text-white pt-24 pb-32">
+    <main className="min-h-screen bg-white text-zinc-900 pt-24 pb-32">
       <div className="max-w-360 mx-auto px-6 md:px-12">
         {/* Header */}
         <div className="mb-10">
-          <p className="eyebrow text-white/60 mb-2">
+          <p className="eyebrow text-zinc-500 mb-2">
             <Link
               href="/cart"
-              className="hover:text-white transition-colors duration-200"
+              className="hover:text-zinc-900 transition-colors duration-200"
             >
               Cart
             </Link>
@@ -211,14 +211,14 @@ export default function CheckoutPage() {
             onClick={() => step === "review" && setStep("details")}
             className={
               step === "details"
-                ? "text-white"
-                : "text-white/40 hover:text-white transition-colors duration-200"
+                ? "text-zinc-900"
+                : "text-zinc-400 hover:text-zinc-900 transition-colors duration-200"
             }
           >
             1. Details
           </button>
-          <ChevronRight size={10} className="text-white/20" aria-hidden />
-          <span className={step === "review" ? "text-white" : "text-white/30"}>
+          <ChevronRight size={10} className="text-zinc-300" aria-hidden />
+          <span className={step === "review" ? "text-zinc-900" : "text-zinc-300"}>
             2. Review
           </span>
         </div>
@@ -240,7 +240,7 @@ export default function CheckoutPage() {
                   }}
                   className="flex flex-col gap-5"
                 >
-                  <p className="eyebrow text-white/50 mb-1">
+                  <p className="eyebrow text-zinc-500 mb-1">
                     Contact & Delivery
                   </p>
 
@@ -359,32 +359,32 @@ export default function CheckoutPage() {
                       placeholder="Any special instructions for your delivery"
                       autoComplete="off"
                       rows={3}
-                      className="bg-white/5 border border-white/20 text-white placeholder-white/30 px-4 py-3 text-sm focus:outline-none focus:border-white/60 transition-colors duration-200 w-full resize-none"
+                      className="bg-zinc-50 border border-zinc-200 text-zinc-900 placeholder-zinc-400 px-4 py-3 text-sm focus:outline-none focus:border-zinc-400 transition-colors duration-200 w-full resize-none"
                     />
                   </Field>
 
                   {/* Payment Method */}
                   <div className="flex flex-col gap-3 mt-2">
-                    <p className="eyebrow text-white/50">Payment Method</p>
+                    <p className="eyebrow text-zinc-500">Payment Method</p>
                     <div className="flex flex-col gap-2">
                       {PAYMENT_METHODS.map((pm) => (
                         <label
                           key={pm.id}
                           className={`flex items-center gap-4 border px-4 py-3 cursor-pointer transition-colors duration-200 ${
                             paymentMethod === pm.id
-                              ? "border-white/60 bg-white/5"
-                              : "border-white/15 hover:border-white/30"
+                              ? "border-zinc-900 bg-zinc-50"
+                              : "border-zinc-200 hover:border-zinc-400"
                           }`}
                         >
                           <div
                             className={`w-3.5 h-3.5 rounded-full border-2 flex items-center justify-center shrink-0 ${
                               paymentMethod === pm.id
-                                ? "border-white"
-                                : "border-white/30"
+                                ? "border-zinc-900"
+                                : "border-zinc-300"
                             }`}
                           >
                             {paymentMethod === pm.id && (
-                              <div className="w-1.5 h-1.5 rounded-full bg-white" />
+                              <div className="w-1.5 h-1.5 rounded-full bg-zinc-900" />
                             )}
                           </div>
                           <input
@@ -395,7 +395,7 @@ export default function CheckoutPage() {
                             onChange={() => setPaymentMethod(pm.id)}
                             className="sr-only"
                           />
-                          <span className="text-sm text-white">{pm.label}</span>
+                          <span className="text-sm text-zinc-900">{pm.label}</span>
                         </label>
                       ))}
                     </div>
@@ -403,7 +403,7 @@ export default function CheckoutPage() {
 
                   <button
                     type="submit"
-                    className="mt-2 w-full border border-white/40 bg-transparent text-white py-3.5 text-[0.65rem] tracking-widest uppercase hover:bg-white hover:text-black transition-colors duration-300"
+                    className="mt-2 w-full border border-zinc-900 bg-transparent text-zinc-900 py-3.5 text-[0.65rem] tracking-widest uppercase hover:bg-zinc-900 hover:text-white transition-colors duration-300"
                   >
                     Review Order
                   </button>
@@ -419,33 +419,33 @@ export default function CheckoutPage() {
                   transition={{ duration: 0.25 }}
                   className="flex flex-col gap-6"
                 >
-                  <p className="eyebrow text-white/50 mb-1">Review & Confirm</p>
+                  <p className="eyebrow text-zinc-500 mb-1">Review & Confirm</p>
 
                   {/* Delivery Details */}
-                  <div className="border border-white/10 p-5 flex flex-col gap-3">
+                  <div className="border border-zinc-100 p-5 flex flex-col gap-3">
                     <div className="flex items-center justify-between">
-                      <p className="eyebrow text-white/60">Delivery To</p>
+                      <p className="eyebrow text-zinc-500">Delivery To</p>
                       <button
                         onClick={() => setStep("details")}
-                        className="text-[0.6rem] tracking-widest uppercase text-white/40 hover:text-white transition-colors duration-200"
+                        className="text-[0.6rem] tracking-widest uppercase text-zinc-400 hover:text-zinc-900 transition-colors duration-200"
                       >
                         Edit
                       </button>
                     </div>
-                    <div className="text-sm text-white/80 leading-relaxed">
+                    <div className="text-sm text-zinc-700 leading-relaxed">
                       <p>
                         {form.firstName} {form.lastName}
                       </p>
-                      <p className="text-white/50">{form.email}</p>
-                      <p className="text-white/50">{form.phone}</p>
-                      <p className="text-white/50 mt-1">
+                      <p className="text-zinc-500">{form.email}</p>
+                      <p className="text-zinc-500">{form.phone}</p>
+                      <p className="text-zinc-500 mt-1">
                         {form.address}, {form.city}
                         {form.region ? `, ${form.region}` : ""}, {form.country}
                       </p>
                     </div>
-                    <div className="border-t border-white/8 pt-3">
-                      <p className="eyebrow text-white/60 mb-1">Payment</p>
-                      <p className="text-sm text-white/80">
+                    <div className="border-t border-zinc-100 pt-3">
+                      <p className="eyebrow text-zinc-500 mb-1">Payment</p>
+                      <p className="text-sm text-zinc-700">
                         {
                           PAYMENT_METHODS.find((p) => p.id === paymentMethod)
                             ?.label
@@ -453,19 +453,19 @@ export default function CheckoutPage() {
                       </p>
                     </div>
                     {form.notes && (
-                      <div className="border-t border-white/8 pt-3">
-                        <p className="eyebrow text-white/60 mb-1">Notes</p>
-                        <p className="text-sm text-white/60">{form.notes}</p>
+                      <div className="border-t border-zinc-100 pt-3">
+                        <p className="eyebrow text-zinc-500 mb-1">Notes</p>
+                        <p className="text-sm text-zinc-600">{form.notes}</p>
                       </div>
                     )}
                   </div>
 
                   {/* Items */}
-                  <div className="flex flex-col gap-px bg-white/8">
+                  <div className="flex flex-col gap-px bg-zinc-100">
                     {items.map((item) => (
                       <div
                         key={item.id}
-                        className="bg-black flex items-center gap-4 px-5 py-4"
+                        className="bg-white flex items-center gap-4 px-5 py-4"
                       >
                         <div className="relative w-12 h-14 shrink-0 overflow-hidden">
                           <Image
@@ -477,14 +477,14 @@ export default function CheckoutPage() {
                           />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-white text-sm truncate">
+                          <p className="text-zinc-900 text-sm truncate">
                             {item.name}
                           </p>
-                          <p className="text-white/50 text-xs mt-0.5">
+                          <p className="text-zinc-500 text-xs mt-0.5">
                             {item.category} · Qty {item.quantity}
                           </p>
                         </div>
-                        <p className="text-white text-sm shrink-0">
+                        <p className="text-zinc-900 text-sm shrink-0">
                           US${(item.priceNum * item.quantity).toFixed(0)}
                         </p>
                       </div>
@@ -494,14 +494,14 @@ export default function CheckoutPage() {
                   <div className="flex gap-3">
                     <button
                       onClick={() => setStep("details")}
-                      className="flex-1 border border-white/20 text-white/60 py-3.5 text-[0.65rem] tracking-widest uppercase hover:border-white/40 hover:text-white transition-colors duration-300"
+                      className="flex-1 border border-zinc-200 text-zinc-600 py-3.5 text-[0.65rem] tracking-widest uppercase hover:border-zinc-400 hover:text-zinc-900 transition-colors duration-300"
                     >
                       Back
                     </button>
                     <button
                       onClick={handlePlaceOrder}
                       disabled={loading}
-                      className="flex-1 border border-white/40 bg-transparent text-white py-3.5 text-[0.65rem] tracking-widest uppercase hover:bg-white hover:text-black transition-colors duration-300 disabled:opacity-40 disabled:cursor-not-allowed"
+                      className="flex-1 border border-zinc-900 bg-transparent text-zinc-900 py-3.5 text-[0.65rem] tracking-widest uppercase hover:bg-zinc-900 hover:text-white transition-colors duration-300 disabled:opacity-40 disabled:cursor-not-allowed"
                     >
                       {loading ? "Placing Order…" : "Place Order"}
                     </button>
@@ -513,8 +513,8 @@ export default function CheckoutPage() {
 
           {/* ── Right: Summary ── */}
           <div className="lg:col-span-1">
-            <div className="border border-white/10 p-6 flex flex-col gap-5 sticky top-24">
-              <p className="eyebrow text-white/60">
+            <div className="border border-zinc-100 p-6 flex flex-col gap-5 sticky top-24">
+              <p className="eyebrow text-zinc-500">
                 Summary ({count} item{count !== 1 ? "s" : ""})
               </p>
 
@@ -531,30 +531,30 @@ export default function CheckoutPage() {
                       />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-white text-xs truncate">{item.name}</p>
-                      <p className="text-white/40 text-[0.6rem]">
+                      <p className="text-zinc-900 text-xs truncate">{item.name}</p>
+                      <p className="text-zinc-400 text-[0.6rem]">
                         ×{item.quantity}
                       </p>
                     </div>
-                    <p className="text-white text-xs shrink-0">
+                    <p className="text-zinc-900 text-xs shrink-0">
                       US${(item.priceNum * item.quantity).toFixed(0)}
                     </p>
                   </div>
                 ))}
               </div>
 
-              <div className="border-t border-white/10 pt-4 flex flex-col gap-2 text-sm">
+              <div className="border-t border-zinc-100 pt-4 flex flex-col gap-2 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-white/60">Subtotal</span>
-                  <span className="text-white">US${subtotal.toFixed(0)}</span>
+                  <span className="text-zinc-500">Subtotal</span>
+                  <span className="text-zinc-900">US${subtotal.toFixed(0)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-white/60">Shipping</span>
-                  <span className="text-white/50">TBD</span>
+                  <span className="text-zinc-500">Shipping</span>
+                  <span className="text-zinc-400">TBD</span>
                 </div>
                 <div className="flex justify-between font-medium mt-1">
-                  <span className="text-white">Total</span>
-                  <span className="text-white">US${subtotal.toFixed(0)}</span>
+                  <span className="text-zinc-900">Total</span>
+                  <span className="text-zinc-900">US${subtotal.toFixed(0)}</span>
                 </div>
               </div>
             </div>

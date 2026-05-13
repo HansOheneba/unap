@@ -1,5 +1,7 @@
 @AGENTS.md
 
+- Whenever you make any changes to the project run `npm run build` to ensure that your chanegs did not break anything before saying you are done
+
 ## Project: Unapologetic — Agent Learnings
 
 ### Layout & Sizing

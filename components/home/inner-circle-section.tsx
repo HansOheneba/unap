@@ -63,7 +63,7 @@ export default function InnerCircleSection() {
   }
 
   return (
-    <section className="bg-black text-white overflow-hidden">
+    <section className="bg-white text-zinc-900 overflow-hidden">
       {/* ── FULL-BLEED HEADER ─────────────────────────── */}
       <div className="relative flex flex-col items-center justify-center text-center py-56 px-8 overflow-hidden">
         <Image
@@ -97,32 +97,32 @@ export default function InnerCircleSection() {
       <FadeIn className="py-20 px-8 md:px-20 max-w-360 mx-auto text-center">
         <h3 className="text-[#564787]">
           Most communities are built on transactions.
-          <span className="text-white"> This one is built on conviction.</span>
+          <span className="text-zinc-900"> This one is built on conviction.</span>
         </h3>
       </FadeIn>
 
       {/* ── DIVIDER ───────────────────────────────────── */}
-      <div className="border-t border-white/5" />
+      <div className="border-t border-zinc-100" />
 
-      {/* ── PRIVILEGES GRID ───────────────────────────── */}
-      <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-x md:divide-y-0 divide-white/5 max-w-360 mx-auto">
+      {/* ── PRIVILEGES GRID ───────────────────────────────── */}
+      <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-x md:divide-y-0 divide-zinc-100 max-w-360 mx-auto">
         {privileges.map((p, i) => {
           const Icon = p.icon;
           return (
             <FadeIn
               key={p.name}
               delay={i * 0.1}
-              className="px-10 md:px-16 py-14 flex flex-col gap-5 group border-b border-white/5 last:border-b-0 md:last:border-b md:nth-3:border-b-0 md:nth-4:border-b-0"
+              className="px-10 md:px-16 py-14 flex flex-col gap-5 group border-b border-zinc-100 last:border-b-0 md:last:border-b md:nth-3:border-b-0 md:nth-4:border-b-0"
             >
               <Icon
                 size={26}
                 strokeWidth={1}
-                className="text-white/65 group-hover:text-white transition-colors duration-500"
+                className="text-zinc-400 group-hover:text-zinc-900 transition-colors duration-500"
               />
-              <p className="eyebrow text-white/75 group-hover:text-white transition-colors duration-500">
+              <p className="eyebrow text-zinc-600 group-hover:text-zinc-900 transition-colors duration-500">
                 {p.name}
               </p>
-              <p className="text-white/60 text-sm leading-relaxed group-hover:text-white/85 transition-colors duration-500 max-w-sm">
+              <p className="text-zinc-500 text-sm leading-relaxed group-hover:text-zinc-800 transition-colors duration-500 max-w-sm">
                 {p.line}
               </p>
             </FadeIn>
@@ -131,9 +131,9 @@ export default function InnerCircleSection() {
       </div>
 
       {/* ── DIVIDER ───────────────────────────────────── */}
-      <div className="border-t border-white/5" />
+      <div className="border-t border-zinc-100" />
 
-      {/* ── SPLIT: statement + signup ─────────────────── */}
+      {/* ── SPLIT: statement + signup ─────────────────────── */}
       <div className="grid grid-cols-1 md:grid-cols-2">
         {/* Image side */}
         <div className="relative min-h-96 md:min-h-0 order-2 md:order-1">
@@ -144,7 +144,7 @@ export default function InnerCircleSection() {
             className="object-cover brightness-40"
           />
           <div
-            className="absolute inset-0 bg-linear-to-r from-transparent to-black hidden md:block"
+            className="absolute inset-0 bg-linear-to-r from-transparent to-white hidden md:block"
             style={{ clipPath: "polygon(65% 0, 100% 0, 100% 100%, 45% 100%)" }}
           />
           <div className="absolute inset-0 flex flex-col justify-end p-10">
@@ -158,14 +158,14 @@ export default function InnerCircleSection() {
         {/* Signup side */}
         <div className="order-1 md:order-2 px-10 md:px-16 py-24 flex flex-col justify-center gap-10">
           <FadeIn>
-            <p className="eyebrow text-white/65 mb-4">Step Inside</p>
-            <h2 className="text-white max-w-sm">
+            <p className="eyebrow text-zinc-500 mb-4">Step Inside</p>
+            <h2 className="text-zinc-900 max-w-sm">
               Your Name Belongs on This List.
             </h2>
           </FadeIn>
 
           <FadeIn delay={0.15}>
-            <p className="text-white/70 max-w-sm leading-relaxed">
+            <p className="text-zinc-600 max-w-sm leading-relaxed">
               Drop your email. No spam. No noise. Only what matters. When we
               move, you will be the first to know. When we drop, you will have
               first access. When we speak, it will be worth reading.
@@ -180,8 +180,8 @@ export default function InnerCircleSection() {
                 transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
                 className="flex flex-col gap-3"
               >
-                <p className="eyebrow text-white">You are in.</p>
-                <p className="text-white/65 text-sm">
+                <p className="eyebrow text-zinc-900">You are in.</p>
+                <p className="text-zinc-500 text-sm">
                   Welcome to the Inner Circle. Watch your inbox.
                 </p>
               </motion.div>
@@ -196,11 +196,11 @@ export default function InnerCircleSection() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Your email"
-                  className="flex-1 bg-white/8 border border-white/25 text-white placeholder:text-white/55 px-6 py-3 text-[0.7rem] tracking-widest uppercase outline-none focus:border-white/50 transition-colors duration-300"
+                  className="flex-1 bg-zinc-50 border border-zinc-200 text-zinc-900 placeholder:text-zinc-400 px-6 py-3 text-[0.7rem] tracking-widest uppercase outline-none focus:border-zinc-400 transition-colors duration-300"
                 />
                 <button
                   type="submit"
-                  className="border border-white/40 bg-transparent text-white px-8 py-3 text-[0.7rem] tracking-widest uppercase hover:bg-white hover:text-black transition-colors duration-300 shrink-0"
+                  className="border border-zinc-900 bg-transparent text-zinc-900 px-8 py-3 text-[0.7rem] tracking-widest uppercase hover:bg-zinc-900 hover:text-white transition-colors duration-300 shrink-0"
                 >
                   Join
                 </button>
@@ -209,7 +209,7 @@ export default function InnerCircleSection() {
           </FadeIn>
 
           <FadeIn delay={0.4}>
-            <p className="text-white/65 text-xs tracking-wider uppercase">
+            <p className="text-zinc-400 text-xs tracking-wider uppercase">
               No spam. No selling your data. Just signal.
             </p>
           </FadeIn>
@@ -217,14 +217,14 @@ export default function InnerCircleSection() {
       </div>
 
       {/* ── DIVIDER ───────────────────────────────────── */}
-      <div className="border-t border-white/5" />
+      <div className="border-t border-zinc-100" />
 
-      {/* ── CLOSING STATEMENT ─────────────────────────── */}
+      {/* ── CLOSING STATEMENT ───────────────────────────────── */}
       <FadeIn className="py-28 px-8 text-center flex flex-col gap-3 items-center">
-        <p className="eyebrow text-white/70">The Standard</p>
+        <p className="eyebrow text-zinc-500">The Standard</p>
         <h4 className="text-[#564787] max-w-2xl">
           The world has enough audiences.
-          <span className="text-white"> We are building a congregation.</span>
+          <span className="text-zinc-900"> We are building a congregation.</span>
         </h4>
       </FadeIn>
     </section>

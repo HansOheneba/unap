@@ -4,7 +4,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 
 export default function CreedCta() {
   return (
-    <section className="bg-black text-white py-32 px-8 md:px-20">
+    <section className="bg-zinc-50 text-zinc-900 py-32 px-8 md:px-20">
       <div className="max-w-360 mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
         {/* Left: text */}
         <div className="flex flex-col gap-8">
@@ -12,7 +12,7 @@ export default function CreedCta() {
 
           <h2 className="max-w-lg">Society Taught You to Shrink</h2>
 
-          <div className="flex flex-col gap-4 text-white/70">
+          <div className="flex flex-col gap-4 text-zinc-600">
             <p>
               They told you to be quiet. To ask permission. To shrink your
               desires, dim your fire, and apologize for the space you occupy.
@@ -37,7 +37,7 @@ export default function CreedCta() {
           />
           {/* subtle corner label */}
           <div className="absolute bottom-5 right-5 pointer-events-none">
-            <p className="eyebrow text-white/70">Unapologetic Since Birth</p>
+            <p className="eyebrow text-zinc-500">Unapologetic Since Birth</p>
           </div>
         </div>
       </div>

@@ -28,10 +28,10 @@ function MobileCollections({ onClose }: { onClose: () => void }) {
   const [expanded, setExpanded] = useState(false);
 
   return (
-    <div className="border-b border-white/8">
+    <div className="border-b border-zinc-100">
       <button
         onClick={() => setExpanded((v) => !v)}
-        className="flex items-center justify-between w-full px-8 py-5 text-white/70 text-xs tracking-widest uppercase hover:text-white transition-colors duration-200"
+        className="flex items-center justify-between w-full px-8 py-5 text-zinc-500 text-xs tracking-widest uppercase hover:text-zinc-900 transition-colors duration-200"
       >
         Collections
         <svg
@@ -63,7 +63,7 @@ function MobileCollections({ onClose }: { onClose: () => void }) {
               key={item.href}
               href={item.href}
               onClick={onClose}
-              className="py-3 pr-8 text-white/40 text-xs tracking-widest uppercase hover:text-white transition-colors duration-200 border-t border-white/5"
+              className="py-3 pr-8 text-zinc-400 text-xs tracking-widest uppercase hover:text-zinc-900 transition-colors duration-200 border-t border-zinc-50"
             >
               {item.label}
             </Link>
@@ -77,9 +77,13 @@ function MobileCollections({ onClose }: { onClose: () => void }) {
 export default function Header() {
   const pathname = usePathname();
   const totalItems = useCartStore((s) => s.totalItems);
+  const isHome = pathname === "/";
   const [scrolled, setScrolled] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const isDark = isHome && !scrolled; // transparent overlay on dark hero video
+  const navCls = isDark ? "text-white" : "text-zinc-900";
+  const iconCls = isDark ? "text-white" : "text-zinc-900";
   const closeTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
@@ -132,9 +136,11 @@ export default function Header() {
     <>
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out ${
-          scrolled
-            ? "bg-black"
-            : "bg-linear-to-b from-black/55 via-black/15 to-transparent"
+          isHome
+            ? scrolled
+              ? "bg-white border-b border-zinc-100 shadow-sm"
+              : "bg-linear-to-b from-black/55 via-black/15 to-transparent"
+            : "bg-white border-b border-zinc-100"
         }`}
       >
         <div className="flex items-center justify-between px-6 md:px-8 py-5">
@@ -148,7 +154,7 @@ export default function Header() {
                   onMouseEnter={() => openDD(link.label)}
                   onMouseLeave={closeDD}
                 >
-                  <button className="flex items-center gap-1 text-white text-xs font-medium tracking-widest uppercase hover:opacity-60 transition-opacity duration-200">
+                  <button className={`flex items-center gap-1 ${navCls} text-xs font-medium tracking-widest uppercase hover:opacity-60 transition-opacity duration-200`}>
                     {link.label}
                     <svg
                       width="8"
@@ -170,7 +176,7 @@ export default function Header() {
                   <div
                     onMouseEnter={() => openDD(link.label)}
                     onMouseLeave={closeDD}
-                    className={`absolute top-full left-0 mt-4 min-w-40 bg-black/90 backdrop-blur-md transition-all duration-200 ${
+                    className={`absolute top-full left-0 mt-4 min-w-40 bg-white shadow-lg border border-zinc-100 backdrop-blur-md transition-all duration-200 ${
                       openDropdown === link.label
                         ? "opacity-100 translate-y-0 pointer-events-auto"
                         : "opacity-0 -translate-y-1 pointer-events-none"
@@ -180,7 +186,7 @@ export default function Header() {
                       <Link
                         key={item.href}
                         href={item.href}
-                        className="block px-5 py-3 text-white text-xs tracking-widest uppercase hover:bg-white/10 transition-colors duration-150"
+                        className="block px-5 py-3 text-zinc-700 text-xs tracking-widest uppercase hover:bg-zinc-50 transition-colors duration-150"
                       >
                         {item.label}
                       </Link>
@@ -191,7 +197,7 @@ export default function Header() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-white text-xs font-medium tracking-widest uppercase hover:opacity-60 transition-opacity duration-200"
+                  className={`${navCls} text-xs font-medium tracking-widest uppercase hover:opacity-60 transition-opacity duration-200`}
                 >
                   {link.label}
                 </Link>
@@ -206,17 +212,17 @@ export default function Header() {
             aria-label="Toggle menu"
           >
             <span
-              className={`block h-px bg-white transition-all duration-300 ease-in-out origin-center ${
+              className={`block h-px transition-all duration-300 ease-in-out origin-center ${isDark ? "bg-white" : "bg-zinc-900"} ${
                 mobileOpen ? "w-6 translate-y-1.5 rotate-45" : "w-6"
               }`}
             />
             <span
-              className={`block h-px bg-white transition-all duration-300 ease-in-out ${
+              className={`block h-px transition-all duration-300 ease-in-out ${isDark ? "bg-white" : "bg-zinc-900"} ${
                 mobileOpen ? "w-0 opacity-0" : "w-4 opacity-100"
               }`}
             />
             <span
-              className={`block h-px bg-white transition-all duration-300 ease-in-out origin-center ${
+              className={`block h-px transition-all duration-300 ease-in-out origin-center ${isDark ? "bg-white" : "bg-zinc-900"} ${
                 mobileOpen ? "w-6 -translate-y-1.5 -rotate-45" : "w-6"
               }`}
             />
@@ -229,7 +235,7 @@ export default function Header() {
             aria-label="Unapologetic home"
           >
             <Image
-              src="/logos/unap_logo_white.png"
+              src={isDark ? "/logos/unap_logo_white.png" : "/logos/unap_logo_black.png"}
               alt="Unapologetic"
               width={44}
               height={44}
@@ -242,7 +248,7 @@ export default function Header() {
           <div className="flex items-center gap-5">
             <button
               aria-label="Search"
-              className="text-white hover:opacity-60 transition-opacity duration-200"
+              className={`${iconCls} hover:opacity-60 transition-opacity duration-200`}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -262,7 +268,7 @@ export default function Header() {
             <Link
               href="/tracking"
               aria-label="Track order"
-              className="text-white hover:opacity-60 transition-opacity duration-200"
+              className={`${iconCls} hover:opacity-60 transition-opacity duration-200`}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -283,7 +289,7 @@ export default function Header() {
             <Link
               href="/account"
               aria-label="Account"
-              className="text-white hover:opacity-60 transition-opacity duration-200"
+              className={`${iconCls} hover:opacity-60 transition-opacity duration-200`}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -303,7 +309,7 @@ export default function Header() {
             <Link
               href="/cart"
               aria-label="Cart"
-              className="relative text-white hover:opacity-60 transition-opacity duration-200"
+              className={`relative ${iconCls} hover:opacity-60 transition-opacity duration-200`}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -321,7 +327,9 @@ export default function Header() {
                 <path d="M16 10a4 4 0 0 1-8 0" />
               </svg>
               {totalItems() > 0 && (
-                <span className="absolute -top-1.5 -right-1.5 min-w-4 h-4 flex items-center justify-center bg-white text-black text-[0.5rem] font-bold rounded-full px-0.5">
+                <span
+                  className="absolute -top-1.5 -right-1.5 min-w-4 h-4 flex items-center justify-center bg-zinc-900 text-white text-[0.5rem] font-bold rounded-full px-0.5"
+                >
                   {totalItems()}
                 </span>
               )}
@@ -344,19 +352,19 @@ export default function Header() {
 
       {/* Full-screen panel slides in from left */}
       <div
-        className={`fixed inset-0 z-50 bg-black md:hidden flex flex-col transition-transform duration-500 ease-in-out ${
+        className={`fixed inset-0 z-50 bg-white md:hidden flex flex-col transition-transform duration-500 ease-in-out ${
           mobileOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
         {/* Top bar */}
-        <div className="flex items-center justify-between px-6 py-5 border-b border-white/8">
+        <div className="flex items-center justify-between px-6 py-5 border-b border-zinc-100">
           <Link
             href="/"
             onClick={() => setMobileOpen(false)}
             aria-label="Unapologetic home"
           >
             <Image
-              src="/logos/unap_logo_white.png"
+              src="/logos/unap_logo_black.png"
               alt="Unapologetic"
               width={40}
               height={40}
@@ -367,7 +375,7 @@ export default function Header() {
           <button
             onClick={() => setMobileOpen(false)}
             aria-label="Close menu"
-            className="text-white hover:opacity-60 transition-opacity duration-200"
+            className="text-zinc-900 hover:opacity-60 transition-opacity duration-200"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -400,11 +408,11 @@ export default function Header() {
                 href={link.href}
                 onClick={() => setMobileOpen(false)}
                 style={{ transitionDelay: mobileOpen ? `${i * 60}ms` : "0ms" }}
-                className={`block px-8 py-5 border-b border-white/8 text-xs tracking-widest uppercase transition-all duration-500 ${
+                className={`block px-8 py-5 border-b border-zinc-100 text-xs tracking-widest uppercase transition-all duration-500 ${
                   mobileOpen
                     ? "opacity-100 translate-x-0"
                     : "opacity-0 -translate-x-4"
-                } text-white/70 hover:text-white hover:pl-10`}
+                } text-zinc-500 hover:text-zinc-900 hover:pl-10`}
               >
                 {link.label}
               </Link>
@@ -413,12 +421,12 @@ export default function Header() {
         </nav>
 
         {/* Bottom: brand tagline + CTA */}
-        <div className="px-8 py-10 border-t border-white/8 flex flex-col gap-4">
-          <p className="eyebrow text-white/25">Est. 2024 | A Global Movement</p>
+        <div className="px-8 py-10 border-t border-zinc-100 flex flex-col gap-4">
+          <p className="eyebrow text-zinc-400">Est. 2024 | A Global Movement</p>
           <Link
             href="/collections"
             onClick={() => setMobileOpen(false)}
-            className="border border-white/40 bg-transparent text-white px-8 py-3 text-[0.7rem] tracking-widest uppercase hover:bg-white hover:text-black transition-colors duration-300 text-center"
+            className="border border-zinc-900 bg-transparent text-zinc-900 px-8 py-3 text-[0.7rem] tracking-widest uppercase hover:bg-zinc-900 hover:text-white transition-colors duration-300 text-center"
           >
             Shop Now
           </Link>
@@ -426,14 +434,14 @@ export default function Header() {
             <Link
               href="/auth/login"
               onClick={() => setMobileOpen(false)}
-              className="flex-1 border border-white/15 text-white/60 px-4 py-2.5 text-[0.6rem] tracking-widest uppercase hover:text-white hover:border-white/35 transition-colors duration-200 text-center"
+              className="flex-1 border border-zinc-200 text-zinc-500 px-4 py-2.5 text-[0.6rem] tracking-widest uppercase hover:text-zinc-900 hover:border-zinc-400 transition-colors duration-200 text-center"
             >
               Sign In
             </Link>
             <Link
               href="/tracking"
               onClick={() => setMobileOpen(false)}
-              className="flex-1 border border-white/15 text-white/60 px-4 py-2.5 text-[0.6rem] tracking-widest uppercase hover:text-white hover:border-white/35 transition-colors duration-200 text-center"
+              className="flex-1 border border-zinc-200 text-zinc-500 px-4 py-2.5 text-[0.6rem] tracking-widest uppercase hover:text-zinc-900 hover:border-zinc-400 transition-colors duration-200 text-center"
             >
               Track Order
             </Link>

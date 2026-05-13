@@ -63,7 +63,7 @@ const products = [
 
 export default function BoxersPage() {
   return (
-    <main className="bg-black text-white min-h-screen overflow-x-hidden">
+    <main className="bg-white text-zinc-900 min-h-screen overflow-x-hidden">
       {/* ── HERO BANNER ────────────────────────────────────────────── */}
       <section className="relative w-full h-[65vh] overflow-hidden">
         <Image
@@ -108,7 +108,7 @@ export default function BoxersPage() {
       <div className="max-w-360 mx-auto px-6 md:px-12 lg:px-16 pt-10 pb-2">
         <Link
           href="/collections"
-          className="inline-flex items-center gap-2 eyebrow text-white/40 hover:text-white transition-colors duration-300"
+          className="inline-flex items-center gap-2 eyebrow text-zinc-400 hover:text-zinc-900 transition-colors duration-300"
         >
           <ArrowLeft size={14} />
           All Collections
@@ -118,15 +118,15 @@ export default function BoxersPage() {
       {/* ── SIZE CHART NOTE ──────────────────────────────────────────── */}
       <div className="max-w-360 mx-auto px-6 md:px-12 lg:px-16 pt-8 pb-2">
         <motion.div
-          className="relative overflow-hidden border border-white/10 p-6 md:p-8 flex flex-col md:flex-row gap-6 items-start md:items-center justify-between"
+          className="relative overflow-hidden border border-zinc-100 p-6 md:p-8 flex flex-col md:flex-row gap-6 items-start md:items-center justify-between"
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7 }}
         >
           <div>
-            <p className="eyebrow text-white mb-2">Size Reference</p>
-            <p className="text-white/50 text-sm max-w-sm">
+            <p className="eyebrow text-zinc-700 mb-2">Size Reference</p>
+            <p className="text-zinc-500 text-sm max-w-sm">
               Our boxers run true to size. S / M / L / XL / XXL available. Check
               the size chart for exact measurements.
             </p>
@@ -151,15 +151,15 @@ export default function BoxersPage() {
             viewport={{ once: true }}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           >
-            <p className="eyebrow text-white/40 mb-2">
+            <p className="eyebrow text-zinc-400 mb-2">
               {products.length} Styles
             </p>
-            <h3 className="text-white">All Boxers</h3>
+            <h3 className="text-zinc-900">All Boxers</h3>
           </motion.div>
         </div>
 
         <motion.div
-          className="grid grid-cols-2 md:grid-cols-4 gap-px bg-white/5"
+          className="grid grid-cols-2 md:grid-cols-4 gap-px bg-zinc-100"
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
@@ -179,7 +179,7 @@ export default function BoxersPage() {
                   transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] },
                 },
               }}
-              className="group bg-black"
+              className="group bg-white"
             >
               <div className="relative overflow-hidden aspect-3/4">
                 <Image
@@ -193,10 +193,10 @@ export default function BoxersPage() {
                   {product.tag}
                 </span>
               </div>
-              <div className="p-5 border-t border-white/8">
-                <p className="eyebrow text-white/50 mb-2">Boxers</p>
-                <h5 className="text-white">{product.name}</h5>
-                <p className="text-white/60 mt-2">{product.price}</p>
+                <div className="p-5 border-t border-zinc-100">
+                <p className="eyebrow text-zinc-500 mb-2">Boxers</p>
+                <h5 className="text-zinc-900">{product.name}</h5>
+                <p className="text-zinc-600 mt-2">{product.price}</p>
                 <div className="mt-3">
                   <AddToCartButton
                     id={`boxers-${product.id}`}
@@ -214,13 +214,13 @@ export default function BoxersPage() {
 
         {/* Model shot strip */}
         <motion.div
-          className="mt-px grid grid-cols-1 md:grid-cols-2 gap-px bg-white/5"
+          className="mt-px grid grid-cols-1 md:grid-cols-2 gap-px bg-zinc-100"
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
         >
-          <div className="relative aspect-video bg-black overflow-hidden group">
+          <div className="relative aspect-video bg-white overflow-hidden group">
             <Image
               src="/collections/boxers/boxModel.jpg"
               alt="Boxer Model"
@@ -228,7 +228,7 @@ export default function BoxersPage() {
               className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
             />
           </div>
-          <div className="relative aspect-video bg-black overflow-hidden group">
+          <div className="relative aspect-video bg-white overflow-hidden group">
             <Image
               src="/collections/boxers/boxersWhite2.jpeg"
               alt="Boxers White Detail"
@@ -240,9 +240,9 @@ export default function BoxersPage() {
       </section>
 
       {/* ── BOTTOM CTA ───────────────────────────────────────────────── */}
-      <section className="border-t border-white/10 py-32 px-8 flex flex-col items-center text-center gap-8">
+      <section className="border-t border-zinc-100 py-32 px-8 flex flex-col items-center text-center gap-8">
         <motion.h4
-          className="max-w-lg text-white"
+          className="max-w-lg text-zinc-900"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}

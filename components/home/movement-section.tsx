@@ -117,7 +117,7 @@ const testimonials = [
 /* ── Component ─────────────────────────────────────────────── */
 export default function MovementSection() {
   return (
-    <section className="bg-black text-white overflow-hidden">
+    <section className="bg-white text-zinc-900 overflow-hidden">
       {/* ── SPLIT HERO ────────────────────────────────────── */}
       <div className="grid grid-cols-1 md:grid-cols-2 min-h-[70vh]">
         {/* Left: Image */}
@@ -130,25 +130,25 @@ export default function MovementSection() {
           />
           {/* diagonal cut overlay */}
           <div
-            className="absolute inset-0 bg-linear-to-r from-transparent to-black hidden md:block"
+            className="absolute inset-0 bg-linear-to-r from-transparent to-white hidden md:block"
             style={{ clipPath: "polygon(60% 0, 100% 0, 100% 100%, 40% 100%)" }}
           />
         </div>
 
         {/* Right: Statement */}
-        <div className="flex flex-col justify-center px-10 md:px-16 py-20 gap-8">
+        <div className="flex flex-col justify-center px-10 md:px-16 py-20 gap-8 bg-white">
           <FadeIn>
-            <p className="eyebrow text-white/65 mb-6">004 | The Movement</p>
+            <p className="eyebrow text-zinc-500 mb-6">004 | The Movement</p>
             <h2 className="leading-none">
               We Are Not
               <br />
-              <span className="text-white/70">a Brand.</span>
+              <span className="text-zinc-400">a Brand.</span>
               <br />
               We Are a Tribe.
             </h2>
           </FadeIn>
           <FadeIn delay={0.2}>
-            <p className="text-white/75 max-w-sm">
+            <p className="text-zinc-600 max-w-sm">
               Started in 2024 by those who were told to tone it down. Built for
               everyone who never did. This is not fashion. This is a frequency.
               Either you resonate or you do not.
@@ -163,10 +163,10 @@ export default function MovementSection() {
       </div>
 
       {/* ── DIVIDER LINE ─────────────────────────────────── */}
-      <div className="border-t border-white/5" />
+      <div className="border-t border-zinc-100" />
 
       {/* ── STATS ────────────────────────────────────────── */}
-      <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-y md:divide-y-0 divide-white/5">
+      <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-y md:divide-y-0 divide-zinc-100">
         {stats.map((stat, i) => (
           <FadeIn
             key={stat.label}
@@ -174,7 +174,7 @@ export default function MovementSection() {
             className="px-10 py-16 flex flex-col gap-4"
           >
             <div
-              className="text-white"
+              className="text-zinc-900"
               style={{
                 fontSize: "clamp(3rem, 6vw, 5rem)",
                 fontWeight: 800,
@@ -188,14 +188,14 @@ export default function MovementSection() {
                 symbol={stat.symbol}
               />
             </div>
-            <p className="eyebrow text-white/60">{stat.label}</p>
-            <p className="text-white/65 text-sm leading-relaxed">{stat.sub}</p>
+            <p className="eyebrow text-zinc-500">{stat.label}</p>
+            <p className="text-zinc-600 text-sm leading-relaxed">{stat.sub}</p>
           </FadeIn>
         ))}
       </div>
 
       {/* ── DIVIDER LINE ─────────────────────────────────── */}
-      <div className="border-t border-white/5" />
+      <div className="border-t border-zinc-100" />
 
       {/* ── FULL-BLEED STATEMENT ─────────────────────────── */}
       <div className="relative py-40 px-8 flex items-center justify-center overflow-hidden">
@@ -220,17 +220,17 @@ export default function MovementSection() {
       </div>
 
       {/* ── DIVIDER LINE ─────────────────────────────────── */}
-      <div className="border-t border-white/5" />
+      <div className="border-t border-zinc-100" />
 
       {/* ── TESTIMONIALS ─────────────────────────────────── */}
       <div className="px-8 md:px-20 py-32 max-w-360 mx-auto flex flex-col gap-16">
         <FadeIn>
-          <p className="eyebrow text-white/65">Voices from the Tribe</p>
+          <p className="eyebrow text-zinc-500">Voices from the Tribe</p>
         </FadeIn>
 
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-px bg-white/5">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-px bg-zinc-100">
           {/* Large card with image background */}
-          <FadeIn className="md:col-span-5 bg-black relative overflow-hidden min-h-80 flex flex-col justify-end">
+          <FadeIn className="md:col-span-5 bg-white relative overflow-hidden min-h-80 flex flex-col justify-end">
             <Image
               src="/home/boxModel.jpg"
               alt={testimonials[0].name}
@@ -262,15 +262,15 @@ export default function MovementSection() {
           </FadeIn>
 
           {/* Two stacked cards */}
-          <div className="md:col-span-7 flex flex-col gap-px bg-white/5">
+          <div className="md:col-span-7 flex flex-col gap-px bg-zinc-100">
             {testimonials.slice(1).map((t, i) => (
               <FadeIn
                 key={t.name}
                 delay={0.15 * (i + 1)}
-                className="bg-white/5 p-10 flex flex-col gap-5 justify-between min-h-52"
+                className="bg-zinc-50 p-10 flex flex-col gap-5 justify-between min-h-52"
               >
                 <span
-                  className="text-white/55"
+                  className="text-zinc-300"
                   style={{
                     fontSize: "4rem",
                     lineHeight: 0.8,
@@ -278,12 +278,12 @@ export default function MovementSection() {
                     fontWeight: 800,
                   }}
                 >
-                  "
+                  &quot;
                 </span>
-                <p className="text-white/90 text-lg leading-relaxed italic">
+                <p className="text-zinc-800 text-lg leading-relaxed italic">
                   {t.quote}
                 </p>
-                <p className="eyebrow text-white/75">
+                <p className="eyebrow text-zinc-500">
                   {t.name} / {t.location}
                 </p>
               </FadeIn>

@@ -30,7 +30,7 @@ const products = [
 
 export default function TracksPage() {
   return (
-    <main className="bg-black text-white min-h-screen overflow-x-hidden">
+    <main className="bg-white text-zinc-900 min-h-screen overflow-x-hidden">
       {/* ── HERO BANNER ────────────────────────────────────────────── */}
       <section className="relative w-full h-[65vh] overflow-hidden">
         <Image
@@ -76,7 +76,7 @@ export default function TracksPage() {
       <div className="max-w-360 mx-auto px-6 md:px-12 lg:px-16 pt-10 pb-2">
         <Link
           href="/collections"
-          className="inline-flex items-center gap-2 eyebrow text-white/40 hover:text-white transition-colors duration-300"
+          className="inline-flex items-center gap-2 eyebrow text-zinc-400 hover:text-zinc-900 transition-colors duration-300"
         >
           <ArrowLeft size={14} />
           All Collections
@@ -92,15 +92,15 @@ export default function TracksPage() {
             viewport={{ once: true }}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           >
-            <p className="eyebrow text-white/40 mb-2">
+            <p className="eyebrow text-zinc-400 mb-2">
               {products.length} Styles
             </p>
-            <h3 className="text-white">All Tracks</h3>
+            <h3 className="text-zinc-900">All Tracks</h3>
           </motion.div>
         </div>
 
         <motion.div
-          className="grid grid-cols-1 md:grid-cols-2 gap-px bg-white/5"
+          className="grid grid-cols-1 md:grid-cols-2 gap-px bg-zinc-100"
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
@@ -120,7 +120,7 @@ export default function TracksPage() {
                   transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] },
                 },
               }}
-              className="group bg-black"
+              className="group bg-white"
             >
               <div className="relative overflow-hidden aspect-3/4">
                 <Image
@@ -134,13 +134,13 @@ export default function TracksPage() {
                   {product.tag}
                 </span>
               </div>
-              <div className="p-6 border-t border-white/8 flex flex-col gap-3">
-                <p className="eyebrow text-white/50">Tracks</p>
-                <h4 className="text-white">{product.name}</h4>
-                <p className="text-white/40 text-sm leading-relaxed">
+              <div className="p-6 border-t border-zinc-100 flex flex-col gap-3">
+                <p className="eyebrow text-zinc-500">Tracks</p>
+                <h4 className="text-zinc-900">{product.name}</h4>
+                <p className="text-zinc-400 text-sm leading-relaxed">
                   {product.detail}
                 </p>
-                <p className="text-white/70 mt-1">{product.price}</p>
+                <p className="text-zinc-600 mt-1">{product.price}</p>
                 <AddToCartButton
                   id={`tracks-${product.id}`}
                   name={product.name}
@@ -178,9 +178,9 @@ export default function TracksPage() {
       </section>
 
       {/* ── BOTTOM CTA ───────────────────────────────────────────────── */}
-      <section className="border-t border-white/10 py-32 px-8 flex flex-col items-center text-center gap-8">
+      <section className="border-t border-zinc-100 py-32 px-8 flex flex-col items-center text-center gap-8">
         <motion.h4
-          className="max-w-lg text-white"
+          className="max-w-lg text-zinc-900"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}

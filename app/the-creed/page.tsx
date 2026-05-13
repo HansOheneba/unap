@@ -86,7 +86,7 @@ export default function TheCreedPage() {
   const heroTextY = useTransform(heroProgress, [0, 1], ["0%", "20%"]);
 
   return (
-    <main className="bg-black text-white overflow-x-hidden">
+    <main className="bg-white text-zinc-900 overflow-x-hidden">
       {/* ── 01  HERO — full-screen image with parallax ── */}
       <section
         ref={heroRef}
@@ -155,9 +155,9 @@ export default function TheCreedPage() {
             },
           ].map((item, i) => (
             <FadeIn key={item.word} delay={i * 0.08}>
-              <div className="flex flex-col md:flex-row md:items-baseline gap-3 md:gap-8 border-t border-white/10 pt-10">
-                <h2 className="text-white/20 md:w-80 shrink-0">{item.word}</h2>
-                <p className="text-white/50 text-xl">{item.sub}</p>
+              <div className="flex flex-col md:flex-row md:items-baseline gap-3 md:gap-8 border-t border-zinc-100 pt-10">
+                <h2 className="text-zinc-200 md:w-80 shrink-0">{item.word}</h2>
+                <p className="text-zinc-600 text-xl">{item.sub}</p>
               </div>
             </FadeIn>
           ))}
@@ -192,32 +192,32 @@ export default function TheCreedPage() {
         <div className="flex flex-col">
           {creeds.map((line, i) => (
             <FadeIn key={i} delay={i * 0.06}>
-              <div className="border-t border-white/10 py-10 flex items-baseline gap-8">
-                <span className="eyebrow text-white/15 w-8 shrink-0 tabular-nums">
-                  {String(i + 1).padStart(2, "0")}
+              <div className="border-t border-zinc-100 py-10 flex items-baseline gap-8">
+                <span className="eyebrow text-zinc-200 w-8 shrink-0 tabular-nums">
+                  {String(i + 1).padStart(2, "00")}
                 </span>
-                <h2 className="text-white">{line}</h2>
+                <h2 className="text-zinc-900">{line}</h2>
               </div>
             </FadeIn>
           ))}
-          <div className="border-t border-white/10" />
+          <div className="border-t border-zinc-100" />
         </div>
       </section>
 
       {/* ── 05  THE ORIGIN — story, image right ── */}
       <section className="grid grid-cols-1 md:grid-cols-2 min-h-screen">
-        <div className="bg-black flex flex-col justify-center px-12 md:px-20 py-32 gap-10 order-2 md:order-1">
+        <div className="bg-zinc-50 flex flex-col justify-center px-12 md:px-20 py-32 gap-10 order-2 md:order-1">
           <FadeIn>
             <p className="eyebrow mb-6">The Origin</p>
             <h3 className="mb-6">
               Born in the Rooms That Made You Feel Like You Were Too Much
             </h3>
-            <p className="text-white/55 mb-4">
+            <p className="text-zinc-600 mb-4">
               Every label you were handed. Every apology you were forced to
               perform. Every time you dimmed yourself so someone else could feel
               comfortable. That is what Unapologetic was built against.
             </p>
-            <p className="text-white/55">
+            <p className="text-zinc-600">
               We are not a brand. We are a refusal. A decision made in silence
               that finally found its voice. When you wear this, you are not
               buying clothing. You are making a declaration that you are done
@@ -236,7 +236,7 @@ export default function TheCreedPage() {
       <section className="py-56 px-8 text-center">
         <FadeIn className="max-w-4xl mx-auto flex flex-col gap-8">
           <blockquote>
-            <p className="text-3xl md:text-5xl font-light text-white/80 leading-snug tracking-tight italic">
+              <p className="text-3xl md:text-5xl font-light text-zinc-800 leading-snug tracking-tight italic">
               &ldquo;Boldness is not arrogance.
               <br />
               Confidence is not vanity.
@@ -246,7 +246,7 @@ export default function TheCreedPage() {
               It is your birthright.&rdquo;
             </p>
           </blockquote>
-          <p className="eyebrow text-white/30">Unapologetic, Est. 2024</p>
+          <p className="eyebrow text-zinc-400">Unapologetic, Est. 2024</p>
         </FadeIn>
       </section>
 
@@ -255,7 +255,7 @@ export default function TheCreedPage() {
         <FadeIn className="mb-20">
           <p className="eyebrow">Three Laws We Live By</p>
         </FadeIn>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border-l border-white/10">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border-l border-zinc-100">
           {[
             {
               num: "I",
@@ -274,10 +274,10 @@ export default function TheCreedPage() {
             },
           ].map((pillar, i) => (
             <FadeIn key={pillar.num} delay={i * 0.1}>
-              <div className="border-r border-white/10 px-10 py-12 flex flex-col gap-5 h-full">
-                <span className="eyebrow text-white/25">{pillar.num}</span>
-                <h4 className="text-white">{pillar.title}</h4>
-                <p className="text-white/50">{pillar.body}</p>
+              <div className="border-r border-zinc-100 px-10 py-12 flex flex-col gap-5 h-full">
+                <span className="eyebrow text-zinc-300">{pillar.num}</span>
+                <h4 className="text-zinc-900">{pillar.title}</h4>
+                <p className="text-zinc-600">{pillar.body}</p>
               </div>
             </FadeIn>
           ))}
@@ -298,8 +298,8 @@ export default function TheCreedPage() {
       <section className="py-56 px-8 flex flex-col items-center text-center gap-8">
         <FadeIn className="flex flex-col items-center gap-8">
           <p className="eyebrow">You Already Know</p>
-          <h2 className="max-w-xl text-white">Now Dress Like It.</h2>
-          <p className="text-white/45 max-w-sm text-lg font-light leading-relaxed">
+          <h2 className="max-w-xl text-zinc-900">Now Dress Like It.</h2>
+          <p className="text-zinc-600 max-w-sm text-lg font-light leading-relaxed">
             The collection is not for everyone. It never was. It is for the ones
             who stopped pretending and started arriving.
           </p>
