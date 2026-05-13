@@ -10,39 +10,254 @@ import AddToCartButton from "@/components/ui/add-to-cart-button";
 /* ── All products catalogue ── */
 const ALL_PRODUCTS = [
   // Boxers
-  { id: "boxers-1", name: "Classic White", price: "US$45", priceNum: 45, img: "/collections/boxers/boxersWhite.jpeg", category: "Boxers", href: "/collections/boxers" },
-  { id: "boxers-2", name: "Midnight Blue", price: "US$45", priceNum: 45, img: "/collections/boxers/boxersBlue.jpg", category: "Boxers", href: "/collections/boxers" },
-  { id: "boxers-3", name: "Bourbon Brown", price: "US$45", priceNum: 45, img: "/collections/boxers/boxersBrown.jpeg", category: "Boxers", href: "/collections/boxers" },
-  { id: "boxers-4", name: "Storm Gray", price: "US$45", priceNum: 45, img: "/collections/boxers/boxersGray.jpg", category: "Boxers", href: "/collections/boxers" },
-  { id: "boxers-5", name: "Ivory", price: "US$45", priceNum: 45, img: "/collections/boxers/boxersCream.jpeg", category: "Boxers", href: "/collections/boxers" },
-  { id: "boxers-6", name: "Monochrome", price: "US$45", priceNum: 45, img: "/collections/boxers/boxersBlackWhite.jpeg", category: "Boxers", href: "/collections/boxers" },
-  { id: "boxers-7", name: "The Full Set", price: "US$240", priceNum: 240, img: "/collections/boxers/boxersMixed.jpeg", category: "Boxers", href: "/collections/boxers" },
+  {
+    id: "boxers-1",
+    name: "Classic White",
+    price: "US$45",
+    priceNum: 45,
+    img: "/collections/boxers/boxersWhite.jpeg",
+    category: "Boxers",
+    href: "/collections/boxers",
+  },
+  {
+    id: "boxers-2",
+    name: "Midnight Blue",
+    price: "US$45",
+    priceNum: 45,
+    img: "/collections/boxers/boxersBlue.jpg",
+    category: "Boxers",
+    href: "/collections/boxers",
+  },
+  {
+    id: "boxers-3",
+    name: "Bourbon Brown",
+    price: "US$45",
+    priceNum: 45,
+    img: "/collections/boxers/boxersBrown.jpeg",
+    category: "Boxers",
+    href: "/collections/boxers",
+  },
+  {
+    id: "boxers-4",
+    name: "Storm Gray",
+    price: "US$45",
+    priceNum: 45,
+    img: "/collections/boxers/boxersGray.jpg",
+    category: "Boxers",
+    href: "/collections/boxers",
+  },
+  {
+    id: "boxers-5",
+    name: "Ivory",
+    price: "US$45",
+    priceNum: 45,
+    img: "/collections/boxers/boxersCream.jpeg",
+    category: "Boxers",
+    href: "/collections/boxers",
+  },
+  {
+    id: "boxers-6",
+    name: "Monochrome",
+    price: "US$45",
+    priceNum: 45,
+    img: "/collections/boxers/boxersBlackWhite.jpeg",
+    category: "Boxers",
+    href: "/collections/boxers",
+  },
+  {
+    id: "boxers-7",
+    name: "The Full Set",
+    price: "US$240",
+    priceNum: 240,
+    img: "/collections/boxers/boxersMixed.jpeg",
+    category: "Boxers",
+    href: "/collections/boxers",
+  },
   // Tops
-  { id: "tops-1", name: "Revolt Oversized Tee", price: "US$85", priceNum: 85, img: "/collections/men_shirt/shirtCollection.jpeg", category: "Tops", href: "/collections/tops" },
-  { id: "tops-2", name: "Phantom Long Sleeve Brown", price: "US$110", priceNum: 110, img: "/collections/female_shirts/shirtBrown.jpeg", category: "Tops", href: "/collections/tops" },
-  { id: "tops-3", name: "Sovereign Crop Cream", price: "US$95", priceNum: 95, img: "/collections/female_shirts/shirtCream.jpeg", category: "Tops", href: "/collections/tops" },
+  {
+    id: "tops-1",
+    name: "Revolt Oversized Tee",
+    price: "US$85",
+    priceNum: 85,
+    img: "/collections/men_shirt/shirtCollection.jpeg",
+    category: "Tops",
+    href: "/collections/tops",
+  },
+  {
+    id: "tops-2",
+    name: "Phantom Long Sleeve Brown",
+    price: "US$110",
+    priceNum: 110,
+    img: "/collections/female_shirts/shirtBrown.jpeg",
+    category: "Tops",
+    href: "/collections/tops",
+  },
+  {
+    id: "tops-3",
+    name: "Sovereign Crop Cream",
+    price: "US$95",
+    priceNum: 95,
+    img: "/collections/female_shirts/shirtCream.jpeg",
+    category: "Tops",
+    href: "/collections/tops",
+  },
   // Headwear
-  { id: "headwear-1", name: "Bold Society Black", price: "US$65", priceNum: 65, img: "/collections/headwear/boldSocietyCapBlack.jpeg", category: "Headwear", href: "/collections/headwear" },
-  { id: "headwear-2", name: "Bold Society Cream", price: "US$65", priceNum: 65, img: "/collections/headwear/boldSocietyCapCream.jpeg", category: "Headwear", href: "/collections/headwear" },
-  { id: "headwear-3", name: "Bold Society Red", price: "US$65", priceNum: 65, img: "/collections/headwear/boldSocietyCapRed.jpeg", category: "Headwear", href: "/collections/headwear" },
-  { id: "headwear-4", name: "Suede Cap Black", price: "US$75", priceNum: 75, img: "/collections/headwear/suedeCapBlack.jpg", category: "Headwear", href: "/collections/headwear" },
-  { id: "headwear-5", name: "Sovereign Beanie", price: "US$55", priceNum: 55, img: "/collections/headwear/beanie.jpg", category: "Headwear", href: "/collections/headwear" },
-  { id: "headwear-6", name: "Sovereign Beanie Red", price: "US$55", priceNum: 55, img: "/collections/headwear/beanieRed.jpg", category: "Headwear", href: "/collections/headwear" },
+  {
+    id: "headwear-1",
+    name: "Bold Society Black",
+    price: "US$65",
+    priceNum: 65,
+    img: "/collections/headwear/boldSocietyCapBlack.jpeg",
+    category: "Headwear",
+    href: "/collections/headwear",
+  },
+  {
+    id: "headwear-2",
+    name: "Bold Society Cream",
+    price: "US$65",
+    priceNum: 65,
+    img: "/collections/headwear/boldSocietyCapCream.jpeg",
+    category: "Headwear",
+    href: "/collections/headwear",
+  },
+  {
+    id: "headwear-3",
+    name: "Bold Society Red",
+    price: "US$65",
+    priceNum: 65,
+    img: "/collections/headwear/boldSocietyCapRed.jpeg",
+    category: "Headwear",
+    href: "/collections/headwear",
+  },
+  {
+    id: "headwear-4",
+    name: "Suede Cap Black",
+    price: "US$75",
+    priceNum: 75,
+    img: "/collections/headwear/suedeCapBlack.jpg",
+    category: "Headwear",
+    href: "/collections/headwear",
+  },
+  {
+    id: "headwear-5",
+    name: "Sovereign Beanie",
+    price: "US$55",
+    priceNum: 55,
+    img: "/collections/headwear/beanie.jpg",
+    category: "Headwear",
+    href: "/collections/headwear",
+  },
+  {
+    id: "headwear-6",
+    name: "Sovereign Beanie Red",
+    price: "US$55",
+    priceNum: 55,
+    img: "/collections/headwear/beanieRed.jpg",
+    category: "Headwear",
+    href: "/collections/headwear",
+  },
   // Sunglasses
-  { id: "sunglasses-1", name: "Outlaw I", price: "US$145", priceNum: 145, img: "/collections/glases/outlawGlasses1.jpg", category: "Sunglasses", href: "/collections/sunglasses" },
-  { id: "sunglasses-2", name: "Outlaw II", price: "US$145", priceNum: 145, img: "/collections/glases/outlawGlasses3.jpg", category: "Sunglasses", href: "/collections/sunglasses" },
-  { id: "sunglasses-3", name: "Outlaw III", price: "US$135", priceNum: 135, img: "/collections/glases/outlawGlases4.jpg", category: "Sunglasses", href: "/collections/sunglasses" },
-  { id: "sunglasses-4", name: "Eclipse", price: "US$150", priceNum: 150, img: "/collections/glases/outlawGlasses5.jpg", category: "Sunglasses", href: "/collections/sunglasses" },
-  { id: "sunglasses-5", name: "Sovereign", price: "US$125", priceNum: 125, img: "/collections/glases/shadesFemale.jpg", category: "Sunglasses", href: "/collections/sunglasses" },
-  { id: "sunglasses-6", name: "Sovereign II", price: "US$125", priceNum: 125, img: "/collections/glases/shadesFemale2.jpg", category: "Sunglasses", href: "/collections/sunglasses" },
-  { id: "sunglasses-7", name: "Obsidian", price: "US$135", priceNum: 135, img: "/collections/glases/shadesFemale3.jpg", category: "Sunglasses", href: "/collections/sunglasses" },
-  { id: "sunglasses-8", name: "Eclipse (Womens)", price: "US$135", priceNum: 135, img: "/collections/glases/shadesFemale4.jpg", category: "Sunglasses", href: "/collections/sunglasses" },
+  {
+    id: "sunglasses-1",
+    name: "Outlaw I",
+    price: "US$145",
+    priceNum: 145,
+    img: "/collections/glases/outlawGlasses1.jpg",
+    category: "Sunglasses",
+    href: "/collections/sunglasses",
+  },
+  {
+    id: "sunglasses-2",
+    name: "Outlaw II",
+    price: "US$145",
+    priceNum: 145,
+    img: "/collections/glases/outlawGlasses3.jpg",
+    category: "Sunglasses",
+    href: "/collections/sunglasses",
+  },
+  {
+    id: "sunglasses-3",
+    name: "Outlaw III",
+    price: "US$135",
+    priceNum: 135,
+    img: "/collections/glases/outlawGlases4.jpg",
+    category: "Sunglasses",
+    href: "/collections/sunglasses",
+  },
+  {
+    id: "sunglasses-4",
+    name: "Eclipse",
+    price: "US$150",
+    priceNum: 150,
+    img: "/collections/glases/outlawGlasses5.jpg",
+    category: "Sunglasses",
+    href: "/collections/sunglasses",
+  },
+  {
+    id: "sunglasses-5",
+    name: "Sovereign",
+    price: "US$125",
+    priceNum: 125,
+    img: "/collections/glases/shadesFemale.jpg",
+    category: "Sunglasses",
+    href: "/collections/sunglasses",
+  },
+  {
+    id: "sunglasses-6",
+    name: "Sovereign II",
+    price: "US$125",
+    priceNum: 125,
+    img: "/collections/glases/shadesFemale2.jpg",
+    category: "Sunglasses",
+    href: "/collections/sunglasses",
+  },
+  {
+    id: "sunglasses-7",
+    name: "Obsidian",
+    price: "US$135",
+    priceNum: 135,
+    img: "/collections/glases/shadesFemale3.jpg",
+    category: "Sunglasses",
+    href: "/collections/sunglasses",
+  },
+  {
+    id: "sunglasses-8",
+    name: "Eclipse (Womens)",
+    price: "US$135",
+    priceNum: 135,
+    img: "/collections/glases/shadesFemale4.jpg",
+    category: "Sunglasses",
+    href: "/collections/sunglasses",
+  },
   // Tracks
-  { id: "tracks-1", name: "Sovereign Track", price: "US$120", priceNum: 120, img: "/collections/tracks/track.jpg", category: "Tracks", href: "/collections/tracks" },
-  { id: "tracks-2", name: "Sovereign Track II", price: "US$120", priceNum: 120, img: "/collections/tracks/track2.jpg", category: "Tracks", href: "/collections/tracks" },
+  {
+    id: "tracks-1",
+    name: "Sovereign Track",
+    price: "US$120",
+    priceNum: 120,
+    img: "/collections/tracks/track.jpg",
+    category: "Tracks",
+    href: "/collections/tracks",
+  },
+  {
+    id: "tracks-2",
+    name: "Sovereign Track II",
+    price: "US$120",
+    priceNum: 120,
+    img: "/collections/tracks/track2.jpg",
+    category: "Tracks",
+    href: "/collections/tracks",
+  },
 ];
 
-const CATEGORIES = ["All", "Boxers", "Tops", "Headwear", "Sunglasses", "Tracks"];
+const CATEGORIES = [
+  "All",
+  "Boxers",
+  "Tops",
+  "Headwear",
+  "Sunglasses",
+  "Tracks",
+];
 
 function parsePrice(p: string) {
   return parseFloat(p.replace(/[^0-9.]/g, ""));
@@ -72,7 +287,6 @@ export default function SearchPage() {
 
   return (
     <main className="bg-white text-zinc-900 min-h-screen">
-
       {/* Search bar */}
       <div className="border-b border-zinc-100 sticky top-16 z-30 bg-white">
         <div className="max-w-360 mx-auto px-6 md:px-20 py-6 flex items-center gap-4">
@@ -151,7 +365,10 @@ export default function SearchPage() {
                   transition={{ duration: 0.25 }}
                   className="bg-white group flex flex-col"
                 >
-                  <Link href={product.href} className="relative aspect-3/4 overflow-hidden block">
+                  <Link
+                    href={product.href}
+                    className="relative aspect-3/4 overflow-hidden block"
+                  >
                     <Image
                       src={product.img}
                       alt={product.name}
@@ -168,7 +385,9 @@ export default function SearchPage() {
                       <h5 className="text-zinc-900 text-sm font-medium leading-snug">
                         {product.name}
                       </h5>
-                      <p className="text-zinc-500 text-sm mt-1">{product.price}</p>
+                      <p className="text-zinc-500 text-sm mt-1">
+                        {product.price}
+                      </p>
                     </div>
                     <div className="mt-auto">
                       <AddToCartButton
@@ -197,10 +416,14 @@ export default function SearchPage() {
                 No results
               </p>
               <p className="text-zinc-400 text-lg font-light max-w-xs leading-relaxed">
-                Nothing matched &ldquo;{query}&rdquo;. Try a different word or browse by category.
+                Nothing matched &ldquo;{query}&rdquo;. Try a different word or
+                browse by category.
               </p>
               <button
-                onClick={() => { setQuery(""); setActiveCategory("All"); }}
+                onClick={() => {
+                  setQuery("");
+                  setActiveCategory("All");
+                }}
                 className="mt-4 text-[0.65rem] tracking-[0.35em] uppercase text-zinc-900 underline underline-offset-4"
               >
                 Clear search
