@@ -91,7 +91,10 @@ export default function CheckoutPage() {
     return (
       <main className="min-h-screen bg-white text-zinc-900 flex flex-col items-center justify-center gap-6 px-6">
         <p className="text-zinc-500 text-sm">Your cart is empty.</p>
-        <Link href="/collections" className={buttonVariants({ variant: "outline" })}>
+        <Link
+          href="/collections"
+          className={buttonVariants({ variant: "outline" })}
+        >
           Shop Collections
         </Link>
       </main>
@@ -161,10 +164,22 @@ export default function CheckoutPage() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 w-full mt-4">
-            <Link href="/collections" className={buttonVariants({ variant: "outline", size: "sm" }) + " flex-1 justify-center"}>
+            <Link
+              href="/collections"
+              className={
+                buttonVariants({ variant: "outline", size: "sm" }) +
+                " flex-1 justify-center"
+              }
+            >
               Keep Shopping
             </Link>
-            <Link href="/tracking" className={buttonVariants({ variant: "secondary", size: "sm" }) + " flex-1 justify-center"}>
+            <Link
+              href="/tracking"
+              className={
+                buttonVariants({ variant: "secondary", size: "sm" }) +
+                " flex-1 justify-center"
+              }
+            >
               Track Order
             </Link>
           </div>
@@ -485,10 +500,18 @@ export default function CheckoutPage() {
                   </div>
 
                   <div className="flex gap-3">
-                    <Button variant="secondary" className="flex-1" onClick={() => setStep("details")}>
+                    <Button
+                      variant="secondary"
+                      className="flex-1"
+                      onClick={() => setStep("details")}
+                    >
                       Back
                     </Button>
-                    <Button className="flex-1" onClick={handlePlaceOrder} disabled={loading}>
+                    <Button
+                      className="flex-1"
+                      onClick={handlePlaceOrder}
+                      disabled={loading}
+                    >
                       {loading ? "Placing Order…" : "Place Order"}
                     </Button>
                   </div>

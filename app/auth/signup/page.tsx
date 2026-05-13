@@ -430,7 +430,12 @@ export default function SignupPage() {
             </Field>
 
             <div className="flex gap-3 mt-2">
-              <Button type="button" variant="secondary" className="flex-1" onClick={prevStep}>
+              <Button
+                type="button"
+                variant="secondary"
+                className="flex-1"
+                onClick={prevStep}
+              >
                 Back
               </Button>
               <Button type="submit" className="flex-1">
@@ -620,7 +625,12 @@ export default function SignupPage() {
             </div>
 
             <div className="flex gap-3 mt-2">
-              <Button type="button" variant="secondary" className="flex-1" onClick={prevStep}>
+              <Button
+                type="button"
+                variant="secondary"
+                className="flex-1"
+                onClick={prevStep}
+              >
                 Back
               </Button>
               <Button type="submit" className="flex-1" disabled={loading}>

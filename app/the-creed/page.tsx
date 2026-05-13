@@ -107,7 +107,7 @@ export default function TheCreedPage() {
           className="relative z-10 flex flex-col items-center text-center gap-5 px-8"
         >
           <motion.p
-            className="eyebrow"
+            className="eyebrow text-white"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1.2, delay: 0.4 }}
@@ -115,7 +115,7 @@ export default function TheCreedPage() {
             002 | The Creed
           </motion.p>
           <motion.h1
-            className="max-w-3xl"
+            className="max-w-3xl text-white"
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.2, delay: 0.7, ease: [0.22, 1, 0.36, 1] }}
@@ -123,7 +123,7 @@ export default function TheCreedPage() {
             This Is Our Scripture.
           </motion.h1>
           <motion.p
-            className="text-white/50 max-w-sm"
+            className="text-white/75 max-w-sm"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1, delay: 1.1 }}

@@ -93,7 +93,10 @@ export default function CartPage() {
                   that speaks to you.
                 </p>
               </div>
-              <Link href="/collections" className={buttonVariants({ variant: "outline" })}>
+              <Link
+                href="/collections"
+                className={buttonVariants({ variant: "outline" })}
+              >
                 Shop Collections
               </Link>
             </motion.div>
@@ -270,7 +273,11 @@ export default function CartPage() {
                   </span>
                 </div>
 
-                <Button variant="outline" className="w-full" onClick={() => router.push("/checkout")}>
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={() => router.push("/checkout")}
+                >
                   Proceed to Checkout
                 </Button>
 

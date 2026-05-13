@@ -261,7 +261,9 @@ export default function AccountPage() {
                     {address ? "1 address" : "0 addresses"}
                   </p>
                 </div>
-                <Button variant="secondary" size="xs">+ Add New</Button>
+                <Button variant="secondary" size="xs">
+                  + Add New
+                </Button>
               </div>
 
               {address ? (
@@ -290,7 +292,9 @@ export default function AccountPage() {
                           </p>
                         )}
                       </div>
-                      <Button variant="secondary" size="xs">Edit</Button>
+                      <Button variant="secondary" size="xs">
+                        Edit
+                      </Button>
                     </div>
                   </div>
                 </div>
@@ -319,7 +323,9 @@ export default function AccountPage() {
                     {firstName} {lastName}
                   </p>
                 </div>
-                <Button variant="secondary" size="xs">Edit</Button>
+                <Button variant="secondary" size="xs">
+                  Edit
+                </Button>
               </div>
 
               <div className="grid grid-cols-2 md:grid-cols-3 gap-px bg-zinc-100">
@@ -342,7 +348,9 @@ export default function AccountPage() {
                     &#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;
                   </p>
                 </div>
-                <Button variant="secondary" size="xs">Change</Button>
+                <Button variant="secondary" size="xs">
+                  Change
+                </Button>
               </div>
             </div>
           )}

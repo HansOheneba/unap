@@ -199,11 +199,11 @@ export default function InnerCircleSection() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Your email"
-                  className="flex-1 bg-zinc-50 border border-zinc-200 text-zinc-900 placeholder:text-zinc-400 px-6 py-3 text-[0.7rem] tracking-widest uppercase outline-none focus:border-zinc-400 transition-colors duration-300"
+                  className="flex-1 bg-black border border-black text-white placeholder:text-white/40 px-6 py-3 text-[0.7rem] tracking-widest uppercase outline-none focus:border-white/60 transition-colors duration-300"
                 />
                 <button
                   type="submit"
-                  className="border border-zinc-900 bg-transparent text-zinc-900 px-8 py-3 text-[0.7rem] tracking-widest uppercase hover:bg-zinc-900 hover:text-white transition-colors duration-300 shrink-0"
+                  className="border border-black bg-black text-white px-8 py-3 text-[0.7rem] tracking-widest uppercase hover:bg-white hover:text-black hover:border-black transition-colors duration-300 shrink-0"
                 >
                   Join
                 </button>
