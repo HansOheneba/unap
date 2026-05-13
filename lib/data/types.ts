@@ -1,6 +1,7 @@
 export type ProductColor = {
   name: string;
   hex: string;
+  image?: string; // optional variant image shown when this color is selected
 };
 
 export type Product = {

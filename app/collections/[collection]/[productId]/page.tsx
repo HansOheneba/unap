@@ -172,7 +172,10 @@ export default function ProductDetailPage() {
                     <button
                       key={color.name}
                       title={color.name}
-                      onClick={() => setSelectedColor(color.name)}
+                      onClick={() => {
+                        setSelectedColor(color.name);
+                        if (color.image) setSelectedImage(color.image);
+                      }}
                       className={`w-9 h-9 rounded-full border-2 transition-all duration-200 ${
                         selectedColor === color.name
                           ? "ring-2 ring-offset-2 ring-zinc-900 border-transparent"
