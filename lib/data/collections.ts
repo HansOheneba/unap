@@ -9,9 +9,7 @@ export const DEFAULT_COLLECTIONS: Collection[] = [
     tagline:
       "The world looks different when you stop apologizing for the view.",
     featured: "/collections/glases/outlawGlasses1.jpg",
-    align: "left",
     href: "/collections/sunglasses",
-    cols: 4,
     products: [
       {
         id: "sunglasses-1",
@@ -112,9 +110,7 @@ export const DEFAULT_COLLECTIONS: Collection[] = [
     tagline:
       "A statement for those who stopped asking for a seat at the table.",
     featured: "/collections/headwear/boldSocietyCapBlack.jpeg",
-    align: "right",
     href: "/collections/headwear",
-    cols: 4,
     products: [
       {
         id: "headwear-1",
@@ -235,9 +231,7 @@ export const DEFAULT_COLLECTIONS: Collection[] = [
     title: "The Anti-Uniform",
     tagline: "Move in silence. Let the fabric do the talking.",
     featured: "/collections/men_shirt/shirtCollection.jpeg",
-    align: "left",
     href: "/collections/tops",
-    cols: 3,
     products: [
       {
         id: "tops-1",
@@ -287,9 +281,7 @@ export const DEFAULT_COLLECTIONS: Collection[] = [
     title: "Beneath The Surface",
     tagline: "Confidence starts where no one else can see.",
     featured: "/collections/boxers/boxersMixed.jpeg",
-    align: "right",
     href: "/collections/boxers",
-    cols: 4,
     products: [
       {
         id: "boxers-1",
@@ -406,9 +398,7 @@ export const DEFAULT_COLLECTIONS: Collection[] = [
     tagline:
       "Movement is not optional. Neither is the standard you carry while doing it.",
     featured: "/collections/tracks/track.jpg",
-    align: "left",
     href: "/collections/tracks",
-    cols: 3,
     products: [
       {
         id: "tracks-1",
@@ -450,9 +440,7 @@ export const DEFAULT_COLLECTIONS: Collection[] = [
     title: "Sovereign Warmth",
     tagline: "The weight on your back should feel like armor, not obligation.",
     featured: "/collections/hoodies/hoodieBlackMan.jpg",
-    align: "right",
     href: "/collections/hoodies",
-    cols: 3,
     products: [
       {
         id: "hoodies-1",
@@ -502,9 +490,7 @@ export const DEFAULT_COLLECTIONS: Collection[] = [
     tagline:
       "What you wear beneath says everything about how you carry yourself.",
     featured: "/collections/female_undergarments/lingerie.jpeg",
-    align: "left",
     href: "/collections/lingerie",
-    cols: 3,
     products: [
       {
         id: "lingerie-1",

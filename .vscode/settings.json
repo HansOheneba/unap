@@ -2,6 +2,18 @@
   "chat.tools.terminal.autoApprove": {
     "mkdir": true,
     "npx shadcn@latest": true,
-    "npm install": true
+    "npm install": true,
+    "/^cd /Users/hansopoku/Desktop/code/unapologetic && python3 - <<'EOF'\nwith open\\(\"app/admin/collections/new/page\\.tsx\", \"rb\"\\) as f:\n    content = f\\.read\\(\\)\n\n# Remove align/cols from form state\ncontent = content\\.replace\\(\n    b'    align: \"left\" as \"left\" \\| \"right\",\\\\n    cols: 3 as 3 \\| 4,\\\\n',\n    b''\n\\)\n\n# Remove the alignment/cols grid section\nimport re\npattern = rb'\\\\n        <div className=\"grid grid-cols-2 gap-4\">\\\\n          <div>\\\\n            <label className=\"block text-\\\\\\[0\\\\\\.65rem\\\\\\] tracking-widest uppercase text-zinc-500 mb-1\\\\\\.5\">\\\\n              Hero Text Alignment\\.\\*\\?</div>\\\\n        </div>\\\\n\\\\n        <div className=\"flex items-center gap-3 pt-2\">'\nreplacement = b'\\\\n\\\\n        <div className=\"flex items-center gap-3 pt-2\">'\ncontent = re\\.sub\\(pattern, replacement, content, flags=re\\.DOTALL\\)\n\nwith open\\(\"app/admin/collections/new/page\\.tsx\", \"wb\"\\) as f:\n    f\\.write\\(content\\)\nprint\\(\"Done\"\\)\nEOF$/": {
+      "approve": true,
+      "matchCommandLine": true
+    },
+    "/^cd /Users/hansopoku/Desktop/code/unapologetic && python3 - <<'EOF'\nwith open\\(\"app/admin/collections/\\[id\\]/page\\.tsx\", \"rb\"\\) as f:\n    content = f\\.read\\(\\)\n\n# Remove from form state init\ncontent = content\\.replace\\(\n    b'    align: \\(col\\?\\.align \\?\\? \"left\"\\) as \"left\" \\| \"right\",\\\\n    cols: \\(col\\?\\.cols \\?\\? 3\\) as 3 \\| 4,\\\\n',\n    b''\n\\)\n\n# Remove from useEffect reset\ncontent = content\\.replace\\(\n    b'        align: col\\.align,\\\\n        cols: col\\.cols,\\\\n',\n    b''\n\\)\n\n# Remove the alignment/cols grid section from the form JSX\nimport re\npattern = rb'\\\\n          <div className=\"grid grid-cols-2 gap-4\">\\\\n            <div>\\\\n              <label className=\"block text-\\\\\\[0\\\\\\.65rem\\\\\\] tracking-widest uppercase text-zinc-500 mb-1\\\\\\.5\">\\\\n                Hero Text Alignment\\.\\*\\?</div>\\\\n          </div>\\\\n\\\\n          <div className=\"flex items-center gap-3 pt-2\">'\nreplacement = b'\\\\n\\\\n          <div className=\"flex items-center gap-3 pt-2\">'\ncontent = re\\.sub\\(pattern, replacement, content, flags=re\\.DOTALL\\)\n\nwith open\\(\"app/admin/collections/\\[id\\]/page\\.tsx\", \"wb\"\\) as f:\n    f\\.write\\(content\\)\nprint\\(\"Done\"\\)\nEOF$/": {
+      "approve": true,
+      "matchCommandLine": true
+    },
+    "/^cd /Users/hansopoku/Desktop/code/unapologetic && python3 - <<'EOF'\nimport re\nwith open\\(\"lib/data/collections\\.ts\", \"r\"\\) as f:\n    content = f\\.read\\(\\)\n# Remove lines containing align: or cols: \\(with leading whitespace\\)\ncontent = re\\.sub\\(r'\\^\\\\s\\+align:\\.\\*\\\\n', '', content, flags=re\\.MULTILINE\\)\ncontent = re\\.sub\\(r'\\^\\\\s\\+cols:\\.\\*\\\\n', '', content, flags=re\\.MULTILINE\\)\nwith open\\(\"lib/data/collections\\.ts\", \"w\"\\) as f:\n    f\\.write\\(content\\)\nprint\\(\"Done\"\\)\nEOF$/": {
+      "approve": true,
+      "matchCommandLine": true
+    }
   }
 }

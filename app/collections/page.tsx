@@ -26,9 +26,7 @@ type Collection = {
   title: string;
   tagline: string;
   featured: string;
-  align: "left" | "right";
   href: string;
-  cols: 3 | 4;
   products: Product[];
 };
 
@@ -80,9 +78,7 @@ const collections: Collection[] = [
     tagline:
       "The world looks different when you stop apologizing for the view.",
     featured: "/collections/glases/outlawGlasses1.jpg",
-    align: "left",
     href: "/collections/sunglasses",
-    cols: 4,
     products: [
       {
         id: 1,
@@ -125,9 +121,7 @@ const collections: Collection[] = [
     tagline:
       "A statement for those who stopped asking for a seat at the table.",
     featured: "/collections/headwear/boldSocietyCapBlack.jpeg",
-    align: "right",
     href: "/collections/headwear",
-    cols: 4,
     products: [
       {
         id: 5,
@@ -169,9 +163,7 @@ const collections: Collection[] = [
     title: "The Anti-Uniform",
     tagline: "Move in silence. Let the fabric do the talking.",
     featured: "/collections/men_shirt/shirtCollection.jpeg",
-    align: "left",
     href: "/collections/tops",
-    cols: 3,
     products: [
       {
         id: 9,
@@ -205,9 +197,7 @@ const collections: Collection[] = [
     title: "Beneath The Surface",
     tagline: "Confidence starts where no one else can see.",
     featured: "/collections/boxers/boxersMixed.jpeg",
-    align: "right",
     href: "/collections/boxers",
-    cols: 4,
     products: [
       {
         id: 12,
@@ -250,9 +240,7 @@ const collections: Collection[] = [
     tagline:
       "Movement is not optional. Neither is the standard you carry while doing it.",
     featured: "/collections/tracks/track.jpg",
-    align: "left",
     href: "/collections/tracks",
-    cols: 3,
     products: [
       {
         id: 16,
@@ -278,9 +266,7 @@ const collections: Collection[] = [
     title: "Sovereign Warmth",
     tagline: "The weight on your back should feel like armor, not obligation.",
     featured: "/collections/hoodies/hoodieBlackMan.jpg",
-    align: "right",
     href: "/collections/hoodies",
-    cols: 3,
     products: [
       {
         id: 18,
@@ -315,9 +301,7 @@ const collections: Collection[] = [
     tagline:
       "What you wear beneath says everything about how you carry yourself.",
     featured: "/collections/female_undergarments/lingerie.jpeg",
-    align: "left",
     href: "/collections/lingerie",
-    cols: 3,
     products: [
       {
         id: 21,
@@ -487,7 +471,7 @@ export default function CollectionsPage() {
               className="object-cover"
               priority={i < 2}
             />
-            {col.align === "left" ? (
+            {i % 2 === 0 ? (
               <>
                 <div className="absolute inset-0 bg-linear-to-r from-black/80 via-black/30 to-transparent" />
                 <div className="absolute inset-0 bg-linear-to-t from-black/50 via-transparent to-transparent" />
@@ -499,7 +483,7 @@ export default function CollectionsPage() {
               </>
             )}
 
-            {col.align === "left" && (
+            {i % 2 === 0 && (
               <div className="absolute bottom-0 left-0 flex flex-col gap-5 p-10 md:p-16 lg:p-20 max-w-2xl">
                 <motion.p
                   className="eyebrow text-white"
@@ -545,7 +529,7 @@ export default function CollectionsPage() {
               </div>
             )}
 
-            {col.align === "right" && (
+            {i % 2 !== 0 && (
               <div className="absolute bottom-0 right-0 flex flex-col gap-5 p-10 md:p-16 lg:p-20 max-w-2xl items-end text-right">
                 <motion.p
                   className="eyebrow text-white"
@@ -595,11 +579,7 @@ export default function CollectionsPage() {
           {/* Product grid */}
           <div className="max-w-360 mx-auto px-6 md:px-12 lg:px-16 pt-14 pb-24">
             <motion.div
-              className={`grid gap-px bg-zinc-100 ${
-                col.cols === 3
-                  ? "grid-cols-2 md:grid-cols-3"
-                  : "grid-cols-2 md:grid-cols-4"
-              }`}
+              className="grid gap-px bg-zinc-100 grid-cols-2 md:grid-cols-4"
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, margin: "-60px" }}
@@ -627,11 +607,7 @@ export default function CollectionsPage() {
                         src={product.img}
                         alt={product.name}
                         fill
-                        sizes={
-                          col.cols === 3
-                            ? "(max-width: 768px) 50vw, 33vw"
-                            : "(max-width: 768px) 50vw, 25vw"
-                        }
+                        sizes="(max-width: 768px) 50vw, 25vw"
                         className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
                       />
                       <span className="absolute top-4 left-4 eyebrow text-white bg-black/40 backdrop-blur-sm px-2 py-1">

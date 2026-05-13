@@ -13,7 +13,8 @@ function capitalize(s: string) {
 }
 
 export default function SearchPage() {
-  const allProducts = useAdminStore((s) => s.allProducts());
+  const collections = useAdminStore((s) => s.collections);
+  const allProducts = collections.flatMap((c) => c.products);
   const categories = [
     "All",
     ...Array.from(new Set(allProducts.map((p) => capitalize(p.collectionId)))),

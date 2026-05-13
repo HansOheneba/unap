@@ -21,8 +21,6 @@ export type Collection = {
   title: string; // e.g. "The Eclipse Edit"
   tagline: string;
   featured: string; // hero / cover image path
-  align: "left" | "right";
   href: string; // e.g. "/collections/sunglasses"
-  cols: 3 | 4;
   products: Product[];
 };

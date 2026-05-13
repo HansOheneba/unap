@@ -25,8 +25,6 @@ export default function EditCollectionPage() {
     title: col?.title ?? "",
     tagline: col?.tagline ?? "",
     featured: col?.featured ?? "",
-    align: (col?.align ?? "left") as "left" | "right",
-    cols: (col?.cols ?? 3) as 3 | 4,
   });
 
   useEffect(() => {
@@ -36,8 +34,6 @@ export default function EditCollectionPage() {
         title: col.title,
         tagline: col.tagline,
         featured: col.featured,
-        align: col.align,
-        cols: col.cols,
       });
     }
   }, [id]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -157,36 +153,6 @@ export default function EditCollectionPage() {
             )}
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-[0.65rem] tracking-widest uppercase text-zinc-500 mb-1.5">
-                Hero Text Alignment
-              </label>
-              <select
-                value={form.align}
-                onChange={(e) =>
-                  set("align", e.target.value as "left" | "right")
-                }
-                className={inputCls}
-              >
-                <option value="left">Left</option>
-                <option value="right">Right</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-[0.65rem] tracking-widest uppercase text-zinc-500 mb-1.5">
-                Product Grid Columns
-              </label>
-              <select
-                value={form.cols}
-                onChange={(e) => set("cols", Number(e.target.value) as 3 | 4)}
-                className={inputCls}
-              >
-                <option value={3}>3 Columns</option>
-                <option value={4}>4 Columns</option>
-              </select>
-            </div>
-          </div>
 
           <div className="flex items-center gap-3 pt-2">
             <Button type="submit">Save Changes</Button>

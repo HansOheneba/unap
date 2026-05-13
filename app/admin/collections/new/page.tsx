@@ -20,8 +20,6 @@ export default function NewCollectionPage() {
     title: "",
     tagline: "",
     featured: "",
-    align: "left" as "left" | "right",
-    cols: 3 as 3 | 4,
   });
 
   const set = (k: keyof typeof form, v: string | number) =>
@@ -124,35 +122,6 @@ export default function NewCollectionPage() {
           <p className="text-zinc-400 text-xs mt-1">
             Path relative to /public — this is the hero banner image.
           </p>
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-[0.65rem] tracking-widest uppercase text-zinc-500 mb-1.5">
-              Hero Text Alignment
-            </label>
-            <select
-              value={form.align}
-              onChange={(e) => set("align", e.target.value as "left" | "right")}
-              className={inputCls}
-            >
-              <option value="left">Left</option>
-              <option value="right">Right</option>
-            </select>
-          </div>
-          <div>
-            <label className="block text-[0.65rem] tracking-widest uppercase text-zinc-500 mb-1.5">
-              Product Grid Columns
-            </label>
-            <select
-              value={form.cols}
-              onChange={(e) => set("cols", Number(e.target.value) as 3 | 4)}
-              className={inputCls}
-            >
-              <option value={3}>3 Columns</option>
-              <option value={4}>4 Columns</option>
-            </select>
-          </div>
         </div>
 
         <div className="flex items-center gap-3 pt-2">
