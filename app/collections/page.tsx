@@ -312,7 +312,8 @@ const collections: Collection[] = [
     id: "lingerie",
     subtitle: "Lingerie",
     title: "Soft Power",
-    tagline: "What you wear beneath says everything about how you carry yourself.",
+    tagline:
+      "What you wear beneath says everything about how you carry yourself.",
     featured: "/collections/female_undergarments/lingerie.jpeg",
     align: "left",
     href: "/collections/lingerie",

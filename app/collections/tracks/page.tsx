@@ -6,36 +6,19 @@ import { motion } from "framer-motion";
 import { buttonVariants } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import AddToCartButton from "@/components/ui/add-to-cart-button";
-
-const parsePrice = (p: string) => parseInt(p.replace(/[^0-9]/g, ""), 10);
-
-const products = [
-  {
-    id: 1,
-    name: "Sovereign Track",
-    tag: "Signature",
-    price: "US$120",
-    img: "/collections/tracks/track.jpg",
-    detail: "Heavyweight comfort. Built for the unapologetic in motion.",
-  },
-  {
-    id: 2,
-    name: "Sovereign Track II",
-    tag: "Limited",
-    price: "US$120",
-    img: "/collections/tracks/track2.jpg",
-    detail: "The same conviction, a new silhouette.",
-  },
-];
+import { useAdminStore } from "@/lib/stores/admin-store";
 
 export default function TracksPage() {
+  const col = useAdminStore((s) => s.getCollection("tracks"));
+  const products = col?.products ?? [];
+
   return (
     <main className="bg-white text-zinc-900 min-h-screen overflow-x-hidden">
       {/* ── HERO BANNER ────────────────────────────────────────────── */}
       <section className="relative w-full h-[65vh] overflow-hidden">
         <Image
-          src="/collections/tracks/track.jpg"
-          alt="Sovereign Tracks"
+          src={col?.featured ?? "/collections/tracks/track.jpg"}
+          alt={col?.title ?? "In Motion"}
           fill
           priority
           className="object-cover"
@@ -50,7 +33,7 @@ export default function TracksPage() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
           >
-            Tracks
+            {col?.subtitle ?? "Tracks"}
           </motion.p>
           <motion.h1
             className="text-white leading-none"
@@ -58,7 +41,7 @@ export default function TracksPage() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 1, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
           >
-            In Motion
+            {col?.title ?? "In Motion"}
           </motion.h1>
           <motion.p
             className="text-white/75 max-w-sm"
@@ -66,8 +49,7 @@ export default function TracksPage() {
             animate={{ opacity: 1 }}
             transition={{ duration: 1, delay: 0.25 }}
           >
-            Movement is not optional. Neither is the standard you carry while
-            doing it.
+            {col?.tagline ?? "Movement is not optional. Neither is the standard you carry while doing it."}
           </motion.p>
         </div>
       </section>
@@ -122,31 +104,32 @@ export default function TracksPage() {
               }}
               className="group bg-white"
             >
-              <div className="relative overflow-hidden aspect-3/4">
-                <Image
-                  src={product.img}
-                  alt={product.name}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                  className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
-                />
-                <span className="absolute top-4 left-4 eyebrow text-white bg-black/40 backdrop-blur-sm px-2 py-1">
-                  {product.tag}
-                </span>
-              </div>
-              <div className="p-6 border-t border-zinc-100 flex flex-col gap-3">
-                <p className="eyebrow text-zinc-500">Tracks</p>
-                <h4 className="text-zinc-900">{product.name}</h4>
-                <p className="text-zinc-400 text-sm leading-relaxed">
-                  {product.detail}
-                </p>
-                <p className="text-zinc-600 mt-1">{product.price}</p>
+              <Link href={`/collections/tracks/${product.id}`} className="block">
+                <div className="relative overflow-hidden aspect-3/4">
+                  <Image
+                    src={product.images[0]}
+                    alt={product.name}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                  />
+                  <span className="absolute top-4 left-4 eyebrow text-white bg-black/40 backdrop-blur-sm px-2 py-1">
+                    {product.tag}
+                  </span>
+                </div>
+                <div className="p-6 border-t border-zinc-100 flex flex-col gap-3">
+                  <p className="eyebrow text-zinc-500">Tracks</p>
+                  <h4 className="text-zinc-900">{product.name}</h4>
+                  <p className="text-zinc-600 mt-1">{product.price}</p>
+                </div>
+              </Link>
+              <div className="px-6 pb-6">
                 <AddToCartButton
-                  id={`tracks-${product.id}`}
+                  id={product.id}
                   name={product.name}
                   price={product.price}
-                  priceNum={parsePrice(product.price)}
-                  img={product.img}
+                  priceNum={product.priceNum}
+                  img={product.images[0]}
                   category="Tracks"
                 />
               </div>

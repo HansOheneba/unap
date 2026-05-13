@@ -6,79 +6,19 @@ import { motion } from "framer-motion";
 import { buttonVariants } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import AddToCartButton from "@/components/ui/add-to-cart-button";
-
-const parsePrice = (p: string) => parseInt(p.replace(/[^0-9]/g, ""), 10);
-
-const products = [
-  {
-    id: 1,
-    name: "Bold Society Black",
-    tag: "Signature",
-    price: "US$65",
-    img: "/collections/headwear/boldSocietyCapBlack.jpeg",
-    extraImgs: [
-      "/collections/headwear/boldSocietyCapBlack2.jpeg",
-      "/collections/headwear/boldSocietyCapBlack3.jpeg",
-    ],
-  },
-  {
-    id: 2,
-    name: "Bold Society Cream",
-    tag: "Classic",
-    price: "US$65",
-    img: "/collections/headwear/boldSocietyCapCream.jpeg",
-    extraImgs: [
-      "/collections/headwear/boldSocietyCapCream2.jpeg",
-      "/collections/headwear/boldSocietyCapCream3.jpeg",
-    ],
-  },
-  {
-    id: 3,
-    name: "Bold Society Red",
-    tag: "Bold",
-    price: "US$65",
-    img: "/collections/headwear/boldSocietyCapRed.jpeg",
-    extraImgs: [
-      "/collections/headwear/boldSocietyCapRed2.jpeg",
-      "/collections/headwear/boldSocietyCapRed3.jpeg",
-      "/collections/headwear/boldSocietyCapRed4.jpeg",
-      "/collections/headwear/boldSocietyCapRed5.jpeg",
-    ],
-  },
-  {
-    id: 4,
-    name: "Suede Cap Black",
-    tag: "Premium",
-    price: "US$75",
-    img: "/collections/headwear/suedeCapBlack.jpg",
-    extraImgs: ["/collections/headwear/suedeCapBlack2.jpeg"],
-  },
-  {
-    id: 5,
-    name: "Sovereign Beanie",
-    tag: "Essential",
-    price: "US$55",
-    img: "/collections/headwear/beanie.jpg",
-    extraImgs: [],
-  },
-  {
-    id: 6,
-    name: "Sovereign Beanie Red",
-    tag: "Bold",
-    price: "US$55",
-    img: "/collections/headwear/beanieRed.jpg",
-    extraImgs: ["/collections/headwear/beanieRed2.jpg"],
-  },
-];
+import { useAdminStore } from "@/lib/stores/admin-store";
 
 export default function HeadwearPage() {
+  const col = useAdminStore((s) => s.getCollection("headwear"));
+  const products = col?.products ?? [];
+
   return (
     <main className="bg-white text-zinc-900 min-h-screen overflow-x-hidden">
       {/* ── HERO BANNER ────────────────────────────────────────────── */}
       <section className="relative w-full h-[65vh] overflow-hidden">
         <Image
-          src="/collections/headwear/boldSocietyCapBlack.jpeg"
-          alt="Bold Society"
+          src={col?.featured ?? "/collections/headwear/boldSocietyCapBlack.jpeg"}
+          alt={col?.title ?? "Bold Society"}
           fill
           priority
           className="object-cover object-top"
@@ -93,7 +33,7 @@ export default function HeadwearPage() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
           >
-            Head Wears
+            {col?.subtitle ?? "Head Wears"}
           </motion.p>
           <motion.h1
             className="text-white leading-none"
@@ -101,7 +41,7 @@ export default function HeadwearPage() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 1, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
           >
-            Bold Society
+            {col?.title ?? "Bold Society"}
           </motion.h1>
           <motion.p
             className="text-white/75 max-w-sm"
@@ -109,7 +49,7 @@ export default function HeadwearPage() {
             animate={{ opacity: 1 }}
             transition={{ duration: 1, delay: 0.25 }}
           >
-            A statement for those who stopped asking for a seat at the table.
+            {col?.tagline ?? "A statement for those who stopped asking for a seat at the table."}
           </motion.p>
         </div>
       </section>
@@ -164,32 +104,34 @@ export default function HeadwearPage() {
               }}
               className="group bg-white"
             >
-              <div className="relative overflow-hidden aspect-3/4">
-                <Image
-                  src={product.img}
-                  alt={product.name}
-                  fill
-                  sizes="(max-width: 768px) 50vw, 33vw"
-                  className="object-cover object-top transition-transform duration-700 group-hover:scale-[1.04]"
-                />
-                <span className="absolute top-4 left-4 eyebrow text-white bg-black/40 backdrop-blur-sm px-2 py-1">
-                  {product.tag}
-                </span>
-              </div>
-              <div className="p-5 border-t border-zinc-100">
-                <p className="eyebrow text-zinc-500 mb-2">Head Wears</p>
-                <h5 className="text-zinc-900">{product.name}</h5>
-                <p className="text-zinc-600 mt-2">{product.price}</p>
-                <div className="mt-3">
-                  <AddToCartButton
-                    id={`headwear-${product.id}`}
-                    name={product.name}
-                    price={product.price}
-                    priceNum={parsePrice(product.price)}
-                    img={product.img}
-                    category="Head Wears"
+              <Link href={`/collections/headwear/${product.id}`} className="block">
+                <div className="relative overflow-hidden aspect-3/4">
+                  <Image
+                    src={product.images[0]}
+                    alt={product.name}
+                    fill
+                    sizes="(max-width: 768px) 50vw, 33vw"
+                    className="object-cover object-top transition-transform duration-700 group-hover:scale-[1.04]"
                   />
+                  <span className="absolute top-4 left-4 eyebrow text-white bg-black/40 backdrop-blur-sm px-2 py-1">
+                    {product.tag}
+                  </span>
                 </div>
+                <div className="p-5 border-t border-zinc-100">
+                  <p className="eyebrow text-zinc-500 mb-2">Head Wears</p>
+                  <h5 className="text-zinc-900">{product.name}</h5>
+                  <p className="text-zinc-600 mt-2">{product.price}</p>
+                </div>
+              </Link>
+              <div className="px-5 pb-5">
+                <AddToCartButton
+                  id={product.id}
+                  name={product.name}
+                  price={product.price}
+                  priceNum={product.priceNum}
+                  img={product.images[0]}
+                  category="Head Wears"
+                />
               </div>
             </motion.div>
           ))}

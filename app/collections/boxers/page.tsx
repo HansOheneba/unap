@@ -6,69 +6,19 @@ import { motion } from "framer-motion";
 import { buttonVariants } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import AddToCartButton from "@/components/ui/add-to-cart-button";
-
-const parsePrice = (p: string) => parseInt(p.replace(/[^0-9]/g, ""), 10);
-
-const products = [
-  {
-    id: 1,
-    name: "Classic White",
-    tag: "Essential",
-    price: "US$45",
-    img: "/collections/boxers/boxersWhite.jpeg",
-  },
-  {
-    id: 2,
-    name: "Midnight Blue",
-    tag: "Statement",
-    price: "US$45",
-    img: "/collections/boxers/boxersBlue.jpg",
-  },
-  {
-    id: 3,
-    name: "Bourbon Brown",
-    tag: "Signature",
-    price: "US$45",
-    img: "/collections/boxers/boxersBrown.jpeg",
-  },
-  {
-    id: 4,
-    name: "Storm Gray",
-    tag: "Classic",
-    price: "US$45",
-    img: "/collections/boxers/boxersGray.jpg",
-  },
-  {
-    id: 5,
-    name: "Ivory",
-    tag: "Limited",
-    price: "US$45",
-    img: "/collections/boxers/boxersCream.jpeg",
-  },
-  {
-    id: 6,
-    name: "Monochrome",
-    tag: "Bold",
-    price: "US$45",
-    img: "/collections/boxers/boxersBlackWhite.jpeg",
-  },
-  {
-    id: 7,
-    name: "The Full Set",
-    tag: "Bundle",
-    price: "US$240",
-    img: "/collections/boxers/boxersMixed.jpeg",
-  },
-];
+import { useAdminStore } from "@/lib/stores/admin-store";
 
 export default function BoxersPage() {
+  const col = useAdminStore((s) => s.getCollection("boxers"));
+  const products = col?.products ?? [];
+
   return (
     <main className="bg-white text-zinc-900 min-h-screen overflow-x-hidden">
       {/* ── HERO BANNER ────────────────────────────────────────────── */}
       <section className="relative w-full h-[65vh] overflow-hidden">
         <Image
-          src="/collections/boxers/boxersMixed.jpeg"
-          alt="Beneath the Surface"
+          src={col?.featured ?? "/collections/boxers/boxersMixed.jpeg"}
+          alt={col?.title ?? "Beneath the Surface"}
           fill
           priority
           className="object-cover"
@@ -83,7 +33,7 @@ export default function BoxersPage() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
           >
-            Intimates & Boxers
+            {col?.subtitle ?? "Intimates & Boxers"}
           </motion.p>
           <motion.h1
             className="text-white leading-none"
@@ -91,7 +41,7 @@ export default function BoxersPage() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 1, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
           >
-            Beneath the Surface
+            {col?.title ?? "Beneath the Surface"}
           </motion.h1>
           <motion.p
             className="text-white/75 max-w-sm"
@@ -99,7 +49,7 @@ export default function BoxersPage() {
             animate={{ opacity: 1 }}
             transition={{ duration: 1, delay: 0.25 }}
           >
-            Confidence starts where no one else can see.
+            {col?.tagline ?? "Confidence starts where no one else can see."}
           </motion.p>
         </div>
       </section>
@@ -181,32 +131,34 @@ export default function BoxersPage() {
               }}
               className="group bg-white"
             >
-              <div className="relative overflow-hidden aspect-3/4">
-                <Image
-                  src={product.img}
-                  alt={product.name}
-                  fill
-                  sizes="(max-width: 768px) 50vw, 25vw"
-                  className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
-                />
-                <span className="absolute top-4 left-4 eyebrow text-white bg-black/40 backdrop-blur-sm px-2 py-1">
-                  {product.tag}
-                </span>
-              </div>
-              <div className="p-5 border-t border-zinc-100">
-                <p className="eyebrow text-zinc-500 mb-2">Boxers</p>
-                <h5 className="text-zinc-900">{product.name}</h5>
-                <p className="text-zinc-600 mt-2">{product.price}</p>
-                <div className="mt-3">
-                  <AddToCartButton
-                    id={`boxers-${product.id}`}
-                    name={product.name}
-                    price={product.price}
-                    priceNum={parsePrice(product.price)}
-                    img={product.img}
-                    category="Boxers"
+              <Link href={`/collections/boxers/${product.id}`} className="block">
+                <div className="relative overflow-hidden aspect-3/4">
+                  <Image
+                    src={product.images[0]}
+                    alt={product.name}
+                    fill
+                    sizes="(max-width: 768px) 50vw, 25vw"
+                    className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
                   />
+                  <span className="absolute top-4 left-4 eyebrow text-white bg-black/40 backdrop-blur-sm px-2 py-1">
+                    {product.tag}
+                  </span>
                 </div>
+                <div className="p-5 border-t border-zinc-100">
+                  <p className="eyebrow text-zinc-500 mb-2">Boxers</p>
+                  <h5 className="text-zinc-900">{product.name}</h5>
+                  <p className="text-zinc-600 mt-2">{product.price}</p>
+                </div>
+              </Link>
+              <div className="px-5 pb-5">
+                <AddToCartButton
+                  id={product.id}
+                  name={product.name}
+                  price={product.price}
+                  priceNum={product.priceNum}
+                  img={product.images[0]}
+                  category="Boxers"
+                />
               </div>
             </motion.div>
           ))}
