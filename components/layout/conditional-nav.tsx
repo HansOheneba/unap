@@ -30,7 +30,7 @@ export default function ConditionalNav({
       {!noNav && <Header />}
       {/* Spacer that pushes page content below the fixed header (84px = logo 44px + py-5×2) */}
       {needsHeaderOffset && (
-        <div className="h-[84px] shrink-0" aria-hidden="true" />
+        <div className="h-14 shrink-0" aria-hidden="true" />
       )}
       {children}
       {!noNav && <Footer />}
