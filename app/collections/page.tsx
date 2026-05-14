@@ -5,9 +5,7 @@ import Link from "next/link";
 import { useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { buttonVariants } from "@/components/ui/button";
-import AddToCartButton from "@/components/ui/add-to-cart-button";
-
-const parsePrice = (p: string) => parseInt(p.replace(/[^0-9]/g, ""), 10);
+import { OVERVIEW_CARDS } from "@/lib/data/collections";
 
 // ── TYPES ─────────────────────────────────────────────────────────────────────
 
@@ -32,43 +30,6 @@ type Collection = {
 
 // ── DATA ──────────────────────────────────────────────────────────────────────
 
-const overviewCards = [
-  {
-    id: "sunglasses",
-    label: "Sunglasses",
-    img: "/collections/glases/outlawGlasses1.jpg",
-  },
-  {
-    id: "headwear",
-    label: "Head Wears",
-    img: "/collections/headwear/boldSocietyCapBlack.jpeg",
-  },
-  {
-    id: "tops",
-    label: "Tops",
-    img: "/collections/men_shirt/shirtCollection.jpeg",
-  },
-  {
-    id: "intimates",
-    label: "Boxers",
-    img: "/collections/boxers/boxersMixed.jpeg",
-  },
-  {
-    id: "tracks",
-    label: "Tracks",
-    img: "/collections/tracks/track.jpg",
-  },
-  {
-    id: "hoodies",
-    label: "Hoodies",
-    img: "/collections/hoodies/hoodieBlackMan.jpg",
-  },
-  {
-    id: "lingerie",
-    label: "Lingerie",
-    img: "/collections/female_undergarments/lingerie.jpeg",
-  },
-];
 
 const collections: Collection[] = [
   {
@@ -125,35 +86,35 @@ const collections: Collection[] = [
     products: [
       {
         id: 5,
-        name: "Bold Society Black",
+        name: "Bold Society Cap",
         tag: "Signature",
-        price: "US$65",
+        price: "US$55",
         img: "/collections/headwear/boldSocietyCapBlack.jpeg",
-        href: "/collections/headwear",
+        href: "/collections/headwear/bold-society-cap",
       },
       {
         id: 6,
-        name: "Bold Society Cream",
-        tag: "Classic",
-        price: "US$65",
-        img: "/collections/headwear/boldSocietyCapCream.jpeg",
-        href: "/collections/headwear",
+        name: "Classic Knit Beanie",
+        tag: "Essential",
+        price: "US$40",
+        img: "/collections/headwear/beanie.jpg",
+        href: "/collections/headwear/classic-knit-beanie",
       },
       {
         id: 7,
-        name: "Bold Society Red",
+        name: "Bold Society Cap",
         tag: "Bold",
-        price: "US$65",
+        price: "US$55",
         img: "/collections/headwear/boldSocietyCapRed.jpeg",
-        href: "/collections/headwear",
+        href: "/collections/headwear/bold-society-cap",
       },
       {
         id: 8,
-        name: "Suede Cap Black",
+        name: "Suede Cap",
         tag: "Premium",
-        price: "US$75",
+        price: "US$65",
         img: "/collections/headwear/suedeCapBlack.jpg",
-        href: "/collections/headwear",
+        href: "/collections/headwear/suede-cap",
       },
     ],
   },
@@ -171,7 +132,7 @@ const collections: Collection[] = [
         tag: "Mens",
         price: "US$85",
         img: "/collections/men_shirt/shirtCollection.jpeg",
-        href: "/collections/tops",
+        href: "/collections/tops/revolt-oversized-tee",
       },
       {
         id: 10,
@@ -179,7 +140,7 @@ const collections: Collection[] = [
         tag: "Womens",
         price: "US$110",
         img: "/collections/female_shirts/shirtBrown.jpeg",
-        href: "/collections/tops",
+        href: "/collections/tops/phantom-long-sleeve",
       },
       {
         id: 11,
@@ -187,7 +148,7 @@ const collections: Collection[] = [
         tag: "Womens",
         price: "US$95",
         img: "/collections/female_shirts/shirtCream.jpeg",
-        href: "/collections/tops",
+        href: "/collections/tops/sovereign-crop",
       },
     ],
   },
@@ -201,35 +162,35 @@ const collections: Collection[] = [
     products: [
       {
         id: 12,
-        name: "Classic White",
+        name: "ComfortFit Cotton Boxers",
         tag: "Essential",
         price: "US$45",
-        img: "/collections/boxers/boxersWhite.jpeg",
-        href: "/collections/boxers",
+        img: "/collections/boxers/boxersWhite.jpg",
+        href: "/collections/boxers/comfortfit-cotton-boxers",
       },
       {
         id: 13,
-        name: "Midnight Blue",
-        tag: "Statement",
-        price: "US$45",
+        name: "ActiveFlex Performance Boxers",
+        tag: "Performance",
+        price: "US$55",
         img: "/collections/boxers/boxersBlue.jpg",
-        href: "/collections/boxers",
+        href: "/collections/boxers/activeflex-performance-boxers",
       },
       {
         id: 14,
-        name: "Bourbon Brown",
+        name: "LuxeSoft Premium Boxers",
         tag: "Signature",
-        price: "US$45",
+        price: "US$65",
         img: "/collections/boxers/boxersBrown.jpeg",
-        href: "/collections/boxers",
+        href: "/collections/boxers/luxesoft-premium-boxers",
       },
       {
         id: 15,
-        name: "Storm Gray",
-        tag: "Classic",
+        name: "ComfortFit Cotton Boxers",
+        tag: "Essential",
         price: "US$45",
         img: "/collections/boxers/boxersGray.jpg",
-        href: "/collections/boxers",
+        href: "/collections/boxers/comfortfit-cotton-boxers",
       },
     ],
   },
@@ -244,19 +205,19 @@ const collections: Collection[] = [
     products: [
       {
         id: 16,
-        name: "Sovereign Track",
+        name: "Signature Track Pant",
         tag: "Signature",
-        price: "US$120",
+        price: "US$95",
         img: "/collections/tracks/track.jpg",
-        href: "/collections/tracks",
+        href: "/collections/tracks/signature-track-pant",
       },
       {
         id: 17,
-        name: "Sovereign Track II",
-        tag: "Limited",
-        price: "US$120",
+        name: "Signature Track Pant",
+        tag: "Signature",
+        price: "US$95",
         img: "/collections/tracks/track2.jpg",
-        href: "/collections/tracks",
+        href: "/collections/tracks/signature-track-pant",
       },
     ],
   },
@@ -270,27 +231,27 @@ const collections: Collection[] = [
     products: [
       {
         id: 18,
-        name: "Sovereign Hoodie",
-        tag: "Signature",
-        price: "US$135",
+        name: "Classic Hoodie",
+        tag: "Essential",
+        price: "US$120",
         img: "/collections/hoodies/hoodieBlackMan.jpg",
-        href: "/collections/hoodies",
+        href: "/collections/hoodies/classic-hoodie",
       },
       {
         id: 19,
-        name: "Spectrum Hoodie",
-        tag: "Statement",
-        price: "US$135",
+        name: "Classic Hoodie",
+        tag: "Essential",
+        price: "US$120",
         img: "/collections/hoodies/hoodieColors.jpg",
-        href: "/collections/hoodies",
+        href: "/collections/hoodies/classic-hoodie",
       },
       {
         id: 20,
-        name: "Rebel Hoodie",
-        tag: "Limited",
-        price: "US$140",
+        name: "Classic Hoodie",
+        tag: "Essential",
+        price: "US$120",
         img: "/collections/hoodies/hoodieManXMan.jpg",
-        href: "/collections/hoodies",
+        href: "/collections/hoodies/classic-hoodie",
       },
     ],
   },
@@ -309,7 +270,7 @@ const collections: Collection[] = [
         tag: "Signature",
         price: "US$95",
         img: "/collections/female_undergarments/lingerie.jpeg",
-        href: "/collections/lingerie",
+        href: "/collections/lingerie/soft-power-set",
       },
     ],
   },
@@ -423,7 +384,7 @@ export default function CollectionsPage() {
             visible: { transition: { staggerChildren: 0.07 } },
           }}
         >
-          {overviewCards.map((card, i) => (
+          {OVERVIEW_CARDS.map((card, i) => (
             <motion.button
               key={i}
               onClick={() => scrollTo(card.id)}
@@ -610,9 +571,6 @@ export default function CollectionsPage() {
                         sizes="(max-width: 768px) 50vw, 25vw"
                         className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
                       />
-                      <span className="absolute top-4 left-4 eyebrow text-white bg-black/40 backdrop-blur-sm px-2 py-1">
-                        {product.tag}
-                      </span>
                     </div>
 
                     <div className="p-5 border-t border-zinc-100">
@@ -623,16 +581,6 @@ export default function CollectionsPage() {
                       <p className="text-zinc-600 mt-2">{product.price}</p>
                     </div>
                   </Link>
-                  <div className="px-5 pb-5">
-                    <AddToCartButton
-                      id={`${col.id}-${product.id}`}
-                      name={product.name}
-                      price={product.price}
-                      priceNum={parsePrice(product.price)}
-                      img={product.img}
-                      category={col.subtitle}
-                    />
-                  </div>
                 </motion.div>
               ))}
             </motion.div>

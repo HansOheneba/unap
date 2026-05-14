@@ -25,3 +25,11 @@ export type Collection = {
   href: string; // e.g. "/collections/sunglasses"
   products: Product[];
 };
+
+export type OverviewCard = {
+  /** Matches the section id on the collections page for scroll-to behaviour */
+  id: string;
+  label: string;
+  img: string;
+  description: string;
+};

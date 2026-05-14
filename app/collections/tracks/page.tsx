@@ -5,20 +5,18 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { buttonVariants } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
-import AddToCartButton from "@/components/ui/add-to-cart-button";
-import { useAdminStore } from "@/lib/stores/admin-store";
+import { getProductsByCategory } from "@/lib/products";
 
 export default function TracksPage() {
-  const col = useAdminStore((s) => s.getCollection("tracks"));
-  const products = col?.products ?? [];
+  const products = getProductsByCategory("tracks");
 
   return (
     <main className="bg-white text-zinc-900 min-h-screen overflow-x-hidden">
       {/* ── HERO BANNER ────────────────────────────────────────────── */}
       <section className="relative w-full h-[65vh] overflow-hidden">
         <Image
-          src={col?.featured ?? "/collections/tracks/track.jpg"}
-          alt={col?.title ?? "In Motion"}
+          src="/collections/tracks/track.jpg"
+          alt="In Motion"
           fill
           priority
           className="object-cover"
@@ -33,7 +31,7 @@ export default function TracksPage() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
           >
-            {col?.subtitle ?? "Tracks"}
+            Tracks
           </motion.p>
           <motion.h1
             className="text-white leading-none"
@@ -41,7 +39,7 @@ export default function TracksPage() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 1, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
           >
-            {col?.title ?? "In Motion"}
+            In Motion
           </motion.h1>
           <motion.p
             className="text-white/75 max-w-sm"
@@ -49,8 +47,8 @@ export default function TracksPage() {
             animate={{ opacity: 1 }}
             transition={{ duration: 1, delay: 0.25 }}
           >
-            {col?.tagline ??
-              "Movement is not optional. Neither is the standard you carry while doing it."}
+            Movement is not optional. Neither is the standard you carry while
+            doing it.
           </motion.p>
         </div>
       </section>
@@ -106,37 +104,24 @@ export default function TracksPage() {
               className="group bg-white"
             >
               <Link
-                href={`/collections/tracks/${product.id}`}
+                href={`/collections/tracks/${product.slug}`}
                 className="block"
               >
                 <div className="relative overflow-hidden aspect-3/4">
                   <Image
-                    src={product.images[0]}
+                    src={product.variants[0].images[0]}
                     alt={product.name}
                     fill
                     sizes="(max-width: 768px) 100vw, 50vw"
                     className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
                   />
-                  <span className="absolute top-4 left-4 eyebrow text-white bg-black/40 backdrop-blur-sm px-2 py-1">
-                    {product.tag}
-                  </span>
                 </div>
                 <div className="p-6 border-t border-zinc-100 flex flex-col gap-3">
                   <p className="eyebrow text-zinc-500">Tracks</p>
                   <h4 className="text-zinc-900">{product.name}</h4>
-                  <p className="text-zinc-600 mt-1">{product.price}</p>
+                  <p className="text-zinc-600 mt-1">{product.priceDisplay}</p>
                 </div>
               </Link>
-              <div className="px-6 pb-6">
-                <AddToCartButton
-                  id={product.id}
-                  name={product.name}
-                  price={product.price}
-                  priceNum={product.priceNum}
-                  img={product.images[0]}
-                  category="Tracks"
-                />
-              </div>
             </motion.div>
           ))}
         </motion.div>

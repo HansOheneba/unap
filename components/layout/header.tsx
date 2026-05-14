@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useSyncExternalStore } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -81,9 +81,11 @@ export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const isDark = true; // nav is always black
   const navCls = "text-white";
   const iconCls = "text-white";
+  // useSyncExternalStore: server snapshot = false, client snapshot = true
+  // React uses the server snapshot during hydration, preventing mismatch
+  const isClient = useSyncExternalStore(() => () => {}, () => true, () => false);
   const closeTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
@@ -327,7 +329,7 @@ export default function Header() {
                 <line x1="3" y1="6" x2="21" y2="6" />
                 <path d="M16 10a4 4 0 0 1-8 0" />
               </svg>
-              {totalItems() > 0 && (
+              {isClient && totalItems() > 0 && (
                 <span className="absolute -top-1.5 -right-1.5 min-w-4 h-4 flex items-center justify-center bg-white text-black text-[0.5rem] font-bold rounded-full px-0.5">
                   {totalItems()}
                 </span>

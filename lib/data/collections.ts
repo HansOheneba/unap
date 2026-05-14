@@ -1,4 +1,4 @@
-import type { Collection } from "./types";
+import type { Collection, OverviewCard } from "./types";
 
 export const DEFAULT_COLLECTIONS: Collection[] = [
   // ── SUNGLASSES ────────────────────────────────────────────────────────────
@@ -509,5 +509,61 @@ export const DEFAULT_COLLECTIONS: Collection[] = [
         collectionId: "lingerie",
       },
     ],
+  },
+];
+
+// ── OVERVIEW CARDS ────────────────────────────────────────────────────────────
+// Displayed on the /collections page as the top-level category grid.
+// `id` matches the page section anchor used for scroll-to behaviour.
+
+export const OVERVIEW_CARDS: OverviewCard[] = [
+  {
+    id: "sunglasses",
+    label: "Sunglasses",
+    img: "/collections/glases/outlawGlasses1.jpg",
+    description:
+      "Statement eyewear for those who see the world on their own terms.",
+  },
+  {
+    id: "headwear",
+    label: "Head Wears",
+    img: "/collections/headwear/suedeCapBlack.jpg",
+    description:
+      "Caps and beanies for those who let the crown do the talking.",
+  },
+  {
+    id: "tops",
+    label: "Tops",
+    img: "/collections/men_shirt/shirtCollection.jpeg",
+    description:
+      "Shirts and tees that move in silence. Let the fabric announce you.",
+  },
+  {
+    id: "intimates",
+    label: "Boxers",
+    img: "/collections/boxers/boxersMixed.jpeg",
+    description:
+      "Confidence built into every layer, starting at the foundation.",
+  },
+  {
+    id: "tracks",
+    label: "Tracks",
+    img: "/collections/tracks/track.jpg",
+    description:
+      "Precision-cut pants built for perpetual motion.",
+  },
+  {
+    id: "hoodies",
+    label: "Hoodies",
+    img: "/collections/hoodies/hoodieBlackMan.jpg",
+    description:
+      "Heavyweight warmth for the unshakable.",
+  },
+  {
+    id: "lingerie",
+    label: "Lingerie",
+    img: "/collections/female_undergarments/lingerie.jpeg",
+    description:
+      "Soft power. What you wear beneath says everything about how you carry yourself.",
   },
 ];
