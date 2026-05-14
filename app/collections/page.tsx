@@ -6,6 +6,7 @@ import { useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { buttonVariants } from "@/components/ui/button";
 import { OVERVIEW_CARDS } from "@/lib/data/collections";
+import { formatPrice } from "@/lib/currency";
 
 // ── TYPES ─────────────────────────────────────────────────────────────────────
 
@@ -13,7 +14,7 @@ type Product = {
   id: number;
   name: string;
   tag: string;
-  price: string;
+  price: number;
   img: string;
   href: string;
 };
@@ -44,7 +45,7 @@ const collections: Collection[] = [
         id: 1,
         name: "Eclipse Shades",
         tag: "Signature",
-        price: "US$145",
+        price: 1200,
         img: "/collections/glases/outlawGlasses1.jpg",
         href: "/collections/sunglasses",
       },
@@ -52,7 +53,7 @@ const collections: Collection[] = [
         id: 2,
         name: "Obsidian Lens",
         tag: "Statement",
-        price: "US$160",
+        price: 1350,
         img: "/collections/glases/outlawGlasses3.jpg",
         href: "/collections/sunglasses",
       },
@@ -60,7 +61,7 @@ const collections: Collection[] = [
         id: 3,
         name: "Outlaw I",
         tag: "Classic",
-        price: "US$135",
+        price: 1100,
         img: "/collections/glases/outlawGlases4.jpg",
         href: "/collections/sunglasses",
       },
@@ -68,7 +69,7 @@ const collections: Collection[] = [
         id: 4,
         name: "Outlaw II",
         tag: "Limited",
-        price: "US$150",
+        price: 1180,
         img: "/collections/glases/outlawGlasses5.jpg",
         href: "/collections/sunglasses",
       },
@@ -87,7 +88,7 @@ const collections: Collection[] = [
         id: 5,
         name: "Bold Society Cap",
         tag: "Signature",
-        price: "US$55",
+        price: 380,
         img: "/collections/headwear/boldSocietyCapBlack.jpeg",
         href: "/collections/headwear/bold-society-cap",
       },
@@ -95,7 +96,7 @@ const collections: Collection[] = [
         id: 6,
         name: "Classic Knit Beanie",
         tag: "Essential",
-        price: "US$40",
+        price: 260,
         img: "/collections/headwear/beanie.jpg",
         href: "/collections/headwear/classic-knit-beanie",
       },
@@ -103,7 +104,7 @@ const collections: Collection[] = [
         id: 7,
         name: "Bold Society Cap",
         tag: "Bold",
-        price: "US$55",
+        price: 380,
         img: "/collections/headwear/boldSocietyCapRed.jpeg",
         href: "/collections/headwear/bold-society-cap",
       },
@@ -111,7 +112,7 @@ const collections: Collection[] = [
         id: 8,
         name: "Suede Cap",
         tag: "Premium",
-        price: "US$65",
+        price: 480,
         img: "/collections/headwear/suedeCapBlack.jpg",
         href: "/collections/headwear/suede-cap",
       },
@@ -129,7 +130,7 @@ const collections: Collection[] = [
         id: 9,
         name: "Revolt Oversized Tee",
         tag: "Mens",
-        price: "US$85",
+        price: 580,
         img: "/collections/men_shirt/shirtCollection.jpeg",
         href: "/collections/tops/revolt-oversized-tee",
       },
@@ -137,7 +138,7 @@ const collections: Collection[] = [
         id: 10,
         name: "Phantom Long Sleeve",
         tag: "Womens",
-        price: "US$110",
+        price: 720,
         img: "/collections/female_shirts/shirtBrown.jpeg",
         href: "/collections/tops/phantom-long-sleeve",
       },
@@ -145,7 +146,7 @@ const collections: Collection[] = [
         id: 11,
         name: "Sovereign Crop",
         tag: "Womens",
-        price: "US$95",
+        price: 650,
         img: "/collections/female_shirts/shirtCream.jpeg",
         href: "/collections/tops/sovereign-crop",
       },
@@ -163,7 +164,7 @@ const collections: Collection[] = [
         id: 12,
         name: "ComfortFit Cotton Boxers",
         tag: "Essential",
-        price: "US$45",
+        price: 280,
         img: "/collections/boxers/boxersWhite.jpg",
         href: "/collections/boxers/comfortfit-cotton-boxers",
       },
@@ -171,7 +172,7 @@ const collections: Collection[] = [
         id: 13,
         name: "ActiveFlex Performance Boxers",
         tag: "Performance",
-        price: "US$55",
+        price: 350,
         img: "/collections/boxers/boxersBlue.jpg",
         href: "/collections/boxers/activeflex-performance-boxers",
       },
@@ -179,7 +180,7 @@ const collections: Collection[] = [
         id: 14,
         name: "LuxeSoft Premium Boxers",
         tag: "Signature",
-        price: "US$65",
+        price: 420,
         img: "/collections/boxers/boxersBrown.jpeg",
         href: "/collections/boxers/luxesoft-premium-boxers",
       },
@@ -187,7 +188,7 @@ const collections: Collection[] = [
         id: 15,
         name: "ComfortFit Cotton Boxers",
         tag: "Essential",
-        price: "US$45",
+        price: 280,
         img: "/collections/boxers/boxersGray.jpg",
         href: "/collections/boxers/comfortfit-cotton-boxers",
       },
@@ -206,7 +207,7 @@ const collections: Collection[] = [
         id: 16,
         name: "Signature Track Pant",
         tag: "Signature",
-        price: "US$95",
+        price: 750,
         img: "/collections/tracks/track.jpg",
         href: "/collections/tracks/signature-track-pant",
       },
@@ -214,7 +215,7 @@ const collections: Collection[] = [
         id: 17,
         name: "Signature Track Pant",
         tag: "Signature",
-        price: "US$95",
+        price: 750,
         img: "/collections/tracks/track2.jpg",
         href: "/collections/tracks/signature-track-pant",
       },
@@ -232,7 +233,7 @@ const collections: Collection[] = [
         id: 18,
         name: "Classic Hoodie",
         tag: "Essential",
-        price: "US$120",
+        price: 950,
         img: "/collections/hoodies/hoodieBlackMan.jpg",
         href: "/collections/hoodies/classic-hoodie",
       },
@@ -240,7 +241,7 @@ const collections: Collection[] = [
         id: 19,
         name: "Classic Hoodie",
         tag: "Essential",
-        price: "US$120",
+        price: 950,
         img: "/collections/hoodies/hoodieColors.jpg",
         href: "/collections/hoodies/classic-hoodie",
       },
@@ -248,7 +249,7 @@ const collections: Collection[] = [
         id: 20,
         name: "Classic Hoodie",
         tag: "Essential",
-        price: "US$120",
+        price: 950,
         img: "/collections/hoodies/hoodieManXMan.jpg",
         href: "/collections/hoodies/classic-hoodie",
       },
@@ -267,7 +268,7 @@ const collections: Collection[] = [
         id: 21,
         name: "Soft Power Set",
         tag: "Signature",
-        price: "US$95",
+        price: 95,
         img: "/collections/female_undergarments/lingerie.jpeg",
         href: "/collections/lingerie/soft-power-set",
       },
@@ -577,7 +578,7 @@ export default function CollectionsPage() {
                         {col.subtitle}
                       </p>
                       <h5 className="text-zinc-900">{product.name}</h5>
-                      <p className="text-zinc-600 mt-2">{product.price}</p>
+                      <p className="text-zinc-600 mt-2">{formatPrice(product.price)}</p>
                     </div>
                   </Link>
                 </motion.div>

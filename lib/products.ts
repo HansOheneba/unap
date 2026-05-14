@@ -21,7 +21,6 @@ export type Product = {
   name: string;
   description: string;
   price: number;
-  priceDisplay: string;
   category: string;
   tag: string;
   collectionId: string;
@@ -42,8 +41,7 @@ export const PRODUCTS: Product[] = [
     name: "ComfortFit Cotton Boxers",
     description:
       "Built for those who refuse to compromise. The ComfortFit Cotton Boxer is cut from 100% combed cotton with a reinforced waistband and tagless interior. Everyday wear, elevated.",
-    price: 45,
-    priceDisplay: "US$45",
+    price: 280,
     category: "boxers",
     tag: "Essential",
     collectionId: "boxers",
@@ -149,8 +147,7 @@ export const PRODUCTS: Product[] = [
     name: "ActiveFlex Performance Boxers",
     description:
       "Engineered for the athlete who moves without limits. The ActiveFlex combines moisture-wicking fabric with four-way stretch for unrestricted performance. From the gym to the streets.",
-    price: 55,
-    priceDisplay: "US$55",
+    price: 350,
     category: "boxers",
     tag: "Performance",
     collectionId: "boxers",
@@ -224,8 +221,7 @@ export const PRODUCTS: Product[] = [
     name: "LuxeSoft Premium Boxers",
     description:
       "The pinnacle of everyday luxury. LuxeSoft Premium Boxers are crafted from ultra-smooth Supima cotton with a seamless waistband and a tailored fit. For those who settle for nothing less.",
-    price: 65,
-    priceDisplay: "US$65",
+    price: 420,
     category: "boxers",
     tag: "Signature",
     collectionId: "boxers",
@@ -301,8 +297,7 @@ export const PRODUCTS: Product[] = [
     name: "Bold Society Cap",
     description:
       "A statement you wear on your head. The Bold Society Cap is structured, uncompromising, and built for those who never needed permission to stand out. Six-panel construction with an embroidered Unapologetic mark.",
-    price: 55,
-    priceDisplay: "US$55",
+    price: 380,
     category: "headwear",
     tag: "Signature",
     collectionId: "headwear",
@@ -370,8 +365,7 @@ export const PRODUCTS: Product[] = [
     name: "Classic Knit Beanie",
     description:
       "Cut from premium ribbed knit, the Classic Beanie sits low and holds its shape. A cold-weather essential with Unapologetic energy woven into every thread.",
-    price: 40,
-    priceDisplay: "US$40",
+    price: 260,
     category: "headwear",
     tag: "Essential",
     collectionId: "headwear",
@@ -414,8 +408,7 @@ export const PRODUCTS: Product[] = [
     name: "Suede Cap",
     description:
       "Premium suede meets clean structure. The Suede Cap is a minimal, unbranded piece built for those who let the fabric speak. Low-profile, medium-crown, adjustable fit.",
-    price: 65,
-    priceDisplay: "US$65",
+    price: 480,
     category: "headwear",
     tag: "Premium",
     collectionId: "headwear",
@@ -455,8 +448,7 @@ export const PRODUCTS: Product[] = [
     name: "Signature Track Pant",
     description:
       "Streamlined for movement, refined for the streets. The Signature Track Pant pairs precision tailoring with premium tricot fabric. A pant that moves with you without apology.",
-    price: 95,
-    priceDisplay: "US$95",
+    price: 750,
     category: "tracks",
     tag: "Signature",
     collectionId: "tracks",
@@ -500,8 +492,7 @@ export const PRODUCTS: Product[] = [
     name: "Classic Hoodie",
     description:
       "Not just a hoodie. A declaration. The Classic Hoodie is built from heavyweight French terry cotton with a relaxed fit and drop-shoulder silhouette. Comfortable enough for every day. Bold enough for every room.",
-    price: 120,
-    priceDisplay: "US$120",
+    price: 950,
     category: "hoodies",
     tag: "Essential",
     collectionId: "hoodies",
@@ -558,8 +549,7 @@ export const PRODUCTS: Product[] = [
     name: "Outlaw I",
     description:
       "Built for those who move through the world on their own terms. Oversized black frames with UV400 polarized lenses. Lightweight stainless steel hinges ensure an all-day fit.",
-    price: 145,
-    priceDisplay: "US$145",
+    price: 1200,
     category: "sunglasses",
     tag: "Signature",
     collectionId: "sunglasses",
@@ -590,8 +580,7 @@ export const PRODUCTS: Product[] = [
     name: "Obsidian Lens",
     description:
       "Obsidian Lens channels pure confidence. Deep-tinted lenses in a sculpted rectangular frame. A statement piece that demands no explanation.",
-    price: 160,
-    priceDisplay: "US$160",
+    price: 1350,
     category: "sunglasses",
     tag: "Statement",
     collectionId: "sunglasses",
@@ -625,8 +614,7 @@ export const PRODUCTS: Product[] = [
     name: "Eclipse Edit",
     description:
       "Limited production. The Eclipse features a wraparound silhouette with mirrored lenses that reflect everything the world throws at you. Literally.",
-    price: 150,
-    priceDisplay: "US$150",
+    price: 1180,
     category: "sunglasses",
     tag: "Limited",
     collectionId: "sunglasses",
@@ -657,8 +645,7 @@ export const PRODUCTS: Product[] = [
     name: "Sovereign Shades",
     description:
       "Designed for the woman who has already decided. Sleek cat-eye geometry, polarized lenses, and a feather-light frame that disappears on the face.",
-    price: 125,
-    priceDisplay: "US$125",
+    price: 980,
     category: "sunglasses",
     tag: "Womens",
     collectionId: "sunglasses",
@@ -694,8 +681,7 @@ export const PRODUCTS: Product[] = [
     name: "Revolt Oversized Tee",
     description:
       "Heavyweight cotton, drop-shoulder cut, uncompromising attitude. The Revolt Tee is a canvas for those who move through the world on their own frequency.",
-    price: 85,
-    priceDisplay: "US$85",
+    price: 580,
     category: "tops",
     tag: "Mens",
     collectionId: "tops",
@@ -732,8 +718,7 @@ export const PRODUCTS: Product[] = [
     name: "Phantom Long Sleeve",
     description:
       "Clean lines, deliberate presence. The Phantom Long Sleeve is tailored for those who move through rooms and leave something behind. A feeling, a memory, a standard.",
-    price: 110,
-    priceDisplay: "US$110",
+    price: 720,
     category: "tops",
     tag: "Womens",
     collectionId: "tops",
@@ -770,8 +755,7 @@ export const PRODUCTS: Product[] = [
     name: "Sovereign Crop",
     description:
       "The crop for those who own their silhouette. Soft French terry fabric, structured crop hem, and that unmistakable Unapologetic energy woven into every detail.",
-    price: 95,
-    priceDisplay: "US$95",
+    price: 650,
     category: "tops",
     tag: "Womens",
     collectionId: "tops",
@@ -810,8 +794,7 @@ export const PRODUCTS: Product[] = [
     name: "Soft Power Set",
     description:
       "What you wear beneath says everything about how you carry yourself. The Soft Power Set is luxury intimate wear for those who move through the world knowing exactly who they are.",
-    price: 95,
-    priceDisplay: "US$95",
+    price: 680,
     category: "lingerie",
     tag: "Signature",
     collectionId: "lingerie",

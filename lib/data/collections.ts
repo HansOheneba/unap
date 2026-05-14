@@ -16,8 +16,7 @@ export const DEFAULT_COLLECTIONS: Collection[] = [
         name: "Outlaw I",
         description:
           "The Outlaw I is built for those who move through the world on their own terms. Oversized black frames with UV400 polarized lenses. Lightweight stainless steel hinges ensure an all-day fit.",
-        price: "US$145",
-        priceNum: 145,
+        price: 1200,
         images: ["/collections/glases/outlawGlasses1.jpg"],
         tag: "Signature",
         collectionId: "sunglasses",
@@ -27,8 +26,7 @@ export const DEFAULT_COLLECTIONS: Collection[] = [
         name: "Obsidian Lens",
         description:
           "Obsidian Lens channels pure confidence. Deep-tinted lenses in a sculpted rectangular frame. A statement piece that demands no explanation.",
-        price: "US$160",
-        priceNum: 160,
+        price: 1350,
         images: ["/collections/glases/outlawGlasses3.jpg"],
         tag: "Statement",
         collectionId: "sunglasses",
@@ -38,8 +36,7 @@ export const DEFAULT_COLLECTIONS: Collection[] = [
         name: "Outlaw III",
         description:
           "Classic proportions meet Unapologetic attitude. The Outlaw III is a daily driver — bold enough to be noticed, clean enough to go anywhere.",
-        price: "US$135",
-        priceNum: 135,
+        price: 1100,
         images: ["/collections/glases/outlawGlases4.jpg"],
         tag: "Classic",
         collectionId: "sunglasses",
@@ -49,8 +46,7 @@ export const DEFAULT_COLLECTIONS: Collection[] = [
         name: "Eclipse",
         description:
           "Limited production. The Eclipse features a wraparound silhouette with mirrored lenses that reflect everything the world throws at you — literally.",
-        price: "US$150",
-        priceNum: 150,
+        price: 1180,
         images: ["/collections/glases/outlawGlasses5.jpg"],
         tag: "Limited",
         collectionId: "sunglasses",
@@ -60,8 +56,7 @@ export const DEFAULT_COLLECTIONS: Collection[] = [
         name: "Sovereign",
         description:
           "Designed for the woman who has already decided. Sleek cat-eye geometry, polarized lenses, and a feather-light frame that disappears on the face.",
-        price: "US$125",
-        priceNum: 125,
+        price: 980,
         images: ["/collections/glases/shadesFemale.jpg"],
         tag: "Womens",
         collectionId: "sunglasses",
@@ -71,8 +66,7 @@ export const DEFAULT_COLLECTIONS: Collection[] = [
         name: "Sovereign II",
         description:
           "A refined variation on the Sovereign silhouette. Subtle gradient lenses on a wider frame — made for the ones who refuse to blend in.",
-        price: "US$125",
-        priceNum: 125,
+        price: 980,
         images: ["/collections/glases/shadesFemale2.jpg"],
         tag: "Womens",
         collectionId: "sunglasses",
@@ -82,8 +76,7 @@ export const DEFAULT_COLLECTIONS: Collection[] = [
         name: "Obsidian (Womens)",
         description:
           "Full black, full presence. The Obsidian Womens edition wraps the face in bold geometry — for every room you walk into and own.",
-        price: "US$135",
-        priceNum: 135,
+        price: 1100,
         images: ["/collections/glases/shadesFemale3.jpg"],
         tag: "Womens",
         collectionId: "sunglasses",
@@ -93,8 +86,7 @@ export const DEFAULT_COLLECTIONS: Collection[] = [
         name: "Eclipse (Womens)",
         description:
           "The Eclipse in a feminine silhouette. Oversize frames, gradient lenses. Because some of us were born to be seen.",
-        price: "US$135",
-        priceNum: 135,
+        price: 1100,
         images: ["/collections/glases/shadesFemale4.jpg"],
         tag: "Womens",
         collectionId: "sunglasses",
@@ -117,8 +109,7 @@ export const DEFAULT_COLLECTIONS: Collection[] = [
         name: "Bold Society Black",
         description:
           "Six-panel structured cap. The Bold Society wordmark sits clean on washed cotton. All-black everything — for the ones who lead without announcing it.",
-        price: "US$65",
-        priceNum: 65,
+        price: 480,
         images: [
           "/collections/headwear/boldSocietyCapBlack.jpeg",
           "/collections/headwear/boldSocietyCapBlack2.jpeg",
@@ -137,8 +128,7 @@ export const DEFAULT_COLLECTIONS: Collection[] = [
         name: "Bold Society Cream",
         description:
           "The same structured silhouette in a warm cream wash. Pairs effortlessly with the full Unapologetic range — and everything else you own.",
-        price: "US$65",
-        priceNum: 65,
+        price: 480,
         images: [
           "/collections/headwear/boldSocietyCapCream.jpeg",
           "/collections/headwear/boldSocietyCapCream2.jpeg",
@@ -157,8 +147,7 @@ export const DEFAULT_COLLECTIONS: Collection[] = [
         name: "Bold Society Red",
         description:
           "Bold Society in crimson. For the days when subtlety isn't the assignment. Same six-panel construction, same conviction.",
-        price: "US$65",
-        priceNum: 65,
+        price: 480,
         images: [
           "/collections/headwear/boldSocietyCapRed.jpeg",
           "/collections/headwear/boldSocietyCapRed2.jpeg",
@@ -179,8 +168,7 @@ export const DEFAULT_COLLECTIONS: Collection[] = [
         name: "Suede Cap Black",
         description:
           "Premium suede brim with a clean unstructured crown. Tactile, quiet luxury for the ones who feel the difference.",
-        price: "US$75",
-        priceNum: 75,
+        price: 580,
         images: [
           "/collections/headwear/suedeCapBlack.jpg",
           "/collections/headwear/suedeCapBlack2.jpeg",
@@ -193,8 +181,7 @@ export const DEFAULT_COLLECTIONS: Collection[] = [
         name: "Sovereign Beanie",
         description:
           "Fine-knit ribbed beanie. Heavyweight enough to mean it, clean enough to wear anywhere. The Sovereign wordmark is debossed on a woven patch.",
-        price: "US$55",
-        priceNum: 55,
+        price: 360,
         images: ["/collections/headwear/beanie.jpg"],
         colors: [
           { name: "Black", hex: "#1a1a1a" },
@@ -208,8 +195,7 @@ export const DEFAULT_COLLECTIONS: Collection[] = [
         name: "Sovereign Beanie Red",
         description:
           "The Sovereign Beanie in a bold crimson knit. Same structure, same conviction — different declaration.",
-        price: "US$55",
-        priceNum: 55,
+        price: 360,
         images: [
           "/collections/headwear/beanieRed.jpg",
           "/collections/headwear/beanieRed2.jpg",
@@ -238,8 +224,7 @@ export const DEFAULT_COLLECTIONS: Collection[] = [
         name: "Revolt Oversized Tee",
         description:
           "Heavyweight 320gsm cotton in an oversized silhouette that wears like a second skin. Chest-embroidered Unapologetic wordmark. Pre-washed for immediate comfort.",
-        price: "US$85",
-        priceNum: 85,
+        price: 580,
         images: ["/collections/men_shirt/shirtCollection.jpeg"],
         colors: [
           { name: "Black", hex: "#1a1a1a" },
@@ -254,8 +239,7 @@ export const DEFAULT_COLLECTIONS: Collection[] = [
         name: "Phantom Long Sleeve Brown",
         description:
           "Midweight long-sleeve in a warm earthy brown. Relaxed through the body with a slightly dropped shoulder. The kind of piece that works for everything and asks nothing.",
-        price: "US$110",
-        priceNum: 110,
+        price: 720,
         images: ["/collections/female_shirts/shirtBrown.jpeg"],
         tag: "Womens",
         collectionId: "tops",
@@ -265,8 +249,7 @@ export const DEFAULT_COLLECTIONS: Collection[] = [
         name: "Sovereign Crop Cream",
         description:
           "Cropped and intentional. The Sovereign Crop sits just above the waist in a clean cream knit. Subtle logo at the hem. For those who dress with purpose.",
-        price: "US$95",
-        priceNum: 95,
+        price: 650,
         images: ["/collections/female_shirts/shirtCream.jpeg"],
         tag: "Womens",
         collectionId: "tops",
@@ -288,8 +271,7 @@ export const DEFAULT_COLLECTIONS: Collection[] = [
         name: "Classic White",
         description:
           "The essential. Pure white boxer brief in a modal-cotton blend that stays cool all day. Flat-lock seams, no-roll waistband. The foundation of any wardrobe that takes itself seriously.",
-        price: "US$45",
-        priceNum: 45,
+        price: 280,
         images: [
           "/collections/boxers/boxersWhite.jpeg",
           "/collections/boxers/boxersWhite2.jpeg",
@@ -303,8 +285,7 @@ export const DEFAULT_COLLECTIONS: Collection[] = [
         name: "Midnight Blue",
         description:
           "Deep navy modal-cotton. The Midnight Blue is for the ones who know that the details others never see matter most. Anti-fade dye treatment.",
-        price: "US$45",
-        priceNum: 45,
+        price: 280,
         images: [
           "/collections/boxers/boxersBlue.jpg",
           "/collections/boxers/boxersBlue2.jpg",
@@ -318,8 +299,7 @@ export const DEFAULT_COLLECTIONS: Collection[] = [
         name: "Bourbon Brown",
         description:
           "Warm, earthy, unapologetic. The Bourbon Brown boxer brief in a rich tonal brown with a contrast waistband. Modal-cotton blend for all-day comfort.",
-        price: "US$45",
-        priceNum: 45,
+        price: 280,
         images: [
           "/collections/boxers/boxersBrown.jpeg",
           "/collections/boxers/boxersBrown2.jpeg",
@@ -333,8 +313,7 @@ export const DEFAULT_COLLECTIONS: Collection[] = [
         name: "Storm Gray",
         description:
           "Understated and precise. Storm Gray lives in the space between formal and free. The daily uniform for those who move with quiet intention.",
-        price: "US$45",
-        priceNum: 45,
+        price: 280,
         images: [
           "/collections/boxers/boxersGray.jpg",
           "/collections/boxers/boxersGray2.jpg",
@@ -348,8 +327,7 @@ export const DEFAULT_COLLECTIONS: Collection[] = [
         name: "Ivory",
         description:
           "Warm ivory in a lightweight fabric blend. Limited in production. For those with a refined eye for what most people overlook.",
-        price: "US$45",
-        priceNum: 45,
+        price: 280,
         images: [
           "/collections/boxers/boxersCream.jpeg",
           "/collections/boxers/boxersCream2.jpeg",
@@ -363,8 +341,7 @@ export const DEFAULT_COLLECTIONS: Collection[] = [
         name: "Monochrome",
         description:
           "Black and white. No compromise, no ambiguity. The Monochrome boxer brief features a contrast waistband and bold colorblock design.",
-        price: "US$45",
-        priceNum: 45,
+        price: 280,
         images: [
           "/collections/boxers/boxersBlackWhite.jpeg",
           "/collections/boxers/boxersBlackWhite2.jpeg",
@@ -378,8 +355,7 @@ export const DEFAULT_COLLECTIONS: Collection[] = [
         name: "The Full Set",
         description:
           "All six colorways. One box. The Full Set is for those who commit fully. Free engraved box included.",
-        price: "US$240",
-        priceNum: 240,
+        price: 1500,
         images: [
           "/collections/boxers/boxersMixed.jpeg",
           "/collections/boxers/boxersSizeChart.jpg",
@@ -405,8 +381,7 @@ export const DEFAULT_COLLECTIONS: Collection[] = [
         name: "Sovereign Track",
         description:
           "Technical jersey tracksuit with tapered joggers and a zip-through jacket. Reflective Unapologetic branding. Built for the ones who train as hard as they think.",
-        price: "US$120",
-        priceNum: 120,
+        price: 950,
         images: ["/collections/tracks/track.jpg"],
         colors: [
           { name: "Black", hex: "#1a1a1a" },
@@ -420,8 +395,7 @@ export const DEFAULT_COLLECTIONS: Collection[] = [
         name: "Sovereign Track II",
         description:
           "The second iteration of the Sovereign Track. Same precision construction, updated silhouette with side-zip pockets and a longer jacket hem.",
-        price: "US$120",
-        priceNum: 120,
+        price: 950,
         images: ["/collections/tracks/track2.jpg"],
         colors: [
           { name: "Black", hex: "#1a1a1a" },
@@ -447,8 +421,7 @@ export const DEFAULT_COLLECTIONS: Collection[] = [
         name: "Sovereign Hoodie",
         description:
           "500gsm French terry hoodie with a kangaroo pocket and a slightly oversized fit. Heavyweight enough to hold its shape, premium enough to justify the weight.",
-        price: "US$135",
-        priceNum: 135,
+        price: 980,
         images: ["/collections/hoodies/hoodieBlackMan.jpg"],
         colors: [
           { name: "Black", hex: "#1a1a1a" },
@@ -462,8 +435,7 @@ export const DEFAULT_COLLECTIONS: Collection[] = [
         name: "Spectrum Hoodie",
         description:
           "The Spectrum is for those who refuse to be one thing. A bold multi-tone dye treatment on the same heavyweight French terry base. No two pieces finish exactly the same.",
-        price: "US$135",
-        priceNum: 135,
+        price: 980,
         images: ["/collections/hoodies/hoodieColors.jpg"],
         tag: "Statement",
         collectionId: "hoodies",
@@ -473,8 +445,7 @@ export const DEFAULT_COLLECTIONS: Collection[] = [
         name: "Rebel Hoodie",
         description:
           "Two people, one vision. The Rebel Hoodie was designed for the ones who move in pairs but think for themselves. Extended hem, split ribbed cuffs.",
-        price: "US$140",
-        priceNum: 140,
+        price: 1050,
         images: ["/collections/hoodies/hoodieManXMan.jpg"],
         tag: "Limited",
         collectionId: "hoodies",
@@ -497,8 +468,7 @@ export const DEFAULT_COLLECTIONS: Collection[] = [
         name: "Soft Power Set",
         description:
           "A two-piece set in sheer, structured lace. The Soft Power Set is crafted for the woman who understands that restraint and boldness are the same force, aimed differently.",
-        price: "US$95",
-        priceNum: 95,
+        price: 680,
         images: ["/collections/female_undergarments/lingerie.jpeg"],
         colors: [
           { name: "Noir", hex: "#1a1a1a" },

@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Minus, Plus, X, ShoppingBag } from "lucide-react";
 import { useCartStore } from "@/lib/stores/cart-store";
+import { formatPrice } from "@/lib/currency";
 import AddToCartButton from "@/components/ui/add-to-cart-button";
 import { Button, buttonVariants } from "@/components/ui/button";
 
@@ -13,8 +14,7 @@ const featured = [
   {
     id: "headwear-1",
     name: "Bold Society Black",
-    price: "US$65",
-    priceNum: 65,
+    price: 480,
     img: "/collections/headwear/boldSocietyCapBlack.jpeg",
     category: "Head Wears",
     href: "/collections/headwear",
@@ -22,8 +22,7 @@ const featured = [
   {
     id: "sunglasses-1",
     name: "Outlaw I",
-    price: "US$145",
-    priceNum: 145,
+    price: 1200,
     img: "/collections/glases/outlawGlasses1.jpg",
     category: "Sunglasses",
     href: "/collections/sunglasses",
@@ -31,8 +30,7 @@ const featured = [
   {
     id: "boxers-1",
     name: "Classic White",
-    price: "US$45",
-    priceNum: 45,
+    price: 280,
     img: "/collections/boxers/boxersWhite.jpeg",
     category: "Boxers",
     href: "/collections/boxers",
@@ -40,8 +38,7 @@ const featured = [
   {
     id: "tracks-1",
     name: "Sovereign Track",
-    price: "US$120",
-    priceNum: 120,
+    price: 950,
     img: "/collections/tracks/track.jpg",
     category: "Tracks",
     href: "/collections/tracks",
@@ -135,7 +132,7 @@ export default function CartPage() {
                             {product.name}
                           </h5>
                           <p className="text-zinc-600 text-sm mt-1">
-                            {product.price}
+                            {formatPrice(product.price)}
                           </p>
                         </div>
                       </Link>
@@ -144,7 +141,6 @@ export default function CartPage() {
                           id={product.id}
                           name={product.name}
                           price={product.price}
-                          priceNum={product.priceNum}
                           img={product.img}
                           category={product.category}
                         />
@@ -195,7 +191,7 @@ export default function CartPage() {
                           {item.name}
                         </h5>
                         <p className="text-zinc-600 text-sm mt-1">
-                          {item.price}
+                          {formatPrice(item.price)}
                         </p>
                       </div>
 
@@ -227,7 +223,7 @@ export default function CartPage() {
 
                         <div className="flex items-center gap-4">
                           <p className="text-zinc-900 text-sm font-medium">
-                            US${(item.priceNum * item.quantity).toFixed(0)}
+                            {formatPrice(item.price * item.quantity)}
                           </p>
                           <button
                             onClick={() => removeItem(item.id)}
@@ -255,7 +251,7 @@ export default function CartPage() {
                       Subtotal ({count} item{count !== 1 ? "s" : ""})
                     </span>
                     <span className="text-zinc-900">
-                      US${subtotal.toFixed(0)}
+                      {formatPrice(subtotal)}
                     </span>
                   </div>
                   <div className="flex justify-between">
@@ -269,7 +265,7 @@ export default function CartPage() {
                 <div className="border-t border-zinc-100 pt-4 flex justify-between">
                   <span className="text-zinc-900 font-medium">Total</span>
                   <span className="text-zinc-900 font-medium">
-                    US${subtotal.toFixed(0)}
+                    {formatPrice(subtotal)}
                   </span>
                 </div>
 

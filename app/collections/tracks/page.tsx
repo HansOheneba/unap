@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { buttonVariants } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { getProductsByCategory } from "@/lib/products";
+import { formatPrice } from "@/lib/currency";
 
 export default function TracksPage() {
   const products = getProductsByCategory("tracks");
@@ -119,7 +120,7 @@ export default function TracksPage() {
                 <div className="p-6 border-t border-zinc-100 flex flex-col gap-3">
                   <p className="eyebrow text-zinc-500">Tracks</p>
                   <h4 className="text-zinc-900">{product.name}</h4>
-                  <p className="text-zinc-600 mt-1">{product.priceDisplay}</p>
+                  <p className="text-zinc-600 mt-1">{formatPrice(product.price)}</p>
                 </div>
               </Link>
             </motion.div>

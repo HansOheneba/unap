@@ -8,8 +8,7 @@ export type Product = {
   id: string; // e.g. "boxers-1"
   name: string;
   description: string;
-  price: string; // display string "US$45"
-  priceNum: number;
+  price: number; // raw number — format with formatPrice() from lib/currency
   images: string[]; // all images; first is primary / cover
   colors?: ProductColor[];
   tag: string; // "Essential", "Signature", etc.

@@ -51,8 +51,7 @@ function NewProductForm() {
       id: form.id,
       name: form.name,
       description: form.description,
-      price: form.price,
-      priceNum: parseInt(form.price.replace(/[^0-9]/g, ""), 10),
+      price: parseFloat(form.price) || 0,
       images:
         filteredImages.length > 0
           ? filteredImages

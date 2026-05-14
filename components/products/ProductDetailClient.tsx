@@ -10,6 +10,7 @@ import {
   Check,
   ArrowLeft,
 } from "lucide-react";
+import { formatPrice } from "@/lib/currency";
 import type { Product, ColorVariant } from "@/lib/products";
 import ProductGallery from "./ProductGallery";
 import ProductCard from "./ProductCard";
@@ -70,8 +71,7 @@ export default function ProductDetailClient({
     addItem({
       id: `${product.id}__${selectedVariant.id}__${selectedSize}`,
       name: `${product.name} — ${selectedVariant.colorName} / ${selectedSize}`,
-      price: product.priceDisplay,
-      priceNum: product.price,
+      price: product.price,
       img: selectedVariant.images[0],
       category: product.category,
     });
@@ -167,7 +167,7 @@ export default function ProductDetailClient({
               </h1>
               <div className="flex items-center gap-3 flex-wrap">
                 <span className="text-2xl font-semibold">
-                  {product.priceDisplay}
+                  {formatPrice(product.price)}
                 </span>
                 {selectedSize && !isOutOfStock && !isLowStock && (
                   <span className="inline-flex items-center gap-1.5 text-[0.65rem] tracking-widest uppercase text-emerald-600 font-medium">
@@ -417,7 +417,7 @@ export default function ProductDetailClient({
               <Check size={15} /> Added
             </span>
           ) : (
-            `Add to Cart — ${product.priceDisplay}`
+            `Add to Cart — ${formatPrice(product.price)}`
           )}
         </button>
       </div>

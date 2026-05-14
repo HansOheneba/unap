@@ -4,8 +4,7 @@ import { persist, devtools } from "zustand/middleware";
 export interface CartItem {
   id: string; // e.g. "sunglasses-1"
   name: string;
-  price: string; // display, e.g. "US$145"
-  priceNum: number; // numeric value for math
+  price: number; // raw number — format with formatPrice() for display
   img: string;
   category: string;
   quantity: number;
@@ -60,7 +59,7 @@ export const useCartStore = create<CartState>()(
         totalItems: () => get().items.reduce((sum, i) => sum + i.quantity, 0),
 
         totalPrice: () =>
-          get().items.reduce((sum, i) => sum + i.priceNum * i.quantity, 0),
+          get().items.reduce((sum, i) => sum + i.price * i.quantity, 0),
       }),
       { name: "unap-cart" },
     ),

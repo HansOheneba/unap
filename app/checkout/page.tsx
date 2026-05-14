@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronRight } from "lucide-react";
 import { useCartStore } from "@/lib/stores/cart-store";
+import { formatPrice } from "@/lib/currency";
 import { useOnboardingStore } from "@/lib/stores/onboarding-store";
 import { Button, buttonVariants } from "@/components/ui/button";
 
@@ -493,7 +494,7 @@ export default function CheckoutPage() {
                           </p>
                         </div>
                         <p className="text-zinc-900 text-sm shrink-0">
-                          US${(item.priceNum * item.quantity).toFixed(0)}
+                          {formatPrice(item.price * item.quantity)}
                         </p>
                       </div>
                     ))}
@@ -548,7 +549,7 @@ export default function CheckoutPage() {
                       </p>
                     </div>
                     <p className="text-zinc-900 text-xs shrink-0">
-                      US${(item.priceNum * item.quantity).toFixed(0)}
+                      {formatPrice(item.price * item.quantity)}
                     </p>
                   </div>
                 ))}
@@ -558,7 +559,7 @@ export default function CheckoutPage() {
                 <div className="flex justify-between">
                   <span className="text-zinc-500">Subtotal</span>
                   <span className="text-zinc-900">
-                    US${subtotal.toFixed(0)}
+                    {formatPrice(subtotal)}
                   </span>
                 </div>
                 <div className="flex justify-between">
@@ -568,7 +569,7 @@ export default function CheckoutPage() {
                 <div className="flex justify-between font-medium mt-1">
                   <span className="text-zinc-900">Total</span>
                   <span className="text-zinc-900">
-                    US${subtotal.toFixed(0)}
+                    {formatPrice(subtotal)}
                   </span>
                 </div>
               </div>

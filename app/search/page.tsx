@@ -6,6 +6,7 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, X } from "lucide-react";
 import AddToCartButton from "@/components/ui/add-to-cart-button";
+import { formatPrice } from "@/lib/currency";
 import { useAdminStore } from "@/lib/stores/admin-store";
 
 function capitalize(s: string) {
@@ -142,7 +143,7 @@ export default function SearchPage() {
                         {product.name}
                       </h5>
                       <p className="text-zinc-500 text-sm mt-1">
-                        {product.price}
+                        {formatPrice(product.price)}
                       </p>
                     </div>
                     <div className="mt-auto">
@@ -150,7 +151,6 @@ export default function SearchPage() {
                         id={product.id}
                         name={product.name}
                         price={product.price}
-                        priceNum={product.priceNum}
                         img={product.images[0]}
                         category={capitalize(product.collectionId)}
                       />

@@ -6,13 +6,14 @@ import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
 import { buttonVariants } from "@/components/ui/button";
+import { formatPrice } from "@/lib/currency";
 
 const featured = [
   {
     id: 1,
     name: "Sovereign Hoodie",
     category: "Tops",
-    price: "$165",
+    price: 1200,
     href: "/collections",
     size: "large",
   },
@@ -20,7 +21,7 @@ const featured = [
     id: 2,
     name: "Shadow Cargo",
     category: "Pants",
-    price: "$195",
+    price: 1450,
     href: "/collections",
     size: "small",
   },
@@ -28,7 +29,7 @@ const featured = [
     id: 3,
     name: "Eclipse Shades",
     category: "Sunglasses",
-    price: "$145",
+    price: 1200,
     href: "/collections",
     size: "small",
   },
@@ -36,7 +37,7 @@ const featured = [
     id: 4,
     name: "Refusal Brim",
     category: "Head Wears",
-    price: "$65",
+    price: 580,
     href: "/collections",
     size: "small",
   },
@@ -105,7 +106,7 @@ export default function CollectionsPreview() {
             </Link>
             <div className="flex items-center justify-between px-6 py-5 bg-white border-t border-zinc-100">
               <h5 className="text-zinc-900">{featured[0].name}</h5>
-              <span className="eyebrow text-zinc-500">{featured[0].price}</span>
+              <span className="eyebrow text-zinc-500">{formatPrice(featured[0].price)}</span>
             </div>
           </FadeIn>
 
@@ -140,7 +141,7 @@ export default function CollectionsPreview() {
                 </Link>
                 <div className="flex items-center justify-between px-5 py-4 bg-white border-t border-zinc-100">
                   <h5 className="text-zinc-900 text-sm">{product.name}</h5>
-                  <span className="eyebrow text-zinc-500">{product.price}</span>
+                  <span className="eyebrow text-zinc-500">{formatPrice(product.price)}</span>
                 </div>
               </FadeIn>
             ))}

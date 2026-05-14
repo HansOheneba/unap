@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { buttonVariants } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { getProductsByCategory } from "@/lib/products";
+import { formatPrice } from "@/lib/currency";
 
 export default function TopsPage() {
   const products = getProductsByCategory("tops");
@@ -118,7 +119,7 @@ export default function TopsPage() {
                 <div className="p-5 border-t border-zinc-100">
                   <p className="eyebrow text-zinc-500 mb-2">Tops</p>
                   <h5 className="text-zinc-900">{product.name}</h5>
-                  <p className="text-zinc-600 mt-2">{product.priceDisplay}</p>
+                  <p className="text-zinc-600 mt-2">{formatPrice(product.price)}</p>
                 </div>
               </Link>
             </motion.div>

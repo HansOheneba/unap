@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { formatPrice } from "@/lib/currency";
 import type { Product } from "@/lib/products";
 
 type ProductCardProps = {
@@ -54,7 +55,7 @@ export default function ProductCard({ product }: ProductCardProps) {
               {product.name}
             </h3>
             <span className="text-sm font-semibold text-zinc-900 shrink-0">
-              {product.priceDisplay}
+              {formatPrice(product.price)}
             </span>
           </div>
 

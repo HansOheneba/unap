@@ -24,7 +24,7 @@ export default function EditProductPage() {
   const [form, setForm] = useState({
     name: product?.name ?? "",
     description: product?.description ?? "",
-    price: product?.price ?? "",
+    price: product?.price?.toString() ?? "",
     tag: product?.tag ?? "",
   });
   const [images, setImages] = useState<string[]>(product?.images ?? [""]);
@@ -37,7 +37,7 @@ export default function EditProductPage() {
       setForm({
         name: product.name,
         description: product.description,
-        price: product.price,
+        price: product.price.toString(),
         tag: product.tag,
       });
       setImages(product.images);
@@ -72,7 +72,7 @@ export default function EditProductPage() {
     const filteredImages = images.filter((img) => img.trim() !== "");
     updateProduct(id, {
       ...form,
-      priceNum: parseInt(form.price.replace(/[^0-9]/g, ""), 10),
+      price: parseFloat(form.price) || 0,
       images: filteredImages.length > 0 ? filteredImages : product.images,
       colors: colors.length > 0 ? colors : undefined,
     });
