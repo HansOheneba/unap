@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { buttonVariants } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { getProductsByCategory } from "@/lib/products";
+import BoxerSizeGuide from "@/components/products/BoxerSizeGuide";
 
 export default function BoxersPage() {
   const products = getProductsByCategory("boxers");
@@ -75,18 +76,12 @@ export default function BoxersPage() {
           <div>
             <p className="eyebrow text-zinc-700 mb-2">Size Reference</p>
             <p className="text-zinc-500 text-sm max-w-sm">
-              Our boxers run true to size. S / M / L / XL / XXL available. Check
-              the size chart for exact measurements.
+              Our boxers run true to size. S / M / L / XL / XXL / XXL available. Open the size
+              guide for exact waist measurements.
             </p>
           </div>
-          <div className="relative w-full md:w-64 aspect-video shrink-0">
-            <Image
-              src="/collections/boxers/boxersSizeChart.jpg"
-              alt="Size Chart"
-              fill
-              className="object-contain"
-            />
-          </div>
+
+          <BoxerSizeGuide variant="button" />
         </motion.div>
       </div>
 

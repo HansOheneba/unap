@@ -13,6 +13,7 @@ import {
 import type { Product, ColorVariant } from "@/lib/products";
 import ProductGallery from "./ProductGallery";
 import ProductCard from "./ProductCard";
+import BoxerSizeGuide from "./BoxerSizeGuide";
 import { useCartStore } from "@/lib/stores/cart-store";
 import { cn } from "@/lib/utils";
 
@@ -233,11 +234,16 @@ export default function ProductDetailClient({
                 <p className="text-[0.62rem] font-medium tracking-widest uppercase text-zinc-500">
                   Size
                 </p>
-                {!selectedSize && (
-                  <p className="text-[0.62rem] text-zinc-400 tracking-wide">
-                    Select a size
-                  </p>
-                )}
+                <div className="flex items-center gap-3">
+                  {!selectedSize && (
+                    <p className="text-[0.62rem] text-zinc-400 tracking-wide">
+                      Select a size
+                    </p>
+                  )}
+                  {product.category === "boxers" && (
+                    <BoxerSizeGuide variant="link" />
+                  )}
+                </div>
               </div>
               <div className="flex flex-wrap gap-2">
                 {selectedVariant.sizes.map((s) => {
