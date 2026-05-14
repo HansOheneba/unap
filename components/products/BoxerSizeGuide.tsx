@@ -14,11 +14,11 @@ import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const sizeChart = [
-  { size: "S",    inches: "29 - 32", cm: "74 - 80"   },
-  { size: "M",    inches: "32 - 34", cm: "80 - 86"   },
-  { size: "L",    inches: "34 - 37", cm: "86 - 94"   },
-  { size: "XL",   inches: "37 - 39", cm: "94 - 100"  },
-  { size: "XXL",  inches: "39 - 42", cm: "100 - 106" },
+  { size: "S", inches: "29 - 32", cm: "74 - 80" },
+  { size: "M", inches: "32 - 34", cm: "80 - 86" },
+  { size: "L", inches: "34 - 37", cm: "86 - 94" },
+  { size: "XL", inches: "37 - 39", cm: "94 - 100" },
+  { size: "XXL", inches: "39 - 42", cm: "100 - 106" },
   { size: "XXXL", inches: "42 - 45", cm: "106 - 114" },
 ];
 
@@ -41,7 +41,10 @@ export default function BoxerSizeGuide({ variant = "button" }: Props) {
       <DialogTrigger
         className={
           variant === "button"
-            ? cn(buttonVariants({ variant: "outline", size: "sm" }), "gap-2 shrink-0")
+            ? cn(
+                buttonVariants({ variant: "outline", size: "sm" }),
+                "gap-2 shrink-0",
+              )
             : "text-[0.62rem] tracking-widest uppercase text-zinc-400 hover:text-zinc-900 transition-colors border-b border-zinc-200 pb-0.5 cursor-pointer"
         }
       >
@@ -75,15 +78,26 @@ export default function BoxerSizeGuide({ variant = "button" }: Props) {
             <thead>
               <tr className="border-b-2 border-zinc-900">
                 <th className="text-left pb-3 eyebrow text-zinc-900">Size</th>
-                <th className="text-center pb-3 eyebrow text-zinc-900">Waist (in)</th>
-                <th className="text-center pb-3 eyebrow text-zinc-900">Waist (cm)</th>
+                <th className="text-center pb-3 eyebrow text-zinc-900">
+                  Waist (in)
+                </th>
+                <th className="text-center pb-3 eyebrow text-zinc-900">
+                  Waist (cm)
+                </th>
               </tr>
             </thead>
             <tbody>
               {sizeChart.map((row, i) => (
-                <tr key={row.size} className={i % 2 === 0 ? "bg-zinc-50" : "bg-white"}>
-                  <td className="py-3.5 pl-3 font-bold text-zinc-900 eyebrow">{row.size}</td>
-                  <td className="py-3.5 text-center text-zinc-600">{row.inches}</td>
+                <tr
+                  key={row.size}
+                  className={i % 2 === 0 ? "bg-zinc-50" : "bg-white"}
+                >
+                  <td className="py-3.5 pl-3 font-bold text-zinc-900 eyebrow">
+                    {row.size}
+                  </td>
+                  <td className="py-3.5 text-center text-zinc-600">
+                    {row.inches}
+                  </td>
                   <td className="py-3.5 text-center text-zinc-600">{row.cm}</td>
                 </tr>
               ))}

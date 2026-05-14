@@ -76,8 +76,8 @@ export default function BoxersPage() {
           <div>
             <p className="eyebrow text-zinc-700 mb-2">Size Reference</p>
             <p className="text-zinc-500 text-sm max-w-sm">
-              Our boxers run true to size. S / M / L / XL / XXL / XXL available. Open the size
-              guide for exact waist measurements.
+              Our boxers run true to size. S / M / L / XL / XXL / XXL available.
+              Open the size guide for exact waist measurements.
             </p>
           </div>
 
