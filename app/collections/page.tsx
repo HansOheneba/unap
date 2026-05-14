@@ -578,7 +578,9 @@ export default function CollectionsPage() {
                         {col.subtitle}
                       </p>
                       <h5 className="text-zinc-900">{product.name}</h5>
-                      <p className="text-zinc-600 mt-2">{formatPrice(product.price)}</p>
+                      <p className="text-zinc-600 mt-2">
+                        {formatPrice(product.price)}
+                      </p>
                     </div>
                   </Link>
                 </motion.div>

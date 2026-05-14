@@ -120,7 +120,9 @@ export default function TracksPage() {
                 <div className="p-6 border-t border-zinc-100 flex flex-col gap-3">
                   <p className="eyebrow text-zinc-500">Tracks</p>
                   <h4 className="text-zinc-900">{product.name}</h4>
-                  <p className="text-zinc-600 mt-1">{formatPrice(product.price)}</p>
+                  <p className="text-zinc-600 mt-1">
+                    {formatPrice(product.price)}
+                  </p>
                 </div>
               </Link>
             </motion.div>

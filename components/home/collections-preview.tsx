@@ -106,7 +106,9 @@ export default function CollectionsPreview() {
             </Link>
             <div className="flex items-center justify-between px-6 py-5 bg-white border-t border-zinc-100">
               <h5 className="text-zinc-900">{featured[0].name}</h5>
-              <span className="eyebrow text-zinc-500">{formatPrice(featured[0].price)}</span>
+              <span className="eyebrow text-zinc-500">
+                {formatPrice(featured[0].price)}
+              </span>
             </div>
           </FadeIn>
 
@@ -141,7 +143,9 @@ export default function CollectionsPreview() {
                 </Link>
                 <div className="flex items-center justify-between px-5 py-4 bg-white border-t border-zinc-100">
                   <h5 className="text-zinc-900 text-sm">{product.name}</h5>
-                  <span className="eyebrow text-zinc-500">{formatPrice(product.price)}</span>
+                  <span className="eyebrow text-zinc-500">
+                    {formatPrice(product.price)}
+                  </span>
                 </div>
               </FadeIn>
             ))}

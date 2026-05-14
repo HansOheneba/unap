@@ -558,9 +558,7 @@ export default function CheckoutPage() {
               <div className="border-t border-zinc-100 pt-4 flex flex-col gap-2 text-sm">
                 <div className="flex justify-between">
                   <span className="text-zinc-500">Subtotal</span>
-                  <span className="text-zinc-900">
-                    {formatPrice(subtotal)}
-                  </span>
+                  <span className="text-zinc-900">{formatPrice(subtotal)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-zinc-500">Shipping</span>
@@ -568,9 +566,7 @@ export default function CheckoutPage() {
                 </div>
                 <div className="flex justify-between font-medium mt-1">
                   <span className="text-zinc-900">Total</span>
-                  <span className="text-zinc-900">
-                    {formatPrice(subtotal)}
-                  </span>
+                  <span className="text-zinc-900">{formatPrice(subtotal)}</span>
                 </div>
               </div>
             </div>
