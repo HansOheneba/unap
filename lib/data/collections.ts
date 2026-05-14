@@ -528,8 +528,7 @@ export const OVERVIEW_CARDS: OverviewCard[] = [
     id: "headwear",
     label: "Head Wears",
     img: "/collections/headwear/suedeCapBlack.jpg",
-    description:
-      "Caps and beanies for those who let the crown do the talking.",
+    description: "Caps and beanies for those who let the crown do the talking.",
   },
   {
     id: "tops",
@@ -549,15 +548,13 @@ export const OVERVIEW_CARDS: OverviewCard[] = [
     id: "tracks",
     label: "Tracks",
     img: "/collections/tracks/track.jpg",
-    description:
-      "Precision-cut pants built for perpetual motion.",
+    description: "Precision-cut pants built for perpetual motion.",
   },
   {
     id: "hoodies",
     label: "Hoodies",
     img: "/collections/hoodies/hoodieBlackMan.jpg",
-    description:
-      "Heavyweight warmth for the unshakable.",
+    description: "Heavyweight warmth for the unshakable.",
   },
   {
     id: "lingerie",

@@ -1,6 +1,12 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback, useSyncExternalStore } from "react";
+import {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useSyncExternalStore,
+} from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -85,7 +91,11 @@ export default function Header() {
   const iconCls = "text-white";
   // useSyncExternalStore: server snapshot = false, client snapshot = true
   // React uses the server snapshot during hydration, preventing mismatch
-  const isClient = useSyncExternalStore(() => () => {}, () => true, () => false);
+  const isClient = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
   const closeTimerRef = useRef<number | null>(null);
 
   useEffect(() => {

@@ -30,7 +30,6 @@ type Collection = {
 
 // ── DATA ──────────────────────────────────────────────────────────────────────
 
-
 const collections: Collection[] = [
   {
     id: "sunglasses",
