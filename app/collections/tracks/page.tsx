@@ -7,6 +7,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { getProductsByCategory } from "@/lib/products";
 import { formatPrice } from "@/lib/currency";
+import CollectionCard from "@/components/products/CollectionCard";
 
 export default function TracksPage() {
   const products = getProductsByCategory("tracks");
@@ -102,29 +103,14 @@ export default function TracksPage() {
                   transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] },
                 },
               }}
-              className="group bg-white"
+              className="bg-white"
             >
-              <Link
-                href={`/collections/tracks/${product.slug}`}
-                className="block"
-              >
-                <div className="relative overflow-hidden aspect-3/4">
-                  <Image
-                    src={product.variants[0].images[0]}
-                    alt={product.name}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                    className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
-                  />
-                </div>
-                <div className="p-6 border-t border-zinc-100 flex flex-col gap-3">
-                  <p className="eyebrow text-zinc-500">Tracks</p>
-                  <h4 className="text-zinc-900">{product.name}</h4>
-                  <p className="text-zinc-600 mt-1">
-                    {formatPrice(product.price)}
-                  </p>
-                </div>
-              </Link>
+              <CollectionCard
+                product={product}
+                categoryLabel="Tracks"
+                imageSizes="(max-width: 768px) 100vw, 50vw"
+                large
+              />
             </motion.div>
           ))}
         </motion.div>

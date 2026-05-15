@@ -7,6 +7,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { getProductsByCategory } from "@/lib/products";
 import { formatPrice } from "@/lib/currency";
+import CollectionCard from "@/components/products/CollectionCard";
 
 export default function HeadwearPage() {
   const products = getProductsByCategory("headwear");
@@ -101,29 +102,14 @@ export default function HeadwearPage() {
                   transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] },
                 },
               }}
-              className="group bg-white"
+              className="bg-white"
             >
-              <Link
-                href={`/collections/headwear/${product.slug}`}
-                className="block"
-              >
-                <div className="relative overflow-hidden aspect-3/4">
-                  <Image
-                    src={product.variants[0].images[0]}
-                    alt={product.name}
-                    fill
-                    sizes="(max-width: 768px) 50vw, 33vw"
-                    className="object-cover object-top transition-transform duration-700 group-hover:scale-[1.04]"
-                  />
-                </div>
-                <div className="p-5 border-t border-zinc-100">
-                  <p className="eyebrow text-zinc-500 mb-2">Head Wears</p>
-                  <h5 className="text-zinc-900">{product.name}</h5>
-                  <p className="text-zinc-600 mt-2">
-                    {formatPrice(product.price)}
-                  </p>
-                </div>
-              </Link>
+              <CollectionCard
+                product={product}
+                categoryLabel="Head Wears"
+                imageClassName="object-top"
+                imageSizes="(max-width: 768px) 50vw, 33vw"
+              />
             </motion.div>
           ))}
         </motion.div>

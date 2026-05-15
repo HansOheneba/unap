@@ -258,12 +258,12 @@ export default function Header() {
             />
           </Link>
 
-          {/* ── Right: Search + Track + User + Cart ── */}
+          {/* ── Right: icons (search/track/account hidden on mobile) ── */}
           <div className="flex items-center gap-5">
             <Link
               href="/search"
               aria-label="Search"
-              className={`${iconCls} hover:opacity-60 transition-opacity duration-200`}
+              className={`hidden md:inline-flex ${iconCls} hover:opacity-60 transition-opacity duration-200`}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -283,7 +283,7 @@ export default function Header() {
             <Link
               href="/tracking"
               aria-label="Track order"
-              className={`${iconCls} hover:opacity-60 transition-opacity duration-200`}
+              className={`hidden md:inline-flex ${iconCls} hover:opacity-60 transition-opacity duration-200`}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -304,7 +304,7 @@ export default function Header() {
             <Link
               href="/account"
               aria-label="Account"
-              className={`${iconCls} hover:opacity-60 transition-opacity duration-200`}
+              className={`hidden md:inline-flex ${iconCls} hover:opacity-60 transition-opacity duration-200`}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -431,6 +431,29 @@ export default function Header() {
               </Link>
             ),
           )}
+          {/* Utility links — only needed on mobile (hidden in desktop header) */}
+          {[
+            { label: "Search", href: "/search" },
+            { label: "Account", href: "/account" },
+          ].map((link, i) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              onClick={() => setMobileOpen(false)}
+              style={{
+                transitionDelay: mobileOpen
+                  ? `${(navLinks.length + i) * 60}ms`
+                  : "0ms",
+              }}
+              className={`block px-8 py-5 border-b border-zinc-100 text-xs tracking-widest uppercase transition-all duration-500 ${
+                mobileOpen
+                  ? "opacity-100 translate-x-0"
+                  : "opacity-0 -translate-x-4"
+              } text-zinc-500 hover:text-zinc-900 hover:pl-10`}
+            >
+              {link.label}
+            </Link>
+          ))}
         </nav>
 
         {/* Bottom: brand tagline + CTA */}
