@@ -8,6 +8,7 @@ import { Search, X } from "lucide-react";
 import AddToCartButton from "@/components/ui/add-to-cart-button";
 import { formatPrice } from "@/lib/currency";
 import { useAdminStore } from "@/lib/stores/admin-store";
+import { useBannerStore } from "@/lib/stores/banner-store";
 
 function capitalize(s: string) {
   return s.charAt(0).toUpperCase() + s.slice(1);
@@ -15,6 +16,8 @@ function capitalize(s: string) {
 
 export default function SearchPage() {
   const collections = useAdminStore((s) => s.collections);
+  const { visible: bannerVisible, bannerHeight } = useBannerStore();
+  const stickyTop = (bannerVisible ? bannerHeight : 0) + 56;
   const allProducts = collections.flatMap((c) => c.products);
   const categories = [
     "All",
@@ -45,7 +48,10 @@ export default function SearchPage() {
   return (
     <main className="bg-white text-zinc-900 min-h-screen">
       {/* Search bar */}
-      <div className="border-b border-zinc-100 sticky top-16 z-30 bg-white">
+      <div
+        style={{ top: stickyTop }}
+        className="border-b border-zinc-100 sticky z-30 bg-white"
+      >
         <div className="max-w-360 mx-auto px-6 md:px-20 py-6 flex items-center gap-4">
           <Search size={18} className="text-zinc-400 shrink-0" />
           <input

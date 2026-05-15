@@ -9,6 +9,7 @@ import {
   Plus,
   Check,
   ArrowLeft,
+  Heart,
 } from "lucide-react";
 import { formatPrice } from "@/lib/currency";
 import type { Product, ColorVariant } from "@/lib/products";
@@ -16,6 +17,7 @@ import ProductGallery from "./ProductGallery";
 import ProductCard from "./ProductCard";
 import BoxerSizeGuide from "./BoxerSizeGuide";
 import { useCartStore } from "@/lib/stores/cart-store";
+import { useWishlistStore } from "@/lib/stores/wishlist-store";
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -41,6 +43,18 @@ export default function ProductDetailClient({
   const [openSection, setOpenSection] = useState<string | null>("description");
 
   const addItem = useCartStore((s) => s.addItem);
+  const toggleWishlist = useWishlistStore((s) => s.toggle);
+  const isWishlisted = useWishlistStore((s) =>
+    s.items.some((i) => i.id === product.id),
+  );
+  const wishlistItem = {
+    id: product.id,
+    name: product.name,
+    price: product.price,
+    img: product.variants[0].images[0],
+    category: product.category,
+    slug: product.slug,
+  };
 
   const selectedSizeData = selectedVariant.sizes.find(
     (s) => s.size === selectedSize,
@@ -213,7 +227,7 @@ export default function ProductDetailClient({
                       title={variant.colorName}
                       aria-label={`Select color: ${variant.colorName}`}
                       className={cn(
-                        "w-8 h-8 rounded-full transition-all duration-300 ease-out",
+                        "w-8 h-8 transition-all duration-300 ease-out",
                         isSelected
                           ? "ring-2 ring-offset-2 ring-zinc-900 scale-110"
                           : "hover:scale-110",
@@ -302,31 +316,53 @@ export default function ProductDetailClient({
               </div>
             </div>
 
-            {/* Add to Cart ────────────────────────────────────────── */}
-            <button
-              onClick={handleAddToCart}
-              disabled={!canAdd}
-              className={cn(
-                "w-full py-4 text-[0.68rem] tracking-widest uppercase transition-all duration-300 border font-medium",
-                added
-                  ? "bg-zinc-900 text-white border-zinc-900"
-                  : !canAdd
-                    ? "bg-zinc-50 text-zinc-400 border-zinc-200 cursor-not-allowed"
-                    : "bg-black text-white border-black hover:bg-white hover:text-black",
-              )}
-            >
-              {added ? (
-                <span className="inline-flex items-center justify-center gap-2">
-                  <Check size={15} /> Added to Cart
-                </span>
-              ) : !selectedSize ? (
-                "Select a Size to Continue"
-              ) : isOutOfStock ? (
-                "Out of Stock"
-              ) : (
-                "Add to Cart"
-              )}
-            </button>
+            {/* Add to Cart + Wishlist ──────────────────────────────── */}
+            <div className="flex items-stretch gap-3">
+              <button
+                onClick={handleAddToCart}
+                disabled={!canAdd}
+                className={cn(
+                  "flex-1 py-4 text-[0.68rem] tracking-widest uppercase transition-all duration-300 border font-medium",
+                  added
+                    ? "bg-zinc-900 text-white border-zinc-900"
+                    : !canAdd
+                      ? "bg-zinc-50 text-zinc-400 border-zinc-200 cursor-not-allowed"
+                      : "bg-black text-white border-black hover:bg-white hover:text-black",
+                )}
+              >
+                {added ? (
+                  <span className="inline-flex items-center justify-center gap-2">
+                    <Check size={15} /> Added to Cart
+                  </span>
+                ) : !selectedSize ? (
+                  "Select a Size to Continue"
+                ) : isOutOfStock ? (
+                  "Out of Stock"
+                ) : (
+                  "Add to Cart"
+                )}
+              </button>
+
+              {/* Wishlist toggle */}
+              <button
+                onClick={() => toggleWishlist(wishlistItem)}
+                aria-label={
+                  isWishlisted ? "Remove from wishlist" : "Add to wishlist"
+                }
+                className={cn(
+                  "w-14 border flex items-center justify-center transition-all duration-200 shrink-0",
+                  isWishlisted
+                    ? "bg-zinc-900 border-zinc-900 text-white"
+                    : "border-zinc-300 text-zinc-400 hover:border-zinc-900 hover:text-zinc-900",
+                )}
+              >
+                <Heart
+                  size={18}
+                  strokeWidth={1.8}
+                  className={isWishlisted ? "fill-current" : ""}
+                />
+              </button>
+            </div>
 
             {/* Accordion ──────────────────────────────────────────── */}
             <div className="border-t border-zinc-100">

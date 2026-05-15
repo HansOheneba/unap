@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { buttonVariants } from "@/components/ui/button";
 import { OVERVIEW_CARDS } from "@/lib/data/collections";
 import { formatPrice } from "@/lib/currency";
+import { useBannerStore } from "@/lib/stores/banner-store";
 
 // ── TYPES ─────────────────────────────────────────────────────────────────────
 
@@ -289,6 +290,9 @@ const navItems = [
 // ── PAGE ──────────────────────────────────────────────────────────────────────
 
 export default function CollectionsPage() {
+  const { visible: bannerVisible, bannerHeight } = useBannerStore();
+  // Sticky nav sits below: fixed header (56px) + CollectionsSubnav (~44px)
+  const stickyTop = (bannerVisible ? bannerHeight : 0) + 56 + 44;
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -346,17 +350,22 @@ export default function CollectionsPage() {
       </section>
 
       {/* ── STICKY NAV ──────────────────────────────────────────────────── */}
-      <nav className="sticky top-16 z-30 bg-white/90 backdrop-blur-md border-b border-zinc-100">
-        <div className="max-w-360 mx-auto px-8 md:px-16 flex items-center gap-10 h-14 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          {navItems.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => scrollTo(item.id)}
-              className="eyebrow text-zinc-500 hover:text-zinc-900 transition-colors duration-300 whitespace-nowrap shrink-0 cursor-pointer"
-            >
-              {item.label}
-            </button>
-          ))}
+      <nav
+        style={{ top: stickyTop }}
+        className="sticky z-30 bg-white/90 backdrop-blur-md border-b border-zinc-200"
+      >
+        <div className="max-w-360 mx-auto h-14 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <div className="flex items-center justify-center gap-8 w-max min-w-full h-full px-8">
+            {navItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => scrollTo(item.id)}
+                className="eyebrow text-zinc-700 hover:text-zinc-900 transition-colors duration-300 whitespace-nowrap shrink-0 cursor-pointer"
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
         </div>
       </nav>
 

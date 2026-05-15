@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import Header from "./header";
 import Footer from "./footer";
 import CartToast from "@/components/ui/cart-toast";
+import { useBannerStore } from "@/lib/stores/banner-store";
 
 // Pages where the first section intentionally sits behind the fixed header
 // (full-bleed video/image heroes with dark overlays).
@@ -15,11 +16,14 @@ export default function ConditionalNav({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const { visible: bannerVisible, bannerHeight } = useBannerStore();
   const noNav = pathname?.startsWith("/account");
 
-  // Collection landing pages (e.g. /collections/boxers) have full-bleed heroes.
-  // Product detail pages (/collections/boxers/boxers-1) do need the offset.
+  // Collection landing pages (e.g. /collections/boxers) have full-bleed heroes — no spacer.
+  // Product detail pages (/collections/boxers/product-1) do need the offset.
   const isCollectionLanding = /^\/collections\/[^/]+$/.test(pathname ?? "");
+  // Any /collections/** page gets the subnav inside the header (+44px)
+  const isCollectionsPath = !!pathname?.startsWith("/collections");
 
   const needsHeaderOffset =
     !noNav &&
@@ -29,9 +33,21 @@ export default function ConditionalNav({
   return (
     <>
       {!noNav && <Header />}
-      {/* Spacer that pushes page content below the fixed header (84px = logo 44px + py-5×2) */}
+      {/* Banner spacer — matches the actual measured banner height */}
+      {bannerVisible && needsHeaderOffset && (
+        <div
+          style={{ height: bannerHeight }}
+          className="shrink-0"
+          aria-hidden="true"
+        />
+      )}
+      {/* Spacer for fixed header height (56px) + collections subnav (44px) when present */}
       {needsHeaderOffset && (
-        <div className="h-14 shrink-0" aria-hidden="true" />
+        <div
+          style={{ height: isCollectionsPath ? 100 : 56 }}
+          className="shrink-0 transition-[height] duration-300 ease-in-out"
+          aria-hidden="true"
+        />
       )}
       {children}
       {!noNav && <Footer />}

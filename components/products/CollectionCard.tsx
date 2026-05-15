@@ -7,6 +7,8 @@ import { formatPrice } from "@/lib/currency";
 import { cn } from "@/lib/utils";
 import type { Product } from "@/lib/products";
 import QuickAddModal from "./QuickAddModal";
+import WishlistButton from "@/components/ui/wishlist-button";
+import { useWishlistStore } from "@/lib/stores/wishlist-store";
 
 type Props = {
   product: Product;
@@ -29,6 +31,17 @@ export default function CollectionCard({
 }: Props) {
   const [modalOpen, setModalOpen] = useState(false);
   const href = `/collections/${product.category}/${product.slug}`;
+  const isWishlisted = useWishlistStore((s) =>
+    s.items.some((i) => i.id === product.id),
+  );
+  const wishlistItem = {
+    id: product.id,
+    name: product.name,
+    price: product.price,
+    img: product.variants[0].images[0],
+    category: product.category,
+    slug: product.slug,
+  };
 
   return (
     <div className="group bg-white">
@@ -50,6 +63,16 @@ export default function CollectionCard({
 
         {/* Hover overlay */}
         <div className="pointer-events-none absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-500 z-10" />
+
+        {/* Wishlist button — top right corner */}
+        <div
+          className={cn(
+            "absolute top-3 right-3 z-20 transition-opacity duration-300",
+            isWishlisted ? "opacity-100" : "opacity-0 group-hover:opacity-100",
+          )}
+        >
+          <WishlistButton item={wishlistItem} />
+        </div>
 
         {/* Quick Add button — slides up on hover */}
         <button

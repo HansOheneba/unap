@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Space_Grotesk, Sora, Geist } from "next/font/google";
 import "./globals.css";
 import ConditionalNav from "@/components/layout/conditional-nav";
+import AnnouncementBanner from "@/components/layout/announcement-banner";
 import { cn } from "@/lib/utils";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
@@ -50,6 +51,7 @@ export default function RootLayout({
       )}
     >
       <body className="min-h-full flex flex-col">
+        <AnnouncementBanner />
         <ConditionalNav>{children}</ConditionalNav>
       </body>
     </html>
