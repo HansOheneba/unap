@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import Header from "./header";
 import Footer from "./footer";
+import CartToast from "@/components/ui/cart-toast";
 
 // Pages where the first section intentionally sits behind the fixed header
 // (full-bleed video/image heroes with dark overlays).
@@ -34,6 +35,7 @@ export default function ConditionalNav({
       )}
       {children}
       {!noNav && <Footer />}
+      <CartToast />
     </>
   );
 }

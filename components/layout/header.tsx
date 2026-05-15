@@ -82,7 +82,9 @@ function MobileCollections({ onClose }: { onClose: () => void }) {
 
 export default function Header() {
   const pathname = usePathname();
-  const totalItems = useCartStore((s) => s.totalItems);
+  const cartCount = useCartStore((s) =>
+    s.items.reduce((sum, i) => sum + i.quantity, 0),
+  );
   const isHome = pathname === "/";
   const [scrolled, setScrolled] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
@@ -339,9 +341,9 @@ export default function Header() {
                 <line x1="3" y1="6" x2="21" y2="6" />
                 <path d="M16 10a4 4 0 0 1-8 0" />
               </svg>
-              {isClient && totalItems() > 0 && (
+              {isClient && cartCount > 0 && (
                 <span className="absolute -top-1.5 -right-1.5 min-w-4 h-4 flex items-center justify-center bg-white text-black text-[0.5rem] font-bold rounded-full px-0.5">
-                  {totalItems()}
+                  {cartCount}
                 </span>
               )}
             </Link>
