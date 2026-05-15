@@ -5,11 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { X, Check, ArrowRight, ShoppingBag, Package } from "lucide-react";
 import { useAnimate } from "framer-motion";
-import {
-  Dialog,
-  DialogContent,
-  DialogClose,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogClose } from "@/components/ui/dialog";
 import { useCartStore } from "@/lib/stores/cart-store";
 import { formatPrice } from "@/lib/currency";
 import { cn } from "@/lib/utils";
@@ -105,7 +101,12 @@ export default function QuickAddModal({ product, open, onClose }: Props) {
   };
 
   return (
-    <Dialog open={open} onOpenChange={(o) => { if (!o) onClose(); }}>
+    <Dialog
+      open={open}
+      onOpenChange={(o) => {
+        if (!o) onClose();
+      }}
+    >
       <DialogContent
         className="max-w-md w-full p-0 overflow-hidden rounded-none border-zinc-200"
         showCloseButton={false}
