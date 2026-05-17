@@ -396,7 +396,7 @@ export default function Header() {
             {/* Wishlist — desktop always visible; mobile only when there are saved items */}
             {isClient && wishlistCount > 0 && (
               <Link
-                href="/wishlist"
+                href="/account?tab=wishlist"
                 aria-label="Wishlist"
                 className={`relative md:hidden ${iconCls} hover:opacity-60 transition-opacity duration-200`}
               >
@@ -407,7 +407,7 @@ export default function Header() {
               </Link>
             )}
             <Link
-              href="/wishlist"
+              href="/account?tab=wishlist"
               aria-label="Wishlist"
               className={`relative hidden md:inline-flex ${iconCls} hover:opacity-60 transition-opacity duration-200`}
             >
@@ -631,7 +631,7 @@ export default function Header() {
           {/* Utility links — only needed on mobile (hidden in desktop header) */}
           {[
             { label: "Search", href: "/search" },
-            { label: "Wishlist", href: "/wishlist" },
+            { label: "Wishlist", href: "/account?tab=wishlist" },
             { label: "Account", href: "/account" },
           ].map((link, i) => (
             <Link

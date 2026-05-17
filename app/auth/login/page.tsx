@@ -1,14 +1,29 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { mockLogin } from "@/lib/auth";
+import { useRouter, useSearchParams } from "next/navigation";
+import { mockLogin, mockWishlistSlugs } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
+import { useOnboardingStore } from "@/lib/stores/onboarding-store";
+import { useWishlistStore } from "@/lib/stores/wishlist-store";
+import { PRODUCTS } from "@/lib/products";
 
 export default function LoginPage() {
+  return (
+    <Suspense fallback={null}>
+      <LoginPageInner />
+    </Suspense>
+  );
+}
+
+function LoginPageInner() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const nextPath = searchParams.get("next") || "/account";
+  const setField = useOnboardingStore((s) => s.setField);
+  const wishlistItems = useWishlistStore((s) => s.items);
+  const toggleWishlist = useWishlistStore((s) => s.toggle);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -26,7 +41,41 @@ export default function LoginPage() {
     const result = await mockLogin(email, password);
     setLoading(false);
     if (result.success) {
-      router.push("/account");
+      // ── Hydrate the onboarding store with the mock user so the
+      //    account page shows realistic profile/address data.
+      const u = result.user;
+      setField("firstName", u.firstName);
+      setField("lastName", u.lastName);
+      setField("email", u.email);
+      setField("phone", u.phone);
+      setField("whatsapp", u.whatsapp);
+      setField("country", u.country);
+      setField("region", u.region);
+      setField("city", u.city);
+      setField("address", u.address);
+      setField("landmark", u.landmark);
+      setField("birthDay", u.birthDay);
+      setField("birthMonth", u.birthMonth);
+      setField("birthYear", u.birthYear);
+      setField("topSize", u.topSize);
+      setField("bottomSize", u.bottomSize);
+
+      // ── Seed the wishlist (only add slugs that aren't already there).
+      const existing = new Set(wishlistItems.map((i) => i.id));
+      for (const slug of mockWishlistSlugs) {
+        const product = PRODUCTS.find((p) => p.slug === slug);
+        if (!product || existing.has(product.id)) continue;
+        toggleWishlist({
+          id: product.id,
+          name: product.name,
+          price: product.price,
+          img: product.variants[0]?.images[0] ?? "",
+          category: product.category,
+          slug: product.slug,
+        });
+      }
+
+      router.push(nextPath);
     } else {
       setError("Invalid email or password. Please try again.");
     }

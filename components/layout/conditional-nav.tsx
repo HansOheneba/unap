@@ -17,7 +17,9 @@ export default function ConditionalNav({
 }) {
   const pathname = usePathname();
   const { visible: bannerVisible, bannerHeight } = useBannerStore();
-  const noNav = pathname?.startsWith("/account");
+  // Account pages should still show the global header/footer so users can
+  // navigate around the site while signed in.
+  const noNav = false;
 
   // Collection landing pages (e.g. /collections/boxers) have full-bleed heroes — no spacer.
   // Product detail pages (/collections/boxers/product-1) do need the offset.

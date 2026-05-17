@@ -15,6 +15,15 @@ export type ColorVariant = {
   sizes: SizeStock[];
 };
 
+export type Review = {
+  id: string;
+  author: string;
+  rating: number; // 1–5
+  date: string;
+  body: string;
+  verified: boolean;
+};
+
 export type Product = {
   id: string;
   slug: string;
@@ -27,7 +36,237 @@ export type Product = {
   variants: ColorVariant[];
   details: string[];
   careInstructions: string[];
+  reviews?: Review[];
 };
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Mock reviews pool — shared across products for demo purposes
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const MOCK_REVIEWS: Review[] = [
+  {
+    id: "r1",
+    author: "Kwame A.",
+    rating: 5,
+    date: "May 10, 2026",
+    body: "Exceptional quality. Bought two and immediately ordered a third. The fit is perfect and the fabric feels premium.",
+    verified: true,
+  },
+  {
+    id: "r2",
+    author: "Ama T.",
+    rating: 5,
+    date: "May 7, 2026",
+    body: "Finally a brand that understands what confidence looks like in clothing. I get compliments every single time.",
+    verified: true,
+  },
+  {
+    id: "r3",
+    author: "Nana O.",
+    rating: 4,
+    date: "Apr 30, 2026",
+    body: "Really solid construction. Sizing runs slightly large so I'd suggest sizing down. Otherwise no complaints.",
+    verified: true,
+  },
+  {
+    id: "r4",
+    author: "Efua M.",
+    rating: 5,
+    date: "Apr 22, 2026",
+    body: "The attention to detail is unmatched. You can tell this was made by people who actually care.",
+    verified: false,
+  },
+  {
+    id: "r5",
+    author: "Kofi B.",
+    rating: 4,
+    date: "Apr 15, 2026",
+    body: "Great everyday piece. Very versatile and comfortable. Will definitely be purchasing more from this brand.",
+    verified: true,
+  },
+  {
+    id: "r6",
+    author: "Abena P.",
+    rating: 3,
+    date: "Apr 8, 2026",
+    body: "Good product overall. Delivery took a bit longer than expected but the item itself is worth it.",
+    verified: true,
+  },
+];
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Additional review pools — keep mock data feeling varied across the catalog
+// ─────────────────────────────────────────────────────────────────────────────
+
+const HEADWEAR_REVIEWS: Review[] = [
+  {
+    id: "hw1",
+    author: "Yaw D.",
+    rating: 5,
+    date: "May 12, 2026",
+    body: "Fits perfectly and the embroidery is clean. Easily my favorite cap right now.",
+    verified: true,
+  },
+  {
+    id: "hw2",
+    author: "Akosua N.",
+    rating: 4,
+    date: "May 5, 2026",
+    body: "Structured well and the brim holds its shape. Took off half a star because I wanted more color options.",
+    verified: true,
+  },
+  {
+    id: "hw3",
+    author: "Selorm K.",
+    rating: 5,
+    date: "Apr 28, 2026",
+    body: "Quality is on another level. You can tell it's not just a regular cap.",
+    verified: true,
+  },
+  {
+    id: "hw4",
+    author: "Mawuli T.",
+    rating: 4,
+    date: "Apr 19, 2026",
+    body: "Great fit and the snap-back actually stays in place. Solid buy.",
+    verified: false,
+  },
+];
+
+const SUNGLASSES_REVIEWS: Review[] = [
+  {
+    id: "sg1",
+    author: "Adwoa F.",
+    rating: 5,
+    date: "May 11, 2026",
+    body: "Lenses are crisp and the frame feels sturdy. Lightweight too, I forget I'm wearing them.",
+    verified: true,
+  },
+  {
+    id: "sg2",
+    author: "Kojo B.",
+    rating: 5,
+    date: "May 3, 2026",
+    body: "These shades carry a presence. Got asked where they're from three times in one week.",
+    verified: true,
+  },
+  {
+    id: "sg3",
+    author: "Naa A.",
+    rating: 4,
+    date: "Apr 24, 2026",
+    body: "Beautiful frames. The case could be a bit nicer for the price, but the glasses themselves are excellent.",
+    verified: true,
+  },
+];
+
+const TOPS_REVIEWS: Review[] = [
+  {
+    id: "tp1",
+    author: "Esi K.",
+    rating: 5,
+    date: "May 13, 2026",
+    body: "Fabric feels luxurious. Holds shape after several washes. Worth every cedi.",
+    verified: true,
+  },
+  {
+    id: "tp2",
+    author: "Kweku N.",
+    rating: 4,
+    date: "May 6, 2026",
+    body: "Oversized fit is exactly as described. Heavy cotton, no flimsy feel.",
+    verified: true,
+  },
+  {
+    id: "tp3",
+    author: "Akua O.",
+    rating: 5,
+    date: "Apr 27, 2026",
+    body: "Cut is flattering and the fabric is breathable. Already eyeing another color.",
+    verified: true,
+  },
+  {
+    id: "tp4",
+    author: "Sefa M.",
+    rating: 3,
+    date: "Apr 16, 2026",
+    body: "Nice piece but I expected slightly longer sleeves. Still wear it often.",
+    verified: false,
+  },
+];
+
+const HOODIE_REVIEWS: Review[] = [
+  {
+    id: "hd1",
+    author: "Kwesi T.",
+    rating: 5,
+    date: "May 9, 2026",
+    body: "Heavyweight as promised. Feels like a hoodie that will last for years.",
+    verified: true,
+  },
+  {
+    id: "hd2",
+    author: "Ama K.",
+    rating: 5,
+    date: "May 2, 2026",
+    body: "The drop-shoulder cut is perfect. Cozy without looking sloppy.",
+    verified: true,
+  },
+  {
+    id: "hd3",
+    author: "Yaa L.",
+    rating: 4,
+    date: "Apr 21, 2026",
+    body: "Really thick and warm. A bit much for hot afternoons but ideal for evenings.",
+    verified: true,
+  },
+];
+
+const TRACK_REVIEWS: Review[] = [
+  {
+    id: "tr1",
+    author: "Nii Q.",
+    rating: 5,
+    date: "May 8, 2026",
+    body: "Tapered cut sits right and the fabric moves with you. No complaints.",
+    verified: true,
+  },
+  {
+    id: "tr2",
+    author: "Belinda A.",
+    rating: 4,
+    date: "May 1, 2026",
+    body: "Comfortable and well-made. Pockets are deep which I appreciate.",
+    verified: true,
+  },
+];
+
+const LINGERIE_REVIEWS: Review[] = [
+  {
+    id: "lg1",
+    author: "Akorfa S.",
+    rating: 5,
+    date: "May 10, 2026",
+    body: "Soft, well-cut and the lace is delicate without being scratchy. Beautifully made.",
+    verified: true,
+  },
+  {
+    id: "lg2",
+    author: "Linda P.",
+    rating: 5,
+    date: "Apr 26, 2026",
+    body: "Fits like it was made for me. The minimal branding is a nice touch.",
+    verified: true,
+  },
+  {
+    id: "lg3",
+    author: "Maame B.",
+    rating: 4,
+    date: "Apr 14, 2026",
+    body: "Comfortable for daily wear. Wish there were more color options.",
+    verified: false,
+  },
+];
 
 // ─────────────────────────────────────────────────────────────────────────────
 // MOCK DATA
@@ -140,6 +379,7 @@ export const PRODUCTS: Product[] = [
       "Do not bleach",
       "Do not iron directly on waistband",
     ],
+    reviews: MOCK_REVIEWS,
   },
   {
     id: "activeflex-performance-boxers",
@@ -214,6 +454,7 @@ export const PRODUCTS: Product[] = [
       "Do not bleach or iron",
       "Do not use fabric softener",
     ],
+    reviews: MOCK_REVIEWS.slice(0, 4),
   },
   {
     id: "luxesoft-premium-boxers",
@@ -288,6 +529,7 @@ export const PRODUCTS: Product[] = [
       "Do not bleach",
       "Cool iron if needed",
     ],
+    reviews: MOCK_REVIEWS,
   },
 
   // ── HEADWEAR ───────────────────────────────────────────────────────────────
@@ -358,6 +600,7 @@ export const PRODUCTS: Product[] = [
       "Do not machine wash",
       "Air dry and reshape while damp",
     ],
+    reviews: HEADWEAR_REVIEWS,
   },
   {
     id: "classic-knit-beanie",
@@ -401,6 +644,7 @@ export const PRODUCTS: Product[] = [
       "Do not tumble dry",
       "Do not bleach",
     ],
+    reviews: HEADWEAR_REVIEWS.slice(0, 2),
   },
   {
     id: "suede-cap",
@@ -483,6 +727,7 @@ export const PRODUCTS: Product[] = [
       "Tumble dry low",
       "Do not bleach or iron",
     ],
+    reviews: TRACK_REVIEWS,
   },
 
   // ── HOODIES ────────────────────────────────────────────────────────────────
@@ -540,6 +785,7 @@ export const PRODUCTS: Product[] = [
       "Do not bleach",
       "Do not iron directly on graphic",
     ],
+    reviews: HOODIE_REVIEWS,
   },
 
   // ── SUNGLASSES ─────────────────────────────────────────────────────────────
@@ -573,6 +819,7 @@ export const PRODUCTS: Product[] = [
       "Store in protective case",
       "Avoid extreme heat",
     ],
+    reviews: SUNGLASSES_REVIEWS,
   },
   {
     id: "obsidian-lens",
@@ -672,6 +919,7 @@ export const PRODUCTS: Product[] = [
       "Store in protective case",
       "Avoid extreme heat",
     ],
+    reviews: SUNGLASSES_REVIEWS.slice(0, 2),
   },
 
   // ── TOPS ───────────────────────────────────────────────────────────────────
@@ -711,6 +959,7 @@ export const PRODUCTS: Product[] = [
       "Tumble dry low",
       "Do not bleach or iron on logo",
     ],
+    reviews: TOPS_REVIEWS,
   },
   {
     id: "phantom-long-sleeve",
@@ -748,6 +997,7 @@ export const PRODUCTS: Product[] = [
       "Lay flat to dry",
       "Do not bleach",
     ],
+    reviews: TOPS_REVIEWS.slice(0, 3),
   },
   {
     id: "sovereign-crop",
@@ -825,6 +1075,7 @@ export const PRODUCTS: Product[] = [
       "Lay flat to dry",
       "Do not bleach",
     ],
+    reviews: LINGERIE_REVIEWS,
   },
 ];
 

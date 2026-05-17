@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -9,6 +9,7 @@ import { ChevronRight } from "lucide-react";
 import { useCartStore } from "@/lib/stores/cart-store";
 import { formatPrice } from "@/lib/currency";
 import { useOnboardingStore } from "@/lib/stores/onboarding-store";
+import { useIsLoggedIn } from "@/lib/use-is-logged-in";
 import { Button, buttonVariants } from "@/components/ui/button";
 
 type CheckoutStep = "details" | "review" | "confirmed";
@@ -54,12 +55,49 @@ export default function CheckoutPage() {
   const router = useRouter();
   const { items, totalItems, totalPrice, clearCart } = useCartStore();
   const onboarding = useOnboardingStore();
+  const isLoggedIn = useIsLoggedIn();
+
+  // ── Auth guard: checkout requires a logged-in account ──
+  useEffect(() => {
+    if (!isLoggedIn) {
+      router.replace("/auth/login?next=/checkout");
+    }
+  }, [isLoggedIn, router]);
 
   const [step, setStep] = useState<CheckoutStep>("details");
   const [orderId] = useState(generateOrderId);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("momo");
+  const [promoCode, setPromoCode] = useState("");
+  const [promoError, setPromoError] = useState("");
+  const [discount, setDiscount] = useState<{
+    label: string;
+    pct: number;
+  } | null>(null);
+
+  const PROMO_CODES: Record<string, { label: string; pct: number }> = {
+    UNAP10: { label: "10% off", pct: 0.1 },
+    LAUNCH20: { label: "20% off", pct: 0.2 },
+    FIRST: { label: "15% off", pct: 0.15 },
+  };
+
+  function applyPromo() {
+    const code = promoCode.trim().toUpperCase();
+    if (PROMO_CODES[code]) {
+      setDiscount(PROMO_CODES[code]);
+      setPromoError("");
+    } else {
+      setPromoError("Invalid promo code");
+      setDiscount(null);
+    }
+  }
+
+  function removePromo() {
+    setDiscount(null);
+    setPromoCode("");
+    setPromoError("");
+  }
 
   /* Pre-fill from onboarding store if available */
   const [form, setForm] = useState({
@@ -86,6 +124,10 @@ export default function CheckoutPage() {
 
   const count = totalItems();
   const subtotal = totalPrice();
+  const discountAmount = discount
+    ? Math.round(subtotal * discount.pct * 100) / 100
+    : 0;
+  const grandTotal = subtotal - discountAmount;
 
   /* Redirect empty cart */
   if (count === 0 && step !== "confirmed") {
@@ -560,15 +602,62 @@ export default function CheckoutPage() {
                   <span className="text-zinc-500">Subtotal</span>
                   <span className="text-zinc-900">{formatPrice(subtotal)}</span>
                 </div>
+                {discount && (
+                  <div className="flex justify-between text-emerald-600">
+                    <span>{discount.label}</span>
+                    <span>-{formatPrice(discountAmount)}</span>
+                  </div>
+                )}
                 <div className="flex justify-between">
                   <span className="text-zinc-500">Shipping</span>
                   <span className="text-zinc-400">TBD</span>
                 </div>
                 <div className="flex justify-between font-medium mt-1">
                   <span className="text-zinc-900">Total</span>
-                  <span className="text-zinc-900">{formatPrice(subtotal)}</span>
+                  <span className="text-zinc-900">
+                    {formatPrice(grandTotal)}
+                  </span>
                 </div>
               </div>
+
+              {/* Promo code */}
+              {discount ? (
+                <div className="flex items-center justify-between border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs">
+                  <span className="text-emerald-700 font-medium">
+                    {promoCode.toUpperCase()} — {discount.label}
+                  </span>
+                  <button
+                    onClick={removePromo}
+                    className="text-emerald-600 hover:text-emerald-900 text-[0.6rem] tracking-widest uppercase ml-2"
+                  >
+                    Remove
+                  </button>
+                </div>
+              ) : (
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={promoCode}
+                    onChange={(e) => {
+                      setPromoCode(e.target.value);
+                      if (promoError) setPromoError("");
+                    }}
+                    onKeyDown={(e) => e.key === "Enter" && applyPromo()}
+                    placeholder="Promo code"
+                    autoComplete="off"
+                    className="flex-1 bg-zinc-50 border border-zinc-200 text-zinc-900 placeholder-zinc-400 px-3 py-2.5 text-xs focus:outline-none focus:border-zinc-400 transition-colors duration-200"
+                  />
+                  <button
+                    onClick={applyPromo}
+                    className="border border-zinc-300 px-3 py-2.5 text-[0.6rem] tracking-widest uppercase text-zinc-600 hover:border-zinc-900 hover:text-zinc-900 transition-colors duration-200 shrink-0"
+                  >
+                    Apply
+                  </button>
+                </div>
+              )}
+              {promoError && (
+                <p className="text-red-400 text-[0.6rem] -mt-1">{promoError}</p>
+              )}
             </div>
           </div>
         </div>

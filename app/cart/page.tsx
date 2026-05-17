@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -9,6 +10,8 @@ import { useCartStore } from "@/lib/stores/cart-store";
 import { formatPrice } from "@/lib/currency";
 import AddToCartButton from "@/components/ui/add-to-cart-button";
 import { Button, buttonVariants } from "@/components/ui/button";
+import ConfirmDialog from "@/components/ui/confirm-dialog";
+import { toast } from "@/lib/stores/toast-store";
 
 const featured = [
   {
@@ -49,9 +52,12 @@ export default function CartPage() {
   const router = useRouter();
   const { items, removeItem, updateQuantity, totalItems, totalPrice } =
     useCartStore();
+  const [confirmRemoveId, setConfirmRemoveId] = useState<string | null>(null);
 
   const count = totalItems();
   const subtotal = totalPrice();
+
+  const removingItem = items.find((i) => i.id === confirmRemoveId);
 
   return (
     <main className="min-h-screen bg-white text-zinc-900 pt-24 pb-32">
@@ -226,7 +232,7 @@ export default function CartPage() {
                             {formatPrice(item.price * item.quantity)}
                           </p>
                           <button
-                            onClick={() => removeItem(item.id)}
+                            onClick={() => setConfirmRemoveId(item.id)}
                             className="text-zinc-300 hover:text-zinc-900 transition-colors duration-150"
                             aria-label="Remove item"
                           >
@@ -255,7 +261,7 @@ export default function CartPage() {
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-zinc-500">Shipping</span>
+                    <span className="text-zinc-500">Shipping & Delivery</span>
                     <span className="text-zinc-400">
                       Calculated at checkout
                     </span>
@@ -288,6 +294,26 @@ export default function CartPage() {
           </div>
         )}
       </div>
+
+      <ConfirmDialog
+        open={confirmRemoveId !== null}
+        onOpenChange={(o) => !o && setConfirmRemoveId(null)}
+        title="Remove from cart?"
+        description={
+          removingItem
+            ? `${removingItem.name} will be removed from your bag.`
+            : undefined
+        }
+        confirmLabel="Remove"
+        variant="destructive"
+        onConfirm={() => {
+          if (confirmRemoveId && removingItem) {
+            removeItem(confirmRemoveId);
+            toast.info("Removed from cart", removingItem.name);
+          }
+          setConfirmRemoveId(null);
+        }}
+      />
     </main>
   );
 }

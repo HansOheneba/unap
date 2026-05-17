@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { devtools } from "zustand/middleware";
+import { devtools, persist } from "zustand/middleware";
 
 export type OnboardingStep = 1 | 2 | 3 | 4;
 
@@ -82,29 +82,53 @@ const initialState = {
 
 export const useOnboardingStore = create<OnboardingState>()(
   devtools(
-    (set, get) => ({
-      ...initialState,
+    persist(
+      (set, get) => ({
+        ...initialState,
 
-      setField: (key, value) => set({ [key]: value }),
+        setField: (key, value) => set({ [key]: value }),
 
-      setErrors: (errors) => set({ errors }),
+        setErrors: (errors) => set({ errors }),
 
-      clearErrors: () => set({ errors: {} }),
+        clearErrors: () => set({ errors: {} }),
 
-      setLoading: (loading) => set({ loading }),
+        setLoading: (loading) => set({ loading }),
 
-      nextStep: () => {
-        const { step } = get();
-        if (step < 4) set({ step: (step + 1) as OnboardingStep });
+        nextStep: () => {
+          const { step } = get();
+          if (step < 4) set({ step: (step + 1) as OnboardingStep });
+        },
+
+        prevStep: () => {
+          const { step } = get();
+          if (step > 1) set({ step: (step - 1) as OnboardingStep, errors: {} });
+        },
+
+        reset: () => set(initialState),
+      }),
+      {
+        name: "unap-user",
+        // Persist only identity / profile fields, not transient UI state
+        partialize: (state) => ({
+          email: state.email,
+          firstName: state.firstName,
+          lastName: state.lastName,
+          phone: state.phone,
+          whatsapp: state.whatsapp,
+          sameAsPhone: state.sameAsPhone,
+          country: state.country,
+          region: state.region,
+          city: state.city,
+          address: state.address,
+          landmark: state.landmark,
+          birthDay: state.birthDay,
+          birthMonth: state.birthMonth,
+          birthYear: state.birthYear,
+          topSize: state.topSize,
+          bottomSize: state.bottomSize,
+        }),
       },
-
-      prevStep: () => {
-        const { step } = get();
-        if (step > 1) set({ step: (step - 1) as OnboardingStep, errors: {} });
-      },
-
-      reset: () => set(initialState),
-    }),
+    ),
     { name: "onboarding" },
   ),
 );

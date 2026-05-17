@@ -1,10 +1,12 @@
 "use client";
 
 import { Heart } from "lucide-react";
+import { useRouter } from "next/navigation";
 import {
   useWishlistStore,
   type WishlistItem,
 } from "@/lib/stores/wishlist-store";
+import { useIsLoggedIn } from "@/lib/use-is-logged-in";
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -14,6 +16,8 @@ type Props = {
 };
 
 export default function WishlistButton({ item, className, size = 14 }: Props) {
+  const router = useRouter();
+  const isLoggedIn = useIsLoggedIn();
   const wishlisted = useWishlistStore((s) =>
     s.items.some((i) => i.id === item.id),
   );
@@ -24,9 +28,21 @@ export default function WishlistButton({ item, className, size = 14 }: Props) {
       onClick={(e) => {
         e.preventDefault();
         e.stopPropagation();
+        if (!isLoggedIn) {
+          router.push(
+            "/auth/login?next=" + encodeURIComponent(window.location.pathname),
+          );
+          return;
+        }
         toggle(item);
       }}
-      aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
+      aria-label={
+        !isLoggedIn
+          ? "Sign in to save to wishlist"
+          : wishlisted
+            ? "Remove from wishlist"
+            : "Add to wishlist"
+      }
       className={cn(
         "flex items-center justify-center w-8 h-8 rounded-full transition-all duration-200",
         wishlisted

@@ -24,6 +24,15 @@ export interface User {
   phone: string;
   whatsapp: string;
   country: string;
+  region: string;
+  city: string;
+  address: string;
+  landmark: string;
+  birthDay: string;
+  birthMonth: string;
+  birthYear: string;
+  topSize: string;
+  bottomSize: string;
   addresses: UserAddress[];
   points: number;
   joinedDate: string;
@@ -53,6 +62,15 @@ export const mockUser: User = {
   phone: "+233 20 123 4567",
   whatsapp: "+233 20 123 4567",
   country: "Ghana",
+  region: "Greater Accra",
+  city: "Accra",
+  address: "14 Independence Ave, Osu",
+  landmark: "Near Osu Oxford Street, behind Frankies",
+  birthDay: "12",
+  birthMonth: "Jun",
+  birthYear: "1996",
+  topSize: "L",
+  bottomSize: "M",
   addresses: [
     {
       id: "addr_001",
@@ -64,27 +82,97 @@ export const mockUser: User = {
       landmark: "Near Osu Oxford Street, behind Frankies",
       isDefault: true,
     },
+    {
+      id: "addr_002",
+      label: "Office",
+      country: "Ghana",
+      region: "Greater Accra",
+      city: "Accra",
+      address: "9 Liberation Rd, Airport Residential",
+      landmark: "Inside Stanbic Heights, 7th floor",
+      isDefault: false,
+    },
   ],
   points: 340,
   joinedDate: "March 2026",
 };
 
+/**
+ * Product slugs to seed the wishlist with when the mock user signs in.
+ * These map to real products in `lib/products.ts`.
+ */
+export const mockWishlistSlugs: string[] = [
+  "luxesoft-premium-boxers",
+  "bold-society-cap",
+  "outlaw-i",
+  "phantom-long-sleeve",
+];
+
 export const mockOrders: MockOrder[] = [
+  {
+    id: "ORD-2026-0052",
+    trackingNumber: "UNAP-000007",
+    date: "May 14, 2026",
+    status: "processing",
+    statusLabel: "Processing",
+    total: "GHS 1,030",
+    items: [
+      {
+        name: "Classic Hoodie",
+        variant: "Midnight Black / L",
+        qty: 1,
+        price: "GHS 950",
+      },
+      {
+        name: "Classic Knit Beanie",
+        variant: "Natural Tan / One Size",
+        qty: 1,
+        price: "GHS 260",
+      },
+    ],
+  },
+  {
+    id: "ORD-2026-0048",
+    trackingNumber: "UNAP-000005",
+    date: "May 9, 2026",
+    status: "out_for_delivery",
+    statusLabel: "Out for Delivery",
+    total: "GHS 1,100",
+    items: [
+      {
+        name: "Signature Track Pant",
+        variant: "Midnight Black / M",
+        qty: 1,
+        price: "GHS 750",
+      },
+      {
+        name: "ComfortFit Cotton Boxers",
+        variant: "Midnight Black / M",
+        qty: 1,
+        price: "GHS 280",
+      },
+    ],
+  },
   {
     id: "ORD-2026-0041",
     trackingNumber: "UNAP-000001",
     date: "May 4, 2026",
     status: "in_transit",
     statusLabel: "In Transit",
-    total: "$110.00",
+    total: "GHS 960",
     items: [
       {
-        name: "Unapologetic Classic Tee",
-        variant: "Black / L",
+        name: "Revolt Oversized Tee",
+        variant: "Washed Black / L",
         qty: 1,
-        price: "$65",
+        price: "GHS 580",
       },
-      { name: "UNAP Structured Cap", variant: "Black", qty: 1, price: "$45" },
+      {
+        name: "Bold Society Cap",
+        variant: "Jet Black / S/M",
+        qty: 1,
+        price: "GHS 380",
+      },
     ],
   },
   {
@@ -93,19 +181,41 @@ export const mockOrders: MockOrder[] = [
     date: "Apr 29, 2026",
     status: "delivered",
     statusLabel: "Delivered",
-    total: "$215.00",
+    total: "GHS 2,180",
     items: [
       {
-        name: "UNAP Wayfarer Sunglasses",
-        variant: "Matte Black",
+        name: "Outlaw I",
+        variant: "Black / One Size",
         qty: 1,
-        price: "$85",
+        price: "GHS 1,200",
       },
       {
-        name: "Unapologetic Classic Tee",
-        variant: "White / S",
-        qty: 2,
-        price: "$65",
+        name: "LuxeSoft Premium Boxers",
+        variant: "Midnight Black / M",
+        qty: 1,
+        price: "GHS 420",
+      },
+      {
+        name: "ActiveFlex Performance Boxers",
+        variant: "Ocean Blue / M",
+        qty: 1,
+        price: "GHS 350",
+      },
+    ],
+  },
+  {
+    id: "ORD-2026-0019",
+    trackingNumber: "UNAP-000002",
+    date: "Apr 18, 2026",
+    status: "delivered",
+    statusLabel: "Delivered",
+    total: "GHS 720",
+    items: [
+      {
+        name: "Phantom Long Sleeve",
+        variant: "Warm Brown / S",
+        qty: 1,
+        price: "GHS 720",
       },
     ],
   },
@@ -189,28 +299,35 @@ export async function mockSignup(
   return { success: true };
 }
 
-/** Simulate login — replace with real API call */
+/** Simulate login — always succeeds with mockUser in this demo build. */
 export async function mockLogin(
-  email: string,
+  _email: string,
   _password: string,
-): Promise<{ success: boolean; user?: User }> {
+): Promise<{ success: boolean; user: User }> {
   await new Promise((r) => setTimeout(r, 800));
-  if (email) return { success: true, user: mockUser };
-  return { success: false };
+  return { success: true, user: mockUser };
 }
 
 export const orderStatusColor: Record<MockOrder["status"], string> = {
-  processing: "text-yellow-400",
-  shipped: "text-blue-400",
-  in_transit: "text-blue-400",
-  out_for_delivery: "text-orange-400",
-  delivered: "text-green-400",
+  processing: "text-amber-700",
+  shipped: "text-blue-700",
+  in_transit: "text-blue-700",
+  out_for_delivery: "text-orange-700",
+  delivered: "text-emerald-700",
 };
 
 export const orderStatusDot: Record<MockOrder["status"], string> = {
-  processing: "bg-yellow-400",
-  shipped: "bg-blue-400",
-  in_transit: "bg-blue-400",
-  out_for_delivery: "bg-orange-400",
-  delivered: "bg-green-400",
+  processing: "bg-amber-500",
+  shipped: "bg-blue-500",
+  in_transit: "bg-blue-500",
+  out_for_delivery: "bg-orange-500",
+  delivered: "bg-emerald-500",
+};
+
+export const orderStatusPill: Record<MockOrder["status"], string> = {
+  processing: "bg-amber-50 text-amber-700 border-amber-200",
+  shipped: "bg-blue-50 text-blue-700 border-blue-200",
+  in_transit: "bg-blue-50 text-blue-700 border-blue-200",
+  out_for_delivery: "bg-orange-50 text-orange-700 border-orange-200",
+  delivered: "bg-emerald-50 text-emerald-700 border-emerald-200",
 };
