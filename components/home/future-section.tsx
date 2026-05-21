@@ -180,7 +180,7 @@ export default function FutureSection() {
             </blockquote>
           </FadeIn>
           <FadeIn delay={0.2}>
-            <p className="eyebrow text-zinc-500">Hans Opoku | Founder</p>
+            <p className="eyebrow text-zinc-500">Teflon Flexx | Founder</p>
           </FadeIn>
           <FadeIn delay={0.35}>
             <Link href="/future" className={buttonVariants()}>
