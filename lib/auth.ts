@@ -8,11 +8,18 @@
 export interface UserAddress {
   id: string;
   label: string; // e.g. "Home", "Office"
+  firstName: string;
+  lastName: string;
+  email: string;
   country: string;
   region: string;
   city: string;
+  district: string;
   address: string;
-  landmark: string;
+  address2: string;
+  phone: string;
+  postcode: string;
+  whatsapp: string;
   isDefault: boolean;
 }
 
@@ -56,9 +63,9 @@ export interface MockOrder {
 /* ── Mock user ────────────────────────────────────────────── */
 export const mockUser: User = {
   id: "usr_001",
-  firstName: "Kwame",
-  lastName: "Mensah",
-  email: "kwame.mensah@gmail.com",
+  firstName: "Hans",
+  lastName: "Müller",
+  email: "hans.muller@gmail.com",
   phone: "+233 20 123 4567",
   whatsapp: "+233 20 123 4567",
   country: "Ghana",
@@ -75,21 +82,35 @@ export const mockUser: User = {
     {
       id: "addr_001",
       label: "Home",
+      firstName: "Hans",
+      lastName: "Müller",
+      email: "hans.muller@gmail.com",
       country: "Ghana",
       region: "Greater Accra",
       city: "Accra",
+      district: "Accra Metropolitan",
       address: "14 Independence Ave, Osu",
-      landmark: "Near Osu Oxford Street, behind Frankies",
+      address2: "",
+      phone: "0201234567",
+      postcode: "",
+      whatsapp: "",
       isDefault: true,
     },
     {
       id: "addr_002",
       label: "Office",
+      firstName: "Hans",
+      lastName: "Müller",
+      email: "hans.muller@gmail.com",
       country: "Ghana",
       region: "Greater Accra",
       city: "Accra",
+      district: "La-Dade-Kotopon Municipal",
       address: "9 Liberation Rd, Airport Residential",
-      landmark: "Inside Stanbic Heights, 7th floor",
+      address2: "",
+      phone: "0201234567",
+      postcode: "",
+      whatsapp: "",
       isDefault: false,
     },
   ],

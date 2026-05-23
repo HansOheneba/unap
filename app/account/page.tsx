@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, useMemo, Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -25,6 +25,7 @@ import QuickAddModal from "@/components/products/QuickAddModal";
 import { toast } from "@/lib/stores/toast-store";
 import { formatPrice } from "@/lib/currency";
 import { cn } from "@/lib/utils";
+import { getStates, getLGAsByState } from "@some19ice/nigeria-geo-core";
 
 const inputCls =
   "bg-white border border-zinc-200 text-zinc-900 placeholder-zinc-400 px-4 py-3 text-sm focus:outline-none focus:border-zinc-900 transition-colors duration-200 w-full";
@@ -112,19 +113,67 @@ function AccountPageInner() {
   const [pwSaved, setPwSaved] = useState(false);
 
   // ── Address state ───────────────────────────────────────────────────
-  type AddrForm = Omit<UserAddress, "id" | "isDefault">;
+  type AddrForm = Omit<UserAddress, "id">;
   const ADDR_BLANK: AddrForm = {
     label: "Home",
+    firstName: "",
+    lastName: "",
+    email: "",
     country: "",
     region: "",
     city: "",
+    district: "",
     address: "",
-    landmark: "",
+    address2: "",
+    phone: "",
+    postcode: "",
+    whatsapp: "",
+    isDefault: false,
   };
   const [addingAddress, setAddingAddress] = useState(false);
   const [editingAddressId, setEditingAddressId] = useState<string | null>(null);
   const [addrForm, setAddrForm] = useState<AddrForm>(ADDR_BLANK);
   const [addrErrors, setAddrErrors] = useState<Record<string, string>>({});
+
+  // ── Ghana geo data ────────────────────────────────────────────────
+  interface GhanaDistrict {
+    code: string;
+    label: string;
+    category: string;
+    capital: string;
+  }
+  interface GhanaRegion {
+    code: string;
+    label: string;
+    capital: string;
+    districts: GhanaDistrict[];
+  }
+  const [ghanaRegions, setGhanaRegions] = useState<GhanaRegion[]>([]);
+  useEffect(() => {
+    fetch("https://regions-and-districts-in-ghana.onrender.com/regions")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data?.regions) setGhanaRegions(data.regions as GhanaRegion[]);
+      })
+      .catch(() => {});
+  }, []);
+
+  // ── Nigeria geo data (from package) ──────────────────────────────
+  const nigeriaStates = useMemo(() => getStates(), []);
+  const nigeriaLGAs = useMemo(() => {
+    if (addrForm.country !== "Nigeria" || !addrForm.region) return [];
+    const st = nigeriaStates.find((s) => s.name === addrForm.region);
+    return st ? getLGAsByState(st.id) : [];
+  }, [addrForm.country, addrForm.region, nigeriaStates]);
+
+  // ── Ghana district options for selected region ────────────────────
+  const ghanaDistricts = useMemo(() => {
+    if (addrForm.country !== "Ghana" || !addrForm.region) return [];
+    const reg = ghanaRegions.find((r) => r.label === addrForm.region);
+    return reg?.districts ?? [];
+  }, [addrForm.country, addrForm.region, ghanaRegions]);
+
+  const countryCode = addrForm.country === "Nigeria" ? "+234" : "+233";
 
   // ── Confirmation modals ─────────────────────────────────────────────
   const [confirmSignOut, setConfirmSignOut] = useState(false);
@@ -147,7 +196,6 @@ function AccountPageInner() {
     region,
     city,
     address,
-    landmark,
     birthDay,
     birthMonth,
     birthYear,
@@ -164,11 +212,18 @@ function AccountPageInner() {
           {
             id: "addr_001",
             label: "Home",
+            firstName,
+            lastName,
+            email,
             country,
             region,
             city,
+            district: "",
             address,
-            landmark,
+            address2: "",
+            phone,
+            postcode: "",
+            whatsapp: sameAsPhone ? phone : whatsapp,
             isDefault: true,
           },
         ]
@@ -238,14 +293,20 @@ function AccountPageInner() {
   // ── Address handlers ─────────────────────────────────────────────────
   function validateAddr() {
     const e: Record<string, string> = {};
-    if (!addrForm.address.trim()) e.address = "Required";
-    if (!addrForm.city.trim()) e.city = "Required";
+    if (!addrForm.firstName.trim()) e.firstName = "Required";
+    if (!addrForm.lastName.trim()) e.lastName = "Required";
+    if (!addrForm.email.trim()) e.email = "Required";
     if (!addrForm.country.trim()) e.country = "Required";
+    if (!addrForm.region.trim()) e.region = "Required";
+    if (!addrForm.city.trim()) e.city = "Required";
+    if (!addrForm.district.trim()) e.district = "Required";
+    if (!addrForm.address.trim()) e.address = "Required";
+    if (!addrForm.phone.trim()) e.phone = "Required";
     setAddrErrors(e);
     return Object.keys(e).length === 0;
   }
   function openAddAddress() {
-    setAddrForm(ADDR_BLANK);
+    setAddrForm({ ...ADDR_BLANK, email, firstName, lastName, phone });
     setAddrErrors({});
     setEditingAddressId(null);
     setAddingAddress(true);
@@ -253,11 +314,19 @@ function AccountPageInner() {
   function openEditAddress(addr: UserAddress) {
     setAddrForm({
       label: addr.label,
+      firstName: addr.firstName,
+      lastName: addr.lastName,
+      email: addr.email,
       country: addr.country,
       region: addr.region,
       city: addr.city,
+      district: addr.district,
       address: addr.address,
-      landmark: addr.landmark,
+      address2: addr.address2,
+      phone: addr.phone,
+      postcode: addr.postcode,
+      whatsapp: addr.whatsapp,
+      isDefault: addr.isDefault,
     });
     setAddrErrors({});
     setEditingAddressId(addr.id);
@@ -268,17 +337,28 @@ function AccountPageInner() {
     const isEdit = !!editingAddressId;
     if (editingAddressId) {
       setAddresses((prev) =>
-        prev.map((a) =>
-          a.id === editingAddressId ? { ...a, ...addrForm } : a,
-        ),
+        prev.map((a) => {
+          if (a.id !== editingAddressId) {
+            return addrForm.isDefault ? { ...a, isDefault: false } : a;
+          }
+          return { ...a, ...addrForm };
+        }),
       );
     } else {
+      const isFirst = addresses.length === 0;
       const newAddr: UserAddress = {
         ...addrForm,
         id: `addr_${Date.now()}`,
-        isDefault: addresses.length === 0,
+        isDefault: isFirst || addrForm.isDefault,
       };
-      setAddresses((prev) => [...prev, newAddr]);
+      if (newAddr.isDefault) {
+        setAddresses((prev) => [
+          ...prev.map((a) => ({ ...a, isDefault: false })),
+          newAddr,
+        ]);
+      } else {
+        setAddresses((prev) => [...prev, newAddr]);
+      }
     }
     setAddingAddress(false);
     toast.success(
@@ -720,10 +800,377 @@ function AccountPageInner() {
                   {/* Add / Edit form */}
                   {addingAddress && (
                     <div className="border border-zinc-200 rounded-lg p-5 md:p-6 mb-6 bg-zinc-50">
-                      <p className="text-xs tracking-widest uppercase text-zinc-700 font-medium mb-5">
+                      <p className="text-xs tracking-widest uppercase text-zinc-700 font-medium mb-1">
                         {editingAddressId ? "Edit Address" : "New Address"}
                       </p>
+                      <p className="text-[11px] text-zinc-500 mb-5">
+                        Shipping Address
+                      </p>
                       <div className="flex flex-col gap-4 max-w-lg">
+                        {/* Email + default toggle */}
+                        <Field label="Email *" error={addrErrors.email}>
+                          <input
+                            type="email"
+                            value={addrForm.email}
+                            onChange={(e) =>
+                              setAddrForm((f) => ({
+                                ...f,
+                                email: e.target.value,
+                              }))
+                            }
+                            autoComplete="email"
+                            className={inputCls}
+                          />
+                        </Field>
+                        <label className="flex items-center gap-2.5 cursor-pointer select-none">
+                          <span
+                            onClick={() =>
+                              setAddrForm((f) => ({
+                                ...f,
+                                isDefault: !f.isDefault,
+                              }))
+                            }
+                            className={cn(
+                              "w-9 h-5 rounded-full relative transition-colors duration-200 cursor-pointer shrink-0",
+                              addrForm.isDefault
+                                ? "bg-zinc-900"
+                                : "bg-zinc-300",
+                            )}
+                          >
+                            <span
+                              className={cn(
+                                "absolute top-0.5 w-4 h-4 rounded-full bg-white shadow-sm transition-transform duration-200",
+                                addrForm.isDefault
+                                  ? "translate-x-4"
+                                  : "translate-x-0.5",
+                              )}
+                            />
+                          </span>
+                          <span className="text-xs text-zinc-700">
+                            Set as default
+                          </span>
+                        </label>
+
+                        {/* Name row */}
+                        <div className="grid grid-cols-2 gap-3">
+                          <Field
+                            label="First Name *"
+                            error={addrErrors.firstName}
+                          >
+                            <input
+                              type="text"
+                              value={addrForm.firstName}
+                              onChange={(e) =>
+                                setAddrForm((f) => ({
+                                  ...f,
+                                  firstName: e.target.value,
+                                }))
+                              }
+                              autoComplete="given-name"
+                              className={inputCls}
+                            />
+                          </Field>
+                          <Field
+                            label="Last Name *"
+                            error={addrErrors.lastName}
+                          >
+                            <input
+                              type="text"
+                              value={addrForm.lastName}
+                              onChange={(e) =>
+                                setAddrForm((f) => ({
+                                  ...f,
+                                  lastName: e.target.value,
+                                }))
+                              }
+                              autoComplete="family-name"
+                              className={inputCls}
+                            />
+                          </Field>
+                        </div>
+
+                        {/* Country */}
+                        <Field label="Country *" error={addrErrors.country}>
+                          <select
+                            value={addrForm.country}
+                            onChange={(e) =>
+                              setAddrForm((f) => ({
+                                ...f,
+                                country: e.target.value,
+                                region: "",
+                                city: "",
+                                district: "",
+                              }))
+                            }
+                            autoComplete="country-name"
+                            className={inputCls}
+                          >
+                            <option value="">Select country</option>
+                            <option value="Ghana">Ghana</option>
+                            <option value="Nigeria">Nigeria</option>
+                          </select>
+                        </Field>
+
+                        {/* State / Province */}
+                        <Field
+                          label="State / Province *"
+                          error={addrErrors.region}
+                        >
+                          {addrForm.country === "Ghana" ? (
+                            <select
+                              value={addrForm.region}
+                              onChange={(e) =>
+                                setAddrForm((f) => ({
+                                  ...f,
+                                  region: e.target.value,
+                                  district: "",
+                                }))
+                              }
+                              disabled={
+                                !addrForm.country || ghanaRegions.length === 0
+                              }
+                              autoComplete="address-level1"
+                              className={inputCls}
+                            >
+                              <option value="">
+                                {ghanaRegions.length === 0
+                                  ? "Loading regions..."
+                                  : "Select region"}
+                              </option>
+                              {ghanaRegions.map((r) => (
+                                <option key={r.code} value={r.label}>
+                                  {r.label}
+                                </option>
+                              ))}
+                            </select>
+                          ) : addrForm.country === "Nigeria" ? (
+                            <select
+                              value={addrForm.region}
+                              onChange={(e) =>
+                                setAddrForm((f) => ({
+                                  ...f,
+                                  region: e.target.value,
+                                  district: "",
+                                }))
+                              }
+                              autoComplete="address-level1"
+                              className={inputCls}
+                            >
+                              <option value="">Select state</option>
+                              {nigeriaStates.map((s) => (
+                                <option key={s.id} value={s.name}>
+                                  {s.name}
+                                </option>
+                              ))}
+                            </select>
+                          ) : (
+                            <input
+                              type="text"
+                              value={addrForm.region}
+                              disabled
+                              placeholder="Select a country first"
+                              className={cn(
+                                inputCls,
+                                "opacity-50 cursor-not-allowed",
+                              )}
+                            />
+                          )}
+                        </Field>
+
+                        {/* District / LGA */}
+                        <Field label="District *" error={addrErrors.district}>
+                          {addrForm.country === "Ghana" ? (
+                            <select
+                              value={addrForm.district}
+                              onChange={(e) =>
+                                setAddrForm((f) => ({
+                                  ...f,
+                                  district: e.target.value,
+                                }))
+                              }
+                              disabled={
+                                !addrForm.region || ghanaDistricts.length === 0
+                              }
+                              className={inputCls}
+                            >
+                              <option value="">
+                                {!addrForm.region
+                                  ? "Select region first"
+                                  : ghanaDistricts.length === 0
+                                    ? "No districts found"
+                                    : "Select district"}
+                              </option>
+                              {ghanaDistricts.map((d) => (
+                                <option key={d.code} value={d.label}>
+                                  {d.label}
+                                </option>
+                              ))}
+                            </select>
+                          ) : addrForm.country === "Nigeria" ? (
+                            <select
+                              value={addrForm.district}
+                              onChange={(e) =>
+                                setAddrForm((f) => ({
+                                  ...f,
+                                  district: e.target.value,
+                                }))
+                              }
+                              disabled={
+                                !addrForm.region || nigeriaLGAs.length === 0
+                              }
+                              className={inputCls}
+                            >
+                              <option value="">
+                                {!addrForm.region
+                                  ? "Select state first"
+                                  : nigeriaLGAs.length === 0
+                                    ? "No LGAs found"
+                                    : "Select LGA"}
+                              </option>
+                              {nigeriaLGAs.map((l) => (
+                                <option key={l.id} value={l.name}>
+                                  {l.name}
+                                </option>
+                              ))}
+                            </select>
+                          ) : (
+                            <input
+                              type="text"
+                              value={addrForm.district}
+                              disabled
+                              placeholder="Select a country first"
+                              className={cn(
+                                inputCls,
+                                "opacity-50 cursor-not-allowed",
+                              )}
+                            />
+                          )}
+                        </Field>
+
+                        {/* City */}
+                        <Field label="City *" error={addrErrors.city}>
+                          <input
+                            type="text"
+                            value={addrForm.city}
+                            onChange={(e) =>
+                              setAddrForm((f) => ({
+                                ...f,
+                                city: e.target.value,
+                              }))
+                            }
+                            placeholder={
+                              addrForm.country === "Ghana"
+                                ? "e.g. Accra"
+                                : addrForm.country === "Nigeria"
+                                  ? "e.g. Lagos"
+                                  : ""
+                            }
+                            autoComplete="address-level2"
+                            className={inputCls}
+                          />
+                        </Field>
+                        {/* Street address */}
+                        <Field label="Address *" error={addrErrors.address}>
+                          <input
+                            type="text"
+                            value={addrForm.address}
+                            onChange={(e) =>
+                              setAddrForm((f) => ({
+                                ...f,
+                                address: e.target.value,
+                              }))
+                            }
+                            placeholder="Street, Apartment, Suite, etc."
+                            autoComplete="street-address"
+                            className={inputCls}
+                          />
+                          <p className="text-[10px] text-zinc-400 mt-0.5">
+                            Detailed street address can help our rider find you
+                            quickly.
+                          </p>
+                        </Field>
+
+                        {/* Address 2 */}
+                        <Field label="Address 2">
+                          <input
+                            type="text"
+                            value={addrForm.address2}
+                            onChange={(e) =>
+                              setAddrForm((f) => ({
+                                ...f,
+                                address2: e.target.value,
+                              }))
+                            }
+                            placeholder="Apartment, suite, floor, etc. (optional)"
+                            autoComplete="address-line2"
+                            className={inputCls}
+                          />
+                        </Field>
+
+                        {/* Phone + Postcode */}
+                        <div className="grid grid-cols-[1fr_auto] gap-3 items-start">
+                          <Field
+                            label={`Area Number · Phone *`}
+                            error={addrErrors.phone}
+                          >
+                            <div className="flex">
+                              <span className="flex items-center px-3 border border-r-0 border-zinc-200 bg-zinc-100 text-zinc-600 text-sm shrink-0 select-none">
+                                {countryCode}
+                              </span>
+                              <input
+                                type="tel"
+                                value={addrForm.phone}
+                                onChange={(e) =>
+                                  setAddrForm((f) => ({
+                                    ...f,
+                                    phone: e.target.value,
+                                  }))
+                                }
+                                placeholder={
+                                  addrForm.country === "Nigeria"
+                                    ? "08xxxxxxxx"
+                                    : "05xxxxxxxx"
+                                }
+                                autoComplete="tel-national"
+                                className={cn(inputCls, "border-l-0")}
+                              />
+                            </div>
+                          </Field>
+                          <Field label="Postcode">
+                            <input
+                              type="text"
+                              value={addrForm.postcode}
+                              onChange={(e) =>
+                                setAddrForm((f) => ({
+                                  ...f,
+                                  postcode: e.target.value,
+                                }))
+                              }
+                              placeholder="Optional"
+                              autoComplete="postal-code"
+                              className={cn(inputCls, "w-28")}
+                            />
+                          </Field>
+                        </div>
+
+                        {/* WhatsApp */}
+                        <Field label="WhatsApp">
+                          <input
+                            type="tel"
+                            value={addrForm.whatsapp}
+                            onChange={(e) =>
+                              setAddrForm((f) => ({
+                                ...f,
+                                whatsapp: e.target.value,
+                              }))
+                            }
+                            placeholder="Optional"
+                            autoComplete="off"
+                            className={inputCls}
+                          />
+                        </Field>
+
+                        {/* Label */}
                         <Field label="Label (e.g. Home, Office)">
                           <input
                             type="text"
@@ -739,89 +1186,12 @@ function AccountPageInner() {
                             className={inputCls}
                           />
                         </Field>
-                        <Field
-                          label="Street Address"
-                          error={addrErrors.address}
-                        >
-                          <input
-                            type="text"
-                            value={addrForm.address}
-                            onChange={(e) =>
-                              setAddrForm((f) => ({
-                                ...f,
-                                address: e.target.value,
-                              }))
-                            }
-                            placeholder="14 Independence Ave"
-                            autoComplete="street-address"
-                            className={inputCls}
-                          />
-                        </Field>
-                        <div className="grid grid-cols-2 gap-3">
-                          <Field label="City" error={addrErrors.city}>
-                            <input
-                              type="text"
-                              value={addrForm.city}
-                              onChange={(e) =>
-                                setAddrForm((f) => ({
-                                  ...f,
-                                  city: e.target.value,
-                                }))
-                              }
-                              placeholder="Accra"
-                              autoComplete="address-level2"
-                              className={inputCls}
-                            />
-                          </Field>
-                          <Field label="Region / State">
-                            <input
-                              type="text"
-                              value={addrForm.region}
-                              onChange={(e) =>
-                                setAddrForm((f) => ({
-                                  ...f,
-                                  region: e.target.value,
-                                }))
-                              }
-                              placeholder="Greater Accra"
-                              autoComplete="address-level1"
-                              className={inputCls}
-                            />
-                          </Field>
-                        </div>
-                        <Field label="Country" error={addrErrors.country}>
-                          <input
-                            type="text"
-                            value={addrForm.country}
-                            onChange={(e) =>
-                              setAddrForm((f) => ({
-                                ...f,
-                                country: e.target.value,
-                              }))
-                            }
-                            placeholder="Ghana"
-                            autoComplete="country-name"
-                            className={inputCls}
-                          />
-                        </Field>
-                        <Field label="Landmark (optional)">
-                          <input
-                            type="text"
-                            value={addrForm.landmark}
-                            onChange={(e) =>
-                              setAddrForm((f) => ({
-                                ...f,
-                                landmark: e.target.value,
-                              }))
-                            }
-                            placeholder="Near Osu Oxford Street"
-                            autoComplete="off"
-                            className={inputCls}
-                          />
-                        </Field>
+
                         <div className="flex gap-3 mt-1">
                           <Button size="sm" onClick={saveAddress}>
-                            Save Address
+                            {editingAddressId
+                              ? "Confirm to Edit"
+                              : "Save Address"}
                           </Button>
                           <Button
                             variant="secondary"
@@ -863,10 +1233,26 @@ function AccountPageInner() {
                               )}
                             </div>
                           </div>
-                          <div className="space-y-1 mb-4">
-                            <p className="text-sm text-zinc-800">
+                          <div className="space-y-0.5 mb-4">
+                            <p className="text-sm font-medium text-zinc-900">
+                              {addr.firstName} {addr.lastName}
+                            </p>
+                            <p className="text-xs text-zinc-500">
+                              {addr.email}
+                            </p>
+                            <p className="text-sm text-zinc-700 mt-1">
                               {addr.address}
                             </p>
+                            {addr.address2 && (
+                              <p className="text-sm text-zinc-600">
+                                {addr.address2}
+                              </p>
+                            )}
+                            {addr.district && (
+                              <p className="text-sm text-zinc-600">
+                                {addr.district}
+                              </p>
+                            )}
                             {addr.city && (
                               <p className="text-sm text-zinc-600">
                                 {addr.city}
@@ -876,9 +1262,10 @@ function AccountPageInner() {
                             <p className="text-sm text-zinc-600">
                               {addr.country}
                             </p>
-                            {addr.landmark && (
-                              <p className="text-xs text-zinc-500 italic mt-2">
-                                Near: {addr.landmark}
+                            {addr.phone && (
+                              <p className="text-xs text-zinc-500 mt-1">
+                                {addr.country === "Nigeria" ? "+234" : "+233"}{" "}
+                                {addr.phone}
                               </p>
                             )}
                           </div>

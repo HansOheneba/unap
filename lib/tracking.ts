@@ -60,7 +60,7 @@ const mockOrders: Record<
     lastUpdated: "May 7, 2026, 6:14 AM",
     status: "in_transit",
     statusLabel: "In Transit",
-    customerName: "Kwame Mensah",
+    customerName: "Hans Müller",
     customerContact: "+233 20 000 0001",
     deliveryAddress: "14 Independence Ave, Osu, Accra, Greater Accra",
     destination: "Accra, Ghana",
