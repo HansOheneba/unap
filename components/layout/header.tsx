@@ -553,7 +553,7 @@ export default function Header() {
       {/* Backdrop */}
       <div
         onClick={() => setMobileOpen(false)}
-        className={`fixed inset-0 z-40 bg-black/60 backdrop-blur-sm md:hidden transition-opacity duration-300 ${
+        className={`fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm md:hidden transition-opacity duration-300 ${
           mobileOpen
             ? "opacity-100 pointer-events-auto"
             : "opacity-0 pointer-events-none"
@@ -562,7 +562,7 @@ export default function Header() {
 
       {/* Full-screen panel slides in from left */}
       <div
-        className={`fixed inset-0 z-50 bg-white md:hidden flex flex-col transition-transform duration-500 ease-in-out ${
+        className={`fixed inset-0 z-[70] bg-white md:hidden flex flex-col transition-transform duration-500 ease-in-out ${
           mobileOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >

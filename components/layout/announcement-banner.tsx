@@ -66,7 +66,7 @@ export default function AnnouncementBanner() {
           exit={{ height: 0, opacity: 0 }}
           transition={{ duration: 0.25, ease: "easeInOut" }}
           style={{ height: BANNER_H }}
-          className="fixed top-0 left-0 right-0 z-[70] bg-zinc-900 text-white overflow-hidden"
+          className="fixed top-0 left-0 right-0 z-30 bg-zinc-900 text-white overflow-hidden"
         >
           <div className="relative flex items-center justify-center h-full px-10">
             <AnimatePresence mode="wait">
