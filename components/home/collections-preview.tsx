@@ -75,7 +75,7 @@ export default function CollectionsPreview() {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <FadeIn>
             <p className="eyebrow mb-4">The Collection</p>
-            <h2 className="max-w-lg">Dressed for the Unapologetic</h2>
+            <h2 className="max-w-lg">Peices of Rebellion</h2>
           </FadeIn>
           <FadeIn delay={0.15} className="shrink-0">
             <Link href="/collections" className={buttonVariants()}>
