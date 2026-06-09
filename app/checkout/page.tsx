@@ -13,11 +13,23 @@ import { useIsLoggedIn } from "@/lib/use-is-logged-in";
 import { Button, buttonVariants } from "@/components/ui/button";
 
 type CheckoutStep = "details" | "review" | "confirmed";
+type PaymentMethod = "paystack" | "pay_on_delivery";
 
-const PAYMENT_METHODS = [
-  { id: "momo", label: "Mobile Money" },
-  { id: "card", label: "Card (Visa / Mastercard)" },
-  { id: "cash", label: "Pay on Delivery" },
+const PAYMENT_METHODS: {
+  id: PaymentMethod;
+  label: string;
+  description: string;
+}[] = [
+  {
+    id: "paystack",
+    label: "Pay Now with Paystack",
+    description: "Card, Mobile Money, or Bank. Secured by Paystack.",
+  },
+  {
+    id: "pay_on_delivery",
+    label: "Pay on Delivery",
+    description: "Pay in cash or MoMo when your order arrives.",
+  },
 ];
 
 function Field({
@@ -68,7 +80,7 @@ export default function CheckoutPage() {
   const [orderId] = useState(generateOrderId);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState("momo");
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("paystack");
   const [promoCode, setPromoCode] = useState("");
   const [promoError, setPromoError] = useState("");
   const [discount, setDiscount] = useState<{
@@ -160,12 +172,25 @@ export default function CheckoutPage() {
   const handlePlaceOrder = async () => {
     if (!validate()) return;
     setLoading(true);
-    /* Simulate API call */
-    await new Promise((r) => setTimeout(r, 1200));
+
+    if (paymentMethod === "paystack") {
+      // Flow when backend + Paystack keys are live:
+      // 1. POST /orders  { payment: { method: "paystack" } }
+      // 2. POST /payments/paystack/initialize  -> authorizationUrl / accessCode
+      // 3. Open Paystack popup, then GET /payments/paystack/verify/:reference
+      await new Promise((r) => setTimeout(r, 1200));
+    } else {
+      // POST /orders  { payment: { method: "pay_on_delivery" } }
+      await new Promise((r) => setTimeout(r, 1200));
+    }
+
     setLoading(false);
     clearCart();
     setStep("confirmed");
   };
+
+  const selectedPayment = PAYMENT_METHODS.find((p) => p.id === paymentMethod);
+  const isPaystack = paymentMethod === "paystack";
 
   /* ── Confirmed Screen ── */
   if (step === "confirmed") {
@@ -203,7 +228,9 @@ export default function CheckoutPage() {
             <span className="text-zinc-900">{form.email}</span> and WhatsApp.
           </p>
           <p className="text-zinc-400 text-xs leading-relaxed">
-            Expect delivery in 3–7 business days depending on your location.
+            {isPaystack
+              ? "Payment via Paystack. You will complete checkout in the Paystack window once keys are connected."
+              : "Pay in cash or MoMo when your order arrives. Expect delivery in 3 to 7 business days."}
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 w-full mt-4">
@@ -447,12 +474,23 @@ export default function CheckoutPage() {
                             onChange={() => setPaymentMethod(pm.id)}
                             className="sr-only"
                           />
-                          <span className="text-sm text-zinc-900">
-                            {pm.label}
-                          </span>
+                          <div className="flex flex-col gap-0.5">
+                            <span className="text-sm text-zinc-900">
+                              {pm.label}
+                            </span>
+                            <span className="text-xs text-zinc-500">
+                              {pm.description}
+                            </span>
+                          </div>
                         </label>
                       ))}
                     </div>
+                    {isPaystack && (
+                      <p className="text-xs text-zinc-400 leading-relaxed">
+                        Paystack handles Card, MTN/Vodafone/AirtelTigo MoMo, and
+                        bank transfer. API keys will be connected on the backend.
+                      </p>
+                    )}
                   </div>
 
                   <Button type="submit" className="mt-2 w-full">
@@ -497,11 +535,13 @@ export default function CheckoutPage() {
                     <div className="border-t border-zinc-100 pt-3">
                       <p className="eyebrow text-zinc-500 mb-1">Payment</p>
                       <p className="text-sm text-zinc-700">
-                        {
-                          PAYMENT_METHODS.find((p) => p.id === paymentMethod)
-                            ?.label
-                        }
+                        {selectedPayment?.label}
                       </p>
+                      {selectedPayment?.description && (
+                        <p className="text-xs text-zinc-500 mt-0.5">
+                          {selectedPayment.description}
+                        </p>
+                      )}
                     </div>
                     {form.notes && (
                       <div className="border-t border-zinc-100 pt-3">
@@ -555,7 +595,13 @@ export default function CheckoutPage() {
                       onClick={handlePlaceOrder}
                       disabled={loading}
                     >
-                      {loading ? "Placing Order…" : "Place Order"}
+                      {loading
+                        ? isPaystack
+                          ? "Opening Paystack…"
+                          : "Placing Order…"
+                        : isPaystack
+                          ? "Pay with Paystack"
+                          : "Place Order"}
                     </Button>
                   </div>
                 </motion.div>
