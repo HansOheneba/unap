@@ -23,8 +23,10 @@ import { useCartStore } from "@/lib/stores/cart-store";
 import { useWishlistStore } from "@/lib/stores/wishlist-store";
 import { useRecentlyViewedStore } from "@/lib/stores/recently-viewed-store";
 import { useIsLoggedIn } from "@/lib/use-is-logged-in";
+import { useOnboardingStore } from "@/lib/stores/onboarding-store";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { COLLECTIONS_CONTAINER } from "@/lib/layout/collections";
 
 type Props = {
   product: Product;
@@ -95,6 +97,8 @@ export default function ProductDetailClient({
   const addItem = useCartStore((s) => s.addItem);
   const router = useRouter();
   const isLoggedIn = useIsLoggedIn();
+  const firstName = useOnboardingStore((s) => s.firstName);
+  const lastName = useOnboardingStore((s) => s.lastName);
   const toggleWishlist = useWishlistStore((s) => s.toggle);
   const isWishlisted = useWishlistStore((s) =>
     s.items.some((i) => i.id === product.id),
@@ -193,7 +197,7 @@ export default function ProductDetailClient({
 
   return (
     <main className="bg-white text-zinc-900 min-h-screen pb-24 lg:pb-0">
-      <div className="max-w-360 mx-auto px-6 md:px-12 lg:px-16">
+      <div className={COLLECTIONS_CONTAINER}>
         {/* ── BREADCRUMB ──────────────────────────────────────────────── */}
         <nav className="flex items-center gap-2 py-7 text-[0.65rem] text-zinc-400 tracking-wide">
           <Link
@@ -306,10 +310,10 @@ export default function ProductDetailClient({
                       Select a size
                     </p>
                   )}
-                  {product.category === "boxers" && (
+                  {product.category === "underwear" && (
                     <BoxerSizeGuide variant="link" />
                   )}
-                  {!["sunglasses", "headwear"].includes(product.category) && (
+                  {!["sunglasses", "accessories"].includes(product.category) && (
                     <button
                       type="button"
                       onClick={() => setShowSizeQuiz(true)}
@@ -524,7 +528,7 @@ export default function ProductDetailClient({
 
       {/* ── REVIEWS ────────────────────────────────────────────────────── */}
       <section className="border-t border-zinc-100 py-16 lg:py-24 bg-white">
-        <div className="max-w-360 mx-auto px-6 md:px-12 lg:px-16">
+        <div className={COLLECTIONS_CONTAINER}>
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-10">
             <div>
               <h2 className="text-2xl md:text-3xl tracking-[0.2em] text-zinc-900 uppercase font-light">
@@ -560,7 +564,26 @@ export default function ProductDetailClient({
               )}
             </div>
             <button
-              onClick={() => setShowReviewForm((s) => !s)}
+              onClick={() => {
+                if (!isLoggedIn) {
+                  router.push(
+                    "/auth/login?next=" +
+                      encodeURIComponent(window.location.pathname),
+                  );
+                  return;
+                }
+                setShowReviewForm((open) => {
+                  if (!open) {
+                    const name = [firstName, lastName]
+                      .filter(Boolean)
+                      .join(" ");
+                    if (name) {
+                      setReviewForm((f) => ({ ...f, author: name }));
+                    }
+                  }
+                  return !open;
+                });
+              }}
               className="self-start md:self-auto text-xs tracking-[0.25em] uppercase border border-zinc-900 text-zinc-900 px-6 py-3 hover:bg-zinc-900 hover:text-white transition-colors"
             >
               {showReviewForm ? "Cancel" : "Write a Review"}
@@ -568,10 +591,11 @@ export default function ProductDetailClient({
           </div>
 
           {/* Review form */}
-          {showReviewForm && (
+          {showReviewForm && isLoggedIn && (
             <form
               onSubmit={(e) => {
                 e.preventDefault();
+                if (!isLoggedIn) return;
                 if (!reviewForm.author.trim() || !reviewForm.body.trim())
                   return;
                 const newReview: Review = {
@@ -703,7 +727,7 @@ export default function ProductDetailClient({
       {/* ── RECENTLY VIEWED ────────────────────────────────────────────── */}
       {otherRecentlyViewed.length > 0 && (
         <section className="border-t border-zinc-100 py-12 lg:py-16 bg-white">
-          <div className="max-w-360 mx-auto px-6 md:px-12 lg:px-16">
+          <div className={COLLECTIONS_CONTAINER}>
             <h2 className="text-xs tracking-[0.25em] uppercase text-zinc-500 mb-6">
               Recently Viewed
             </h2>
@@ -741,7 +765,7 @@ export default function ProductDetailClient({
       {/* ── RELATED PRODUCTS ──────────────────────────────────────────── */}
       {relatedProducts.length > 0 && (
         <section className="border-t border-zinc-100 py-16 lg:py-24 bg-zinc-50">
-          <div className="max-w-360 mx-auto px-6 md:px-12 lg:px-16">
+          <div className={COLLECTIONS_CONTAINER}>
             <div className="flex items-end justify-between mb-10">
               <div>
                 <p className="text-[0.62rem] tracking-widest uppercase text-zinc-400 mb-1">

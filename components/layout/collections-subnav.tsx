@@ -3,25 +3,28 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { useBannerStore } from "@/lib/stores/banner-store";
+import { COLLECTIONS_CONTAINER } from "@/lib/layout/collections";
+import {
+  chromeTopTransition,
+  getBannerOffset,
+  useBannerStore,
+} from "@/lib/stores/banner-store";
 
 const COLLECTIONS = [
   { label: "All", href: "/collections" },
-  { label: "Boxers", href: "/collections/boxers" },
-  { label: "Head Wears", href: "/collections/headwear" },
-  { label: "Hoodies", href: "/collections/hoodies" },
-  { label: "Lingerie", href: "/collections/lingerie" },
-  { label: "Sunglasses", href: "/collections/sunglasses" },
+  { label: "Underwear", href: "/collections/underwear" },
   { label: "Tops", href: "/collections/tops" },
-  { label: "Tracks", href: "/collections/tracks" },
+  { label: "Bottoms", href: "/collections/bottoms" },
+  { label: "Tracksuits", href: "/collections/tracksuits" },
+  { label: "Active Wear", href: "/collections/active-wear" },
+  { label: "Sunglasses", href: "/collections/sunglasses" },
+  { label: "Accessories", href: "/collections/accessories" },
 ];
 
 export default function CollectionsSubnav() {
   const pathname = usePathname();
-  const { visible: bannerVisible, bannerHeight } = useBannerStore();
+  const { visible: bannerVisible, scrollHidden } = useBannerStore();
 
-  // Show on /collections overview and product detail pages.
-  // NOT on collection landing pages (/collections/boxers etc.) — they have full-bleed heroes.
   const isCollectionLanding = /^\/collections\/[^/]+$/.test(pathname ?? "");
   const showSubnav =
     !!pathname?.startsWith("/collections") && !isCollectionLanding;
@@ -34,15 +37,18 @@ export default function CollectionsSubnav() {
       return pathname?.startsWith(c.href);
     })?.href ?? "/collections";
 
-  // Stick just below the fixed header. top = bannerHeight (0 if dismissed) + h-14 (56px)
-  const stickyTopPx = (bannerVisible ? bannerHeight : 0) + 56;
+  const bannerOffset = getBannerOffset(bannerVisible, scrollHidden);
+  const stickyTopPx = bannerOffset + 56;
 
   return (
     <div
       className="sticky z-30 bg-white border-b border-zinc-100 shadow-[0_1px_0_0_#f4f4f5]"
-      style={{ top: stickyTopPx }}
+      style={{
+        top: stickyTopPx,
+        transition: chromeTopTransition(scrollHidden),
+      }}
     >
-      <div className="max-w-360 mx-auto">
+      <div className={COLLECTIONS_CONTAINER}>
         <div className="flex items-center overflow-x-auto px-4 md:px-8 [&::-webkit-scrollbar]:hidden [scrollbar-width:none]">
           {COLLECTIONS.map((col) => {
             const isActive = col.href === activeHref;

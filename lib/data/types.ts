@@ -1,34 +1,70 @@
+export type Gender = "male" | "female";
+
+export type AccessoryType = "socks" | "caps" | "beanies";
+
 export type ProductColor = {
   name: string;
   hex: string;
-  image?: string; // optional variant image shown when this color is selected
+  image?: string;
 };
 
+export type SizeStock = {
+  size: string;
+  stock: number;
+};
+
+export type ColorVariant = {
+  id: string;
+  colorName: string;
+  colorHex: string;
+  images: string[];
+  sizes: SizeStock[];
+};
+
+/** Admin / search catalog product — mirrors a future API record */
 export type Product = {
-  id: string; // e.g. "boxers-1"
+  id: string;
+  slug: string;
   name: string;
   description: string;
-  price: number; // raw number — format with formatPrice() from lib/currency
-  images: string[]; // all images; first is primary / cover
+  price: number;
+  gender: Gender;
+  collectionId: string;
+  subcategory?: string;
+  images: string[];
   colors?: ProductColor[];
-  tag: string; // "Essential", "Signature", etc.
-  collectionId: string; // matches Collection.id
+  sizes?: string[];
+  tag: string;
+  details: string[];
+  careInstructions: string[];
 };
 
 export type Collection = {
   id: string;
-  subtitle: string; // e.g. "Sunglasses"
-  title: string; // e.g. "The Eclipse Edit"
+  subtitle: string;
+  title: string;
   tagline: string;
-  featured: string; // hero / cover image path
-  href: string; // e.g. "/collections/sunglasses"
+  featured: string;
+  href: string;
   products: Product[];
 };
 
 export type OverviewCard = {
-  /** Matches the section id on the collections page for scroll-to behaviour */
   id: string;
   label: string;
   img: string;
   description: string;
+};
+
+/** Mock API envelope — swap the fetch target later */
+export type CatalogApiResponse = {
+  data: {
+    collections: Collection[];
+    products: Product[];
+  };
+  meta: {
+    version: string;
+    totalProducts: number;
+    lastUpdated: string;
+  };
 };

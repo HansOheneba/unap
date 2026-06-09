@@ -49,9 +49,11 @@ function NewProductForm() {
     const filteredImages = images.filter((img) => img.trim() !== "");
     addProduct(form.collectionId, {
       id: form.id,
+      slug: form.id,
       name: form.name,
       description: form.description,
       price: parseFloat(form.price) || 0,
+      gender: "male",
       images:
         filteredImages.length > 0
           ? filteredImages
@@ -59,6 +61,8 @@ function NewProductForm() {
       colors: colors.length > 0 ? colors : undefined,
       tag: form.tag,
       collectionId: form.collectionId,
+      details: [],
+      careInstructions: [],
     });
     router.push(`/admin/collections/${form.collectionId}`);
   };

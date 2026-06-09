@@ -1,14 +1,19 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import {
   countries,
   regionsByCountry,
+  mockSendOtp,
   mockSignup,
+  mockVerifyOtp,
+  OTP_LENGTH,
   type SignupData,
 } from "@/lib/auth";
 import { useOnboardingStore } from "@/lib/stores/onboarding-store";
 import { Button } from "@/components/ui/button";
+import OtpField from "@/components/auth/otp-field";
 
 const inputCls =
   "bg-zinc-50 border border-zinc-200 text-zinc-900 placeholder-zinc-400 px-4 py-3 text-sm focus:outline-none focus:border-zinc-400 transition-colors duration-200";
@@ -57,10 +62,7 @@ export default function SignupPage() {
     loading,
     errors,
     email,
-    password,
-    confirmPassword,
     agreed,
-    showPassword,
     firstName,
     lastName,
     phone,
@@ -80,17 +82,23 @@ export default function SignupPage() {
   } = useOnboardingStore();
 
   const regions = regionsByCountry[country] ?? [];
+  const [step1Phase, setStep1Phase] = useState<"email" | "otp">("email");
+  const [otp, setOtp] = useState("");
+  const [otpSending, setOtpSending] = useState(false);
 
   /* ── Validation ── */
-  const validateStep1 = () => {
+  const validateStep1Email = () => {
     const e: Record<string, string> = {};
     if (!email) e.email = "Email is required.";
     else if (!/\S+@\S+\.\S+/.test(email)) e.email = "Enter a valid email.";
-    if (!password) e.password = "Password is required.";
-    else if (password.length < 8) e.password = "Minimum 8 characters.";
-    if (password !== confirmPassword)
-      e.confirmPassword = "Passwords do not match.";
     if (!agreed) e.agreed = "You must agree to continue.";
+    setErrors(e);
+    return Object.keys(e).length === 0;
+  };
+
+  const validateStep1Otp = () => {
+    const e: Record<string, string> = {};
+    if (otp.length !== OTP_LENGTH) e.otp = "Enter the 6-digit code from your email.";
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -118,8 +126,36 @@ export default function SignupPage() {
 
   const next = () => {
     clearErrors();
-    if (step === 1 && validateStep1()) nextStep();
     if (step === 2 && validateStep2()) nextStep();
+  };
+
+  const handleSendSignupCode = async (e: React.FormEvent) => {
+    e.preventDefault();
+    clearErrors();
+    if (!validateStep1Email()) return;
+    setOtpSending(true);
+    const result = await mockSendOtp(email.trim());
+    setOtpSending(false);
+    if (!result.success) {
+      setErrors({ email: "Could not send your code. Please try again." });
+      return;
+    }
+    setOtp("");
+    setStep1Phase("otp");
+  };
+
+  const handleVerifySignupCode = async (e: React.FormEvent) => {
+    e.preventDefault();
+    clearErrors();
+    if (!validateStep1Otp()) return;
+    setOtpSending(true);
+    const result = await mockVerifyOtp(email.trim(), otp);
+    setOtpSending(false);
+    if (!result.success) {
+      setErrors({ otp: "Invalid or expired code. Please try again." });
+      return;
+    }
+    nextStep();
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -128,7 +164,6 @@ export default function SignupPage() {
     setLoading(true);
     const data: SignupData = {
       email,
-      password,
       firstName,
       lastName,
       phone,
@@ -251,14 +286,8 @@ export default function SignupPage() {
         </div>
 
         {/* ── Step 1: Account ── */}
-        {step === 1 && (
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              next();
-            }}
-            className="flex flex-col gap-4"
-          >
+        {step === 1 && step1Phase === "email" && (
+          <form onSubmit={handleSendSignupCode} className="flex flex-col gap-4">
             <div className="mb-2">
               <p className="text-zinc-500 text-[0.65rem] tracking-[0.25em] uppercase mb-1">
                 Step 1 of 3
@@ -266,6 +295,9 @@ export default function SignupPage() {
               <h1 className="text-2xl font-light tracking-tight">
                 Create Your Account
               </h1>
+              <p className="text-zinc-500 text-sm mt-2">
+                Verify your email with a one-time code.
+              </p>
             </div>
 
             <Field label="Email Address" error={errors.email}>
@@ -279,38 +311,6 @@ export default function SignupPage() {
               />
             </Field>
 
-            <Field label="Password" error={errors.password}>
-              <div className="relative">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setField("password", e.target.value)}
-                  placeholder="Min. 8 characters"
-                  autoComplete="new-password"
-                  className={`${inputCls} w-full pr-16`}
-                />
-                <button
-                  type="button"
-                  onClick={() => setField("showPassword", !showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[0.55rem] tracking-widest uppercase text-zinc-400 hover:text-zinc-900"
-                >
-                  {showPassword ? "Hide" : "Show"}
-                </button>
-              </div>
-            </Field>
-
-            <Field label="Confirm Password" error={errors.confirmPassword}>
-              <input
-                type={showPassword ? "text" : "password"}
-                value={confirmPassword}
-                onChange={(e) => setField("confirmPassword", e.target.value)}
-                placeholder="Re-enter password"
-                autoComplete="new-password"
-                className={inputCls}
-              />
-            </Field>
-
-            {/* Terms */}
             <div className="flex flex-col gap-1">
               <label className="flex items-start gap-3 cursor-pointer group">
                 <div
@@ -359,8 +359,8 @@ export default function SignupPage() {
               )}
             </div>
 
-            <Button type="submit" className="mt-2 w-full">
-              Continue
+            <Button type="submit" disabled={otpSending} className="mt-2 w-full">
+              {otpSending ? "Sending code…" : "Send Verification Code"}
             </Button>
 
             <p className="text-center text-zinc-400 text-xs mt-2">
@@ -372,6 +372,74 @@ export default function SignupPage() {
                 Sign in
               </Link>
             </p>
+          </form>
+        )}
+
+        {step === 1 && step1Phase === "otp" && (
+          <form onSubmit={handleVerifySignupCode} className="flex flex-col gap-5">
+            <div className="mb-2">
+              <p className="text-zinc-500 text-[0.65rem] tracking-[0.25em] uppercase mb-1">
+                Step 1 of 3
+              </p>
+              <h1 className="text-2xl font-light tracking-tight">
+                Verify Your Email
+              </h1>
+              <p className="text-zinc-500 text-sm mt-2">
+                Enter the code we sent to {email}.
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-3">
+              <label
+                htmlFor="signup-otp"
+                className="text-[0.65rem] tracking-widest uppercase text-zinc-500 text-center"
+              >
+                One-Time Code
+              </label>
+              <OtpField
+                id="signup-otp"
+                value={otp}
+                onChange={setOtp}
+                disabled={otpSending}
+              />
+              {errors.otp && (
+                <p className="text-red-400 text-[0.65rem] text-center">
+                  {errors.otp}
+                </p>
+              )}
+            </div>
+
+            <Button type="submit" disabled={otpSending} className="w-full">
+              {otpSending ? "Verifying…" : "Verify & Continue"}
+            </Button>
+
+            <div className="flex flex-col items-center gap-3 text-center">
+              <button
+                type="button"
+                onClick={async () => {
+                  clearErrors();
+                  setOtpSending(true);
+                  await mockSendOtp(email.trim());
+                  setOtpSending(false);
+                  setOtp("");
+                }}
+                disabled={otpSending}
+                className="text-[0.6rem] tracking-widest uppercase text-zinc-400 hover:text-zinc-900 transition-colors duration-200 disabled:opacity-50"
+              >
+                Resend Code
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setStep1Phase("email");
+                  setOtp("");
+                  clearErrors();
+                }}
+                className="text-[0.6rem] tracking-widest uppercase text-zinc-400 hover:text-zinc-900 transition-colors duration-200"
+              >
+                Use a Different Email
+              </button>
+            </div>
           </form>
         )}
 

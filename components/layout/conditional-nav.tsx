@@ -1,10 +1,13 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import Header from "./header";
 import Footer from "./footer";
 import CartToast from "@/components/ui/cart-toast";
-import { useBannerStore } from "@/lib/stores/banner-store";
+import {
+  bannerSlotTransition,
+  getBannerOffset,
+  useBannerStore,
+} from "@/lib/stores/banner-store";
 
 // Pages where the first section intentionally sits behind the fixed header
 // (full-bleed video/image heroes with dark overlays).
@@ -16,7 +19,8 @@ export default function ConditionalNav({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const { visible: bannerVisible, bannerHeight } = useBannerStore();
+  const { visible: bannerVisible, scrollHidden } = useBannerStore();
+  const bannerOffset = getBannerOffset(bannerVisible, scrollHidden);
   // Account pages should still show the global header/footer so users can
   // navigate around the site while signed in.
   const noNav = false;
@@ -34,11 +38,13 @@ export default function ConditionalNav({
 
   return (
     <>
-      {!noNav && <Header />}
-      {/* Banner spacer — matches the actual measured banner height */}
+      {/* Banner spacer — matches the visible banner slot in SiteChrome */}
       {bannerVisible && needsHeaderOffset && (
         <div
-          style={{ height: bannerHeight }}
+          style={{
+            height: bannerOffset,
+            transition: bannerSlotTransition(scrollHidden),
+          }}
           className="shrink-0"
           aria-hidden="true"
         />
@@ -47,7 +53,7 @@ export default function ConditionalNav({
       {needsHeaderOffset && (
         <div
           style={{ height: isCollectionsPath ? 100 : 56 }}
-          className="shrink-0 transition-[height] duration-300 ease-in-out"
+          className="shrink-0"
           aria-hidden="true"
         />
       )}

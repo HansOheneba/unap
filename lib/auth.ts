@@ -123,10 +123,10 @@ export const mockUser: User = {
  * These map to real products in `lib/products.ts`.
  */
 export const mockWishlistSlugs: string[] = [
-  "luxesoft-premium-boxers",
+  "no-apology-boxer-brief",
   "bold-society-cap",
   "outlaw-i",
-  "phantom-long-sleeve",
+  "sovereign-silk-blouse",
 ];
 
 export const mockOrders: MockOrder[] = [
@@ -297,9 +297,11 @@ export const countries = Object.keys(regionsByCountry);
 
 /* ── Mock operations ─────────────────────────────────────── */
 
+export const OTP_LENGTH = 6;
+export const MOCK_OTP_CODE = "123456";
+
 export interface SignupData {
   email: string;
-  password: string;
   firstName: string;
   lastName: string;
   phone: string;
@@ -320,13 +322,32 @@ export async function mockSignup(
   return { success: true };
 }
 
-/** Simulate login — always succeeds with mockUser in this demo build. */
-export async function mockLogin(
+/** Simulate sending a one-time sign-in code. */
+export async function mockSendOtp(
+  email: string,
+): Promise<{ success: boolean }> {
+  await new Promise((r) => setTimeout(r, 700));
+  console.log(`[mock OTP] Any 6-digit code works for ${email} (backend not connected)`);
+  return { success: true };
+}
+
+/** Simulate verifying a one-time sign-in code. */
+export async function mockVerifyOtp(
   _email: string,
-  _password: string,
-): Promise<{ success: boolean; user: User }> {
-  await new Promise((r) => setTimeout(r, 800));
+  code: string,
+): Promise<{ success: boolean; user?: User }> {
+  await new Promise((r) => setTimeout(r, 600));
+  // Dev stub: accept any 6-digit code until the real auth API is wired up.
+  if (!/^\d{6}$/.test(code)) return { success: false };
   return { success: true, user: mockUser };
+}
+
+/** Simulate login after OTP verification. */
+export async function mockLogin(
+  email: string,
+  otp: string,
+): Promise<{ success: boolean; user?: User }> {
+  return mockVerifyOtp(email, otp);
 }
 
 export const orderStatusColor: Record<MockOrder["status"], string> = {

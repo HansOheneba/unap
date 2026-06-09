@@ -13,26 +13,23 @@ import { usePathname, useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { Heart } from "lucide-react";
 import { useCartStore } from "@/lib/stores/cart-store";
-import { useBannerStore } from "@/lib/stores/banner-store";
 import { useWishlistStore } from "@/lib/stores/wishlist-store";
 import { cn } from "@/lib/utils";
+import { COLLECTIONS_CONTAINER } from "@/lib/layout/collections";
 
 const collectionItems = [
+  { label: "Underwear", href: "/collections/underwear" },
   { label: "Tops", href: "/collections/tops" },
-  { label: "Head Wears", href: "/collections/head-wears" },
-  { label: "Pants", href: "/collections/pants" },
+  { label: "Bottoms", href: "/collections/bottoms" },
+  { label: "Tracksuits", href: "/collections/tracksuits" },
+  { label: "Active Wear", href: "/collections/active-wear" },
   { label: "Sunglasses", href: "/collections/sunglasses" },
+  { label: "Accessories", href: "/collections/accessories" },
 ];
 
 const COLLECTIONS_NAV = [
   { label: "All", href: "/collections" },
-  { label: "Boxers", href: "/collections/boxers" },
-  { label: "Head Wears", href: "/collections/headwear" },
-  { label: "Hoodies", href: "/collections/hoodies" },
-  { label: "Lingerie", href: "/collections/lingerie" },
-  { label: "Sunglasses", href: "/collections/sunglasses" },
-  { label: "Tops", href: "/collections/tops" },
-  { label: "Tracks", href: "/collections/tracks" },
+  ...collectionItems,
 ];
 
 type NavLink =
@@ -103,9 +100,8 @@ export default function Header() {
     s.items.reduce((sum, i) => sum + i.quantity, 0),
   );
   const wishlistCount = useWishlistStore((s) => s.items.length);
-  const { visible: bannerVisible, bannerHeight } = useBannerStore();
   const isHome = pathname === "/";
-  const [scrolled, setScrolled] = useState(false);
+  const [heroNavBlend, setHeroNavBlend] = useState(0);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
@@ -132,10 +128,21 @@ export default function Header() {
   };
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 60);
+    const FADE_RANGE = 80;
+
+    const handleScroll = () => {
+      if (!isHome) {
+        setHeroNavBlend(1);
+        return;
+      }
+      const y = window.scrollY;
+      setHeroNavBlend(Math.min(1, Math.max(0, y / FADE_RANGE)));
+    };
+
+    handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [isHome]);
 
   /* Close mobile menu + search on route change */
   useEffect(() => {
@@ -190,15 +197,20 @@ export default function Header() {
 
   return (
     <>
-      <header
-        style={{ top: bannerVisible ? bannerHeight : 0 }}
-        className={`fixed left-0 right-0 z-50 transition-[top] duration-300 ${
-          isHome && !scrolled
-            ? "bg-linear-to-b from-black/80 via-black/40 to-transparent"
-            : "bg-black"
-        }`}
-      >
-        <div className="flex items-center justify-between px-6 md:px-8 py-5">
+      <header className="relative w-full">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 bg-black"
+          style={{ opacity: isHome ? heroNavBlend : 1 }}
+        />
+        {isHome && (
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 bg-linear-to-b from-black/80 via-black/40 to-transparent"
+            style={{ opacity: 1 - heroNavBlend }}
+          />
+        )}
+        <div className="relative z-10 flex items-center justify-between px-6 md:px-8 py-5">
           {/* ── Desktop Left: Nav links ── */}
           <nav className="hidden md:flex items-center gap-7">
             {navLinks.map((link) =>
@@ -517,10 +529,15 @@ export default function Header() {
               animate={{ height: 44, opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.35, ease: "easeInOut" }}
-              className="overflow-hidden bg-white border-b border-zinc-100"
+              className="relative z-10 overflow-hidden bg-white border-b border-zinc-100"
             >
-              <div className="overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-                <div className="flex items-center justify-center h-11 w-max min-w-full px-6">
+              <div
+                className={cn(
+                  COLLECTIONS_CONTAINER,
+                  "overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
+                )}
+              >
+                <div className="flex items-center justify-center h-11 w-max min-w-full">
                   {COLLECTIONS_NAV.map((col) => {
                     const isActive =
                       col.href === "/collections"

@@ -11,10 +11,7 @@ export interface OnboardingState {
 
   /* ── Step 1: Account ── */
   email: string;
-  password: string;
-  confirmPassword: string;
   agreed: boolean;
-  showPassword: boolean;
 
   /* ── Step 2: About You ── */
   firstName: string;
@@ -56,10 +53,7 @@ const initialState = {
   errors: {},
 
   email: "",
-  password: "",
-  confirmPassword: "",
   agreed: false,
-  showPassword: false,
 
   firstName: "",
   lastName: "",

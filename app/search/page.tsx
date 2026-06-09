@@ -8,7 +8,11 @@ import { Search, X } from "lucide-react";
 import AddToCartButton from "@/components/ui/add-to-cart-button";
 import { formatPrice } from "@/lib/currency";
 import { useAdminStore } from "@/lib/stores/admin-store";
-import { useBannerStore } from "@/lib/stores/banner-store";
+import {
+  chromeTopTransition,
+  getBannerOffset,
+  useBannerStore,
+} from "@/lib/stores/banner-store";
 
 function capitalize(s: string) {
   return s.charAt(0).toUpperCase() + s.slice(1);
@@ -16,8 +20,9 @@ function capitalize(s: string) {
 
 export default function SearchPage() {
   const collections = useAdminStore((s) => s.collections);
-  const { visible: bannerVisible, bannerHeight } = useBannerStore();
-  const stickyTop = (bannerVisible ? bannerHeight : 0) + 56;
+  const { visible: bannerVisible, scrollHidden } = useBannerStore();
+  const bannerOffset = getBannerOffset(bannerVisible, scrollHidden);
+  const stickyTop = bannerOffset + 56;
   const allProducts = collections.flatMap((c) => c.products);
   const categories = [
     "All",
@@ -49,7 +54,10 @@ export default function SearchPage() {
     <main className="bg-white text-zinc-900 min-h-screen">
       {/* Search bar */}
       <div
-        style={{ top: stickyTop }}
+        style={{
+          top: stickyTop,
+          transition: chromeTopTransition(scrollHidden),
+        }}
         className="border-b border-zinc-100 sticky z-30 bg-white"
       >
         <div className="max-w-360 mx-auto px-6 md:px-20 py-6 flex items-center gap-4">
@@ -129,7 +137,7 @@ export default function SearchPage() {
                   className="bg-white group flex flex-col"
                 >
                   <Link
-                    href={`/collections/${product.collectionId}/${product.id}`}
+                    href={`/collections/${product.collectionId}/${product.slug}`}
                     className="relative aspect-3/4 overflow-hidden block"
                   >
                     <Image

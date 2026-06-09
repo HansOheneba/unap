@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Space_Grotesk, Sora, Geist } from "next/font/google";
 import "./globals.css";
 import ConditionalNav from "@/components/layout/conditional-nav";
-import AnnouncementBanner from "@/components/layout/announcement-banner";
+import SiteChrome from "@/components/layout/site-chrome";
 import ToastHost from "@/components/ui/toast-host";
 import { cn } from "@/lib/utils";
 
@@ -52,7 +52,7 @@ export default function RootLayout({
       )}
     >
       <body className="min-h-full flex flex-col">
-        <AnnouncementBanner />
+        <SiteChrome />
         <ConditionalNav>{children}</ConditionalNav>
         <ToastHost />
       </body>

@@ -19,7 +19,7 @@ import { mockOrders, orderStatusPill, type UserAddress } from "@/lib/auth";
 import { useOnboardingStore } from "@/lib/stores/onboarding-store";
 import { useWishlistStore } from "@/lib/stores/wishlist-store";
 import { getProductBySlug, type Product } from "@/lib/products";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import ConfirmDialog from "@/components/ui/confirm-dialog";
 import QuickAddModal from "@/components/products/QuickAddModal";
 import { toast } from "@/lib/stores/toast-store";
@@ -105,12 +105,6 @@ function AccountPageInner() {
     topSize: "",
     bottomSize: "",
   });
-
-  // ── Change password state ───────────────────────────────────────────
-  const [changingPassword, setChangingPassword] = useState(false);
-  const [pwForm, setPwForm] = useState({ current: "", next: "", confirm: "" });
-  const [pwErrors, setPwErrors] = useState<Record<string, string>>({});
-  const [pwSaved, setPwSaved] = useState(false);
 
   // ── Address state ───────────────────────────────────────────────────
   type AddrForm = Omit<UserAddress, "id">;
@@ -263,31 +257,6 @@ function AccountPageInner() {
     setField("bottomSize", profileDraft.bottomSize);
     setEditingProfile(false);
     toast.success("Profile updated", "Your account details have been saved.");
-  }
-
-  // ── Password handlers ────────────────────────────────────────────────
-  function validatePassword() {
-    const e: Record<string, string> = {};
-    if (!pwForm.current.trim()) e.current = "Required";
-    if (pwForm.next.length < 8) e.next = "Minimum 8 characters";
-    if (pwForm.next !== pwForm.confirm) e.confirm = "Passwords do not match";
-    setPwErrors(e);
-    return Object.keys(e).length === 0;
-  }
-  async function savePassword() {
-    if (!validatePassword()) return;
-    await new Promise((r) => setTimeout(r, 700));
-    setPwSaved(true);
-    toast.success(
-      "Password updated",
-      "Use your new password next time you sign in.",
-    );
-    setTimeout(() => {
-      setChangingPassword(false);
-      setPwSaved(false);
-      setPwForm({ current: "", next: "", confirm: "" });
-      setPwErrors({});
-    }, 1500);
   }
 
   // ── Address handlers ─────────────────────────────────────────────────
@@ -1479,109 +1448,24 @@ function AccountPageInner() {
                     )}
                   </div>
 
-                  {/* Password section */}
+                  {/* Sign-in method */}
                   <div className="p-6 md:p-8">
-                    {changingPassword ? (
-                      <div className="max-w-lg flex flex-col gap-4">
-                        <div>
-                          <p className="text-sm font-medium text-zinc-900 mb-1">
-                            Change Password
-                          </p>
-                          <p className="text-xs text-zinc-500">
-                            Use at least 8 characters with a mix of letters and
-                            numbers.
-                          </p>
-                        </div>
-                        <Field
-                          label="Current Password"
-                          error={pwErrors.current}
-                        >
-                          <input
-                            type="password"
-                            value={pwForm.current}
-                            onChange={(e) =>
-                              setPwForm((f) => ({
-                                ...f,
-                                current: e.target.value,
-                              }))
-                            }
-                            autoComplete="current-password"
-                            className={inputCls}
-                          />
-                        </Field>
-                        <Field label="New Password" error={pwErrors.next}>
-                          <input
-                            type="password"
-                            value={pwForm.next}
-                            onChange={(e) =>
-                              setPwForm((f) => ({ ...f, next: e.target.value }))
-                            }
-                            autoComplete="new-password"
-                            className={inputCls}
-                          />
-                        </Field>
-                        <Field
-                          label="Confirm New Password"
-                          error={pwErrors.confirm}
-                        >
-                          <input
-                            type="password"
-                            value={pwForm.confirm}
-                            onChange={(e) =>
-                              setPwForm((f) => ({
-                                ...f,
-                                confirm: e.target.value,
-                              }))
-                            }
-                            autoComplete="new-password"
-                            className={inputCls}
-                          />
-                        </Field>
-                        {pwSaved && (
-                          <p className="text-emerald-700 text-xs bg-emerald-50 border border-emerald-200 px-3 py-2 rounded">
-                            Password updated.
-                          </p>
-                        )}
-                        <div className="flex gap-3">
-                          <Button
-                            size="sm"
-                            onClick={savePassword}
-                            disabled={pwSaved}
-                          >
-                            {pwSaved ? "Saved" : "Update Password"}
-                          </Button>
-                          <Button
-                            variant="secondary"
-                            size="sm"
-                            onClick={() => {
-                              setChangingPassword(false);
-                              setPwErrors({});
-                              setPwForm({ current: "", next: "", confirm: "" });
-                            }}
-                          >
-                            Cancel
-                          </Button>
-                        </div>
+                    <div className="flex items-center justify-between gap-4">
+                      <div>
+                        <p className="text-sm font-medium text-zinc-900 mb-0.5">
+                          Sign-In Method
+                        </p>
+                        <p className="text-sm text-zinc-500">
+                          One-time code sent to your email
+                        </p>
                       </div>
-                    ) : (
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-sm font-medium text-zinc-900 mb-0.5">
-                            Password
-                          </p>
-                          <p className="text-sm text-zinc-500 tracking-widest">
-                            &#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;
-                          </p>
-                        </div>
-                        <Button
-                          variant="secondary"
-                          size="xs"
-                          onClick={() => setChangingPassword(true)}
-                        >
-                          Change
-                        </Button>
-                      </div>
-                    )}
+                      <Link
+                        href="/auth/forgot-password"
+                        className={buttonVariants({ variant: "secondary", size: "xs" })}
+                      >
+                        Get Code
+                      </Link>
+                    </div>
                   </div>
                 </div>
               )}
