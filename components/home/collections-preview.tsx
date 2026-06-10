@@ -78,7 +78,7 @@ export default function CollectionsPreview() {
               </Link>
               <div className="flex items-center justify-between px-6 py-5 bg-white border-t border-zinc-100">
                 <h5 className="text-zinc-900">{hero.name}</h5>
-                <span className="eyebrow text-zinc-500">
+                <span className="text-base font-semibold text-zinc-900 tabular-nums shrink-0">
                   {formatPrice(hero.price)}
                 </span>
               </div>
@@ -109,7 +109,7 @@ export default function CollectionsPreview() {
                 </Link>
                 <div className="flex items-center justify-between px-5 py-4 bg-white border-t border-zinc-100">
                   <h5 className="text-zinc-900 text-sm">{product.name}</h5>
-                  <span className="eyebrow text-zinc-500">
+                  <span className="text-sm font-semibold text-zinc-900 tabular-nums shrink-0">
                     {formatPrice(product.price)}
                   </span>
                 </div>
