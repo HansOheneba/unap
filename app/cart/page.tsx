@@ -143,13 +143,7 @@ export default function CartPage() {
                         </div>
                       </Link>
                       <div className="px-4 pb-4">
-                        <AddToCartButton
-                          id={product.id}
-                          name={product.name}
-                          price={product.price}
-                          img={product.img}
-                          category={product.category}
-                        />
+                        <AddToCartButton slug={product.id} />
                       </div>
                     </div>
                   ))}

@@ -46,6 +46,7 @@ function LoginPageInner() {
     setField("city", u.city);
     setField("address", u.address);
     setField("landmark", u.landmark);
+    setField("googleMapsLink", u.googleMapsLink);
     setField("birthDay", u.birthDay);
     setField("birthMonth", u.birthMonth);
     setField("birthYear", u.birthYear);

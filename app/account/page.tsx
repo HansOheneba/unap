@@ -18,10 +18,9 @@ import {
 import { mockOrders, orderStatusPill, type UserAddress } from "@/lib/auth";
 import { useOnboardingStore } from "@/lib/stores/onboarding-store";
 import { useWishlistStore } from "@/lib/stores/wishlist-store";
-import { getProductBySlug, type Product } from "@/lib/products";
 import { Button, buttonVariants } from "@/components/ui/button";
 import ConfirmDialog from "@/components/ui/confirm-dialog";
-import QuickAddModal from "@/components/products/QuickAddModal";
+import AddToCartButton from "@/components/ui/add-to-cart-button";
 import { toast } from "@/lib/stores/toast-store";
 import { formatPrice } from "@/lib/currency";
 import { cn } from "@/lib/utils";
@@ -92,8 +91,6 @@ function AccountPageInner() {
   // ── Wishlist ─────────────────────────────────────────────────────────
   const wishlistItems = useWishlistStore((s) => s.items);
   const removeWishlist = useWishlistStore((s) => s.remove);
-  const [quickAddProduct, setQuickAddProduct] = useState<Product | null>(null);
-
   // ── Profile edit state ──────────────────────────────────────────────
   const [editingProfile, setEditingProfile] = useState(false);
   const [profileDraft, setProfileDraft] = useState({
@@ -119,6 +116,7 @@ function AccountPageInner() {
     district: "",
     address: "",
     address2: "",
+    googleMapsLink: "",
     phone: "",
     postcode: "",
     whatsapp: "",
@@ -190,6 +188,7 @@ function AccountPageInner() {
     region,
     city,
     address,
+    googleMapsLink,
     birthDay,
     birthMonth,
     birthYear,
@@ -215,6 +214,7 @@ function AccountPageInner() {
             district: "",
             address,
             address2: "",
+            googleMapsLink,
             phone,
             postcode: "",
             whatsapp: sameAsPhone ? phone : whatsapp,
@@ -292,6 +292,7 @@ function AccountPageInner() {
       district: addr.district,
       address: addr.address,
       address2: addr.address2,
+      googleMapsLink: addr.googleMapsLink,
       phone: addr.phone,
       postcode: addr.postcode,
       whatsapp: addr.whatsapp,
@@ -723,22 +724,9 @@ function AccountPageInner() {
                                 {formatPrice(item.price)}
                               </p>
                             </Link>
-                            <button
-                              onClick={() => {
-                                const product = getProductBySlug(item.id);
-                                if (!product) {
-                                  toast.error(
-                                    "Product unavailable",
-                                    "This piece is no longer in our catalog.",
-                                  );
-                                  return;
-                                }
-                                setQuickAddProduct(product);
-                              }}
-                              className="mt-3 w-full text-[10px] tracking-widest uppercase border border-zinc-900 text-zinc-900 py-2 hover:bg-zinc-900 hover:text-white transition-colors"
-                            >
-                              Add to Cart
-                            </button>
+                            <div className="mt-3">
+                              <AddToCartButton slug={item.slug} />
+                            </div>
                           </div>
                         </div>
                       ))}
@@ -1076,6 +1064,26 @@ function AccountPageInner() {
                           />
                         </Field>
 
+                        <Field label="Google Maps Link (optional)">
+                          <input
+                            type="url"
+                            value={addrForm.googleMapsLink}
+                            onChange={(e) =>
+                              setAddrForm((f) => ({
+                                ...f,
+                                googleMapsLink: e.target.value,
+                              }))
+                            }
+                            placeholder="https://maps.app.goo.gl/..."
+                            autoComplete="off"
+                            className={inputCls}
+                          />
+                          <p className="text-[10px] text-zinc-400 mt-0.5">
+                            Open Google Maps, tap Share, and paste the link so
+                            our riders can find your exact location.
+                          </p>
+                        </Field>
+
                         {/* Phone + Postcode */}
                         <div className="grid grid-cols-[1fr_auto] gap-3 items-start">
                           <Field
@@ -1215,6 +1223,11 @@ function AccountPageInner() {
                             {addr.address2 && (
                               <p className="text-sm text-zinc-600">
                                 {addr.address2}
+                              </p>
+                            )}
+                            {addr.googleMapsLink && (
+                              <p className="text-xs text-zinc-500 break-all">
+                                Google Maps link saved
                               </p>
                             )}
                             {addr.district && (
@@ -1513,13 +1526,6 @@ function AccountPageInner() {
         }}
       />
 
-      {quickAddProduct && (
-        <QuickAddModal
-          product={quickAddProduct}
-          open={!!quickAddProduct}
-          onClose={() => setQuickAddProduct(null)}
-        />
-      )}
     </main>
   );
 }

@@ -9,7 +9,11 @@ import { Dialog, DialogContent, DialogClose } from "@/components/ui/dialog";
 import { useCartStore } from "@/lib/stores/cart-store";
 import { formatPrice } from "@/lib/currency";
 import { cn } from "@/lib/utils";
-import type { Product, ColorVariant } from "@/lib/products";
+import {
+  getDefaultSelectedSize,
+  type Product,
+  type ColorVariant,
+} from "@/lib/products";
 
 const LIGHT_HEXES = new Set(["#f0f0f0", "#f0e6ce", "#e8dcc8", "#f5f5f5"]);
 
@@ -26,7 +30,9 @@ export default function QuickAddModal({ product, open, onClose }: Props) {
   const [selectedVariant, setSelectedVariant] = useState<ColorVariant>(
     product.variants[0],
   );
-  const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const [selectedSize, setSelectedSize] = useState<string | null>(() =>
+    getDefaultSelectedSize(product.variants[0].sizes),
+  );
   const [phase, setPhase] = useState<Phase>("idle");
   const cartIconRef = useRef<HTMLDivElement>(null);
   const boxIconRef = useRef<HTMLDivElement>(null);
@@ -36,18 +42,18 @@ export default function QuickAddModal({ product, open, onClose }: Props) {
   useEffect(() => {
     if (!open) return;
     setSelectedVariant(product.variants[0]);
-    setSelectedSize(null);
+    setSelectedSize(getDefaultSelectedSize(product.variants[0].sizes));
     setPhase("idle");
   }, [open, product.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleColorChange = (variant: ColorVariant) => {
     setSelectedVariant(variant);
-    // Clear size if it's OOS in the newly selected color
-    if (selectedSize) {
-      const stillAvailable = variant.sizes.some(
-        (s) => s.size === selectedSize && s.stock > 0,
-      );
-      if (!stillAvailable) setSelectedSize(null);
+    const autoSize = getDefaultSelectedSize(variant.sizes);
+    if (autoSize) {
+      setSelectedSize(autoSize);
+    } else if (selectedSize) {
+      const exists = variant.sizes.some((s) => s.size === selectedSize);
+      if (!exists) setSelectedSize(null);
     }
   };
 

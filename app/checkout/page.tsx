@@ -11,9 +11,10 @@ import { formatPrice } from "@/lib/currency";
 import { useOnboardingStore } from "@/lib/stores/onboarding-store";
 import { useIsLoggedIn } from "@/lib/use-is-logged-in";
 import { Button, buttonVariants } from "@/components/ui/button";
+import { parseCartLineId, placeOrder } from "@/lib/api/orders";
 
 type CheckoutStep = "details" | "review" | "confirmed";
-type PaymentMethod = "paystack" | "pay_on_delivery";
+type PaymentMethod = "pay_now" | "pay_on_delivery";
 
 const PAYMENT_METHODS: {
   id: PaymentMethod;
@@ -21,9 +22,9 @@ const PAYMENT_METHODS: {
   description: string;
 }[] = [
   {
-    id: "paystack",
-    label: "Pay Now with Paystack",
-    description: "Card, Mobile Money, or Bank. Secured by Paystack.",
+    id: "pay_now",
+    label: "Pay Now",
+    description: "Card, Mobile Money, or bank transfer.",
   },
   {
     id: "pay_on_delivery",
@@ -80,7 +81,8 @@ export default function CheckoutPage() {
   const [orderId] = useState(generateOrderId);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("paystack");
+  const [paymentError, setPaymentError] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("pay_now");
   const [promoCode, setPromoCode] = useState("");
   const [promoError, setPromoError] = useState("");
   const [discount, setDiscount] = useState<{
@@ -118,6 +120,7 @@ export default function CheckoutPage() {
     email: onboarding.email || "",
     phone: onboarding.phone !== "+" ? onboarding.phone : "",
     address: onboarding.address || "",
+    googleMapsLink: onboarding.googleMapsLink || "",
     city: onboarding.city || "",
     region: onboarding.region || "",
     country: onboarding.country || "Ghana",
@@ -171,26 +174,54 @@ export default function CheckoutPage() {
 
   const handlePlaceOrder = async () => {
     if (!validate()) return;
+    setPaymentError("");
     setLoading(true);
 
-    if (paymentMethod === "paystack") {
-      // Flow when backend + Paystack keys are live:
-      // 1. POST /orders  { payment: { method: "paystack" } }
-      // 2. POST /payments/paystack/initialize  -> authorizationUrl / accessCode
-      // 3. Open Paystack popup, then GET /payments/paystack/verify/:reference
-      await new Promise((r) => setTimeout(r, 1200));
-    } else {
-      // POST /orders  { payment: { method: "pay_on_delivery" } }
-      await new Promise((r) => setTimeout(r, 1200));
-    }
+    try {
+      const orderItems = items.map((item) => {
+        const { productId, variantId, size } = parseCartLineId(item.id);
+        return {
+          productId,
+          variantId,
+          size,
+          quantity: item.quantity,
+        };
+      });
 
-    setLoading(false);
-    clearCart();
-    setStep("confirmed");
+      const result = await placeOrder({
+        items: orderItems,
+        shipping: form,
+        payment: {
+          method:
+            paymentMethod === "pay_now" ? "paystack" : "pay_on_delivery",
+        },
+        promoCode: promoCode.trim() || undefined,
+      });
+
+      if (paymentMethod === "pay_now") {
+        const paymentUrl = result.payment?.authorizationUrl;
+        if (!paymentUrl) {
+          setPaymentError("Could not start payment. Try again.");
+          return;
+        }
+        window.location.href = paymentUrl;
+        return;
+      }
+
+      clearCart();
+      setStep("confirmed");
+    } catch (err) {
+      setPaymentError(
+        err instanceof Error ? err.message : "Could not complete checkout.",
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   const selectedPayment = PAYMENT_METHODS.find((p) => p.id === paymentMethod);
-  const isPaystack = paymentMethod === "paystack";
+  const isPayNow = paymentMethod === "pay_now";
+  const showPaidOnline = step === "confirmed" && isPayNow;
 
   /* ── Confirmed Screen ── */
   if (step === "confirmed") {
@@ -225,12 +256,12 @@ export default function CheckoutPage() {
           <p className="text-zinc-600 text-sm leading-relaxed">
             Order <span className="text-zinc-900 font-medium">{orderId}</span>{" "}
             is confirmed. We&apos;ll send updates to{" "}
-            <span className="text-zinc-900">{form.email}</span> and WhatsApp.
+            <span className="text-zinc-900">{form.email}</span>.
           </p>
           <p className="text-zinc-400 text-xs leading-relaxed">
-            {isPaystack
-              ? "Payment via Paystack. You will complete checkout in the Paystack window once keys are connected."
-              : "Pay in cash or MoMo when your order arrives. Expect delivery in 3 to 7 business days."}
+            {showPaidOnline
+              ? "Payment received. Expect delivery within 48 hours."
+              : "Pay in cash or MoMo when your order arrives. Expect delivery within 48 hours."}
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 w-full mt-4">
@@ -397,6 +428,23 @@ export default function CheckoutPage() {
                     />
                   </Field>
 
+                  <Field label="Google Maps Link (optional)">
+                    <input
+                      type="url"
+                      value={form.googleMapsLink}
+                      onChange={(e) =>
+                        setFormField("googleMapsLink", e.target.value)
+                      }
+                      placeholder="https://maps.app.goo.gl/..."
+                      autoComplete="off"
+                      className={inputCls}
+                    />
+                    <p className="text-zinc-400 text-[0.6rem] leading-relaxed">
+                      Open Google Maps, tap Share, and paste the link so our
+                      riders can find your exact location.
+                    </p>
+                  </Field>
+
                   <div className="grid grid-cols-2 gap-4">
                     <Field label="City" error={errors.city}>
                       <input
@@ -485,10 +533,9 @@ export default function CheckoutPage() {
                         </label>
                       ))}
                     </div>
-                    {isPaystack && (
+                    {isPayNow && (
                       <p className="text-xs text-zinc-400 leading-relaxed">
-                        Paystack handles Card, MTN/Vodafone/AirtelTigo MoMo, and
-                        bank transfer. API keys will be connected on the backend.
+                        Card, Mobile Money, and bank transfer supported.
                       </p>
                     )}
                   </div>
@@ -531,6 +578,11 @@ export default function CheckoutPage() {
                         {form.address}, {form.city}
                         {form.region ? `, ${form.region}` : ""}, {form.country}
                       </p>
+                      {form.googleMapsLink && (
+                        <p className="text-zinc-500 text-xs break-all">
+                          Google Maps: {form.googleMapsLink}
+                        </p>
+                      )}
                     </div>
                     <div className="border-t border-zinc-100 pt-3">
                       <p className="eyebrow text-zinc-500 mb-1">Payment</p>
@@ -582,6 +634,12 @@ export default function CheckoutPage() {
                     ))}
                   </div>
 
+                  {paymentError && (
+                    <p className="text-red-400 text-xs border border-red-400/30 bg-red-400/5 px-4 py-3">
+                      {paymentError}
+                    </p>
+                  )}
+
                   <div className="flex gap-3">
                     <Button
                       variant="secondary"
@@ -596,11 +654,11 @@ export default function CheckoutPage() {
                       disabled={loading}
                     >
                       {loading
-                        ? isPaystack
-                          ? "Opening Paystack…"
+                        ? isPayNow
+                          ? "Opening payment…"
                           : "Placing Order…"
-                        : isPaystack
-                          ? "Pay with Paystack"
+                        : isPayNow
+                          ? "Pay Now"
                           : "Place Order"}
                     </Button>
                   </div>

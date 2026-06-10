@@ -161,13 +161,7 @@ export default function SearchPage() {
                       </p>
                     </div>
                     <div className="mt-auto">
-                      <AddToCartButton
-                        id={product.id}
-                        name={product.name}
-                        price={product.price}
-                        img={product.images[0]}
-                        category={capitalize(product.collectionId)}
-                      />
+                      <AddToCartButton slug={product.slug} />
                     </div>
                   </div>
                 </motion.div>

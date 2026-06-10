@@ -24,6 +24,7 @@ export interface OnboardingState {
   city: string;
   address: string;
   landmark: string;
+  googleMapsLink: string;
   whatsapp: string;
   sameAsPhone: boolean;
 
@@ -64,6 +65,7 @@ const initialState = {
   city: "",
   address: "",
   landmark: "",
+  googleMapsLink: "",
   whatsapp: "+",
   sameAsPhone: true,
 
@@ -115,6 +117,7 @@ export const useOnboardingStore = create<OnboardingState>()(
           city: state.city,
           address: state.address,
           landmark: state.landmark,
+          googleMapsLink: state.googleMapsLink,
           birthDay: state.birthDay,
           birthMonth: state.birthMonth,
           birthYear: state.birthYear,

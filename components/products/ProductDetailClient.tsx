@@ -14,9 +14,14 @@ import {
   Star,
 } from "lucide-react";
 import { formatPrice } from "@/lib/currency";
-import type { Product, ColorVariant, Review } from "@/lib/products";
+import {
+  getDefaultSelectedSize,
+  type Product,
+  type ColorVariant,
+  type Review,
+} from "@/lib/products";
 import ProductGallery from "./ProductGallery";
-import ProductCard from "./ProductCard";
+import CollectionCard from "./CollectionCard";
 import BoxerSizeGuide from "./BoxerSizeGuide";
 import FindMySizeQuiz from "./FindMySizeQuiz";
 import { useCartStore } from "@/lib/stores/cart-store";
@@ -42,10 +47,9 @@ export default function ProductDetailClient({
   const [selectedVariant, setSelectedVariant] = useState<ColorVariant>(
     product.variants[0],
   );
-  const [selectedSize, setSelectedSize] = useState<string | null>(() => {
-    const sizes = product.variants[0].sizes;
-    return sizes.length === 1 ? sizes[0].size : null;
-  });
+  const [selectedSize, setSelectedSize] = useState<string | null>(() =>
+    getDefaultSelectedSize(product.variants[0].sizes),
+  );
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
   const [openSection, setOpenSection] = useState<string | null>("description");
@@ -122,12 +126,13 @@ export default function ProductDetailClient({
 
   const handleColorChange = (variant: ColorVariant) => {
     setSelectedVariant(variant);
-    const sizes = variant.sizes;
-    if (sizes.length === 1) {
-      setSelectedSize(sizes[0].size);
-      setQuantity((q) => Math.min(q, sizes[0].stock));
+    const autoSize = getDefaultSelectedSize(variant.sizes);
+    if (autoSize) {
+      const sizeData = variant.sizes[0];
+      setSelectedSize(autoSize);
+      setQuantity((q) => Math.min(q, sizeData.stock));
     } else if (selectedSize) {
-      const newSizeData = sizes.find((s) => s.size === selectedSize);
+      const newSizeData = variant.sizes.find((s) => s.size === selectedSize);
       if (!newSizeData) {
         setSelectedSize(null);
       } else {
@@ -731,30 +736,35 @@ export default function ProductDetailClient({
             <h2 className="text-xs tracking-[0.25em] uppercase text-zinc-500 mb-6">
               Recently Viewed
             </h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-px bg-zinc-100">
               {otherRecentlyViewed.map((item) => (
                 <Link
                   key={item.id}
                   href={`/collections/${item.category}/${item.slug}`}
-                  className="group block"
+                  className="group block bg-white"
                 >
-                  <div className="relative aspect-4/5 overflow-hidden bg-zinc-100 rounded-xl">
+                  <div className="relative aspect-3/4 overflow-hidden bg-zinc-100">
                     {item.img && (
                       <Image
                         src={item.img}
                         alt={item.name}
                         fill
                         sizes="(max-width: 768px) 50vw, 20vw"
-                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                        className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
                       />
                     )}
                   </div>
-                  <p className="mt-3 text-xs text-zinc-900 truncate">
-                    {item.name}
-                  </p>
-                  <p className="text-xs text-zinc-500">
-                    {formatPrice(item.price)}
-                  </p>
+                  <div className="p-4 border-t border-zinc-100">
+                    <p className="eyebrow text-zinc-500 mb-1 capitalize">
+                      {item.category}
+                    </p>
+                    <p className="text-sm font-medium text-zinc-900 truncate">
+                      {item.name}
+                    </p>
+                    <p className="text-sm text-zinc-600 mt-1">
+                      {formatPrice(item.price)}
+                    </p>
+                  </div>
                 </Link>
               ))}
             </div>
@@ -784,9 +794,15 @@ export default function ProductDetailClient({
                 View All
               </Link>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-px bg-zinc-100">
               {relatedProducts.map((p) => (
-                <ProductCard key={p.slug} product={p} />
+                <CollectionCard
+                  key={p.slug}
+                  product={p}
+                  categoryLabel={
+                    p.category.charAt(0).toUpperCase() + p.category.slice(1)
+                  }
+                />
               ))}
             </div>
           </div>

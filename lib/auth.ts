@@ -17,6 +17,7 @@ export interface UserAddress {
   district: string;
   address: string;
   address2: string;
+  googleMapsLink: string;
   phone: string;
   postcode: string;
   whatsapp: string;
@@ -35,6 +36,7 @@ export interface User {
   city: string;
   address: string;
   landmark: string;
+  googleMapsLink: string;
   birthDay: string;
   birthMonth: string;
   birthYear: string;
@@ -73,6 +75,7 @@ export const mockUser: User = {
   city: "Accra",
   address: "14 Independence Ave, Osu",
   landmark: "Near Osu Oxford Street, behind Frankies",
+  googleMapsLink: "https://maps.app.goo.gl/example-osu",
   birthDay: "12",
   birthMonth: "Jun",
   birthYear: "1996",
@@ -91,6 +94,7 @@ export const mockUser: User = {
       district: "Accra Metropolitan",
       address: "14 Independence Ave, Osu",
       address2: "",
+      googleMapsLink: "https://maps.app.goo.gl/example-osu",
       phone: "0201234567",
       postcode: "",
       whatsapp: "",
@@ -108,6 +112,7 @@ export const mockUser: User = {
       district: "La-Dade-Kotopon Municipal",
       address: "9 Liberation Rd, Airport Residential",
       address2: "",
+      googleMapsLink: "",
       phone: "0201234567",
       postcode: "",
       whatsapp: "",
@@ -310,6 +315,7 @@ export interface SignupData {
   city: string;
   address: string;
   landmark: string;
+  googleMapsLink: string;
   whatsapp: string;
 }
 

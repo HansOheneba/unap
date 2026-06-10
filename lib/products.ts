@@ -14,6 +14,11 @@ export type SizeStock = {
   stock: number;
 };
 
+/** Auto-select when a variant has only one size option. */
+export function getDefaultSelectedSize(sizes: SizeStock[]): string | null {
+  return sizes.length === 1 ? sizes[0].size : null;
+}
+
 export type ColorVariant = {
   id: string;
   colorName: string;

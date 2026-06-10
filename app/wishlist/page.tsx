@@ -6,6 +6,7 @@ import { X, Heart } from "lucide-react";
 import { useWishlistStore } from "@/lib/stores/wishlist-store";
 import { formatPrice } from "@/lib/currency";
 import { buttonVariants } from "@/components/ui/button";
+import AddToCartButton from "@/components/ui/add-to-cart-button";
 
 export default function WishlistPage() {
   const items = useWishlistStore((s) => s.items);
@@ -71,6 +72,9 @@ export default function WishlistPage() {
                     </p>
                   </div>
                 </Link>
+                <div className="px-4 pb-4">
+                  <AddToCartButton slug={item.slug} />
+                </div>
                 <button
                   onClick={() => remove(item.id)}
                   aria-label="Remove from wishlist"

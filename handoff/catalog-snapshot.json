@@ -1,0 +1,1088 @@
+{
+  "exportedAt": "2026-06-09T15:56:38.950Z",
+  "note": "Storefront mock catalog. Admin API should publish data in API spec shape; storefront maps to variants as shown in storefrontExamples.",
+  "collections": [
+    {
+      "id": "underwear",
+      "slug": "underwear",
+      "subtitle": "Underwear",
+      "title": "The Second Skin",
+      "tagline": "What you wear underneath sets the tone for everything above it.",
+      "featuredImageUrl": "/collections/boxers/boxModel.jpg",
+      "href": "/collections/underwear",
+      "productCount": 5
+    },
+    {
+      "id": "tops",
+      "slug": "tops",
+      "subtitle": "Tops",
+      "title": "The Anti-Uniform",
+      "tagline": "Move in silence. Let the fabric do the talking.",
+      "featuredImageUrl": "/collections/men_shirt/shirtCollection.jpeg",
+      "href": "/collections/tops",
+      "productCount": 4
+    },
+    {
+      "id": "bottoms",
+      "slug": "bottoms",
+      "subtitle": "Bottoms",
+      "title": "Grounded Power",
+      "tagline": "Every step is a statement. Every stride is intentional.",
+      "featuredImageUrl": "/home/manStudio.jpg",
+      "href": "/collections/bottoms",
+      "productCount": 5
+    },
+    {
+      "id": "tracksuits",
+      "slug": "tracksuits",
+      "subtitle": "Tracksuits",
+      "title": "Street Sovereign",
+      "tagline": "Built for motion. Designed for presence.",
+      "featuredImageUrl": "/collections/tracks/track.jpg",
+      "href": "/collections/tracksuits",
+      "productCount": 4
+    },
+    {
+      "id": "active-wear",
+      "slug": "active-wear",
+      "subtitle": "Active Wear",
+      "title": "No Retreat",
+      "tagline": "Performance without apology. Movement without compromise.",
+      "featuredImageUrl": "/home/track.jpg",
+      "href": "/collections/active-wear",
+      "productCount": 6
+    },
+    {
+      "id": "sunglasses",
+      "slug": "sunglasses",
+      "subtitle": "Sunglasses",
+      "title": "The Eclipse Edit",
+      "tagline": "The world looks different when you stop apologizing for the view.",
+      "featuredImageUrl": "/collections/glases/outlawGlasses1.jpg",
+      "href": "/collections/sunglasses",
+      "productCount": 7
+    },
+    {
+      "id": "accessories",
+      "slug": "accessories",
+      "subtitle": "Accessories",
+      "title": "Bold Society",
+      "tagline": "The details that finish the statement.",
+      "featuredImageUrl": "/collections/headwear/boldSocietyCapBlack.jpeg",
+      "href": "/collections/accessories",
+      "productCount": 7
+    }
+  ],
+  "productIndex": [
+    {
+      "id": "no-apology-boxer-brief",
+      "slug": "no-apology-boxer-brief",
+      "name": "No Apology Boxer Brief",
+      "price": 280,
+      "gender": "male",
+      "collectionId": "underwear",
+      "subcategory": null,
+      "tag": "Essential",
+      "colorCount": 3,
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "imageCount": 2
+    },
+    {
+      "id": "silent-standard-trunk",
+      "slug": "silent-standard-trunk",
+      "name": "Silent Standard Trunk",
+      "price": 260,
+      "gender": "male",
+      "collectionId": "underwear",
+      "subcategory": null,
+      "tag": "Signature",
+      "colorCount": 2,
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "imageCount": 2
+    },
+    {
+      "id": "raw-edge-brief",
+      "slug": "raw-edge-brief",
+      "name": "Raw Edge Brief",
+      "price": 240,
+      "gender": "male",
+      "collectionId": "underwear",
+      "subcategory": null,
+      "tag": "Bold",
+      "colorCount": 2,
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "imageCount": 2
+    },
+    {
+      "id": "unbound-lace-set",
+      "slug": "unbound-lace-set",
+      "name": "Unbound Lace Set",
+      "price": 420,
+      "gender": "female",
+      "collectionId": "underwear",
+      "subcategory": null,
+      "tag": "Signature",
+      "colorCount": 2,
+      "sizes": [
+        "XS",
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "imageCount": 1
+    },
+    {
+      "id": "second-skin-bodysuit",
+      "slug": "second-skin-bodysuit",
+      "name": "Second Skin Bodysuit",
+      "price": 480,
+      "gender": "female",
+      "collectionId": "underwear",
+      "subcategory": null,
+      "tag": "Statement",
+      "colorCount": 1,
+      "sizes": [
+        "XS",
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "imageCount": 1
+    },
+    {
+      "id": "anti-uniform-tee",
+      "slug": "anti-uniform-tee",
+      "name": "Anti-Uniform Tee",
+      "price": 380,
+      "gender": "male",
+      "collectionId": "tops",
+      "subcategory": null,
+      "tag": "Essential",
+      "colorCount": 2,
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
+      "imageCount": 1
+    },
+    {
+      "id": "creed-heavyweight-tee",
+      "slug": "creed-heavyweight-tee",
+      "name": "Creed Heavyweight Tee",
+      "price": 420,
+      "gender": "male",
+      "collectionId": "tops",
+      "subcategory": null,
+      "tag": "Signature",
+      "colorCount": 1,
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
+      "imageCount": 1
+    },
+    {
+      "id": "sovereign-silk-blouse",
+      "slug": "sovereign-silk-blouse",
+      "name": "Sovereign Silk Blouse",
+      "price": 520,
+      "gender": "female",
+      "collectionId": "tops",
+      "subcategory": null,
+      "tag": "Signature",
+      "colorCount": 2,
+      "sizes": [
+        "XS",
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "imageCount": 1
+    },
+    {
+      "id": "unapologetic-crop-tank",
+      "slug": "unapologetic-crop-tank",
+      "name": "Unapologetic Crop Tank",
+      "price": 280,
+      "gender": "female",
+      "collectionId": "tops",
+      "subcategory": null,
+      "tag": "Bold",
+      "colorCount": 2,
+      "sizes": [
+        "XS",
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "imageCount": 1
+    },
+    {
+      "id": "shadow-cargo-pant",
+      "slug": "shadow-cargo-pant",
+      "name": "Shadow Cargo Pant",
+      "price": 580,
+      "gender": "male",
+      "collectionId": "bottoms",
+      "subcategory": null,
+      "tag": "Signature",
+      "colorCount": 2,
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
+      "imageCount": 1
+    },
+    {
+      "id": "refusal-straight-jean",
+      "slug": "refusal-straight-jean",
+      "name": "Refusal Straight Jean",
+      "price": 620,
+      "gender": "male",
+      "collectionId": "bottoms",
+      "subcategory": null,
+      "tag": "Classic",
+      "colorCount": 1,
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
+      "imageCount": 1
+    },
+    {
+      "id": "silent-standard-short",
+      "slug": "silent-standard-short",
+      "name": "Silent Standard Short",
+      "price": 380,
+      "gender": "male",
+      "collectionId": "bottoms",
+      "subcategory": null,
+      "tag": "Essential",
+      "colorCount": 2,
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
+      "imageCount": 1
+    },
+    {
+      "id": "high-rise-power-pant",
+      "slug": "high-rise-power-pant",
+      "name": "High-Rise Power Pant",
+      "price": 640,
+      "gender": "female",
+      "collectionId": "bottoms",
+      "subcategory": null,
+      "tag": "Signature",
+      "colorCount": 2,
+      "sizes": [
+        "XS",
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "imageCount": 1
+    },
+    {
+      "id": "curve-cargo-pant",
+      "slug": "curve-cargo-pant",
+      "name": "Curve Cargo Pant",
+      "price": 560,
+      "gender": "female",
+      "collectionId": "bottoms",
+      "subcategory": null,
+      "tag": "Bold",
+      "colorCount": 1,
+      "sizes": [
+        "XS",
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "imageCount": 1
+    },
+    {
+      "id": "street-sovereign-track-set",
+      "slug": "street-sovereign-track-set",
+      "name": "Street Sovereign Track Set",
+      "price": 980,
+      "gender": "male",
+      "collectionId": "tracksuits",
+      "subcategory": null,
+      "tag": "Signature",
+      "colorCount": 2,
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
+      "imageCount": 2
+    },
+    {
+      "id": "no-apology-track-pant",
+      "slug": "no-apology-track-pant",
+      "name": "No Apology Track Pant",
+      "price": 520,
+      "gender": "male",
+      "collectionId": "tracksuits",
+      "subcategory": null,
+      "tag": "Essential",
+      "colorCount": 1,
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
+      "imageCount": 1
+    },
+    {
+      "id": "eclipse-track-set",
+      "slug": "eclipse-track-set",
+      "name": "Eclipse Track Set",
+      "price": 920,
+      "gender": "female",
+      "collectionId": "tracksuits",
+      "subcategory": null,
+      "tag": "Signature",
+      "colorCount": 2,
+      "sizes": [
+        "XS",
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "imageCount": 1
+    },
+    {
+      "id": "power-movement-jogger",
+      "slug": "power-movement-jogger",
+      "name": "Power Movement Jogger",
+      "price": 480,
+      "gender": "female",
+      "collectionId": "tracksuits",
+      "subcategory": null,
+      "tag": "Essential",
+      "colorCount": 1,
+      "sizes": [
+        "XS",
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "imageCount": 1
+    },
+    {
+      "id": "performance-refusal-tee",
+      "slug": "performance-refusal-tee",
+      "name": "Performance Refusal Tee",
+      "price": 340,
+      "gender": "male",
+      "collectionId": "active-wear",
+      "subcategory": null,
+      "tag": "Performance",
+      "colorCount": 2,
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
+      "imageCount": 1
+    },
+    {
+      "id": "sprint-standard-short",
+      "slug": "sprint-standard-short",
+      "name": "Sprint Standard Short",
+      "price": 320,
+      "gender": "male",
+      "collectionId": "active-wear",
+      "subcategory": null,
+      "tag": "Essential",
+      "colorCount": 1,
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
+      "imageCount": 1
+    },
+    {
+      "id": "training-essential-quarter-zip",
+      "slug": "training-essential-quarter-zip",
+      "name": "Training Essential Quarter-Zip",
+      "price": 480,
+      "gender": "male",
+      "collectionId": "active-wear",
+      "subcategory": null,
+      "tag": "Signature",
+      "colorCount": 1,
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
+      "imageCount": 1
+    },
+    {
+      "id": "flex-sovereign-legging",
+      "slug": "flex-sovereign-legging",
+      "name": "Flex Sovereign Legging",
+      "price": 420,
+      "gender": "female",
+      "collectionId": "active-wear",
+      "subcategory": null,
+      "tag": "Signature",
+      "colorCount": 2,
+      "sizes": [
+        "XS",
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "imageCount": 1
+    },
+    {
+      "id": "power-movement-sports-bra",
+      "slug": "power-movement-sports-bra",
+      "name": "Power Movement Sports Bra",
+      "price": 280,
+      "gender": "female",
+      "collectionId": "active-wear",
+      "subcategory": null,
+      "tag": "Essential",
+      "colorCount": 2,
+      "sizes": [
+        "XS",
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "imageCount": 1
+    },
+    {
+      "id": "active-refusal-tank",
+      "slug": "active-refusal-tank",
+      "name": "Active Refusal Tank",
+      "price": 260,
+      "gender": "female",
+      "collectionId": "active-wear",
+      "subcategory": null,
+      "tag": "Bold",
+      "colorCount": 1,
+      "sizes": [
+        "XS",
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "imageCount": 1
+    },
+    {
+      "id": "outlaw-i",
+      "slug": "outlaw-i",
+      "name": "Outlaw I",
+      "price": 1200,
+      "gender": "male",
+      "collectionId": "sunglasses",
+      "subcategory": null,
+      "tag": "Signature",
+      "colorCount": 1,
+      "sizes": [
+        "One Size"
+      ],
+      "imageCount": 1
+    },
+    {
+      "id": "obsidian-lens",
+      "slug": "obsidian-lens",
+      "name": "Obsidian Lens",
+      "price": 1350,
+      "gender": "male",
+      "collectionId": "sunglasses",
+      "subcategory": null,
+      "tag": "Statement",
+      "colorCount": 1,
+      "sizes": [
+        "One Size"
+      ],
+      "imageCount": 1
+    },
+    {
+      "id": "outlaw-iii",
+      "slug": "outlaw-iii",
+      "name": "Outlaw III",
+      "price": 1100,
+      "gender": "male",
+      "collectionId": "sunglasses",
+      "subcategory": null,
+      "tag": "Classic",
+      "colorCount": 1,
+      "sizes": [
+        "One Size"
+      ],
+      "imageCount": 1
+    },
+    {
+      "id": "eclipse-shades",
+      "slug": "eclipse-shades",
+      "name": "Eclipse Shades",
+      "price": 1180,
+      "gender": "male",
+      "collectionId": "sunglasses",
+      "subcategory": null,
+      "tag": "Limited",
+      "colorCount": 1,
+      "sizes": [
+        "One Size"
+      ],
+      "imageCount": 1
+    },
+    {
+      "id": "sovereign-shades",
+      "slug": "sovereign-shades",
+      "name": "Sovereign Shades",
+      "price": 980,
+      "gender": "female",
+      "collectionId": "sunglasses",
+      "subcategory": null,
+      "tag": "Signature",
+      "colorCount": 1,
+      "sizes": [
+        "One Size"
+      ],
+      "imageCount": 1
+    },
+    {
+      "id": "sovereign-ii",
+      "slug": "sovereign-ii",
+      "name": "Sovereign II",
+      "price": 980,
+      "gender": "female",
+      "collectionId": "sunglasses",
+      "subcategory": null,
+      "tag": "Statement",
+      "colorCount": 1,
+      "sizes": [
+        "One Size"
+      ],
+      "imageCount": 1
+    },
+    {
+      "id": "obsidian-womens",
+      "slug": "obsidian-womens",
+      "name": "Obsidian Womens",
+      "price": 1100,
+      "gender": "female",
+      "collectionId": "sunglasses",
+      "subcategory": null,
+      "tag": "Bold",
+      "colorCount": 1,
+      "sizes": [
+        "One Size"
+      ],
+      "imageCount": 1
+    },
+    {
+      "id": "bold-society-cap",
+      "slug": "bold-society-cap",
+      "name": "Bold Society Cap",
+      "price": 380,
+      "gender": "male",
+      "collectionId": "accessories",
+      "subcategory": "caps",
+      "tag": "Signature",
+      "colorCount": 3,
+      "sizes": [
+        "One Size"
+      ],
+      "imageCount": 2
+    },
+    {
+      "id": "refusal-brim-cap",
+      "slug": "refusal-brim-cap",
+      "name": "Refusal Brim Cap",
+      "price": 480,
+      "gender": "male",
+      "collectionId": "accessories",
+      "subcategory": "caps",
+      "tag": "Premium",
+      "colorCount": 1,
+      "sizes": [
+        "One Size"
+      ],
+      "imageCount": 2
+    },
+    {
+      "id": "sovereign-cap",
+      "slug": "sovereign-cap",
+      "name": "Sovereign Cap",
+      "price": 380,
+      "gender": "female",
+      "collectionId": "accessories",
+      "subcategory": "caps",
+      "tag": "Signature",
+      "colorCount": 2,
+      "sizes": [
+        "One Size"
+      ],
+      "imageCount": 1
+    },
+    {
+      "id": "classic-knit-beanie",
+      "slug": "classic-knit-beanie",
+      "name": "Classic Knit Beanie",
+      "price": 260,
+      "gender": "male",
+      "collectionId": "accessories",
+      "subcategory": "beanies",
+      "tag": "Essential",
+      "colorCount": 2,
+      "sizes": [
+        "One Size"
+      ],
+      "imageCount": 1
+    },
+    {
+      "id": "statement-beanie",
+      "slug": "statement-beanie",
+      "name": "Statement Beanie",
+      "price": 280,
+      "gender": "female",
+      "collectionId": "accessories",
+      "subcategory": "beanies",
+      "tag": "Bold",
+      "colorCount": 1,
+      "sizes": [
+        "One Size"
+      ],
+      "imageCount": 1
+    },
+    {
+      "id": "no-apology-crew-sock",
+      "slug": "no-apology-crew-sock",
+      "name": "No Apology Crew Sock",
+      "price": 120,
+      "gender": "male",
+      "collectionId": "accessories",
+      "subcategory": "socks",
+      "tag": "Essential",
+      "colorCount": 2,
+      "sizes": [
+        "S/M",
+        "L/XL"
+      ],
+      "imageCount": 1
+    },
+    {
+      "id": "silent-standard-ankle-sock",
+      "slug": "silent-standard-ankle-sock",
+      "name": "Silent Standard Ankle Sock",
+      "price": 100,
+      "gender": "female",
+      "collectionId": "accessories",
+      "subcategory": "socks",
+      "tag": "Essential",
+      "colorCount": 1,
+      "sizes": [
+        "S/M",
+        "L/XL"
+      ],
+      "imageCount": 1
+    }
+  ],
+  "totalProducts": 38,
+  "catalogSourceExamples": [
+    {
+      "id": "no-apology-boxer-brief",
+      "slug": "no-apology-boxer-brief",
+      "name": "No Apology Boxer Brief",
+      "description": "Built for those who refuse to compromise. Combed cotton with a structured waistband and reinforced seams. The everyday essential that never asks permission.",
+      "price": 280,
+      "gender": "male",
+      "collectionId": "underwear",
+      "tag": "Essential",
+      "images": [
+        "/collections/boxers/boxersBlackWhite.jpeg",
+        "/collections/boxers/boxersBlackWhite2.jpeg"
+      ],
+      "colors": [
+        {
+          "name": "Midnight Black",
+          "hex": "#1a1a1a"
+        },
+        {
+          "name": "Stone White",
+          "hex": "#f5f0e8"
+        },
+        {
+          "name": "Slate Grey",
+          "hex": "#6b7280"
+        }
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "details": [
+        "95% Combed Cotton, 5% Elastane",
+        "Structured waistband with woven label",
+        "Flatlock seams",
+        "Mid-rise fit"
+      ],
+      "careInstructions": [
+        "Machine wash cold",
+        "Do not bleach",
+        "Tumble dry low or line dry"
+      ]
+    },
+    {
+      "id": "silent-standard-trunk",
+      "slug": "silent-standard-trunk",
+      "name": "Silent Standard Trunk",
+      "description": "Shorter leg, same conviction. A trunk cut for warm climates and warmer confidence.",
+      "price": 260,
+      "gender": "male",
+      "collectionId": "underwear",
+      "tag": "Signature",
+      "images": [
+        "/collections/boxers/boxersBlue.jpg",
+        "/collections/boxers/boxersBlue2.jpg"
+      ],
+      "colors": [
+        {
+          "name": "Deep Navy",
+          "hex": "#1e3a5f"
+        },
+        {
+          "name": "Charcoal",
+          "hex": "#374151"
+        }
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "details": [
+        "Premium construction",
+        "Designed in Accra",
+        "Unapologetic fit"
+      ],
+      "careInstructions": [
+        "Machine wash cold",
+        "Do not bleach",
+        "Tumble dry low or line dry"
+      ]
+    }
+  ],
+  "storefrontExamples": [
+    {
+      "id": "no-apology-boxer-brief",
+      "slug": "no-apology-boxer-brief",
+      "name": "No Apology Boxer Brief",
+      "price": 280,
+      "collectionId": "underwear",
+      "category": "underwear",
+      "variants": [
+        {
+          "id": "midnight-black",
+          "colorName": "Midnight Black",
+          "colorHex": "#1a1a1a",
+          "images": [
+            "/collections/boxers/boxersBlackWhite.jpeg",
+            "/collections/boxers/boxersBlackWhite2.jpeg"
+          ],
+          "sizes": [
+            {
+              "size": "S",
+              "stock": 18
+            },
+            {
+              "size": "M",
+              "stock": 15
+            },
+            {
+              "size": "L",
+              "stock": 12
+            },
+            {
+              "size": "XL",
+              "stock": 9
+            }
+          ]
+        },
+        {
+          "id": "stone-white",
+          "colorName": "Stone White",
+          "colorHex": "#f5f0e8",
+          "images": [
+            "/collections/boxers/boxersBlackWhite.jpeg",
+            "/collections/boxers/boxersBlackWhite2.jpeg"
+          ],
+          "sizes": [
+            {
+              "size": "S",
+              "stock": 18
+            },
+            {
+              "size": "M",
+              "stock": 15
+            },
+            {
+              "size": "L",
+              "stock": 12
+            },
+            {
+              "size": "XL",
+              "stock": 9
+            }
+          ]
+        },
+        {
+          "id": "slate-grey",
+          "colorName": "Slate Grey",
+          "colorHex": "#6b7280",
+          "images": [
+            "/collections/boxers/boxersBlackWhite.jpeg",
+            "/collections/boxers/boxersBlackWhite2.jpeg"
+          ],
+          "sizes": [
+            {
+              "size": "S",
+              "stock": 18
+            },
+            {
+              "size": "M",
+              "stock": 15
+            },
+            {
+              "size": "L",
+              "stock": 12
+            },
+            {
+              "size": "XL",
+              "stock": 9
+            }
+          ]
+        }
+      ],
+      "details": [
+        "95% Combed Cotton, 5% Elastane",
+        "Structured waistband with woven label",
+        "Flatlock seams",
+        "Mid-rise fit"
+      ],
+      "careInstructions": [
+        "Machine wash cold",
+        "Do not bleach",
+        "Tumble dry low or line dry"
+      ]
+    },
+    {
+      "id": "silent-standard-trunk",
+      "slug": "silent-standard-trunk",
+      "name": "Silent Standard Trunk",
+      "price": 260,
+      "collectionId": "underwear",
+      "category": "underwear",
+      "variants": [
+        {
+          "id": "deep-navy",
+          "colorName": "Deep Navy",
+          "colorHex": "#1e3a5f",
+          "images": [
+            "/collections/boxers/boxersBlue.jpg",
+            "/collections/boxers/boxersBlue2.jpg"
+          ],
+          "sizes": [
+            {
+              "size": "S",
+              "stock": 18
+            },
+            {
+              "size": "M",
+              "stock": 15
+            },
+            {
+              "size": "L",
+              "stock": 12
+            },
+            {
+              "size": "XL",
+              "stock": 9
+            }
+          ]
+        },
+        {
+          "id": "charcoal",
+          "colorName": "Charcoal",
+          "colorHex": "#374151",
+          "images": [
+            "/collections/boxers/boxersBlue.jpg",
+            "/collections/boxers/boxersBlue2.jpg"
+          ],
+          "sizes": [
+            {
+              "size": "S",
+              "stock": 18
+            },
+            {
+              "size": "M",
+              "stock": 15
+            },
+            {
+              "size": "L",
+              "stock": 12
+            },
+            {
+              "size": "XL",
+              "stock": 9
+            }
+          ]
+        }
+      ],
+      "details": [
+        "Premium construction",
+        "Designed in Accra",
+        "Unapologetic fit"
+      ],
+      "careInstructions": [
+        "Machine wash cold",
+        "Do not bleach",
+        "Tumble dry low or line dry"
+      ]
+    },
+    {
+      "id": "raw-edge-brief",
+      "slug": "raw-edge-brief",
+      "name": "Raw Edge Brief",
+      "price": 240,
+      "collectionId": "underwear",
+      "category": "underwear",
+      "variants": [
+        {
+          "id": "sand",
+          "colorName": "Sand",
+          "colorHex": "#d4c5a9",
+          "images": [
+            "/collections/boxers/boxersCream.jpeg",
+            "/collections/boxers/boxersCream2.jpeg"
+          ],
+          "sizes": [
+            {
+              "size": "S",
+              "stock": 18
+            },
+            {
+              "size": "M",
+              "stock": 15
+            },
+            {
+              "size": "L",
+              "stock": 12
+            },
+            {
+              "size": "XL",
+              "stock": 9
+            }
+          ]
+        },
+        {
+          "id": "black",
+          "colorName": "Black",
+          "colorHex": "#1a1a1a",
+          "images": [
+            "/collections/boxers/boxersCream.jpeg",
+            "/collections/boxers/boxersCream2.jpeg"
+          ],
+          "sizes": [
+            {
+              "size": "S",
+              "stock": 18
+            },
+            {
+              "size": "M",
+              "stock": 15
+            },
+            {
+              "size": "L",
+              "stock": 12
+            },
+            {
+              "size": "XL",
+              "stock": 9
+            }
+          ]
+        }
+      ],
+      "details": [
+        "Premium construction",
+        "Designed in Accra",
+        "Unapologetic fit"
+      ],
+      "careInstructions": [
+        "Machine wash cold",
+        "Do not bleach",
+        "Tumble dry low or line dry"
+      ]
+    }
+  ],
+  "apiEnvelopeShape": {
+    "version": "1.0.0",
+    "totalProducts": 38,
+    "lastUpdated": "2026-06-09"
+  }
+}

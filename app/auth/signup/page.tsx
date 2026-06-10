@@ -71,6 +71,7 @@ export default function SignupPage() {
     city,
     address,
     landmark,
+    googleMapsLink,
     whatsapp,
     sameAsPhone,
     setField,
@@ -172,6 +173,7 @@ export default function SignupPage() {
       city,
       address,
       landmark,
+      googleMapsLink,
       whatsapp: sameAsPhone ? phone : whatsapp,
     };
     await mockSignup(data);
@@ -633,9 +635,24 @@ export default function SignupPage() {
                 autoComplete="off"
                 className={inputCls}
               />
-              <p className="text-zinc-300 text-[0.6rem] leading-relaxed">
+              <p className="text-zinc-400 text-[0.6rem] leading-relaxed">
                 Helps our delivery team find you faster. Especially useful where
                 street addresses are not exact.
+              </p>
+            </Field>
+
+            <Field label="Google Maps Link (optional)">
+              <input
+                type="url"
+                value={googleMapsLink}
+                onChange={(e) => setField("googleMapsLink", e.target.value)}
+                placeholder="https://maps.app.goo.gl/..."
+                autoComplete="off"
+                className={inputCls}
+              />
+              <p className="text-zinc-400 text-[0.6rem] leading-relaxed">
+                Open Google Maps, tap Share, and paste the link so our riders can
+                find your exact location.
               </p>
             </Field>
 
