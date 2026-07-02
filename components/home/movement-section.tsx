@@ -248,7 +248,7 @@ export default function MovementSection() {
                   fontWeight: 800,
                 }}
               >
-                "
+                &ldquo;
               </span>
               <p className="text-white/90 text-lg leading-relaxed italic">
                 {testimonials[0].quote}

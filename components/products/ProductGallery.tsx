@@ -38,7 +38,7 @@ export default function ProductGallery({
       <div className="relative aspect-square lg:aspect-5/6 overflow-hidden bg-zinc-100">
         <Image
           src={images[activeIndex]}
-          alt={`${productName} — view ${activeIndex + 1}`}
+          alt={`${productName}, view ${activeIndex + 1}`}
           fill
           priority
           sizes="(max-width: 1024px) 100vw, 50vw"

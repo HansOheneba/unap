@@ -100,7 +100,7 @@ function toVariants(catalog: CatalogProduct): ColorVariant[] {
   const images = catalog.images;
 
   if (catalog.colors && catalog.colors.length > 0) {
-    return catalog.colors.map((color, i) => ({
+    return catalog.colors.map((color) => ({
       id: color.name.toLowerCase().replace(/\s+/g, "-"),
       colorName: color.name,
       colorHex: color.hex,

@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useRef, useEffect } from "react";
+import { Suspense, useState, useRef, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, X } from "lucide-react";
 import AddToCartButton from "@/components/ui/add-to-cart-button";
@@ -18,7 +19,8 @@ function capitalize(s: string) {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
-export default function SearchPage() {
+function SearchPageInner() {
+  const searchParams = useSearchParams();
   const collections = useAdminStore((s) => s.collections);
   const { visible: bannerVisible, scrollHidden } = useBannerStore();
   const bannerOffset = getBannerOffset(bannerVisible, scrollHidden);
@@ -29,7 +31,7 @@ export default function SearchPage() {
     ...Array.from(new Set(allProducts.map((p) => capitalize(p.collectionId)))),
   ];
 
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(() => searchParams.get("q") ?? "");
   const [activeCategory, setActiveCategory] = useState("All");
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -197,5 +199,13 @@ export default function SearchPage() {
         </AnimatePresence>
       </div>
     </main>
+  );
+}
+
+export default function SearchPage() {
+  return (
+    <Suspense fallback={null}>
+      <SearchPageInner />
+    </Suspense>
   );
 }

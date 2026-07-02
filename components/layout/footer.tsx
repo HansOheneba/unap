@@ -19,6 +19,12 @@ const connect = [
 const support = [
   { label: "Contact", href: "/contact" },
   { label: "Size Guide", href: "/size-guide" },
+  { label: "Track Order", href: "/tracking" },
+];
+
+const legal = [
+  { label: "Terms of Service", href: "/terms" },
+  { label: "Privacy Policy", href: "/privacy" },
 ];
 
 export default function Footer() {
@@ -53,6 +59,21 @@ export default function Footer() {
             did. Designed for the unapologetic. Built for the ones who take up
             space on purpose.
           </p>
+
+          <div className="flex flex-col gap-1.5">
+            <a
+              href="tel:+233534946040"
+              className="text-white/70 text-sm hover:text-white transition-colors duration-300 w-fit"
+            >
+              +233 534 946 040
+            </a>
+            <a
+              href="mailto:hello@mail.unapologeticnm.com"
+              className="text-white/70 text-sm hover:text-white transition-colors duration-300 w-fit"
+            >
+              hello@mail.unapologeticnm.com
+            </a>
+          </div>
 
           {/* Newsletter micro-CTA */}
           <div className="flex flex-col gap-3 pt-2">
@@ -141,10 +162,21 @@ export default function Footer() {
       </div>
 
       {/* ── BOTTOM BAR ─────────────────────────────── */}
-      <div className="border-t border-white/10 px-8 md:px-20 py-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div className="border-t border-white/10 px-8 md:px-20 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
         <p className="eyebrow text-white/70">
           &copy; 2026 Unapologetic. All Rights Reserved.
         </p>
+        <div className="flex items-center gap-6">
+          {legal.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="eyebrow text-white/70 hover:text-white transition-colors duration-300"
+            >
+              {link.label}
+            </Link>
+          ))}
+        </div>
         <p className="eyebrow text-white/70">Become Unapologetic.</p>
       </div>
     </footer>

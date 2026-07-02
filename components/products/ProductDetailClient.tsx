@@ -145,7 +145,7 @@ export default function ProductDetailClient({
     if (!canAdd) return;
     addItem({
       id: `${product.id}__${selectedVariant.id}__${selectedSize}`,
-      name: `${product.name} — ${selectedVariant.colorName} / ${selectedSize}`,
+      name: `${product.name} (${selectedVariant.colorName} / ${selectedSize})`,
       price: product.price,
       img: selectedVariant.images[0],
       category: product.category,
@@ -830,7 +830,7 @@ export default function ProductDetailClient({
               <Check size={15} /> Added
             </span>
           ) : (
-            `Add to Cart — ${formatPrice(product.price)}`
+            `Add to Cart · ${formatPrice(product.price)}`
           )}
         </button>
       </div>

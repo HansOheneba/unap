@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -27,16 +27,18 @@ export default function EditCollectionPage() {
     featured: col?.featured ?? "",
   });
 
-  useEffect(() => {
-    if (col) {
-      setForm({
-        subtitle: col.subtitle,
-        title: col.title,
-        tagline: col.tagline,
-        featured: col.featured,
-      });
-    }
-  }, [id]); // eslint-disable-line react-hooks/exhaustive-deps
+  // Sync the form when a different collection loads, adjusted during
+  // render rather than in an effect: https://react.dev/learn/you-might-not-need-an-effect
+  const [loadedId, setLoadedId] = useState<string | null>(null);
+  if (col && loadedId !== id) {
+    setLoadedId(id);
+    setForm({
+      subtitle: col.subtitle,
+      title: col.title,
+      tagline: col.tagline,
+      featured: col.featured,
+    });
+  }
 
   if (!col) {
     return (

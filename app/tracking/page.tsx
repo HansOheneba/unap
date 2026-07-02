@@ -1,25 +1,40 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import {
   lookupTrackingNumber,
   statusConfig,
   type TrackingResult,
 } from "@/lib/tracking";
 
-export default function TrackingPage() {
-  const [trackingNumber, setTrackingNumber] = useState("");
+function TrackingPageInner() {
+  const searchParams = useSearchParams();
+  const initialQuery = searchParams.get("q") ?? "";
+  const [trackingNumber, setTrackingNumber] = useState(initialQuery);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<TrackingResult | null>(null);
+  const autoLookedUp = useRef(false);
+
+  const runLookup = async (value: string) => {
+    if (!value.trim()) return;
+    setLoading(true);
+    setResult(null);
+    const data = await lookupTrackingNumber(value);
+    setResult(data);
+    setLoading(false);
+  };
+
+  // Auto-run the lookup once when a tracking number arrives via ?q=
+  useEffect(() => {
+    if (autoLookedUp.current || !initialQuery.trim()) return;
+    autoLookedUp.current = true;
+    runLookup(initialQuery);
+  }, [initialQuery]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!trackingNumber.trim()) return;
-    setLoading(true);
-    setResult(null);
-    const data = await lookupTrackingNumber(trackingNumber);
-    setResult(data);
-    setLoading(false);
+    await runLookup(trackingNumber);
   };
 
   const statusCfg = result?.found ? statusConfig[result.status] : null;
@@ -311,5 +326,13 @@ export default function TrackingPage() {
         )}
       </div>
     </main>
+  );
+}
+
+export default function TrackingPage() {
+  return (
+    <Suspense fallback={null}>
+      <TrackingPageInner />
+    </Suspense>
   );
 }

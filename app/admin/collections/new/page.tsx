@@ -120,7 +120,7 @@ export default function NewCollectionPage() {
             className={inputCls}
           />
           <p className="text-zinc-400 text-xs mt-1">
-            Path relative to /public — this is the hero banner image.
+            Path relative to /public. This is the hero banner image.
           </p>
         </div>
 

@@ -56,14 +56,6 @@ function Field({
 const inputCls =
   "bg-zinc-50 border border-zinc-200 text-zinc-900 placeholder-zinc-400 px-4 py-3 text-sm focus:outline-none focus:border-zinc-400 transition-colors duration-200 w-full";
 
-function generateOrderId() {
-  return (
-    "UNAP-" +
-    Date.now().toString(36).toUpperCase() +
-    Math.random().toString(36).slice(2, 5).toUpperCase()
-  );
-}
-
 export default function CheckoutPage() {
   const router = useRouter();
   const { items, totalItems, totalPrice, clearCart } = useCartStore();
@@ -78,7 +70,7 @@ export default function CheckoutPage() {
   }, [isLoggedIn, router]);
 
   const [step, setStep] = useState<CheckoutStep>("details");
-  const [orderId] = useState(generateOrderId);
+  const [orderId, setOrderId] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
   const [paymentError, setPaymentError] = useState("");
@@ -208,6 +200,7 @@ export default function CheckoutPage() {
         return;
       }
 
+      setOrderId(result.orderId);
       clearCart();
       setStep("confirmed");
     } catch (err) {
@@ -254,8 +247,14 @@ export default function CheckoutPage() {
             You&apos;re in the system.
           </h1>
           <p className="text-zinc-600 text-sm leading-relaxed">
-            Order <span className="text-zinc-900 font-medium">{orderId}</span>{" "}
-            is confirmed. We&apos;ll send updates to{" "}
+            {orderId && (
+              <>
+                Order{" "}
+                <span className="text-zinc-900 font-medium">{orderId}</span>{" "}
+                is confirmed.{" "}
+              </>
+            )}
+            We&apos;ll send updates to{" "}
             <span className="text-zinc-900">{form.email}</span>.
           </p>
           <p className="text-zinc-400 text-xs leading-relaxed">
@@ -728,7 +727,7 @@ export default function CheckoutPage() {
               {discount ? (
                 <div className="flex items-center justify-between border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs">
                   <span className="text-emerald-700 font-medium">
-                    {promoCode.toUpperCase()} — {discount.label}
+                    {promoCode.toUpperCase()} applied ({discount.label})
                   </span>
                   <button
                     onClick={removePromo}

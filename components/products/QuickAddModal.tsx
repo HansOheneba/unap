@@ -38,13 +38,19 @@ export default function QuickAddModal({ product, open, onClose }: Props) {
   const boxIconRef = useRef<HTMLDivElement>(null);
   const [, animate] = useAnimate();
 
-  // Reset when modal opens (handles re-opening for same or different product)
-  useEffect(() => {
-    if (!open) return;
+  // Reset when the modal opens (handles re-opening for the same or a
+  // different product) — adjusted during render rather than in an effect,
+  // per https://react.dev/learn/you-might-not-need-an-effect
+  const [openedFor, setOpenedFor] = useState<string | null>(null);
+  const shouldReset = open && openedFor !== product.id;
+  if (shouldReset) {
+    setOpenedFor(product.id);
     setSelectedVariant(product.variants[0]);
     setSelectedSize(getDefaultSelectedSize(product.variants[0].sizes));
     setPhase("idle");
-  }, [open, product.id]); // eslint-disable-line react-hooks/exhaustive-deps
+  } else if (!open && openedFor !== null) {
+    setOpenedFor(null);
+  }
 
   const handleColorChange = (variant: ColorVariant) => {
     setSelectedVariant(variant);

@@ -14,11 +14,19 @@ export default function CartToast() {
   const toast = useCartStore((s) => s.toast);
   const dismissToast = useCartStore((s) => s.dismissToast);
   const [visible, setVisible] = useState(false);
+  const [lastKey, setLastKey] = useState<number | undefined>(undefined);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  useEffect(() => {
-    if (!toast) return;
+  // Reveal the toast as soon as a new item lands, computed during render
+  // rather than in an effect so React doesn't need an extra render pass.
+  if (toast && toast.key !== lastKey) {
+    setLastKey(toast.key);
     setVisible(true);
+  }
+
+  const toastKey = toast?.key;
+  useEffect(() => {
+    if (toastKey === undefined) return;
     if (timerRef.current) clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => {
       setVisible(false);
@@ -26,7 +34,7 @@ export default function CartToast() {
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
     };
-  }, [toast?.key]); // re-fire only when a new item is added
+  }, [toastKey]); // re-fire only when a new item is added
 
   const handleDismiss = () => {
     setVisible(false);

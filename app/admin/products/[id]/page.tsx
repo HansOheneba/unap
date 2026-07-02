@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -32,18 +32,20 @@ export default function EditProductPage() {
   const [newColorName, setNewColorName] = useState("");
   const [newColorHex, setNewColorHex] = useState("#000000");
 
-  useEffect(() => {
-    if (product) {
-      setForm({
-        name: product.name,
-        description: product.description,
-        price: product.price.toString(),
-        tag: product.tag,
-      });
-      setImages(product.images);
-      setColors(product.colors ?? []);
-    }
-  }, [id]); // eslint-disable-line react-hooks/exhaustive-deps
+  // Sync the form when a different product loads, adjusted during render
+  // rather than in an effect: https://react.dev/learn/you-might-not-need-an-effect
+  const [loadedId, setLoadedId] = useState<string | null>(null);
+  if (product && loadedId !== id) {
+    setLoadedId(id);
+    setForm({
+      name: product.name,
+      description: product.description,
+      price: product.price.toString(),
+      tag: product.tag,
+    });
+    setImages(product.images);
+    setColors(product.colors ?? []);
+  }
 
   if (!product) {
     return (
