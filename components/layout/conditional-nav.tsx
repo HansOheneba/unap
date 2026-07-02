@@ -11,7 +11,7 @@ import {
 
 // Pages where the first section intentionally sits behind the fixed header
 // (full-bleed video/image heroes with dark overlays).
-const FULL_BLEED_PATHS = ["/", "/the-creed", "/inner-circle"];
+const FULL_BLEED_PATHS = ["/", "/the-creed", "/inner-circle", "/movement", "/future"];
 
 export default function ConditionalNav({
   children,

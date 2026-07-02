@@ -10,7 +10,7 @@ const explore = [
 ];
 
 const connect = [
-  { label: "Instagram", href: "https://instagram.com" },
+  { label: "Instagram", href: "https://www.instagram.com/unapologeticnm" },
   { label: "TikTok", href: "https://tiktok.com" },
   { label: "YouTube", href: "https://youtube.com" },
   { label: "Twitter / X", href: "https://x.com" },
@@ -18,8 +18,6 @@ const connect = [
 
 const support = [
   { label: "Contact", href: "/contact" },
-  { label: "Shipping", href: "/shipping" },
-  { label: "Returns", href: "/returns" },
   { label: "Size Guide", href: "/size-guide" },
 ];
 
