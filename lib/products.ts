@@ -1,13 +1,25 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// Storefront product layer — sourced from lib/data/catalog.ts (mock API).
-// Swap fetchCatalog() for a real API call when the backend is ready.
+// Storefront product layer — thin adapter over the real catalog API
+// (`lib/api/catalog.ts`). No mock data: every export here fetches from
+// `https://api.unapologeticnm.com` (via the same-origin proxy in the browser).
 // ─────────────────────────────────────────────────────────────────────────────
 
 import {
-  CATALOG_PRODUCTS,
-  getProductBySlug as getCatalogProductBySlug,
-} from "@/lib/data/catalog";
-import type { Product as CatalogProduct } from "@/lib/data/types";
+  getCatalog,
+  getCollection as fetchCollection,
+  getProduct as fetchProduct,
+  getRelatedProducts as fetchRelatedProducts,
+  listCollections as fetchCollections,
+  searchProducts as fetchSearchProducts,
+  type ApiGender,
+  type ApiProductDetail,
+  type ApiProductSummary,
+  type ApiProductVariant,
+  type ApiReview,
+} from "@/lib/api/catalog";
+import { BRAND_PLACEHOLDER } from "@/lib/data/placeholders";
+
+const FALLBACK_IMAGE = BRAND_PLACEHOLDER.textile;
 
 export type SizeStock = {
   size: string;
@@ -36,126 +48,201 @@ export type Review = {
   verified: boolean;
 };
 
+/** Full product detail — used on the PDP and inside the Quick Add modal. */
 export type Product = {
   id: string;
   slug: string;
   name: string;
   description: string;
   price: number;
-  gender: CatalogProduct["gender"];
+  gender: ApiGender;
+  /** Collection slug, used for routing (`/collections/{category}/{slug}`). */
   category: string;
   subcategory?: string;
   tag: string;
-  collectionId: string;
   variants: ColorVariant[];
   details: string[];
   careInstructions: string[];
-  reviews?: Review[];
+  reviewSummary: { average: number; count: number };
 };
 
-export const MOCK_REVIEWS: Review[] = [
-  {
-    id: "r1",
-    author: "Kwame A.",
-    rating: 5,
-    date: "May 10, 2026",
-    body: "Exceptional quality. Bought two and immediately ordered a third. The fit is perfect and the fabric feels premium.",
-    verified: true,
-  },
-  {
-    id: "r2",
-    author: "Ama T.",
-    rating: 5,
-    date: "May 7, 2026",
-    body: "Finally a brand that understands what confidence looks like in clothing. I get compliments every single time.",
-    verified: true,
-  },
-  {
-    id: "r3",
-    author: "Nana O.",
-    rating: 4,
-    date: "Apr 30, 2026",
-    body: "Really solid construction. Sizing runs slightly large so I'd suggest sizing down. Otherwise no complaints.",
-    verified: true,
-  },
-  {
-    id: "r4",
-    author: "Efua M.",
-    rating: 5,
-    date: "Apr 22, 2026",
-    body: "The attention to detail is unmatched. You can tell this was made by people who actually care.",
-    verified: false,
-  },
-];
+/** Lightweight product row — used on collection grids, search, and previews. */
+export type ProductSummary = {
+  id: string;
+  slug: string;
+  name: string;
+  price: number;
+  gender: ApiGender;
+  category: string;
+  subcategory?: string;
+  tag: string;
+  image: string;
+};
 
-function defaultStock(sizes: string[]): SizeStock[] {
-  return sizes.map((size, i) => ({
-    size,
-    stock: Math.max(4, 18 - i * 3),
+function toColorVariants(variants: ApiProductVariant[]): ColorVariant[] {
+  if (!variants || variants.length === 0) {
+    return [
+      {
+        id: "default",
+        colorName: "Default",
+        colorHex: "#1a1a1a",
+        images: [FALLBACK_IMAGE],
+        sizes: [],
+      },
+    ];
+  }
+  return variants.map((v, i) => ({
+    id: v.id || v.colorName?.toLowerCase().replace(/\s+/g, "-") || `variant-${i}`,
+    colorName: v.colorName || "Default",
+    colorHex: v.colorHex || "#1a1a1a",
+    images: v.imageUrls?.length ? v.imageUrls : [FALLBACK_IMAGE],
+    sizes: v.sizes ?? [],
   }));
 }
 
-function toVariants(catalog: CatalogProduct): ColorVariant[] {
-  const sizes = catalog.sizes ?? ["One Size"];
-  const images = catalog.images;
-
-  if (catalog.colors && catalog.colors.length > 0) {
-    return catalog.colors.map((color) => ({
-      id: color.name.toLowerCase().replace(/\s+/g, "-"),
-      colorName: color.name,
-      colorHex: color.hex,
-      images: color.image ? [color.image, ...images] : images,
-      sizes: defaultStock(sizes),
-    }));
-  }
-
-  return [
-    {
-      id: "default",
-      colorName: "Default",
-      colorHex: "#1a1a1a",
-      images,
-      sizes: defaultStock(sizes),
-    },
-  ];
-}
-
-function toStorefrontProduct(catalog: CatalogProduct): Product {
+/**
+ * Builds the full `Product` shape from the API detail response.
+ * `categorySlug` overrides the (currently unreliable) `collectionId` field
+ * when the caller already knows the collection from route context.
+ */
+function toProduct(detail: ApiProductDetail, categorySlug?: string): Product {
   return {
-    id: catalog.id,
-    slug: catalog.slug,
-    name: catalog.name,
-    description: catalog.description,
-    price: catalog.price,
-    gender: catalog.gender,
-    category: catalog.collectionId,
-    subcategory: catalog.subcategory,
-    tag: catalog.tag,
-    collectionId: catalog.collectionId,
-    variants: toVariants(catalog),
-    details: catalog.details,
-    careInstructions: catalog.careInstructions,
-    reviews: MOCK_REVIEWS.slice(0, 3),
+    id: detail.id,
+    slug: detail.slug,
+    name: detail.name,
+    description: detail.description || "",
+    price: detail.price,
+    gender: detail.gender,
+    category: categorySlug || detail.collectionId,
+    subcategory: detail.subcategory ?? undefined,
+    tag: detail.tag ?? "",
+    variants: toColorVariants(detail.variants),
+    details: (detail.details ?? []).filter(Boolean),
+    careInstructions: (detail.careInstructions ?? []).filter(Boolean),
+    reviewSummary: detail.reviewSummary ?? { average: 0, count: 0 },
   };
 }
 
-export const PRODUCTS: Product[] = CATALOG_PRODUCTS.map(toStorefrontProduct);
-
-export function getProductBySlug(slug: string): Product | undefined {
-  const catalog = getCatalogProductBySlug(slug);
-  return catalog ? toStorefrontProduct(catalog) : undefined;
+function toSummary(
+  product: ApiProductSummary,
+  categorySlug?: string,
+): ProductSummary {
+  return {
+    id: product.id,
+    slug: product.slug,
+    name: product.name,
+    price: product.price,
+    gender: product.gender,
+    category: categorySlug || product.collectionId,
+    subcategory: product.subcategory ?? undefined,
+    tag: product.tag ?? "",
+    image: product.imageUrl || FALLBACK_IMAGE,
+  };
 }
 
-export function getRelatedProducts(product: Product, limit = 4): Product[] {
-  return PRODUCTS.filter(
-    (p) => p.category === product.category && p.slug !== product.slug,
-  ).slice(0, limit);
+/** Fetches a single product. `categorySlug` should be passed when already
+ *  known from the route (e.g. `/collections/[collection]/[productId]`). */
+export async function getProductBySlug(
+  slug: string,
+  categorySlug?: string,
+): Promise<Product | null> {
+  const detail = await fetchProduct(slug);
+  return detail ? toProduct(detail, categorySlug) : null;
 }
 
-export function getProductsByCategory(category: string): Product[] {
-  return PRODUCTS.filter((p) => p.category === category);
+/** "Related" products from the API, assumed to share the current product's
+ *  collection for routing purposes. */
+export async function getRelatedProducts(
+  product: Pick<Product, "slug" | "category">,
+  limit = 4,
+): Promise<ProductSummary[]> {
+  const related = await fetchRelatedProducts(product.slug);
+  return related.slice(0, limit).map((p) => toSummary(p, product.category));
 }
 
-export function getAllCategories(): string[] {
-  return Array.from(new Set(PRODUCTS.map((p) => p.category)));
+export type CollectionInfo = {
+  /** Collection slug — also used as the routing segment. */
+  id: string;
+  subtitle: string;
+  title: string;
+  tagline: string;
+  featured: string;
+  href: string;
+};
+
+/** Fetches a collection (by slug) with its products nested. Returns `null`
+ *  when the collection doesn't exist so callers can call `notFound()`. */
+export async function getCollectionWithProducts(slug: string): Promise<{
+  collection: CollectionInfo;
+  products: ProductSummary[];
+} | null> {
+  const detail = await fetchCollection(slug);
+  if (!detail) return null;
+  return {
+    collection: {
+      id: detail.slug,
+      subtitle: detail.subtitle,
+      title: detail.title,
+      tagline: detail.tagline,
+      featured: detail.featuredImageUrl || FALLBACK_IMAGE,
+      href: `/collections/${detail.slug}`,
+    },
+    products: detail.products.map((p) => toSummary(p, detail.slug)),
+  };
+}
+
+/** All active collections with their products, in `sortOrder`. Used by the
+ *  "browse everything" page. Skips a collection if its detail fetch fails. */
+export async function getAllCollectionsWithProducts(): Promise<
+  { collection: CollectionInfo; products: ProductSummary[] }[]
+> {
+  const collections = await fetchCollections();
+  const sorted = [...collections]
+    .filter((c) => c.isActive)
+    .sort((a, b) => a.sortOrder - b.sortOrder);
+
+  const results = await Promise.all(
+    sorted.map((c) => getCollectionWithProducts(c.slug)),
+  );
+  return results.filter(
+    (r): r is { collection: CollectionInfo; products: ProductSummary[] } =>
+      r !== null,
+  );
+}
+
+/** First N active products across the whole catalog, for home page previews. */
+export async function getFeaturedProducts(limit = 4): Promise<ProductSummary[]> {
+  const { products } = await getCatalog();
+  return products
+    .filter((p) => p.isActive)
+    .slice(0, limit)
+    .map((p) => toSummary(p));
+}
+
+export function toReview(review: ApiReview): Review {
+  return {
+    id: review.id,
+    author: review.author || "Anonymous",
+    rating: review.rating,
+    date: review.createdAt
+      ? new Date(review.createdAt).toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        })
+      : "",
+    body: review.body,
+    verified: review.verified,
+  };
+}
+
+export async function searchProductSummaries(params: {
+  q?: string;
+  collectionId?: string;
+  gender?: string;
+  page?: number;
+  limit?: number;
+}): Promise<{ items: ProductSummary[]; total: number; totalPages: number }> {
+  const { items, total, totalPages } = await fetchSearchProducts(params);
+  return { items: items.map((p) => toSummary(p)), total, totalPages };
 }

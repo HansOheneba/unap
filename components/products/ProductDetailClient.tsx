@@ -16,10 +16,13 @@ import {
 import { formatPrice } from "@/lib/currency";
 import {
   getDefaultSelectedSize,
+  toReview,
   type Product,
+  type ProductSummary,
   type ColorVariant,
   type Review,
 } from "@/lib/products";
+import { submitReview, type ApiReview } from "@/lib/api/catalog";
 import ProductGallery from "./ProductGallery";
 import CollectionCard from "./CollectionCard";
 import BoxerSizeGuide from "./BoxerSizeGuide";
@@ -28,14 +31,15 @@ import { useCartStore } from "@/lib/stores/cart-store";
 import { useWishlistStore } from "@/lib/stores/wishlist-store";
 import { useRecentlyViewedStore } from "@/lib/stores/recently-viewed-store";
 import { useIsLoggedIn } from "@/lib/use-is-logged-in";
-import { useOnboardingStore } from "@/lib/stores/onboarding-store";
 import { useRouter } from "next/navigation";
+import { toast } from "@/lib/stores/toast-store";
 import { cn } from "@/lib/utils";
 import { COLLECTIONS_CONTAINER } from "@/lib/layout/collections";
 
 type Props = {
   product: Product;
-  relatedProducts: Product[];
+  relatedProducts: ProductSummary[];
+  initialReviews: ApiReview[];
 };
 
 const LIGHT_HEXES = new Set(["#f0f0f0", "#f0e6ce", "#e8dcc8", "#f5f5f5"]);
@@ -43,6 +47,7 @@ const LIGHT_HEXES = new Set(["#f0f0f0", "#f0e6ce", "#e8dcc8", "#f5f5f5"]);
 export default function ProductDetailClient({
   product,
   relatedProducts,
+  initialReviews,
 }: Props) {
   const [selectedVariant, setSelectedVariant] = useState<ColorVariant>(
     product.variants[0],
@@ -55,18 +60,22 @@ export default function ProductDetailClient({
   const [openSection, setOpenSection] = useState<string | null>("description");
 
   // ── Reviews ──────────────────────────────────────────────────────────
-  const [reviews, setReviews] = useState<Review[]>(product.reviews ?? []);
+  const [reviews, setReviews] = useState<Review[]>(
+    initialReviews.map(toReview),
+  );
   const [showReviewForm, setShowReviewForm] = useState(false);
-  const [reviewForm, setReviewForm] = useState({
-    author: "",
-    rating: 5,
-    body: "",
-  });
-  const avgRating = reviews.length
-    ? Math.round(
-        (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length) * 10,
-      ) / 10
-    : 0;
+  const [reviewForm, setReviewForm] = useState({ rating: 5, body: "" });
+  const [submittingReview, setSubmittingReview] = useState(false);
+  const avgRating =
+    product.reviewSummary.count > 0
+      ? Math.round(product.reviewSummary.average * 10) / 10
+      : reviews.length
+        ? Math.round(
+            (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length) *
+              10,
+          ) / 10
+        : 0;
+  const reviewCount = product.reviewSummary.count || reviews.length;
 
   // ── Back-in-stock notify ─────────────────────────────────────────────
   const [notifyEmail, setNotifyEmail] = useState("");
@@ -101,11 +110,9 @@ export default function ProductDetailClient({
   const addItem = useCartStore((s) => s.addItem);
   const router = useRouter();
   const isLoggedIn = useIsLoggedIn();
-  const firstName = useOnboardingStore((s) => s.firstName);
-  const lastName = useOnboardingStore((s) => s.lastName);
   const toggleWishlist = useWishlistStore((s) => s.toggle);
   const isWishlisted = useWishlistStore((s) =>
-    s.items.some((i) => i.id === product.id),
+    s.has(product.id, product.slug),
   );
   const wishlistItem = {
     id: product.id,
@@ -539,7 +546,7 @@ export default function ProductDetailClient({
               <h2 className="text-2xl md:text-3xl tracking-[0.2em] text-zinc-900 uppercase font-light">
                 Customer Reviews
               </h2>
-              {reviews.length > 0 ? (
+              {reviewCount > 0 ? (
                 <div className="mt-3 flex items-center gap-3">
                   <div className="flex items-center gap-1">
                     {[1, 2, 3, 4, 5].map((n) => (
@@ -558,8 +565,7 @@ export default function ProductDetailClient({
                     {avgRating.toFixed(1)} out of 5
                   </span>
                   <span className="text-sm text-zinc-500">
-                    ({reviews.length}{" "}
-                    {reviews.length === 1 ? "review" : "reviews"})
+                    ({reviewCount} {reviewCount === 1 ? "review" : "reviews"})
                   </span>
                 </div>
               ) : (
@@ -577,17 +583,7 @@ export default function ProductDetailClient({
                   );
                   return;
                 }
-                setShowReviewForm((open) => {
-                  if (!open) {
-                    const name = [firstName, lastName]
-                      .filter(Boolean)
-                      .join(" ");
-                    if (name) {
-                      setReviewForm((f) => ({ ...f, author: name }));
-                    }
-                  }
-                  return !open;
-                });
+                setShowReviewForm((open) => !open);
               }}
               className="self-start md:self-auto text-xs tracking-[0.25em] uppercase border border-zinc-900 text-zinc-900 px-6 py-3 hover:bg-zinc-900 hover:text-white transition-colors"
             >
@@ -598,45 +594,30 @@ export default function ProductDetailClient({
           {/* Review form */}
           {showReviewForm && isLoggedIn && (
             <form
-              onSubmit={(e) => {
+              onSubmit={async (e) => {
                 e.preventDefault();
-                if (!isLoggedIn) return;
-                if (!reviewForm.author.trim() || !reviewForm.body.trim())
-                  return;
-                const newReview: Review = {
-                  id: `local-${Date.now()}`,
-                  author: reviewForm.author.trim(),
-                  rating: reviewForm.rating,
-                  date: new Date().toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                    year: "numeric",
-                  }),
-                  body: reviewForm.body.trim(),
-                  verified: false,
-                };
-                setReviews((prev) => [newReview, ...prev]);
-                setReviewForm({ author: "", rating: 5, body: "" });
-                setShowReviewForm(false);
+                if (!isLoggedIn || submittingReview) return;
+                if (!reviewForm.body.trim()) return;
+                setSubmittingReview(true);
+                try {
+                  const created = await submitReview(product.slug, {
+                    rating: reviewForm.rating,
+                    body: reviewForm.body.trim(),
+                  });
+                  setReviews((prev) => [toReview(created), ...prev]);
+                  setReviewForm({ rating: 5, body: "" });
+                  setShowReviewForm(false);
+                } catch (err) {
+                  toast.error(
+                    "Could not submit review",
+                    err instanceof Error ? err.message : "Please try again.",
+                  );
+                } finally {
+                  setSubmittingReview(false);
+                }
               }}
               className="mb-10 border border-zinc-200 bg-zinc-50 p-6 md:p-8 space-y-5"
             >
-              <div>
-                <label className="block text-[10px] tracking-[0.25em] uppercase text-zinc-600 mb-2">
-                  Your Name
-                </label>
-                <input
-                  type="text"
-                  required
-                  autoComplete="name"
-                  value={reviewForm.author}
-                  onChange={(e) =>
-                    setReviewForm((f) => ({ ...f, author: e.target.value }))
-                  }
-                  className="w-full bg-white border border-zinc-200 text-zinc-900 placeholder-zinc-400 focus:border-zinc-400 px-4 py-3 text-sm outline-none"
-                  placeholder="e.g. Kwame A."
-                />
-              </div>
               <div>
                 <label className="block text-[10px] tracking-[0.25em] uppercase text-zinc-600 mb-2">
                   Rating
@@ -681,9 +662,10 @@ export default function ProductDetailClient({
               </div>
               <button
                 type="submit"
-                className="text-xs tracking-[0.25em] uppercase bg-zinc-900 text-white px-8 py-3 hover:bg-zinc-700 transition-colors"
+                disabled={submittingReview}
+                className="text-xs tracking-[0.25em] uppercase bg-zinc-900 text-white px-8 py-3 hover:bg-zinc-700 transition-colors disabled:opacity-50"
               >
-                Submit Review
+                {submittingReview ? "Submitting..." : "Submit Review"}
               </button>
             </form>
           )}

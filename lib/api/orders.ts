@@ -1,12 +1,4 @@
-function getApiBase(): string {
-  const base = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "");
-  if (!base) {
-    throw new Error(
-      "NEXT_PUBLIC_API_URL is not configured. Set it to your backend API base (e.g. http://localhost:8000/v1).",
-    );
-  }
-  return base;
-}
+import { apiRequest, asList } from "@/lib/api/client";
 
 export function parseCartLineId(id: string): {
   productId: string;
@@ -48,25 +40,29 @@ export type PlaceOrderResult = {
 
 export async function placeOrder(
   payload: PlaceOrderPayload,
-  accessToken?: string,
 ): Promise<PlaceOrderResult> {
-  const res = await fetch(`${getApiBase()}/orders`, {
+  const data = await apiRequest<{
+    order?: PlaceOrderResult & {
+      id?: string;
+      payment?: PlaceOrderResult["payment"];
+    };
+    orderId?: string;
+    subtotal?: number;
+    discount?: number;
+    shippingFee?: number;
+    total?: number;
+    payment?: PlaceOrderResult["payment"];
+    id?: string;
+  }>("/orders", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
-    },
-    body: JSON.stringify(payload),
+    body: payload,
   });
 
-  const data = await res.json();
-
-  if (!res.ok) {
-    throw new Error(data.error?.message || "Could not place order");
-  }
-
   const order = data.order ?? data;
-  const orderId = order.id ?? data.orderId;
+  const orderId = order.orderId ?? order.id ?? data.orderId;
+  if (!orderId) {
+    throw new Error("Order created without an id");
+  }
   const payment = data.payment ?? order.payment;
 
   return {
@@ -82,19 +78,115 @@ export async function placeOrder(
 export async function verifyPayment(
   reference: string,
 ): Promise<{ success: boolean; orderId?: string }> {
-  const res = await fetch(
-    `${getApiBase()}/payments/paystack/verify/${encodeURIComponent(reference)}`,
-    { cache: "no-store" },
-  );
-
-  const data = await res.json();
-
-  if (!res.ok) {
-    throw new Error(data.error?.message || "Payment verification failed");
-  }
+  const data = await apiRequest<{
+    success?: boolean;
+    orderId?: string;
+  }>(`/payments/paystack/verify/${encodeURIComponent(reference)}`, {
+    cache: "no-store",
+  });
 
   return {
-    success: Boolean(data.success),
+    success: Boolean(data.success ?? true),
     orderId: data.orderId,
   };
+}
+
+/** Matches the `OrderSummary` / `Order` schemas in docs/frontend-api-spec.json. */
+export type ApiOrderItem = {
+  name: string;
+  variant?: string | null;
+  qty: number;
+  price: number;
+  imageUrl?: string | null;
+};
+
+export type OrderStatus =
+  | "processing"
+  | "shipped"
+  | "in_transit"
+  | "out_for_delivery"
+  | "delivered"
+  | string;
+
+export type ApiOrderSummary = {
+  id: string;
+  trackingNumber?: string | null;
+  date?: string | null;
+  status: OrderStatus;
+  statusLabel?: string | null;
+  total: number;
+  currency?: string | null;
+  items: ApiOrderItem[];
+};
+
+export type ApiOrder = ApiOrderSummary & {
+  paymentStatus?: string | null;
+  paymentMethod?: string | null;
+  paystackReference?: string | null;
+  subtotal?: number | null;
+  discount?: number | null;
+  shippingFee?: number | null;
+};
+
+/**
+ * `page`/`limit` are documented as optional query params, but the live API's
+ * validation currently rejects them ("limit must be a number conforming to
+ * the specified constraints") even when sent as numeric strings — the
+ * Postman collection ships these two params `disabled` by default for the
+ * same reason. Omit them unless the upstream validation bug is fixed.
+ */
+export async function listOrders(params?: {
+  page?: number;
+  limit?: number;
+}): Promise<ApiOrderSummary[]> {
+  const query = new URLSearchParams();
+  if (params?.page) query.set("page", String(params.page));
+  if (params?.limit) query.set("limit", String(params.limit));
+  const qs = query.toString();
+  const payload = await apiRequest<unknown>(`/orders${qs ? `?${qs}` : ""}`, {
+    cache: "no-store",
+  });
+  return asList<ApiOrderSummary>(payload);
+}
+
+export async function getOrder(id: string): Promise<ApiOrder> {
+  const payload = await apiRequest<ApiOrder | { data?: ApiOrder }>(
+    `/orders/${encodeURIComponent(id)}`,
+    { cache: "no-store" },
+  );
+  if (payload && typeof payload === "object" && "id" in payload) {
+    return payload as ApiOrder;
+  }
+  if (
+    payload &&
+    typeof payload === "object" &&
+    "data" in payload &&
+    payload.data
+  ) {
+    return payload.data;
+  }
+  throw new Error("Order not found");
+}
+
+export async function validatePromoCode(payload: {
+  code: string;
+  subtotal: number;
+  country?: string;
+  city?: string;
+}): Promise<{
+  valid: boolean;
+  code?: string;
+  label?: string;
+  discountType?: string;
+  discountValue?: number;
+  discountAmount?: number;
+  shippingFee?: number;
+  shippingZone?: string;
+  newTotal?: number;
+  message?: string;
+}> {
+  return apiRequest("/promo/validate", {
+    method: "POST",
+    body: payload,
+  });
 }

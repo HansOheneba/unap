@@ -7,6 +7,7 @@ import {
   statusConfig,
   type TrackingResult,
 } from "@/lib/tracking";
+import { formatPrice } from "@/lib/currency";
 
 function TrackingPageInner() {
   const searchParams = useSearchParams();
@@ -59,7 +60,7 @@ function TrackingPageInner() {
         {/* ── Search form ── */}
         <form
           onSubmit={handleSubmit}
-          className="flex flex-col sm:flex-row gap-3 mb-3 max-w-xl"
+          className="flex flex-col sm:flex-row gap-3 mb-12 max-w-xl"
         >
           <input
             type="text"
@@ -80,9 +81,6 @@ function TrackingPageInner() {
             {loading ? "Looking up…" : "Track Order"}
           </button>
         </form>
-        <p className="text-zinc-400 text-[0.6rem] tracking-widest uppercase mb-12">
-          Demo: try UNAP-000001 · UNAP-000002 · UNAP-000003 · UNAP-000004
-        </p>
 
         {/* ── Result ── */}
         {result && !result.found && (
@@ -229,7 +227,7 @@ function TrackingPageInner() {
                         </p>
                       </div>
                       <p className="text-zinc-900 text-sm font-medium shrink-0">
-                        {item.price}
+                        {formatPrice(item.price)}
                       </p>
                     </div>
                   ))}

@@ -3,12 +3,11 @@
 import { Suspense, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { mockLogin, mockSendOtp, mockWishlistSlugs, OTP_LENGTH } from "@/lib/auth";
+import { mockLogin, mockSendOtp, OTP_LENGTH, type User } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import OtpField from "@/components/auth/otp-field";
 import { useOnboardingStore } from "@/lib/stores/onboarding-store";
-import { useWishlistStore } from "@/lib/stores/wishlist-store";
-import { PRODUCTS } from "@/lib/products";
+import { useAuthStore } from "@/lib/stores/auth-store";
 
 const inputCls =
   "bg-zinc-50 border border-zinc-200 text-zinc-900 placeholder-zinc-400 px-4 py-3 text-sm focus:outline-none focus:border-zinc-400 transition-colors duration-200 w-full";
@@ -26,8 +25,7 @@ function LoginPageInner() {
   const searchParams = useSearchParams();
   const nextPath = searchParams.get("next") || "/account";
   const setField = useOnboardingStore((s) => s.setField);
-  const wishlistItems = useWishlistStore((s) => s.items);
-  const toggleWishlist = useWishlistStore((s) => s.toggle);
+  const setAuthUser = useAuthStore((s) => s.setUser);
 
   const [phase, setPhase] = useState<"email" | "otp">("email");
   const [email, setEmail] = useState("");
@@ -35,13 +33,13 @@ function LoginPageInner() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const hydrateSession = (u: NonNullable<Awaited<ReturnType<typeof mockLogin>>["user"]>) => {
+  const hydrateSession = (u: User) => {
     setField("firstName", u.firstName);
     setField("lastName", u.lastName);
     setField("email", u.email);
-    setField("phone", u.phone);
-    setField("whatsapp", u.whatsapp);
-    setField("country", u.country);
+    setField("phone", u.phone || "+");
+    setField("whatsapp", u.whatsapp || "+");
+    setField("country", u.country || "Ghana");
     setField("region", u.region);
     setField("city", u.city);
     setField("address", u.address);
@@ -52,20 +50,6 @@ function LoginPageInner() {
     setField("birthYear", u.birthYear);
     setField("topSize", u.topSize);
     setField("bottomSize", u.bottomSize);
-
-    const existing = new Set(wishlistItems.map((i) => i.id));
-    for (const slug of mockWishlistSlugs) {
-      const product = PRODUCTS.find((p) => p.slug === slug);
-      if (!product || existing.has(product.id)) continue;
-      toggleWishlist({
-        id: product.id,
-        name: product.name,
-        price: product.price,
-        img: product.variants[0]?.images[0] ?? "",
-        category: product.category,
-        slug: product.slug,
-      });
-    }
   };
 
   const handleSendCode = async (e: React.FormEvent) => {
@@ -76,10 +60,10 @@ function LoginPageInner() {
       return;
     }
     setLoading(true);
-    const result = await mockSendOtp(email.trim());
+    const result = await mockSendOtp(email.trim(), "login");
     setLoading(false);
     if (!result.success) {
-      setError("Could not send your code. Please try again.");
+      setError(result.message || "Could not send your code. Please try again.");
       return;
     }
     setOtp("");
@@ -96,21 +80,29 @@ function LoginPageInner() {
     setLoading(true);
     const result = await mockLogin(email.trim(), otp);
     setLoading(false);
-    if (result.success && result.user) {
-      hydrateSession(result.user);
+    if (result.success) {
+      // Cookies were minted by the proxy on this verify call. Prefer the
+      // user from the response; otherwise re-check the session endpoint.
+      if (result.apiUser) {
+        setAuthUser(result.apiUser);
+      } else {
+        await useAuthStore.getState().hydrate();
+      }
+      if (result.user) hydrateSession(result.user);
+      else setField("email", email.trim());
       router.push(nextPath);
     } else {
-      setError("Invalid or expired code. Please try again.");
+      setError(result.message || "Invalid or expired code. Please try again.");
     }
   };
 
   const handleResend = async () => {
     setError("");
     setLoading(true);
-    const result = await mockSendOtp(email.trim());
+    const result = await mockSendOtp(email.trim(), "login");
     setLoading(false);
     if (!result.success) {
-      setError("Could not resend your code. Please try again.");
+      setError(result.message || "Could not resend your code. Please try again.");
       return;
     }
     setOtp("");

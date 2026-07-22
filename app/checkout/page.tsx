@@ -9,9 +9,9 @@ import { ChevronRight } from "lucide-react";
 import { useCartStore } from "@/lib/stores/cart-store";
 import { formatPrice } from "@/lib/currency";
 import { useOnboardingStore } from "@/lib/stores/onboarding-store";
-import { useIsLoggedIn } from "@/lib/use-is-logged-in";
+import { useIsLoggedIn, useAuthReady } from "@/lib/use-is-logged-in";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { parseCartLineId, placeOrder } from "@/lib/api/orders";
+import { parseCartLineId, placeOrder, validatePromoCode } from "@/lib/api/orders";
 
 type CheckoutStep = "details" | "review" | "confirmed";
 type PaymentMethod = "pay_now" | "pay_on_delivery";
@@ -60,14 +60,16 @@ export default function CheckoutPage() {
   const router = useRouter();
   const { items, totalItems, totalPrice, clearCart } = useCartStore();
   const onboarding = useOnboardingStore();
+  const authReady = useAuthReady();
   const isLoggedIn = useIsLoggedIn();
 
-  // ── Auth guard: checkout requires a logged-in account ──
+  // ── Auth guard: wait for the server session check, then require a session ──
   useEffect(() => {
+    if (!authReady) return;
     if (!isLoggedIn) {
       router.replace("/auth/login?next=/checkout");
     }
-  }, [isLoggedIn, router]);
+  }, [authReady, isLoggedIn, router]);
 
   const [step, setStep] = useState<CheckoutStep>("details");
   const [orderId, setOrderId] = useState<string | null>(null);
@@ -77,25 +79,42 @@ export default function CheckoutPage() {
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("pay_now");
   const [promoCode, setPromoCode] = useState("");
   const [promoError, setPromoError] = useState("");
+  const [promoChecking, setPromoChecking] = useState(false);
   const [discount, setDiscount] = useState<{
+    code: string;
     label: string;
-    pct: number;
+    amount: number;
   } | null>(null);
 
-  const PROMO_CODES: Record<string, { label: string; pct: number }> = {
-    UNAP10: { label: "10% off", pct: 0.1 },
-    LAUNCH20: { label: "20% off", pct: 0.2 },
-    FIRST: { label: "15% off", pct: 0.15 },
-  };
-
-  function applyPromo() {
+  async function applyPromo() {
     const code = promoCode.trim().toUpperCase();
-    if (PROMO_CODES[code]) {
-      setDiscount(PROMO_CODES[code]);
-      setPromoError("");
-    } else {
-      setPromoError("Invalid promo code");
+    if (!code) return;
+    setPromoChecking(true);
+    setPromoError("");
+    try {
+      const result = await validatePromoCode({
+        code,
+        subtotal,
+        country: form.country || undefined,
+        city: form.city || undefined,
+      });
+      if (!result.valid) {
+        setDiscount(null);
+        setPromoError(result.message || "Invalid promo code");
+        return;
+      }
+      setDiscount({
+        code: result.code || code,
+        label: result.label || "Discount applied",
+        amount: result.discountAmount ?? 0,
+      });
+    } catch (err) {
       setDiscount(null);
+      setPromoError(
+        err instanceof Error ? err.message : "Could not validate promo code",
+      );
+    } finally {
+      setPromoChecking(false);
     }
   }
 
@@ -131,10 +150,16 @@ export default function CheckoutPage() {
 
   const count = totalItems();
   const subtotal = totalPrice();
-  const discountAmount = discount
-    ? Math.round(subtotal * discount.pct * 100) / 100
-    : 0;
+  const discountAmount = discount?.amount ?? 0;
   const grandTotal = subtotal - discountAmount;
+
+  if (!authReady || !isLoggedIn) {
+    return (
+      <main className="min-h-screen bg-white text-zinc-900 flex items-center justify-center px-6">
+        <p className="text-zinc-500 text-sm">Loading…</p>
+      </main>
+    );
+  }
 
   /* Redirect empty cart */
   if (count === 0 && step !== "confirmed") {
@@ -189,7 +214,6 @@ export default function CheckoutPage() {
         },
         promoCode: promoCode.trim() || undefined,
       });
-
       if (paymentMethod === "pay_now") {
         const paymentUrl = result.payment?.authorizationUrl;
         if (!paymentUrl) {
@@ -727,7 +751,7 @@ export default function CheckoutPage() {
               {discount ? (
                 <div className="flex items-center justify-between border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs">
                   <span className="text-emerald-700 font-medium">
-                    {promoCode.toUpperCase()} applied ({discount.label})
+                    {discount.code} applied ({discount.label})
                   </span>
                   <button
                     onClick={removePromo}
@@ -748,13 +772,15 @@ export default function CheckoutPage() {
                     onKeyDown={(e) => e.key === "Enter" && applyPromo()}
                     placeholder="Promo code"
                     autoComplete="off"
+                    disabled={promoChecking}
                     className="flex-1 bg-zinc-50 border border-zinc-200 text-zinc-900 placeholder-zinc-400 px-3 py-2.5 text-xs focus:outline-none focus:border-zinc-400 transition-colors duration-200"
                   />
                   <button
                     onClick={applyPromo}
-                    className="border border-zinc-300 px-3 py-2.5 text-[0.6rem] tracking-widest uppercase text-zinc-600 hover:border-zinc-900 hover:text-zinc-900 transition-colors duration-200 shrink-0"
+                    disabled={promoChecking}
+                    className="border border-zinc-300 px-3 py-2.5 text-[0.6rem] tracking-widest uppercase text-zinc-600 hover:border-zinc-900 hover:text-zinc-900 transition-colors duration-200 shrink-0 disabled:opacity-50"
                   >
-                    Apply
+                    {promoChecking ? "Checking…" : "Apply"}
                   </button>
                 </div>
               )}

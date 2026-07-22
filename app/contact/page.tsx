@@ -5,6 +5,8 @@ import { motion, useInView } from "framer-motion";
 import { useRef, useState } from "react";
 import { Mail, Phone, MapPin } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
+import { submitContact } from "@/lib/api/forms";
+import { ApiError } from "@/lib/api/client";
 
 function FadeIn({
   children,
@@ -66,17 +68,30 @@ export default function ContactPage() {
   const [message, setMessage] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [formError, setFormError] = useState("");
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!name.trim() || !email.trim() || !message.trim()) return;
+    setFormError("");
     setSubmitting(true);
-    // No backend wired yet — mirrors the Inner Circle form pattern until
-    // a real "contact" endpoint exists.
-    window.setTimeout(() => {
-      setSubmitting(false);
+    try {
+      await submitContact({
+        name: name.trim(),
+        email: email.trim(),
+        topic,
+        message: message.trim(),
+      });
       setSubmitted(true);
-    }, 600);
+    } catch (err) {
+      setFormError(
+        err instanceof ApiError
+          ? err.message
+          : "Could not send your message. Please try again.",
+      );
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -249,6 +264,12 @@ export default function ContactPage() {
                       className={`${inputClass} resize-none`}
                     />
                   </div>
+
+                  {formError && (
+                    <p className="text-red-500 text-xs border border-red-400/30 bg-red-400/5 px-4 py-3">
+                      {formError}
+                    </p>
+                  )}
 
                   <button
                     type="submit"

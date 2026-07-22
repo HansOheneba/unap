@@ -8,7 +8,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Search, X } from "lucide-react";
 import AddToCartButton from "@/components/ui/add-to-cart-button";
 import { formatPrice } from "@/lib/currency";
-import { useAdminStore } from "@/lib/stores/admin-store";
+import { listCollections, type ApiCollection } from "@/lib/api/catalog";
+import { searchProductSummaries, type ProductSummary } from "@/lib/products";
 import {
   chromeTopTransition,
   getBannerOffset,
@@ -19,37 +20,49 @@ function capitalize(s: string) {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
+const SEARCH_DEBOUNCE_MS = 300;
+
 function SearchPageInner() {
   const searchParams = useSearchParams();
-  const collections = useAdminStore((s) => s.collections);
   const { visible: bannerVisible, scrollHidden } = useBannerStore();
   const bannerOffset = getBannerOffset(bannerVisible, scrollHidden);
   const stickyTop = bannerOffset + 56;
-  const allProducts = collections.flatMap((c) => c.products);
-  const categories = [
-    "All",
-    ...Array.from(new Set(allProducts.map((p) => capitalize(p.collectionId)))),
-  ];
 
   const [query, setQuery] = useState(() => searchParams.get("q") ?? "");
   const [activeCategory, setActiveCategory] = useState("All");
+  const [collections, setCollections] = useState<ApiCollection[]>([]);
+  const [results, setResults] = useState<ProductSummary[]>([]);
+  const [loading, setLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
 
-  const filtered = allProducts.filter((p) => {
-    const category = capitalize(p.collectionId);
-    const matchesCategory =
-      activeCategory === "All" || category === activeCategory;
-    const q = query.trim().toLowerCase();
-    const matchesQuery =
-      q === "" ||
-      p.name.toLowerCase().includes(q) ||
-      category.toLowerCase().includes(q);
-    return matchesCategory && matchesQuery;
-  });
+  useEffect(() => {
+    listCollections()
+      .then(setCollections)
+      .catch(() => setCollections([]));
+  }, []);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setLoading(true);
+      searchProductSummaries({
+        q: query.trim() || undefined,
+        collectionId: activeCategory === "All" ? undefined : activeCategory,
+        limit: 40,
+      })
+        .then(({ items }) => setResults(items))
+        .catch(() => setResults([]))
+        .finally(() => setLoading(false));
+    }, SEARCH_DEBOUNCE_MS);
+    return () => clearTimeout(timeoutId);
+  }, [query, activeCategory]);
+
+  const categories = ["All", ...collections.map((c) => c.slug)];
+  const categoryLabel = (slug: string) =>
+    collections.find((c) => c.slug === slug)?.subtitle ?? capitalize(slug);
 
   const hasQuery = query.trim().length > 0;
   return (
@@ -94,17 +107,17 @@ function SearchPageInner() {
       <div className="border-b border-zinc-100">
         <div className="max-w-360 mx-auto px-6 md:px-20">
           <div className="flex gap-0 overflow-x-auto scrollbar-hide">
-            {categories.map((cat) => (
+            {categories.map((slug) => (
               <button
-                key={cat}
-                onClick={() => setActiveCategory(cat)}
+                key={slug}
+                onClick={() => setActiveCategory(slug)}
                 className={`shrink-0 px-5 py-4 text-[0.65rem] tracking-[0.35em] uppercase font-semibold border-b-2 transition-colors duration-200 ${
-                  activeCategory === cat
+                  activeCategory === slug
                     ? "border-zinc-900 text-zinc-900"
                     : "border-transparent text-zinc-400 hover:text-zinc-600"
                 }`}
               >
-                {cat}
+                {slug === "All" ? "All" : categoryLabel(slug)}
               </button>
             ))}
           </div>
@@ -114,21 +127,21 @@ function SearchPageInner() {
       {/* Result count */}
       <div className="max-w-360 mx-auto px-6 md:px-20 py-8">
         <p className="text-[0.65rem] tracking-[0.35em] uppercase text-zinc-400">
-          {hasQuery || activeCategory !== "All"
-            ? `${filtered.length} result${filtered.length !== 1 ? "s" : ""}`
-            : `${allProducts.length} products`}
+          {loading
+            ? "Searching..."
+            : `${results.length} result${results.length !== 1 ? "s" : ""}`}
         </p>
       </div>
 
       {/* Results grid */}
       <div className="max-w-360 mx-auto px-6 md:px-20 pb-32">
         <AnimatePresence mode="popLayout">
-          {filtered.length > 0 ? (
+          {results.length > 0 ? (
             <motion.div
               layout
               className="grid grid-cols-2 md:grid-cols-4 gap-px bg-zinc-100"
             >
-              {filtered.map((product) => (
+              {results.map((product) => (
                 <motion.div
                   key={product.id}
                   layout
@@ -139,11 +152,11 @@ function SearchPageInner() {
                   className="bg-white group flex flex-col"
                 >
                   <Link
-                    href={`/collections/${product.collectionId}/${product.slug}`}
+                    href={`/collections/${product.category}/${product.slug}`}
                     className="relative aspect-3/4 overflow-hidden block"
                   >
                     <Image
-                      src={product.images[0]}
+                      src={product.image}
                       alt={product.name}
                       fill
                       className="object-cover transition-transform duration-700 group-hover:scale-105"
@@ -153,7 +166,7 @@ function SearchPageInner() {
                   <div className="p-4 flex flex-col gap-3 flex-1">
                     <div>
                       <p className="text-[0.6rem] tracking-[0.3em] uppercase text-zinc-400 mb-1">
-                        {capitalize(product.collectionId)}
+                        {categoryLabel(product.category)}
                       </p>
                       <h5 className="text-zinc-900 text-sm font-medium leading-snug">
                         {product.name}
@@ -169,7 +182,7 @@ function SearchPageInner() {
                 </motion.div>
               ))}
             </motion.div>
-          ) : (
+          ) : !loading ? (
             <motion.div
               key="empty"
               initial={{ opacity: 0, y: 12 }}
@@ -195,7 +208,7 @@ function SearchPageInner() {
                 Clear search
               </button>
             </motion.div>
-          )}
+          ) : null}
         </AnimatePresence>
       </div>
     </main>

@@ -19,22 +19,33 @@ export default function AddToCartButton({
 }: Props) {
   const [open, setOpen] = useState(false);
   const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  const handleClick = (e: React.MouseEvent) => {
+  const handleClick = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    if (loading) return;
 
-    const resolved = getProductBySlug(slug);
-    if (!resolved) {
+    setLoading(true);
+    try {
+      const resolved = await getProductBySlug(slug);
+      if (!resolved) {
+        toast.error(
+          "Product unavailable",
+          "This piece is no longer in our catalog.",
+        );
+        return;
+      }
+      setProduct(resolved);
+      setOpen(true);
+    } catch (err) {
       toast.error(
-        "Product unavailable",
-        "This piece is no longer in our catalog.",
+        "Could not load product",
+        err instanceof Error ? err.message : "Please try again.",
       );
-      return;
+    } finally {
+      setLoading(false);
     }
-
-    setProduct(resolved);
-    setOpen(true);
   };
 
   return (
@@ -42,12 +53,13 @@ export default function AddToCartButton({
       <button
         type="button"
         onClick={handleClick}
+        disabled={loading}
         className={cn(
-          "w-full text-[0.6rem] tracking-widest uppercase border border-zinc-900 text-zinc-900 py-2.5 hover:bg-zinc-900 hover:text-white transition-colors",
+          "w-full text-[0.6rem] tracking-widest uppercase border border-zinc-900 text-zinc-900 py-2.5 hover:bg-zinc-900 hover:text-white transition-colors disabled:opacity-50",
           className,
         )}
       >
-        {label}
+        {loading ? "Loading..." : label}
       </button>
       {product && (
         <QuickAddModal

@@ -7,14 +7,7 @@ import { useInView } from "framer-motion";
 import { useRef } from "react";
 import { buttonVariants } from "@/components/ui/button";
 import { formatPrice } from "@/lib/currency";
-import { CATALOG_PRODUCTS } from "@/lib/data/catalog";
-
-const featured = [
-  CATALOG_PRODUCTS.find((p) => p.slug === "street-sovereign-track-set"),
-  CATALOG_PRODUCTS.find((p) => p.slug === "shadow-cargo-pant"),
-  CATALOG_PRODUCTS.find((p) => p.slug === "outlaw-i"),
-  CATALOG_PRODUCTS.find((p) => p.slug === "bold-society-cap"),
-].filter(Boolean) as typeof CATALOG_PRODUCTS;
+import type { ProductSummary } from "@/lib/products";
 
 function FadeIn({
   children,
@@ -40,8 +33,15 @@ function FadeIn({
   );
 }
 
-export default function CollectionsPreview() {
-  const hero = featured[0];
+type Props = {
+  products: ProductSummary[];
+};
+
+export default function CollectionsPreview({ products }: Props) {
+  const hero = products[0];
+  const rest = products.slice(1);
+
+  if (!hero) return null;
 
   return (
     <section className="bg-white text-zinc-900 py-32 px-8 md:px-20">
@@ -59,52 +59,50 @@ export default function CollectionsPreview() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-12 gap-px bg-zinc-100">
-          {hero && (
-            <FadeIn className="md:col-span-7 bg-white group">
-              <Link
-                href={`/collections/${hero.collectionId}/${hero.slug}`}
-                className="block relative w-full"
-                style={{ aspectRatio: "3/4" }}
-              >
-                <Image
-                  src={hero.images[0]}
-                  alt={hero.name}
-                  fill
-                  className="object-cover brightness-90 group-hover:brightness-100 transition-[filter] duration-700"
-                />
-                <span className="absolute top-6 left-6 eyebrow text-white/70 capitalize">
-                  {hero.collectionId.replace("-", " ")}
-                </span>
-              </Link>
-              <div className="flex items-center justify-between px-6 py-5 bg-white border-t border-zinc-100">
-                <h5 className="text-zinc-900">{hero.name}</h5>
-                <span className="text-base font-semibold text-zinc-900 tabular-nums shrink-0">
-                  {formatPrice(hero.price)}
-                </span>
-              </div>
-            </FadeIn>
-          )}
+          <FadeIn className="md:col-span-7 bg-white group">
+            <Link
+              href={`/collections/${hero.category}/${hero.slug}`}
+              className="block relative w-full"
+              style={{ aspectRatio: "3/4" }}
+            >
+              <Image
+                src={hero.image}
+                alt={hero.name}
+                fill
+                className="object-cover brightness-90 group-hover:brightness-100 transition-[filter] duration-700"
+              />
+              <span className="absolute top-6 left-6 eyebrow text-white/70 capitalize">
+                {hero.category.replace("-", " ")}
+              </span>
+            </Link>
+            <div className="flex items-center justify-between px-6 py-5 bg-white border-t border-zinc-100">
+              <h5 className="text-zinc-900">{hero.name}</h5>
+              <span className="text-base font-semibold text-zinc-900 tabular-nums shrink-0">
+                {formatPrice(hero.price)}
+              </span>
+            </div>
+          </FadeIn>
 
           <div className="md:col-span-5 flex flex-col gap-px bg-zinc-100">
-            {featured.slice(1).map((product, i) => (
+            {rest.map((product, i) => (
               <FadeIn
                 key={product.slug}
                 delay={0.1 * (i + 1)}
                 className="bg-white group"
               >
                 <Link
-                  href={`/collections/${product.collectionId}/${product.slug}`}
+                  href={`/collections/${product.category}/${product.slug}`}
                   className="block relative w-full"
                   style={{ aspectRatio: "4/3" }}
                 >
                   <Image
-                    src={product.images[0]}
+                    src={product.image}
                     alt={product.name}
                     fill
                     className="object-cover brightness-85 group-hover:brightness-100 transition-[filter] duration-700"
                   />
                   <span className="absolute top-4 left-4 eyebrow text-white/70 capitalize">
-                    {product.collectionId.replace("-", " ")}
+                    {product.category.replace("-", " ")}
                   </span>
                 </Link>
                 <div className="flex items-center justify-between px-5 py-4 bg-white border-t border-zinc-100">

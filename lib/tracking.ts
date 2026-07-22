@@ -1,10 +1,8 @@
 /**
- * MOCK TRACKING LIBRARY
- * ─────────────────────
- * This is a placeholder until a real shipping API (e.g. AfterShip, EasyPost,
- * ShipStation) is integrated. Swap out `lookupTrackingNumber` with a real
- * API call and keep the same return shape — the UI will work without changes.
+ * Order shipment tracking. Backed by the real `GET /tracking/:trackingNumber`
+ * endpoint (public, no auth required) — see docs/frontend-api-spec.json.
  */
+import { apiRequest } from "@/lib/api/client";
 
 export type TrackingStatus =
   | "processing"
@@ -25,7 +23,7 @@ export interface OrderItem {
   name: string;
   variant: string;
   qty: number;
-  price: string;
+  price: number;
 }
 
 export interface TrackingResult {
@@ -49,239 +47,47 @@ export interface TrackingResult {
   events: TrackingEvent[];
 }
 
-/* ── Mock data keyed by tracking number ─────────────────────── */
-const mockOrders: Record<
-  string,
-  Omit<TrackingResult, "found" | "trackingNumber">
-> = {
-  "UNAP-000001": {
-    carrier: "DHL Express",
-    estimatedDelivery: "May 10, 2026",
-    lastUpdated: "May 7, 2026, 6:14 AM",
-    status: "in_transit",
-    statusLabel: "In Transit",
-    customerName: "Hans Müller",
-    customerContact: "+233 20 000 0001",
-    deliveryAddress: "14 Independence Ave, Osu, Accra, Greater Accra",
-    destination: "Accra, Ghana",
-    orderDate: "May 4, 2026",
-    orderItems: [
-      {
-        name: "Unapologetic Classic Tee",
-        variant: "Black / L",
-        qty: 1,
-        price: "$65",
-      },
-      { name: "UNAP Structured Cap", variant: "Black", qty: 1, price: "$45" },
-    ],
-    events: [
-      {
-        date: "2026-05-07",
-        time: "6:14 AM",
-        location: "Frankfurt, Germany",
-        description: "Departed sort facility. En route to destination",
-      },
-      {
-        date: "2026-05-06",
-        time: "11:30 PM",
-        location: "Frankfurt, Germany",
-        description: "Arrived at sort facility",
-      },
-      {
-        date: "2026-05-05",
-        time: "2:00 PM",
-        location: "London, UK",
-        description: "Shipment picked up by carrier",
-      },
-      {
-        date: "2026-05-04",
-        time: "10:00 AM",
-        location: "London Warehouse, UK",
-        description: "Order packed and ready for pickup",
-      },
-    ],
-  },
-  "UNAP-000002": {
-    carrier: "FedEx International",
-    estimatedDelivery: "May 8, 2026",
-    lastUpdated: "May 7, 2026, 8:05 AM",
-    status: "out_for_delivery",
-    statusLabel: "Out for Delivery",
-    customerName: "Adaeze Okonkwo",
-    customerContact: "+234 80 000 0002",
-    deliveryAddress: "22 Victoria Island Blvd, Eti-Osa, Lagos",
-    destination: "Lagos, Nigeria",
-    orderDate: "May 2, 2026",
-    orderItems: [
-      {
-        name: "UNAP Oversized Hoodie",
-        variant: "Chalk White / M",
-        qty: 1,
-        price: "$120",
-      },
-      {
-        name: "Unapologetic Track Pants",
-        variant: "Black / M",
-        qty: 1,
-        price: "$95",
-      },
-    ],
-    events: [
-      {
-        date: "2026-05-07",
-        time: "8:05 AM",
-        location: "Lagos, Nigeria",
-        description: "Out for delivery. Expected by end of day",
-      },
-      {
-        date: "2026-05-07",
-        time: "5:30 AM",
-        location: "Lagos Hub, Nigeria",
-        description: "Arrived at delivery facility",
-      },
-      {
-        date: "2026-05-05",
-        time: "3:20 PM",
-        location: "Dubai, UAE",
-        description: "In transit to destination country",
-      },
-      {
-        date: "2026-05-04",
-        time: "8:00 AM",
-        location: "Dubai, UAE",
-        description: "Cleared customs",
-      },
-      {
-        date: "2026-05-03",
-        time: "9:00 AM",
-        location: "New York, USA",
-        description: "Shipment picked up by carrier",
-      },
-    ],
-  },
-  "UNAP-000003": {
-    carrier: "DHL Express",
-    estimatedDelivery: "May 5, 2026",
-    lastUpdated: "May 5, 2026, 1:47 PM",
-    status: "delivered",
-    statusLabel: "Delivered",
-    customerName: "Ama Owusu",
-    customerContact: "+233 24 000 0003",
-    deliveryAddress: "8 Prempeh II St, Adum, Kumasi, Ashanti Region",
-    destination: "Kumasi, Ghana",
-    orderDate: "Apr 29, 2026",
-    orderItems: [
-      {
-        name: "UNAP Wayfarer Sunglasses",
-        variant: "Matte Black",
-        qty: 1,
-        price: "$85",
-      },
-      {
-        name: "Unapologetic Classic Tee",
-        variant: "White / S",
-        qty: 2,
-        price: "$65",
-      },
-    ],
-    events: [
-      {
-        date: "2026-05-05",
-        time: "1:47 PM",
-        location: "Kumasi, Ghana",
-        description: "Delivered. Signed for by recipient",
-      },
-      {
-        date: "2026-05-05",
-        time: "7:00 AM",
-        location: "Kumasi, Ghana",
-        description: "Out for delivery",
-      },
-      {
-        date: "2026-05-04",
-        time: "6:15 PM",
-        location: "Accra, Ghana",
-        description: "Arrived at destination country facility",
-      },
-      {
-        date: "2026-05-03",
-        time: "9:40 AM",
-        location: "Accra, Ghana",
-        description: "Cleared customs",
-      },
-      {
-        date: "2026-05-02",
-        time: "11:00 AM",
-        location: "Amsterdam, Netherlands",
-        description: "Shipment picked up by carrier",
-      },
-    ],
-  },
-  "UNAP-000004": {
-    carrier: "UPS Standard",
-    estimatedDelivery: "May 12, 2026",
-    lastUpdated: "May 7, 2026, 10:00 AM",
-    status: "processing",
-    statusLabel: "Processing",
-    customerName: "Emeka Nwosu",
-    customerContact: "+234 70 000 0004",
-    deliveryAddress: "5 Cadastral Zone, Wuse 2, Abuja, FCT",
-    destination: "Abuja, Nigeria",
-    orderDate: "May 7, 2026",
-    orderItems: [
-      {
-        name: "UNAP Structured Cap",
-        variant: "Olive / One Size",
-        qty: 1,
-        price: "$45",
-      },
-    ],
-    events: [
-      {
-        date: "2026-05-07",
-        time: "10:00 AM",
-        location: "London Warehouse, UK",
-        description: "Order received and being processed",
-      },
-    ],
-  },
+const NOT_FOUND: Omit<TrackingResult, "trackingNumber"> = {
+  found: false,
+  carrier: "",
+  estimatedDelivery: null,
+  lastUpdated: "",
+  status: "exception",
+  statusLabel: "Not Found",
+  customerName: "",
+  customerContact: "",
+  deliveryAddress: "",
+  destination: "",
+  orderDate: "",
+  orderItems: [],
+  events: [],
 };
 
-/* ── Public API ──────────────────────────────────────────────── */
-
-/**
- * Look up a tracking number.
- * Replace the body of this function with a real API call when ready.
- */
 export async function lookupTrackingNumber(
   trackingNumber: string,
 ): Promise<TrackingResult> {
-  // Simulate network latency
-  await new Promise((res) => setTimeout(res, 900));
-
   const key = trackingNumber.trim().toUpperCase();
-  const order = mockOrders[key];
+  if (!key) return { ...NOT_FOUND, trackingNumber: key };
 
-  if (!order) {
+  try {
+    const result = await apiRequest<Partial<TrackingResult>>(
+      `/tracking/${encodeURIComponent(key)}`,
+      { cache: "no-store" },
+    );
+    if (!result || result.found === false) {
+      return { ...NOT_FOUND, trackingNumber: result?.trackingNumber || key };
+    }
     return {
-      found: false,
-      trackingNumber: key,
-      carrier: "",
-      estimatedDelivery: null,
-      lastUpdated: "",
-      status: "exception",
-      statusLabel: "Not Found",
-      customerName: "",
-      customerContact: "",
-      deliveryAddress: "",
-      destination: "",
-      orderDate: "",
-      orderItems: [],
-      events: [],
+      ...NOT_FOUND,
+      ...result,
+      found: true,
+      trackingNumber: result.trackingNumber || key,
+      orderItems: result.orderItems ?? [],
+      events: result.events ?? [],
     };
+  } catch {
+    return { ...NOT_FOUND, trackingNumber: key };
   }
-
-  return { found: true, trackingNumber: key, ...order };
 }
 
 /** Colour + label config per status — used by the UI */

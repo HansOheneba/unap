@@ -1,19 +1,54 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
-import { mockOrders, orderStatusColor, orderStatusDot } from "@/lib/auth";
+import { orderStatusColor, orderStatusDot } from "@/lib/auth";
+import { getOrder, type ApiOrder } from "@/lib/api/orders";
+import { formatPrice } from "@/lib/currency";
 import { buttonVariants } from "@/components/ui/button";
 
 export default function OrderDetailPage() {
   const { id } = useParams<{ id: string }>();
-  const order = mockOrders.find((o) => o.id === id);
+  const [order, setOrder] = useState<ApiOrder | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  if (!order) {
+  useEffect(() => {
+    if (!id) return;
+    let active = true;
+    setLoading(true);
+    setError(null);
+    getOrder(id)
+      .then((data) => {
+        if (active) setOrder(data);
+      })
+      .catch(() => {
+        if (active) setError("We couldn't find that order.");
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, [id]);
+
+  if (loading) {
+    return (
+      <main className="min-h-screen bg-white text-zinc-900 flex items-center justify-center px-6">
+        <p className="text-zinc-500 text-sm">Loading order…</p>
+      </main>
+    );
+  }
+
+  if (error || !order) {
     return (
       <main className="min-h-screen bg-white text-zinc-900 flex flex-col items-center justify-center gap-5 px-6">
-        <p className="text-zinc-500 text-sm">Order not found.</p>
+        <p className="text-zinc-500 text-sm">
+          {error || "Order not found."}
+        </p>
         <Link
           href="/account"
           className={buttonVariants({ variant: "outline", size: "sm" })}
@@ -43,16 +78,18 @@ export default function OrderDetailPage() {
               Order
             </p>
             <h1 className="text-2xl font-medium tracking-tight">{order.id}</h1>
-            <p className="text-zinc-500 text-sm mt-1">Placed {order.date}</p>
+            {order.date && (
+              <p className="text-zinc-500 text-sm mt-1">Placed {order.date}</p>
+            )}
           </div>
           <div
-            className={`flex items-center gap-2 ${orderStatusColor[order.status]}`}
+            className={`flex items-center gap-2 ${orderStatusColor[order.status] ?? "text-zinc-700"}`}
           >
             <span
-              className={`w-2 h-2 rounded-full ${orderStatusDot[order.status]}`}
+              className={`w-2 h-2 rounded-full ${orderStatusDot[order.status] ?? "bg-zinc-400"}`}
             />
             <span className="text-[0.65rem] tracking-widest uppercase font-medium">
-              {order.statusLabel}
+              {order.statusLabel || order.status}
             </span>
           </div>
         </div>
@@ -75,7 +112,9 @@ export default function OrderDetailPage() {
                       {item.variant} · Qty {item.qty}
                     </p>
                   </div>
-                  <p className="text-zinc-900 text-sm shrink-0">{item.price}</p>
+                  <p className="text-zinc-900 text-sm shrink-0">
+                    {formatPrice(item.price)}
+                  </p>
                 </div>
               ))}
             </div>
@@ -83,30 +122,34 @@ export default function OrderDetailPage() {
             {/* Total */}
             <div className="border-t border-zinc-100 pt-4 flex justify-between text-sm">
               <span className="text-zinc-500">Order Total</span>
-              <span className="text-zinc-900 font-medium">{order.total}</span>
+              <span className="text-zinc-900 font-medium">
+                {formatPrice(order.total)}
+              </span>
             </div>
           </div>
 
           {/* Sidebar */}
           <div className="flex flex-col gap-5">
             {/* Tracking */}
-            <div className="border border-zinc-100 p-5">
-              <p className="text-[0.6rem] tracking-widest uppercase text-zinc-500 mb-3">
-                Tracking
-              </p>
-              <p className="text-zinc-900 text-sm font-mono mb-3">
-                {order.trackingNumber}
-              </p>
-              <Link
-                href={`/tracking?q=${order.trackingNumber}`}
-                className={
-                  buttonVariants({ variant: "outline", size: "sm" }) +
-                  " w-full justify-center"
-                }
-              >
-                Track Shipment
-              </Link>
-            </div>
+            {order.trackingNumber && (
+              <div className="border border-zinc-100 p-5">
+                <p className="text-[0.6rem] tracking-widest uppercase text-zinc-500 mb-3">
+                  Tracking
+                </p>
+                <p className="text-zinc-900 text-sm font-mono mb-3">
+                  {order.trackingNumber}
+                </p>
+                <Link
+                  href={`/tracking?q=${order.trackingNumber}`}
+                  className={
+                    buttonVariants({ variant: "outline", size: "sm" }) +
+                    " w-full justify-center"
+                  }
+                >
+                  Track Shipment
+                </Link>
+              </div>
+            )}
 
             {/* Status timeline */}
             <div className="border border-zinc-100 p-5">
@@ -123,9 +166,11 @@ export default function OrderDetailPage() {
                 ] as const
               ).map((step, i, arr) => {
                 const statuses = arr.map((s) => s.key);
-                const currentIdx = statuses.indexOf(order.status);
+                const currentIdx = statuses.indexOf(
+                  order.status as (typeof statuses)[number],
+                );
                 const stepIdx = i;
-                const isDone = stepIdx <= currentIdx;
+                const isDone = currentIdx >= 0 && stepIdx <= currentIdx;
                 const isCurrent = stepIdx === currentIdx;
                 return (
                   <div

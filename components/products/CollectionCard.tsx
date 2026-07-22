@@ -5,13 +5,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { formatPrice } from "@/lib/currency";
 import { cn } from "@/lib/utils";
-import type { Product } from "@/lib/products";
+import { getProductBySlug, type Product, type ProductSummary } from "@/lib/products";
 import QuickAddModal from "./QuickAddModal";
 import WishlistButton from "@/components/ui/wishlist-button";
 import { useWishlistStore } from "@/lib/stores/wishlist-store";
+import { toast } from "@/lib/stores/toast-store";
 
 type Props = {
-  product: Product;
+  product: ProductSummary;
   /** Label shown above the product name, e.g. "Boxers", "Head Wears" */
   categoryLabel: string;
   /** Extra Tailwind classes applied to the <Image> element, e.g. "object-top" */
@@ -30,17 +31,38 @@ export default function CollectionCard({
   large = false,
 }: Props) {
   const [modalOpen, setModalOpen] = useState(false);
+  const [quickAddProduct, setQuickAddProduct] = useState<Product | null>(null);
+  const [loadingQuickAdd, setLoadingQuickAdd] = useState(false);
   const href = `/collections/${product.category}/${product.slug}`;
   const isWishlisted = useWishlistStore((s) =>
-    s.items.some((i) => i.id === product.id),
+    s.has(product.id, product.slug),
   );
   const wishlistItem = {
     id: product.id,
     name: product.name,
     price: product.price,
-    img: product.variants[0].images[0],
+    img: product.image,
     category: product.category,
     slug: product.slug,
+  };
+
+  const handleQuickAdd = async () => {
+    if (loadingQuickAdd) return;
+    setLoadingQuickAdd(true);
+    try {
+      const resolved = await getProductBySlug(product.slug, product.category);
+      if (!resolved) {
+        toast.error(
+          "Product unavailable",
+          "This piece is no longer in our catalog.",
+        );
+        return;
+      }
+      setQuickAddProduct(resolved);
+      setModalOpen(true);
+    } finally {
+      setLoadingQuickAdd(false);
+    }
   };
 
   return (
@@ -50,7 +72,7 @@ export default function CollectionCard({
         {/* Clicking the image navigates to the product */}
         <Link href={href} className="absolute inset-0 z-0" tabIndex={-1}>
           <Image
-            src={product.variants[0].images[0]}
+            src={product.image}
             alt={product.name}
             fill
             sizes={imageSizes}
@@ -76,10 +98,11 @@ export default function CollectionCard({
 
         {/* Quick Add button — slides up on hover */}
         <button
-          onClick={() => setModalOpen(true)}
-          className="absolute bottom-3 inset-x-3 z-20 py-2.5 bg-black/70 backdrop-blur-sm text-white text-[0.6rem] tracking-widest uppercase opacity-0 translate-y-1.5 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300"
+          onClick={handleQuickAdd}
+          disabled={loadingQuickAdd}
+          className="absolute bottom-3 inset-x-3 z-20 py-2.5 bg-black/70 backdrop-blur-sm text-white text-[0.6rem] tracking-widest uppercase opacity-0 translate-y-1.5 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 disabled:opacity-50"
         >
-          Quick Add
+          {loadingQuickAdd ? "Loading..." : "Quick Add"}
         </button>
       </div>
 
@@ -102,11 +125,13 @@ export default function CollectionCard({
         </p>
       </Link>
 
-      <QuickAddModal
-        product={product}
-        open={modalOpen}
-        onClose={() => setModalOpen(false)}
-      />
+      {quickAddProduct && (
+        <QuickAddModal
+          product={quickAddProduct}
+          open={modalOpen}
+          onClose={() => setModalOpen(false)}
+        />
+      )}
     </div>
   );
 }

@@ -18,9 +18,7 @@ type Props = {
 export default function WishlistButton({ item, className, size = 14 }: Props) {
   const router = useRouter();
   const isLoggedIn = useIsLoggedIn();
-  const wishlisted = useWishlistStore((s) =>
-    s.items.some((i) => i.id === item.id),
-  );
+  const wishlisted = useWishlistStore((s) => s.has(item.id, item.slug));
   const toggle = useWishlistStore((s) => s.toggle);
 
   return (

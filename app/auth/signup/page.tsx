@@ -12,6 +12,7 @@ import {
   type SignupData,
 } from "@/lib/auth";
 import { useOnboardingStore } from "@/lib/stores/onboarding-store";
+import { useAuthStore } from "@/lib/stores/auth-store";
 import { Button } from "@/components/ui/button";
 import OtpField from "@/components/auth/otp-field";
 
@@ -81,6 +82,7 @@ export default function SignupPage() {
     nextStep,
     prevStep,
   } = useOnboardingStore();
+  const setAuthUser = useAuthStore((s) => s.setUser);
 
   const regions = regionsByCountry[country] ?? [];
   const [step1Phase, setStep1Phase] = useState<"email" | "otp">("email");
@@ -135,10 +137,12 @@ export default function SignupPage() {
     clearErrors();
     if (!validateStep1Email()) return;
     setOtpSending(true);
-    const result = await mockSendOtp(email.trim());
+    const result = await mockSendOtp(email.trim(), "signup");
     setOtpSending(false);
     if (!result.success) {
-      setErrors({ email: "Could not send your code. Please try again." });
+      setErrors({
+        email: result.message || "Could not send your code. Please try again.",
+      });
       return;
     }
     setOtp("");
@@ -150,11 +154,19 @@ export default function SignupPage() {
     clearErrors();
     if (!validateStep1Otp()) return;
     setOtpSending(true);
-    const result = await mockVerifyOtp(email.trim(), otp);
+    const result = await mockVerifyOtp(email.trim(), otp, "signup");
     setOtpSending(false);
     if (!result.success) {
-      setErrors({ otp: "Invalid or expired code. Please try again." });
+      setErrors({
+        otp: result.message || "Invalid or expired code. Please try again.",
+      });
       return;
+    }
+    // httpOnly session cookies were already minted server-side by the proxy.
+    if (result.apiUser) {
+      setAuthUser(result.apiUser);
+    } else {
+      await useAuthStore.getState().hydrate();
     }
     nextStep();
   };
@@ -176,8 +188,15 @@ export default function SignupPage() {
       googleMapsLink,
       whatsapp: sameAsPhone ? phone : whatsapp,
     };
-    await mockSignup(data);
+    const result = await mockSignup({ ...data, agreedToTerms: agreed });
     setLoading(false);
+    if (!result.success) {
+      setErrors({
+        address: result.message || "Could not complete signup. Please try again.",
+      });
+      return;
+    }
+    if (result.apiUser) setAuthUser(result.apiUser);
     nextStep();
   };
 
@@ -421,8 +440,16 @@ export default function SignupPage() {
                 onClick={async () => {
                   clearErrors();
                   setOtpSending(true);
-                  await mockSendOtp(email.trim());
+                  const result = await mockSendOtp(email.trim(), "signup");
                   setOtpSending(false);
+                  if (!result.success) {
+                    setErrors({
+                      otp:
+                        result.message ||
+                        "Could not resend your code. Please try again.",
+                    });
+                    return;
+                  }
                   setOtp("");
                 }}
                 disabled={otpSending}

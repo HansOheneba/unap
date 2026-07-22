@@ -3,10 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
-import { getCollectionById } from "@/lib/data/catalog";
-import { getProductsByCategory } from "@/lib/products";
+import type { CollectionInfo, ProductSummary } from "@/lib/products";
 import { formatPrice } from "@/lib/currency";
 import CollectionCard from "@/components/products/CollectionCard";
 import BoxerSizeGuide from "@/components/products/BoxerSizeGuide";
@@ -15,14 +13,15 @@ import { cn } from "@/lib/utils";
 
 type Props = {
   collectionId: string;
+  collection: CollectionInfo;
+  products: ProductSummary[];
 };
 
-export default function CollectionListing({ collectionId }: Props) {
-  const collection = getCollectionById(collectionId);
-  const products = getProductsByCategory(collectionId);
-
-  if (!collection) notFound();
-
+export default function CollectionListing({
+  collectionId,
+  collection,
+  products,
+}: Props) {
   const maleProducts = products.filter((p) => p.gender === "male");
   const femaleProducts = products.filter((p) => p.gender === "female");
   const hasGenderSplit = maleProducts.length > 0 && femaleProducts.length > 0;
@@ -98,7 +97,22 @@ export default function CollectionListing({ collectionId }: Props) {
         </div>
       )}
 
-      {accessoryGroups ? (
+      {products.length === 0 ? (
+        <div
+          className={cn(
+            COLLECTIONS_CONTAINER,
+            "pt-16 pb-32 flex flex-col items-center text-center gap-3",
+          )}
+        >
+          <p className="text-zinc-900 text-lg font-light">
+            Nothing here yet.
+          </p>
+          <p className="text-zinc-400 text-sm max-w-xs leading-relaxed">
+            New pieces for {collection.subtitle} are on the way. Check back
+            soon.
+          </p>
+        </div>
+      ) : accessoryGroups ? (
         <div
           className={cn(
             COLLECTIONS_CONTAINER,
@@ -171,7 +185,7 @@ function ProductSection({
 }: {
   label: string;
   count: number;
-  products: ReturnType<typeof getProductsByCategory>;
+  products: ProductSummary[];
   categoryLabel: string;
   className?: string;
   large?: boolean;

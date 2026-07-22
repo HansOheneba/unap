@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -12,50 +12,24 @@ import AddToCartButton from "@/components/ui/add-to-cart-button";
 import { Button, buttonVariants } from "@/components/ui/button";
 import ConfirmDialog from "@/components/ui/confirm-dialog";
 import { toast } from "@/lib/stores/toast-store";
-
-const featured = [
-  {
-    id: "bold-society-cap",
-    name: "Bold Society Cap",
-    price: 380,
-    img: "/collections/headwear/boldSocietyCapBlack.jpeg",
-    category: "Accessories",
-    href: "/collections/accessories/bold-society-cap",
-  },
-  {
-    id: "outlaw-i",
-    name: "Outlaw I",
-    price: 1200,
-    img: "/collections/glases/outlawGlasses1.jpg",
-    category: "Sunglasses",
-    href: "/collections/sunglasses/outlaw-i",
-  },
-  {
-    id: "no-apology-boxer-brief",
-    name: "No Apology Boxer Brief",
-    price: 280,
-    img: "/collections/boxers/boxersBlackWhite.jpeg",
-    category: "Underwear",
-    href: "/collections/underwear/no-apology-boxer-brief",
-  },
-  {
-    id: "street-sovereign-track-set",
-    name: "Street Sovereign Track Set",
-    price: 980,
-    img: "/collections/tracks/track.jpg",
-    category: "Tracksuits",
-    href: "/collections/tracksuits/street-sovereign-track-set",
-  },
-];
+import { getFeaturedProducts, type ProductSummary } from "@/lib/products";
 
 export default function CartPage() {
   const router = useRouter();
   const { items, removeItem, updateQuantity, totalItems, totalPrice } =
     useCartStore();
   const [confirmRemoveId, setConfirmRemoveId] = useState<string | null>(null);
+  const [featured, setFeatured] = useState<ProductSummary[]>([]);
 
   const count = totalItems();
   const subtotal = totalPrice();
+
+  useEffect(() => {
+    if (count > 0) return;
+    getFeaturedProducts(4)
+      .then(setFeatured)
+      .catch(() => setFeatured([]));
+  }, [count]);
 
   const removingItem = items.find((i) => i.id === confirmRemoveId);
 
@@ -120,10 +94,13 @@ export default function CartPage() {
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-zinc-100">
                   {featured.map((product) => (
                     <div key={product.id} className="bg-white group">
-                      <Link href={product.href} className="block">
+                      <Link
+                        href={`/collections/${product.category}/${product.slug}`}
+                        className="block"
+                      >
                         <div className="relative overflow-hidden aspect-3/4">
                           <Image
-                            src={product.img}
+                            src={product.image}
                             alt={product.name}
                             fill
                             sizes="(max-width: 768px) 50vw, 25vw"
@@ -131,7 +108,7 @@ export default function CartPage() {
                           />
                         </div>
                         <div className="p-4 border-t border-zinc-100">
-                          <p className="eyebrow text-zinc-400 mb-1 text-[0.55rem]">
+                          <p className="eyebrow text-zinc-400 mb-1 text-[0.55rem] capitalize">
                             {product.category}
                           </p>
                           <h5 className="text-zinc-900 text-sm">
@@ -143,7 +120,7 @@ export default function CartPage() {
                         </div>
                       </Link>
                       <div className="px-4 pb-4">
-                        <AddToCartButton slug={product.id} />
+                        <AddToCartButton slug={product.slug} />
                       </div>
                     </div>
                   ))}

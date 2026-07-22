@@ -14,6 +14,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Heart } from "lucide-react";
 import { useCartStore } from "@/lib/stores/cart-store";
 import { useWishlistStore } from "@/lib/stores/wishlist-store";
+import { useIsLoggedIn } from "@/lib/use-is-logged-in";
 import { cn } from "@/lib/utils";
 import { COLLECTIONS_CONTAINER } from "@/lib/layout/collections";
 
@@ -100,6 +101,10 @@ export default function Header() {
     s.items.reduce((sum, i) => sum + i.quantity, 0),
   );
   const wishlistCount = useWishlistStore((s) => s.items.length);
+  const isLoggedIn = useIsLoggedIn();
+  useEffect(() => {
+    if (isLoggedIn) void useWishlistStore.getState().hydrate();
+  }, [isLoggedIn]);
   const isHome = pathname === "/";
   const [heroNavBlend, setHeroNavBlend] = useState(0);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);

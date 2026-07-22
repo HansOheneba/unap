@@ -4,6 +4,8 @@ import Image from "next/image";
 import { motion, useInView } from "framer-motion";
 import { useRef, useState } from "react";
 import { Lock, CalendarDays, BookOpen, Crown } from "lucide-react";
+import { subscribeNewsletter } from "@/lib/api/forms";
+import { ApiError } from "@/lib/api/client";
 
 function FadeIn({
   children,
@@ -55,11 +57,29 @@ const privileges = [
 export default function InnerCircleSection() {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!email.trim()) return;
-    setSubmitted(true);
+    setError("");
+    setSubmitting(true);
+    try {
+      await subscribeNewsletter({
+        email: email.trim(),
+        source: "inner_circle",
+      });
+      setSubmitted(true);
+    } catch (err) {
+      setError(
+        err instanceof ApiError
+          ? err.message
+          : "Could not join right now. Please try again.",
+      );
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -189,25 +209,33 @@ export default function InnerCircleSection() {
                 </p>
               </motion.div>
             ) : (
-              <form
-                onSubmit={handleSubmit}
-                className="flex flex-col sm:flex-row gap-3"
-              >
-                <input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Your email"
-                  className="flex-1 bg-black border border-black text-white placeholder:text-white/40 px-6 py-3 text-[0.7rem] tracking-widest uppercase outline-none focus:border-white/60 transition-colors duration-300"
-                />
-                <button
-                  type="submit"
-                  className="border border-black bg-black text-white px-8 py-3 text-[0.7rem] tracking-widest uppercase hover:bg-white hover:text-black hover:border-black transition-colors duration-300 shrink-0"
+              <div className="flex flex-col gap-3">
+                <form
+                  onSubmit={handleSubmit}
+                  className="flex flex-col sm:flex-row gap-3"
                 >
-                  Join
-                </button>
-              </form>
+                  <input
+                    type="email"
+                    required
+                    autoComplete="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Your email"
+                    disabled={submitting}
+                    className="flex-1 bg-black border border-black text-white placeholder:text-white/40 px-6 py-3 text-[0.7rem] tracking-widest uppercase outline-none focus:border-white/60 transition-colors duration-300 disabled:opacity-60"
+                  />
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className="border border-black bg-black text-white px-8 py-3 text-[0.7rem] tracking-widest uppercase hover:bg-white hover:text-black hover:border-black transition-colors duration-300 shrink-0 disabled:opacity-60"
+                  >
+                    {submitting ? "Joining…" : "Join"}
+                  </button>
+                </form>
+                {error && (
+                  <p className="text-red-500 text-xs">{error}</p>
+                )}
+              </div>
             )}
           </FadeIn>
 

@@ -15,9 +15,21 @@ import {
   ChevronRight,
   X,
 } from "lucide-react";
-import { mockOrders, orderStatusPill, type UserAddress } from "@/lib/auth";
+import { orderStatusPill } from "@/lib/auth";
+import {
+  updateProfile,
+  listAddresses,
+  createAddress,
+  updateAddress,
+  deleteAddress as apiDeleteAddress,
+  setDefaultAddress as apiSetDefaultAddress,
+  type ApiAddress,
+} from "@/lib/api/users";
+import { listOrders, type ApiOrderSummary } from "@/lib/api/orders";
 import { useOnboardingStore } from "@/lib/stores/onboarding-store";
+import { useAuthStore } from "@/lib/stores/auth-store";
 import { useWishlistStore } from "@/lib/stores/wishlist-store";
+import { useAuthReady, useIsLoggedIn } from "@/lib/use-is-logged-in";
 import { Button, buttonVariants } from "@/components/ui/button";
 import ConfirmDialog from "@/components/ui/confirm-dialog";
 import AddToCartButton from "@/components/ui/add-to-cart-button";
@@ -25,6 +37,7 @@ import { toast } from "@/lib/stores/toast-store";
 import { formatPrice } from "@/lib/currency";
 import { cn } from "@/lib/utils";
 import { getStates, getLGAsByState } from "@some19ice/nigeria-geo-core";
+import { ApiError } from "@/lib/api/client";
 
 const inputCls =
   "bg-white border border-zinc-200 text-zinc-900 placeholder-zinc-400 px-4 py-3 text-sm focus:outline-none focus:border-zinc-900 transition-colors duration-200 w-full";
@@ -47,6 +60,18 @@ const MONTHS = [
 ];
 
 const SIZE_OPTIONS = ["XS", "S", "M", "L", "XL", "XXL"];
+
+const BIRTH_DAYS = Array.from({ length: 31 }, (_, i) => String(i + 1));
+const CURRENT_YEAR = new Date().getFullYear();
+const BIRTH_YEARS = Array.from({ length: 87 }, (_, i) =>
+  String(CURRENT_YEAR - 13 - i),
+);
+
+function formatOrderError(err: unknown, fallback: string) {
+  if (err instanceof ApiError) return err.message;
+  if (err instanceof Error && err.message) return err.message;
+  return fallback;
+}
 
 function Field({
   label,
@@ -86,25 +111,49 @@ function AccountPageInner() {
     return t && (VALID_TABS as string[]).includes(t) ? (t as Tab) : "orders";
   })();
   const [tab, setTab] = useState<Tab>(initialTab);
-  const orders = mockOrders;
+
+  // ── Orders ───────────────────────────────────────────────────────────
+  const [orders, setOrders] = useState<ApiOrderSummary[]>([]);
+  const [ordersLoading, setOrdersLoading] = useState(true);
+  const [ordersError, setOrdersError] = useState<string | null>(null);
 
   // ── Wishlist ─────────────────────────────────────────────────────────
   const wishlistItems = useWishlistStore((s) => s.items);
   const removeWishlist = useWishlistStore((s) => s.remove);
+
   // ── Profile edit state ──────────────────────────────────────────────
   const [editingProfile, setEditingProfile] = useState(false);
+  const [savingProfile, setSavingProfile] = useState(false);
   const [profileDraft, setProfileDraft] = useState({
     firstName: "",
     lastName: "",
-    email: "",
     phone: "",
     whatsapp: "",
     topSize: "",
     bottomSize: "",
+    birthDay: "",
+    birthMonth: "",
+    birthYear: "",
   });
 
-  // ── Address state ───────────────────────────────────────────────────
-  type AddrForm = Omit<UserAddress, "id">;
+  // ── Address state (backed by /users/me/addresses) ────────────────────
+  type AddrForm = {
+    label: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    country: string;
+    region: string;
+    city: string;
+    district: string;
+    address: string;
+    address2: string;
+    googleMapsLink: string;
+    phone: string;
+    postcode: string;
+    whatsapp: string;
+    isDefault: boolean;
+  };
   const ADDR_BLANK: AddrForm = {
     label: "Home",
     firstName: "",
@@ -122,7 +171,10 @@ function AccountPageInner() {
     whatsapp: "",
     isDefault: false,
   };
+  const [addresses, setAddresses] = useState<ApiAddress[]>([]);
+  const [addressesLoading, setAddressesLoading] = useState(true);
   const [addingAddress, setAddingAddress] = useState(false);
+  const [savingAddress, setSavingAddress] = useState(false);
   const [editingAddressId, setEditingAddressId] = useState<string | null>(null);
   const [addrForm, setAddrForm] = useState<AddrForm>(ADDR_BLANK);
   const [addrErrors, setAddrErrors] = useState<Record<string, string>>({});
@@ -177,86 +229,114 @@ function AccountPageInner() {
     string | null
   >(null);
 
-  const {
-    firstName,
-    lastName,
-    email,
-    phone,
-    whatsapp,
-    sameAsPhone,
-    country,
-    region,
-    city,
-    address,
-    googleMapsLink,
-    birthDay,
-    birthMonth,
-    birthYear,
-    topSize,
-    bottomSize,
-    setField,
-    reset,
-  } = useOnboardingStore();
+  const { reset } = useOnboardingStore();
 
-  // Local addresses list seeded from onboarding store delivery info
-  const [addresses, setAddresses] = useState<UserAddress[]>(() =>
-    address
-      ? [
-          {
-            id: "addr_001",
-            label: "Home",
-            firstName,
-            lastName,
-            email,
-            country,
-            region,
-            city,
-            district: "",
-            address,
-            address2: "",
-            googleMapsLink,
-            phone,
-            postcode: "",
-            whatsapp: sameAsPhone ? phone : whatsapp,
-            isDefault: true,
-          },
-        ]
-      : [],
-  );
+  const authReady = useAuthReady();
+  const isLoggedIn = useIsLoggedIn();
+  const authUser = useAuthStore((s) => s.user);
+  const setAuthUser = useAuthStore((s) => s.setUser);
 
-  /* ── Auth guard ── */
+  // Profile fields come straight from the server session (`/auth/me`),
+  // which is the same `User` record served by `GET /users/me`.
+  const firstName = authUser?.firstName || "";
+  const lastName = authUser?.lastName || "";
+  const email = authUser?.email || "";
+  const phone = authUser?.phone || "";
+  const whatsapp = authUser?.whatsapp || "";
+  const country = authUser?.country || "";
+  const birthDay = authUser?.birthDay || "";
+  const birthMonth = authUser?.birthMonth || "";
+  const birthYear = authUser?.birthYear || "";
+  const topSize = authUser?.topSize || "";
+  const bottomSize = authUser?.bottomSize || "";
+
+  /* ── Auth guard: wait for the server session check before redirecting ── */
   useEffect(() => {
-    if (!email) {
+    if (!authReady) return;
+    if (!isLoggedIn) {
       const nextUrl = tab === "orders" ? "/account" : `/account?tab=${tab}`;
       router.replace(`/auth/login?next=${encodeURIComponent(nextUrl)}`);
     }
-  }, [email, router, tab]);
+  }, [authReady, isLoggedIn, router, tab]);
 
-  if (!email) return null;
+  /* ── Load orders + addresses from the API once authenticated ── */
+  useEffect(() => {
+    if (!authReady || !isLoggedIn) return;
+    let active = true;
+
+    setOrdersLoading(true);
+    setOrdersError(null);
+    listOrders()
+      .then((data) => {
+        if (active) setOrders(Array.isArray(data) ? data : []);
+      })
+      .catch((err) => {
+        if (active)
+          setOrdersError(formatOrderError(err, "Could not load your orders."));
+      })
+      .finally(() => {
+        if (active) setOrdersLoading(false);
+      });
+
+    setAddressesLoading(true);
+    listAddresses()
+      .then((data) => {
+        if (active) setAddresses(data);
+      })
+      .catch(() => {
+        if (active) toast.error("Could not load your saved addresses.");
+      })
+      .finally(() => {
+        if (active) setAddressesLoading(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [authReady, isLoggedIn]);
+
+  if (!authReady || !isLoggedIn) return null;
 
   // ── Profile handlers ─────────────────────────────────────────────────
   function openEditProfile() {
     setProfileDraft({
       firstName,
       lastName,
-      email,
       phone,
-      whatsapp: sameAsPhone ? phone : whatsapp,
+      whatsapp,
       topSize,
       bottomSize,
+      birthDay,
+      birthMonth,
+      birthYear,
     });
     setEditingProfile(true);
   }
-  function saveProfile() {
-    setField("firstName", profileDraft.firstName);
-    setField("lastName", profileDraft.lastName);
-    setField("email", profileDraft.email);
-    setField("phone", profileDraft.phone || "+");
-    setField("whatsapp", profileDraft.whatsapp || "+");
-    setField("topSize", profileDraft.topSize);
-    setField("bottomSize", profileDraft.bottomSize);
-    setEditingProfile(false);
-    toast.success("Profile updated", "Your account details have been saved.");
+  async function saveProfile() {
+    setSavingProfile(true);
+    try {
+      const updated = await updateProfile({
+        firstName: profileDraft.firstName,
+        lastName: profileDraft.lastName,
+        phone: profileDraft.phone || undefined,
+        whatsapp: profileDraft.whatsapp || undefined,
+        topSize: profileDraft.topSize || undefined,
+        bottomSize: profileDraft.bottomSize || undefined,
+        birthDay: profileDraft.birthDay || undefined,
+        birthMonth: profileDraft.birthMonth || undefined,
+        birthYear: profileDraft.birthYear || undefined,
+      });
+      if (updated) setAuthUser(updated);
+      setEditingProfile(false);
+      toast.success("Profile updated", "Your account details have been saved.");
+    } catch (err) {
+      toast.error(
+        "Could not update profile",
+        formatOrderError(err, "Please try again."),
+      );
+    } finally {
+      setSavingProfile(false);
+    }
   }
 
   // ── Address handlers ─────────────────────────────────────────────────
@@ -280,85 +360,102 @@ function AccountPageInner() {
     setEditingAddressId(null);
     setAddingAddress(true);
   }
-  function openEditAddress(addr: UserAddress) {
+  function openEditAddress(addr: ApiAddress) {
     setAddrForm({
-      label: addr.label,
+      label: addr.label || "Home",
       firstName: addr.firstName,
       lastName: addr.lastName,
-      email: addr.email,
+      email: addr.email || "",
       country: addr.country,
-      region: addr.region,
+      region: addr.region || "",
       city: addr.city,
-      district: addr.district,
+      district: addr.district || "",
       address: addr.address,
-      address2: addr.address2,
-      googleMapsLink: addr.googleMapsLink,
+      address2: addr.address2 || "",
+      googleMapsLink: addr.googleMapsLink || "",
       phone: addr.phone,
-      postcode: addr.postcode,
-      whatsapp: addr.whatsapp,
-      isDefault: addr.isDefault,
+      postcode: addr.postcode || "",
+      whatsapp: addr.whatsapp || "",
+      isDefault: Boolean(addr.isDefault),
     });
     setAddrErrors({});
     setEditingAddressId(addr.id);
     setAddingAddress(true);
   }
-  function saveAddress() {
+  async function saveAddress() {
     if (!validateAddr()) return;
     const isEdit = !!editingAddressId;
-    if (editingAddressId) {
-      setAddresses((prev) =>
-        prev.map((a) => {
-          if (a.id !== editingAddressId) {
-            return addrForm.isDefault ? { ...a, isDefault: false } : a;
-          }
-          return { ...a, ...addrForm };
-        }),
-      );
-    } else {
-      const isFirst = addresses.length === 0;
-      const newAddr: UserAddress = {
-        ...addrForm,
-        id: `addr_${Date.now()}`,
-        isDefault: isFirst || addrForm.isDefault,
-      };
-      if (newAddr.isDefault) {
-        setAddresses((prev) => [
-          ...prev.map((a) => ({ ...a, isDefault: false })),
-          newAddr,
-        ]);
+    setSavingAddress(true);
+    try {
+      if (editingAddressId) {
+        const updated = await updateAddress(editingAddressId, addrForm);
+        setAddresses((prev) =>
+          prev.map((a) => {
+            if (a.id !== editingAddressId) {
+              return addrForm.isDefault ? { ...a, isDefault: false } : a;
+            }
+            return updated;
+          }),
+        );
       } else {
-        setAddresses((prev) => [...prev, newAddr]);
+        const created = await createAddress({
+          ...addrForm,
+          isDefault: addresses.length === 0 || addrForm.isDefault,
+        });
+        setAddresses((prev) =>
+          created.isDefault
+            ? [...prev.map((a) => ({ ...a, isDefault: false })), created]
+            : [...prev, created],
+        );
       }
+      setAddingAddress(false);
+      toast.success(
+        isEdit ? "Address updated" : "Address saved",
+        `${addrForm.label || "Address"} \u00b7 ${addrForm.city || addrForm.country}`,
+      );
+    } catch (err) {
+      toast.error(
+        "Could not save address",
+        formatOrderError(err, "Please try again."),
+      );
+    } finally {
+      setSavingAddress(false);
     }
-    setAddingAddress(false);
-    toast.success(
-      isEdit ? "Address updated" : "Address saved",
-      `${addrForm.label || "Address"} \u00b7 ${addrForm.city || addrForm.country}`,
-    );
   }
-  function deleteAddress(id: string) {
+  async function deleteAddress(id: string) {
     const addr = addresses.find((a) => a.id === id);
-    setAddresses((prev) => {
-      const filtered = prev.filter((a) => a.id !== id);
-      if (filtered.length > 0 && !filtered.some((a) => a.isDefault)) {
-        filtered[0].isDefault = true;
-      }
-      return filtered;
-    });
-    toast.info(
-      "Address removed",
-      addr ? `${addr.label} is no longer saved.` : undefined,
-    );
+    try {
+      await apiDeleteAddress(id);
+      setAddresses((prev) => prev.filter((a) => a.id !== id));
+      toast.info(
+        "Address removed",
+        addr ? `${addr.label} is no longer saved.` : undefined,
+      );
+    } catch (err) {
+      toast.error(
+        "Could not remove address",
+        formatOrderError(err, "Please try again."),
+      );
+    }
   }
-  function setDefaultAddress(id: string) {
-    setAddresses((prev) => prev.map((a) => ({ ...a, isDefault: a.id === id })));
-    toast.success("Default address updated");
+  async function setDefaultAddress(id: string) {
+    try {
+      await apiSetDefaultAddress(id);
+      setAddresses((prev) =>
+        prev.map((a) => ({ ...a, isDefault: a.id === id })),
+      );
+      toast.success("Default address updated");
+    } catch (err) {
+      toast.error(
+        "Could not update default address",
+        formatOrderError(err, "Please try again."),
+      );
+    }
   }
 
   async function handleSignOut() {
     setSigningOut(true);
-    // Brief pause so the user perceives the action
-    await new Promise((r) => setTimeout(r, 400));
+    await useAuthStore.getState().signOut();
     reset();
     setConfirmSignOut(false);
     setSigningOut(false);
@@ -405,18 +502,24 @@ function AccountPageInner() {
     { label: "Last Name", value: lastName },
     { label: "Email", value: email },
     { label: "Phone", value: phone },
-    { label: "WhatsApp", value: sameAsPhone ? phone : whatsapp },
-    { label: "Country", value: country },
+    { label: "WhatsApp", value: whatsapp },
+    ...(country ? [{ label: "Country", value: country }] : []),
     ...(birthDay && birthMonth && birthYear
       ? [
           {
             label: "Birthday",
-            value: `${MONTHS[parseInt(birthMonth) - 1] ?? birthMonth} ${birthDay}, ${birthYear}`,
+            value: `${birthMonth} ${birthDay}, ${birthYear}`,
           },
         ]
       : []),
     ...(topSize ? [{ label: "Top Size", value: topSize }] : []),
     ...(bottomSize ? [{ label: "Bottom Size", value: bottomSize }] : []),
+    ...(authUser?.points
+      ? [{ label: "Reward Points", value: String(authUser.points) }]
+      : []),
+    ...(authUser?.joinedDate
+      ? [{ label: "Member Since", value: authUser.joinedDate }]
+      : []),
   ];
 
   const sectionTitle: Record<Tab, string> = {
@@ -549,7 +652,18 @@ function AccountPageInner() {
               {/* ── ORDERS ─────────────────────────────────────── */}
               {tab === "orders" && (
                 <div className="p-6 md:p-8">
-                  {orders.length === 0 ? (
+                  {ordersLoading ? (
+                    <div className="py-12 text-center text-sm text-zinc-500">
+                      Loading your orders…
+                    </div>
+                  ) : ordersError ? (
+                    <div className="py-12 text-center">
+                      <p className="text-zinc-900 text-sm font-medium mb-1">
+                        Could not load your orders
+                      </p>
+                      <p className="text-zinc-500 text-xs">{ordersError}</p>
+                    </div>
+                  ) : orders.length === 0 ? (
                     <div className="py-12 text-center">
                       <Package
                         className="w-10 h-10 text-zinc-300 mx-auto mb-3"
@@ -599,18 +713,19 @@ function AccountPageInner() {
                                   Total
                                 </p>
                                 <p className="text-sm font-medium text-zinc-900">
-                                  {order.total}
+                                  {formatPrice(order.total)}
                                 </p>
                               </div>
                             </div>
                             <span
                               className={cn(
                                 "inline-flex items-center gap-1.5 text-[10px] tracking-widest uppercase border px-2.5 py-1 rounded-full font-medium",
-                                orderStatusPill[order.status],
+                                orderStatusPill[order.status] ??
+                                  "bg-zinc-50 text-zinc-700 border-zinc-200",
                               )}
                             >
                               <span className="w-1.5 h-1.5 rounded-full bg-current" />
-                              {order.statusLabel}
+                              {order.statusLabel || order.status}
                             </span>
                           </div>
 
@@ -630,7 +745,7 @@ function AccountPageInner() {
                                   </p>
                                 </div>
                                 <p className="text-sm text-zinc-700 shrink-0">
-                                  {item.price}
+                                  {formatPrice(item.price)}
                                 </p>
                               </div>
                             ))}
@@ -638,12 +753,14 @@ function AccountPageInner() {
 
                           {/* Actions */}
                           <div className="flex items-center justify-end gap-2 px-5 py-3 border-t border-zinc-100 bg-zinc-50">
-                            <Link
-                              href={`/tracking?id=${encodeURIComponent(order.trackingNumber)}`}
-                              className="text-[10px] tracking-widest uppercase text-zinc-600 hover:text-zinc-900 px-3 py-2 transition-colors"
-                            >
-                              Track
-                            </Link>
+                            {order.trackingNumber && (
+                              <Link
+                                href={`/tracking?q=${encodeURIComponent(order.trackingNumber)}`}
+                                className="text-[10px] tracking-widest uppercase text-zinc-600 hover:text-zinc-900 px-3 py-2 transition-colors"
+                              >
+                                Track
+                              </Link>
+                            )}
                             <Link
                               href={`/account/orders/${order.id}`}
                               className="text-[10px] tracking-widest uppercase bg-zinc-900 text-white px-4 py-2 hover:bg-zinc-700 transition-colors"
@@ -740,8 +857,9 @@ function AccountPageInner() {
                 <div className="p-6 md:p-8">
                   <div className="flex items-center justify-between mb-5">
                     <p className="text-sm text-zinc-600">
-                      {addresses.length} saved address
-                      {addresses.length === 1 ? "" : "es"}
+                      {addressesLoading
+                        ? "Loading your addresses…"
+                        : `${addresses.length} saved address${addresses.length === 1 ? "" : "es"}`}
                     </p>
                     {!addingAddress && (
                       <Button
@@ -1165,14 +1283,21 @@ function AccountPageInner() {
                         </Field>
 
                         <div className="flex gap-3 mt-1">
-                          <Button size="sm" onClick={saveAddress}>
-                            {editingAddressId
-                              ? "Confirm to Edit"
-                              : "Save Address"}
+                          <Button
+                            size="sm"
+                            onClick={saveAddress}
+                            disabled={savingAddress}
+                          >
+                            {savingAddress
+                              ? "Saving…"
+                              : editingAddressId
+                                ? "Confirm to Edit"
+                                : "Save Address"}
                           </Button>
                           <Button
                             variant="secondary"
                             size="sm"
+                            disabled={savingAddress}
                             onClick={() => {
                               setAddingAddress(false);
                               setAddrErrors({});
@@ -1186,7 +1311,7 @@ function AccountPageInner() {
                   )}
 
                   {/* Address list */}
-                  {addresses.length > 0 ? (
+                  {addressesLoading ? null : addresses.length > 0 ? (
                     <div className="grid md:grid-cols-2 gap-4">
                       {addresses.map((addr) => (
                         <div
@@ -1336,16 +1461,15 @@ function AccountPageInner() {
                         <Field label="Email">
                           <input
                             type="email"
-                            value={profileDraft.email}
-                            onChange={(e) =>
-                              setProfileDraft((d) => ({
-                                ...d,
-                                email: e.target.value,
-                              }))
-                            }
+                            value={email}
+                            disabled
                             autoComplete="email"
-                            className={inputCls}
+                            className={cn(inputCls, "opacity-60 cursor-not-allowed")}
                           />
+                          <p className="text-[10px] text-zinc-400 mt-0.5">
+                            Your email is tied to sign-in and can&apos;t be
+                            changed here.
+                          </p>
                         </Field>
                         <Field label="Phone">
                           <input
@@ -1374,6 +1498,61 @@ function AccountPageInner() {
                             autoComplete="off"
                             className={inputCls}
                           />
+                        </Field>
+                        <Field label="Birthday (optional)">
+                          <div className="grid grid-cols-3 gap-2">
+                            <select
+                              value={profileDraft.birthDay}
+                              onChange={(e) =>
+                                setProfileDraft((d) => ({
+                                  ...d,
+                                  birthDay: e.target.value,
+                                }))
+                              }
+                              className={inputCls}
+                            >
+                              <option value="">Day</option>
+                              {BIRTH_DAYS.map((d) => (
+                                <option key={d} value={d}>
+                                  {d}
+                                </option>
+                              ))}
+                            </select>
+                            <select
+                              value={profileDraft.birthMonth}
+                              onChange={(e) =>
+                                setProfileDraft((d) => ({
+                                  ...d,
+                                  birthMonth: e.target.value,
+                                }))
+                              }
+                              className={inputCls}
+                            >
+                              <option value="">Month</option>
+                              {MONTHS.map((m) => (
+                                <option key={m} value={m}>
+                                  {m}
+                                </option>
+                              ))}
+                            </select>
+                            <select
+                              value={profileDraft.birthYear}
+                              onChange={(e) =>
+                                setProfileDraft((d) => ({
+                                  ...d,
+                                  birthYear: e.target.value,
+                                }))
+                              }
+                              className={inputCls}
+                            >
+                              <option value="">Year</option>
+                              {BIRTH_YEARS.map((y) => (
+                                <option key={y} value={y}>
+                                  {y}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
                         </Field>
                         <div className="grid grid-cols-2 gap-3">
                           <Field label="Top Size">
@@ -1416,12 +1595,17 @@ function AccountPageInner() {
                           </Field>
                         </div>
                         <div className="flex gap-3 mt-1">
-                          <Button size="sm" onClick={saveProfile}>
-                            Save Changes
+                          <Button
+                            size="sm"
+                            onClick={saveProfile}
+                            disabled={savingProfile}
+                          >
+                            {savingProfile ? "Saving…" : "Save Changes"}
                           </Button>
                           <Button
                             variant="secondary"
                             size="sm"
+                            disabled={savingProfile}
                             onClick={() => setEditingProfile(false)}
                           >
                             Cancel
@@ -1463,21 +1647,13 @@ function AccountPageInner() {
 
                   {/* Sign-in method */}
                   <div className="p-6 md:p-8">
-                    <div className="flex items-center justify-between gap-4">
-                      <div>
-                        <p className="text-sm font-medium text-zinc-900 mb-0.5">
-                          Sign-In Method
-                        </p>
-                        <p className="text-sm text-zinc-500">
-                          One-time code sent to your email
-                        </p>
-                      </div>
-                      <Link
-                        href="/auth/forgot-password"
-                        className={buttonVariants({ variant: "secondary", size: "xs" })}
-                      >
-                        Get Code
-                      </Link>
+                    <div>
+                      <p className="text-sm font-medium text-zinc-900 mb-0.5">
+                        Sign-In Method
+                      </p>
+                      <p className="text-sm text-zinc-500">
+                        One-time code sent to your email. No password needed.
+                      </p>
                     </div>
                   </div>
                 </div>
