@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import AnnouncementBanner from "@/components/layout/announcement-banner";
 import Header from "@/components/layout/header";
+import type { AnnouncementBannerData } from "@/lib/api/announcements";
 import {
   BANNER_H,
   BANNER_SCROLL_DELTA,
@@ -10,14 +11,20 @@ import {
   useBannerStore,
 } from "@/lib/stores/banner-store";
 
-export default function SiteChrome() {
+type SiteChromeProps = {
+  banner: AnnouncementBannerData;
+};
+
+export default function SiteChrome({ banner }: SiteChromeProps) {
   const { visible, scrollHidden, setScrollHidden } = useBannerStore();
   const lastScrollY = useRef(0);
   const scrollHiddenRef = useRef(false);
+  const bannerActive =
+    banner.isEnabled && banner.messages.length > 0 && visible;
 
   // Scroll-direction latch — hide on downward tick, reveal on upward tick
   useEffect(() => {
-    if (!visible) {
+    if (!bannerActive) {
       scrollHiddenRef.current = false;
       setScrollHidden(false);
       return;
@@ -42,11 +49,11 @@ export default function SiteChrome() {
 
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, [visible, setScrollHidden]);
+  }, [bannerActive, setScrollHidden]);
 
   return (
     <div className="fixed top-0 left-0 right-0 z-50 overflow-hidden">
-      {visible && (
+      {bannerActive && (
         <div
           className="overflow-hidden shrink-0"
           style={{
@@ -56,7 +63,7 @@ export default function SiteChrome() {
             transition: bannerSlotTransition(scrollHidden),
           }}
         >
-          <AnnouncementBanner />
+          <AnnouncementBanner data={banner} />
         </div>
       )}
       <Header />

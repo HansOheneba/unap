@@ -736,7 +736,7 @@ export default function CheckoutPage() {
                   </div>
                 )}
                 <div className="flex justify-between">
-                  <span className="text-zinc-500">Shipping</span>
+                  <span className="text-zinc-500">Delivery</span>
                   <span className="text-zinc-400">TBD</span>
                 </div>
                 <div className="flex justify-between font-medium mt-1">

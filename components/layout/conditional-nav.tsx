@@ -15,12 +15,18 @@ const FULL_BLEED_PATHS = ["/", "/the-creed", "/inner-circle", "/movement", "/fut
 
 export default function ConditionalNav({
   children,
+  bannerEnabled = false,
 }: {
   children: React.ReactNode;
+  /** True when the API returned an enabled banner with at least one live message. */
+  bannerEnabled?: boolean;
 }) {
   const pathname = usePathname();
   const { visible: bannerVisible, scrollHidden } = useBannerStore();
-  const bannerOffset = getBannerOffset(bannerVisible, scrollHidden);
+  const bannerOffset = getBannerOffset(
+    bannerEnabled && bannerVisible,
+    scrollHidden,
+  );
   // Account pages should still show the global header/footer so users can
   // navigate around the site while signed in.
   const noNav = false;
@@ -39,7 +45,7 @@ export default function ConditionalNav({
   return (
     <>
       {/* Banner spacer — matches the visible banner slot in SiteChrome */}
-      {bannerVisible && needsHeaderOffset && (
+      {bannerEnabled && bannerVisible && needsHeaderOffset && (
         <div
           style={{
             height: bannerOffset,

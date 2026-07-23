@@ -3,57 +3,64 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
+import type { AnnouncementBannerData } from "@/lib/api/announcements";
 import { BANNER_H, useBannerStore } from "@/lib/stores/banner-store";
 
-const MESSAGES = [
-  { text: "Free shipping over \u20B5500", href: "/collections" },
-  { text: "Bold Society. Shop now.", href: "/collections" },
-  { text: "Inner Circle. Apply within.", href: "/inner-circle" },
-];
+type AnnouncementBannerProps = {
+  data: AnnouncementBannerData;
+};
 
-export default function AnnouncementBanner() {
+export default function AnnouncementBanner({ data }: AnnouncementBannerProps) {
   const { dismiss } = useBannerStore();
   const [msgIdx, setMsgIdx] = useState(0);
+  const { messages, rotationIntervalMs, backgroundColor, textColor } = data;
 
   useEffect(() => {
+    if (messages.length <= 1) return;
     const t = setInterval(
-      () => setMsgIdx((i) => (i + 1) % MESSAGES.length),
-      10000,
+      () => setMsgIdx((i) => (i + 1) % messages.length),
+      rotationIntervalMs,
     );
     return () => clearInterval(t);
-  }, []);
+  }, [messages.length, rotationIntervalMs]);
+
+  if (messages.length === 0) return null;
+
+  const current = messages[msgIdx] ?? messages[0];
 
   return (
     <div
-      style={{ height: BANNER_H }}
-      className="shrink-0 bg-zinc-900 text-white overflow-hidden"
+      style={{ height: BANNER_H, backgroundColor, color: textColor }}
+      className="shrink-0 overflow-hidden"
     >
       <div className="relative flex items-center justify-center h-full px-10">
         <AnimatePresence mode="wait">
           <motion.div
-            key={msgIdx}
+            key={current.id}
             initial={{ opacity: 0, y: 4 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -4 }}
             transition={{ duration: 0.3 }}
             className="text-[0.58rem] tracking-[0.2em] uppercase whitespace-nowrap"
           >
-            {MESSAGES[msgIdx].href ? (
+            {current.href ? (
               <Link
-                href={MESSAGES[msgIdx].href}
-                className="underline underline-offset-2 decoration-white/50"
+                href={current.href}
+                className="underline underline-offset-2"
+                style={{ textDecorationColor: `${textColor}80` }}
               >
-                {MESSAGES[msgIdx].text}
+                {current.text}
               </Link>
             ) : (
-              <span>{MESSAGES[msgIdx].text}</span>
+              <span>{current.text}</span>
             )}
           </motion.div>
         </AnimatePresence>
         <button
           onClick={dismiss}
           aria-label="Dismiss announcement"
-          className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors"
+          className="absolute right-3 top-1/2 -translate-y-1/2 opacity-50 hover:opacity-100 transition-opacity"
+          style={{ color: textColor }}
         >
           <svg
             width="8"

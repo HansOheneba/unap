@@ -4,6 +4,7 @@ import "./globals.css";
 import ConditionalNav from "@/components/layout/conditional-nav";
 import SiteChrome from "@/components/layout/site-chrome";
 import ToastHost from "@/components/ui/toast-host";
+import { getAnnouncementBanner } from "@/lib/api/announcements";
 import { cn } from "@/lib/utils";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
@@ -34,11 +35,14 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const banner = await getAnnouncementBanner();
+  const bannerEnabled = banner.isEnabled && banner.messages.length > 0;
+
   return (
     <html
       lang="en"
@@ -52,8 +56,8 @@ export default function RootLayout({
       )}
     >
       <body className="min-h-full flex flex-col">
-        <SiteChrome />
-        <ConditionalNav>{children}</ConditionalNav>
+        <SiteChrome banner={banner} />
+        <ConditionalNav bannerEnabled={bannerEnabled}>{children}</ConditionalNav>
         <ToastHost />
       </body>
     </html>

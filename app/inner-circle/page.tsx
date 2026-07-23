@@ -6,6 +6,8 @@ import { motion, useScroll, useTransform, useInView } from "framer-motion";
 import { useRef, useState } from "react";
 import { Lock, CalendarDays, BookOpen, Crown, ArrowDown } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
+import { subscribeNewsletter } from "@/lib/api/forms";
+import { ApiError } from "@/lib/api/client";
 
 /* helpers */
 function FadeIn({
@@ -111,6 +113,8 @@ export default function InnerCirclePage() {
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
   const heroRef = useRef(null);
   const { scrollYProgress: heroProgress } = useScroll({
@@ -121,10 +125,27 @@ export default function InnerCirclePage() {
   const heroOpacity = useTransform(heroProgress, [0, 0.65], [1, 0]);
   const heroTextY = useTransform(heroProgress, [0, 1], ["0%", "18%"]);
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!email.trim()) return;
-    setSubmitted(true);
+    setError("");
+    setSubmitting(true);
+    try {
+      await subscribeNewsletter({
+        email: email.trim(),
+        firstName: firstName.trim() || undefined,
+        source: "inner_circle",
+      });
+      setSubmitted(true);
+    } catch (err) {
+      setError(
+        err instanceof ApiError
+          ? err.message
+          : "Could not join right now. Please try again.",
+      );
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -409,7 +430,8 @@ export default function InnerCirclePage() {
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
                     placeholder="FIRST NAME"
-                    className="bg-zinc-50 border border-zinc-200 text-zinc-900 placeholder:text-zinc-400 px-6 py-4 text-[0.7rem] tracking-widest uppercase outline-none focus:border-zinc-400 transition-colors duration-300"
+                    disabled={submitting}
+                    className="bg-zinc-50 border border-zinc-200 text-zinc-900 placeholder:text-zinc-400 px-6 py-4 text-[0.7rem] tracking-widest uppercase outline-none focus:border-zinc-400 transition-colors duration-300 disabled:opacity-60"
                   />
                   <div className="flex flex-col sm:flex-row gap-3">
                     <input
@@ -419,15 +441,18 @@ export default function InnerCirclePage() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="YOUR EMAIL"
-                      className="flex-1 bg-zinc-50 border border-zinc-200 text-zinc-900 placeholder:text-zinc-400 px-6 py-4 text-[0.7rem] tracking-widest uppercase outline-none focus:border-zinc-400 transition-colors duration-300"
+                      disabled={submitting}
+                      className="flex-1 bg-zinc-50 border border-zinc-200 text-zinc-900 placeholder:text-zinc-400 px-6 py-4 text-[0.7rem] tracking-widest uppercase outline-none focus:border-zinc-400 transition-colors duration-300 disabled:opacity-60"
                     />
                     <button
                       type="submit"
-                      className="border border-black bg-black text-white px-8 py-4 text-[0.7rem] font-semibold tracking-widest uppercase hover:bg-white hover:text-black transition-colors shrink-0"
+                      disabled={submitting}
+                      className="border border-black bg-black text-white px-8 py-4 text-[0.7rem] font-semibold tracking-widest uppercase hover:bg-white hover:text-black transition-colors shrink-0 disabled:opacity-60"
                     >
-                      Join
+                      {submitting ? "Joining…" : "Join"}
                     </button>
                   </div>
+                  {error && <p className="text-red-500 text-xs">{error}</p>}
                 </form>
               </>
             )}

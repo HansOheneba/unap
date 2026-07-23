@@ -17,25 +17,13 @@ import { useWishlistStore } from "@/lib/stores/wishlist-store";
 import { useIsLoggedIn } from "@/lib/use-is-logged-in";
 import { cn } from "@/lib/utils";
 import { COLLECTIONS_CONTAINER } from "@/lib/layout/collections";
+import { listCollections } from "@/lib/api/catalog";
 
-const collectionItems = [
-  { label: "Underwear", href: "/collections/underwear" },
-  { label: "Tops", href: "/collections/tops" },
-  { label: "Bottoms", href: "/collections/bottoms" },
-  { label: "Tracksuits", href: "/collections/tracksuits" },
-  { label: "Active Wear", href: "/collections/active-wear" },
-  { label: "Sunglasses", href: "/collections/sunglasses" },
-  { label: "Accessories", href: "/collections/accessories" },
-];
-
-const COLLECTIONS_NAV = [
-  { label: "All", href: "/collections" },
-  ...collectionItems,
-];
+type CollectionNavItem = { label: string; href: string };
 
 type NavLink =
   | { label: string; href: string; dropdown?: never }
-  | { label: string; href: string; dropdown: typeof collectionItems };
+  | { label: string; href: string; dropdown: CollectionNavItem[] };
 
 const navLinks: NavLink[] = [
   { label: "Collections", href: "/collections" },
@@ -44,7 +32,13 @@ const navLinks: NavLink[] = [
 ];
 
 /* ── Mobile collections accordion ─────────────────────────── */
-function MobileCollections({ onClose }: { onClose: () => void }) {
+function MobileCollections({
+  items,
+  onClose,
+}: {
+  items: CollectionNavItem[];
+  onClose: () => void;
+}) {
   const [expanded, setExpanded] = useState(false);
 
   return (
@@ -78,7 +72,7 @@ function MobileCollections({ onClose }: { onClose: () => void }) {
         }`}
       >
         <div className="flex flex-col pb-3 pl-8">
-          {collectionItems.map((item) => (
+          {items.map((item) => (
             <Link
               key={item.href}
               href={item.href}
@@ -108,6 +102,29 @@ export default function Header() {
   const isHome = pathname === "/";
   const [heroNavBlend, setHeroNavBlend] = useState(0);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [collectionItems, setCollectionItems] = useState<CollectionNavItem[]>(
+    [],
+  );
+  const collectionsNav: CollectionNavItem[] = [
+    { label: "All", href: "/collections" },
+    ...collectionItems,
+  ];
+
+  useEffect(() => {
+    listCollections()
+      .then((collections) => {
+        setCollectionItems(
+          [...collections]
+            .filter((c) => c.isActive)
+            .sort((a, b) => a.sortOrder - b.sortOrder)
+            .map((c) => ({
+              label: c.subtitle,
+              href: `/collections/${c.slug}`,
+            })),
+        );
+      })
+      .catch(() => setCollectionItems([]));
+  }, []);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [mobileSearchQuery, setMobileSearchQuery] = useState("");
@@ -543,7 +560,7 @@ export default function Header() {
                 )}
               >
                 <div className="flex items-center justify-center h-11 w-max min-w-full">
-                  {COLLECTIONS_NAV.map((col) => {
+                  {collectionsNav.map((col) => {
                     const isActive =
                       col.href === "/collections"
                         ? pathname === "/collections"
@@ -632,6 +649,7 @@ export default function Header() {
             link.dropdown ? (
               <MobileCollections
                 key={link.href}
+                items={collectionItems}
                 onClose={() => setMobileOpen(false)}
               />
             ) : (
