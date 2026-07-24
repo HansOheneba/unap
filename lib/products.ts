@@ -5,7 +5,6 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import {
-  getCatalog,
   getCollection as fetchCollection,
   getProduct as fetchProduct,
   getRelatedProducts as fetchRelatedProducts,
@@ -20,6 +19,31 @@ import {
 import { BRAND_PLACEHOLDER } from "@/lib/data/placeholders";
 
 const FALLBACK_IMAGE = BRAND_PLACEHOLDER.textile;
+
+/**
+ * The API currently serializes `product.collectionId` as an internal UUID while
+ * `collection.id` / `collection.slug` are public slugs (e.g. `"freedom"`).
+ * Search filters and PDP routes need the slug. Build a lookup from both.
+ */
+async function getCollectionSlugLookup(): Promise<Map<string, string>> {
+  const collections = await fetchCollections();
+  const details = await Promise.all(
+    collections.map((c) => fetchCollection(c.slug)),
+  );
+  const lookup = new Map<string, string>();
+  for (let i = 0; i < collections.length; i++) {
+    const collection = collections[i];
+    const detail = details[i];
+    lookup.set(collection.id, collection.slug);
+    lookup.set(collection.slug, collection.slug);
+    for (const product of detail?.products ?? []) {
+      if (product.collectionId) {
+        lookup.set(product.collectionId, collection.slug);
+      }
+    }
+  }
+  return lookup;
+}
 
 export type SizeStock = {
   size: string;
@@ -147,7 +171,10 @@ export async function getProductBySlug(
   categorySlug?: string,
 ): Promise<Product | null> {
   const detail = await fetchProduct(slug);
-  return detail ? toProduct(detail, categorySlug) : null;
+  if (!detail) return null;
+  if (categorySlug) return toProduct(detail, categorySlug);
+  const lookup = await getCollectionSlugLookup();
+  return toProduct(detail, lookup.get(detail.collectionId));
 }
 
 /** "Related" products from the API, assumed to share the current product's
@@ -178,6 +205,9 @@ export async function getCollectionWithProducts(slug: string): Promise<{
 } | null> {
   const detail = await fetchCollection(slug);
   if (!detail) return null;
+  const products = (detail.products ?? [])
+    .filter((p) => p.isActive !== false)
+    .map((p) => toSummary(p, detail.slug));
   return {
     collection: {
       id: detail.slug,
@@ -187,7 +217,7 @@ export async function getCollectionWithProducts(slug: string): Promise<{
       featured: detail.featuredImageUrl || FALLBACK_IMAGE,
       href: `/collections/${detail.slug}`,
     },
-    products: detail.products.map((p) => toSummary(p, detail.slug)),
+    products,
   };
 }
 
@@ -212,11 +242,10 @@ export async function getAllCollectionsWithProducts(): Promise<
 
 /** First N active products across the whole catalog, for home page previews. */
 export async function getFeaturedProducts(limit = 4): Promise<ProductSummary[]> {
-  const { products } = await getCatalog();
-  return products
-    .filter((p) => p.isActive)
-    .slice(0, limit)
-    .map((p) => toSummary(p));
+  // Prefer collection-detail nesting so `category` is the public slug, not the
+  // internal UUID currently returned on `product.collectionId`.
+  const sections = await getAllCollectionsWithProducts();
+  return sections.flatMap((s) => s.products).slice(0, limit);
 }
 
 export function toReview(review: ApiReview): Review {
@@ -243,6 +272,46 @@ export async function searchProductSummaries(params: {
   page?: number;
   limit?: number;
 }): Promise<{ items: ProductSummary[]; total: number; totalPages: number }> {
-  const { items, total, totalPages } = await fetchSearchProducts(params);
-  return { items: items.map((p) => toSummary(p)), total, totalPages };
+  // `GET /products/search?collectionId=` matches the internal UUID, not the
+  // public slug the UI passes (e.g. `"freedom"`). Scope via collection detail.
+  if (params.collectionId) {
+    const section = await getCollectionWithProducts(params.collectionId);
+    if (!section) return { items: [], total: 0, totalPages: 0 };
+
+    const query = params.q?.trim().toLowerCase();
+    let items = section.products;
+    if (query) {
+      items = items.filter(
+        (p) =>
+          p.name.toLowerCase().includes(query) ||
+          p.slug.toLowerCase().includes(query) ||
+          p.tag.toLowerCase().includes(query),
+      );
+    }
+    if (params.gender) {
+      items = items.filter((p) => p.gender === params.gender);
+    }
+
+    const total = items.length;
+    const limit = params.limit ?? total;
+    const page = params.page ?? 1;
+    const start = (page - 1) * limit;
+    return {
+      items: items.slice(start, start + limit),
+      total,
+      totalPages: limit > 0 ? Math.max(1, Math.ceil(total / limit)) : 1,
+    };
+  }
+
+  const [result, lookup] = await Promise.all([
+    fetchSearchProducts(params),
+    getCollectionSlugLookup(),
+  ]);
+  return {
+    items: result.items.map((p) =>
+      toSummary(p, lookup.get(p.collectionId)),
+    ),
+    total: result.total,
+    totalPages: result.totalPages,
+  };
 }

@@ -108,13 +108,31 @@ export async function getCatalog(): Promise<{
   collections: ApiCollection[];
   products: ApiProductSummary[];
 }> {
-  const payload = await apiRequest<{
-    data?: { collections?: ApiCollection[]; products?: ApiProductSummary[] };
-  }>("/catalog", { cache: "no-store" });
-  return {
-    collections: payload.data?.collections ?? [],
-    products: payload.data?.products ?? [],
-  };
+  // Upstream wraps as `{ success, data: { data: { collections, products }, meta } }`.
+  // After `apiRequest` unwraps once we get `{ data: { collections, products }, meta }`.
+  // Tolerate a flat `{ collections, products }` shape as well.
+  const payload = await apiRequest<unknown>("/catalog", { cache: "no-store" });
+  const root =
+    payload && typeof payload === "object"
+      ? (payload as Record<string, unknown>)
+      : {};
+  const nested =
+    root.data && typeof root.data === "object" && !Array.isArray(root.data)
+      ? (root.data as Record<string, unknown>)
+      : null;
+
+  const collections = Array.isArray(root.collections)
+    ? (root.collections as ApiCollection[])
+    : Array.isArray(nested?.collections)
+      ? (nested.collections as ApiCollection[])
+      : [];
+  const products = Array.isArray(root.products)
+    ? (root.products as ApiProductSummary[])
+    : Array.isArray(nested?.products)
+      ? (nested.products as ApiProductSummary[])
+      : [];
+
+  return { collections, products };
 }
 
 export async function listCollections(): Promise<ApiCollection[]> {
