@@ -77,6 +77,9 @@ export default function CheckoutPage() {
   const [loading, setLoading] = useState(false);
   const [paymentError, setPaymentError] = useState("");
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("pay_now");
+  const [paymentRedirectUrl, setPaymentRedirectUrl] = useState<string | null>(
+    null,
+  );
   const [promoCode, setPromoCode] = useState("");
   const [promoError, setPromoError] = useState("");
   const [promoChecking, setPromoChecking] = useState(false);
@@ -85,6 +88,11 @@ export default function CheckoutPage() {
     label: string;
     amount: number;
   } | null>(null);
+
+  useEffect(() => {
+    if (!paymentRedirectUrl) return;
+    window.location.assign(paymentRedirectUrl);
+  }, [paymentRedirectUrl]);
 
   async function applyPromo() {
     const code = promoCode.trim().toUpperCase();
@@ -220,7 +228,7 @@ export default function CheckoutPage() {
           setPaymentError("Could not start payment. Try again.");
           return;
         }
-        window.location.href = paymentUrl;
+        setPaymentRedirectUrl(paymentUrl);
         return;
       }
 
@@ -283,7 +291,7 @@ export default function CheckoutPage() {
           </p>
           <p className="text-zinc-400 text-xs leading-relaxed">
             {showPaidOnline
-              ? "Payment received. Expect delivery within 48 hours."
+              ? "Payment received. Expect delivery within 48 working hours."
               : "Pay in cash or MoMo when your order arrives. Expect delivery within 48 hours."}
           </p>
 
