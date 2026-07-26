@@ -2,9 +2,12 @@ import type { Metadata } from "next";
 import { Space_Grotesk, Sora, Geist } from "next/font/google";
 import "./globals.css";
 import ConditionalNav from "@/components/layout/conditional-nav";
+import { CollectionsNavProvider } from "@/components/layout/collections-nav-provider";
 import SiteChrome from "@/components/layout/site-chrome";
 import ToastHost from "@/components/ui/toast-host";
 import { getAnnouncementBanner } from "@/lib/api/announcements";
+import { listCollections } from "@/lib/api/catalog";
+import { toCollectionNavItems } from "@/lib/collections-nav";
 import { cn } from "@/lib/utils";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
@@ -40,7 +43,11 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const banner = await getAnnouncementBanner();
+  const [banner, collections] = await Promise.all([
+    getAnnouncementBanner(),
+    listCollections().catch(() => []),
+  ]);
+  const collectionNav = toCollectionNavItems(collections);
   const bannerEnabled = banner.isEnabled && banner.messages.length > 0;
 
   return (
@@ -56,9 +63,13 @@ export default async function RootLayout({
       )}
     >
       <body className="min-h-full flex flex-col">
-        <SiteChrome banner={banner} />
-        <ConditionalNav bannerEnabled={bannerEnabled}>{children}</ConditionalNav>
-        <ToastHost />
+        <CollectionsNavProvider items={collectionNav}>
+          <SiteChrome banner={banner} collectionNav={collectionNav} />
+          <ConditionalNav bannerEnabled={bannerEnabled}>
+            {children}
+          </ConditionalNav>
+          <ToastHost />
+        </CollectionsNavProvider>
       </body>
     </html>
   );

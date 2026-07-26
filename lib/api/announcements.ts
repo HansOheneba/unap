@@ -75,7 +75,7 @@ export async function getAnnouncementMessages(): Promise<
 > {
   const payload = await apiRequest<unknown>(
     "/workflow/execute/announcement.get-messages",
-    { cache: "no-store" },
+    { revalidate: 60 },
   );
   return asList<ApiAnnouncementMessage>(payload);
 }
@@ -84,7 +84,7 @@ export async function getAnnouncementConfig(): Promise<ApiAnnouncementConfig | n
   try {
     const payload = await apiRequest<unknown>(
       "/workflow/execute/announcement.get-config",
-      { cache: "no-store" },
+      { revalidate: 60 },
     );
     return parseConfig(payload);
   } catch {

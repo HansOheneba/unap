@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { apiRequest, asList, ApiError } from "@/lib/api/client";
 
 /** Matches the `Gender` enum used across the storefront. */
@@ -84,6 +85,33 @@ type ApiPage<T> = {
   meta?: { page?: number; limit?: number; total?: number; totalPages?: number };
 };
 
+/** Public catalog reads are shared across users; short TTL cuts rate-limit pressure. */
+const CATALOG_REVALIDATE_SECONDS = 60;
+const CATALOG_TTL_MS = CATALOG_REVALIDATE_SECONDS * 1000;
+
+type TtlEntry = { expiresAt: number; value: unknown };
+const catalogTtlCache = new Map<string, TtlEntry>();
+
+/**
+ * In-process TTL cache for catalog GETs. Covers:
+ * - browser remounts (header/search previously re-hit the proxy every navigation)
+ * - repeated server calls within the same Node process between Next revalidations
+ */
+async function catalogGet<T>(path: string): Promise<T> {
+  const hit = catalogTtlCache.get(path);
+  if (hit && hit.expiresAt > Date.now()) {
+    return hit.value as T;
+  }
+  const value = await apiRequest<T>(path, {
+    revalidate: CATALOG_REVALIDATE_SECONDS,
+  });
+  catalogTtlCache.set(path, {
+    value,
+    expiresAt: Date.now() + CATALOG_TTL_MS,
+  });
+  return value;
+}
+
 function toPaginated<T>(payload: unknown, fallbackLimit = 20): PaginatedResult<T> {
   if (payload && typeof payload === "object" && "meta" in payload) {
     const { data, meta } = payload as ApiPage<T>;
@@ -104,14 +132,13 @@ export function isNotFoundError(err: unknown): boolean {
   return err instanceof ApiError && err.status === 404;
 }
 
-export async function getCatalog(): Promise<{
+function parseCatalogPayload(payload: unknown): {
   collections: ApiCollection[];
   products: ApiProductSummary[];
-}> {
+} {
   // Upstream wraps as `{ success, data: { data: { collections, products }, meta } }`.
   // After `apiRequest` unwraps once we get `{ data: { collections, products }, meta }`.
   // Tolerate a flat `{ collections, products }` shape as well.
-  const payload = await apiRequest<unknown>("/catalog", { cache: "no-store" });
   const root =
     payload && typeof payload === "object"
       ? (payload as Record<string, unknown>)
@@ -135,69 +162,76 @@ export async function getCatalog(): Promise<{
   return { collections, products };
 }
 
-export async function listCollections(): Promise<ApiCollection[]> {
-  const payload = await apiRequest<unknown>("/collections", { cache: "no-store" });
+export const getCatalog = cache(async (): Promise<{
+  collections: ApiCollection[];
+  products: ApiProductSummary[];
+}> => {
+  const payload = await catalogGet<unknown>("/catalog");
+  return parseCatalogPayload(payload);
+});
+
+export const listCollections = cache(async (): Promise<ApiCollection[]> => {
+  const payload = await catalogGet<unknown>("/collections");
   return asList<ApiCollection>(payload);
-}
+});
 
 /** Returns `null` (not throw) when the collection slug doesn't exist. */
-export async function getCollection(
-  slug: string,
-): Promise<ApiCollectionDetail | null> {
-  try {
-    return await apiRequest<ApiCollectionDetail>(
-      `/collections/${encodeURIComponent(slug)}`,
-      { cache: "no-store" },
-    );
-  } catch (err) {
-    if (isNotFoundError(err)) return null;
-    throw err;
-  }
-}
+export const getCollection = cache(
+  async (slug: string): Promise<ApiCollectionDetail | null> => {
+    try {
+      return await catalogGet<ApiCollectionDetail>(
+        `/collections/${encodeURIComponent(slug)}`,
+      );
+    } catch (err) {
+      if (isNotFoundError(err)) return null;
+      throw err;
+    }
+  },
+);
 
-export async function searchProducts(params: {
-  q?: string;
-  collectionId?: string;
-  gender?: string;
-  page?: number;
-  limit?: number;
-}): Promise<PaginatedResult<ApiProductSummary>> {
-  const query = new URLSearchParams();
-  if (params.q) query.set("q", params.q);
-  if (params.collectionId) query.set("collectionId", params.collectionId);
-  if (params.gender) query.set("gender", params.gender);
-  if (params.page) query.set("page", String(params.page));
-  if (params.limit) query.set("limit", String(params.limit));
-  const qs = query.toString();
-  const payload = await apiRequest<unknown>(
-    `/products/search${qs ? `?${qs}` : ""}`,
-    { cache: "no-store" },
-  );
-  return toPaginated<ApiProductSummary>(payload, params.limit ?? 20);
-}
+export const searchProducts = cache(
+  async (params: {
+    q?: string;
+    collectionId?: string;
+    gender?: string;
+    page?: number;
+    limit?: number;
+  }): Promise<PaginatedResult<ApiProductSummary>> => {
+    const query = new URLSearchParams();
+    if (params.q) query.set("q", params.q);
+    if (params.collectionId) query.set("collectionId", params.collectionId);
+    if (params.gender) query.set("gender", params.gender);
+    if (params.page) query.set("page", String(params.page));
+    if (params.limit) query.set("limit", String(params.limit));
+    const qs = query.toString();
+    const path = `/products/search${qs ? `?${qs}` : ""}`;
+    const payload = await catalogGet<unknown>(path);
+    return toPaginated<ApiProductSummary>(payload, params.limit ?? 20);
+  },
+);
 
 /** Returns `null` (not throw) when the product slug doesn't exist. */
-export async function getProduct(slug: string): Promise<ApiProductDetail | null> {
-  try {
-    return await apiRequest<ApiProductDetail>(
-      `/products/${encodeURIComponent(slug)}`,
-      { cache: "no-store" },
-    );
-  } catch (err) {
-    if (isNotFoundError(err)) return null;
-    throw err;
-  }
-}
+export const getProduct = cache(
+  async (slug: string): Promise<ApiProductDetail | null> => {
+    try {
+      return await catalogGet<ApiProductDetail>(
+        `/products/${encodeURIComponent(slug)}`,
+      );
+    } catch (err) {
+      if (isNotFoundError(err)) return null;
+      throw err;
+    }
+  },
+);
 
-export async function getRelatedProducts(
-  slug: string,
-): Promise<ApiProductSummary[]> {
-  const payload = await apiRequest<unknown>(
-    `/products/${encodeURIComponent(slug)}/related`,
-    { cache: "no-store" },
-  );
-  return asList<ApiProductSummary>(payload);
-}
+export const getRelatedProducts = cache(
+  async (slug: string): Promise<ApiProductSummary[]> => {
+    const payload = await catalogGet<unknown>(
+      `/products/${encodeURIComponent(slug)}/related`,
+    );
+    return asList<ApiProductSummary>(payload);
+  },
+);
 
 export async function listProductReviews(
   slug: string,
@@ -207,6 +241,7 @@ export async function listProductReviews(
   if (params?.page) query.set("page", String(params.page));
   if (params?.limit) query.set("limit", String(params.limit));
   const qs = query.toString();
+  // Reviews change with user submissions — do not share a long catalog TTL.
   const payload = await apiRequest<unknown>(
     `/products/${encodeURIComponent(slug)}/reviews${qs ? `?${qs}` : ""}`,
     { cache: "no-store" },

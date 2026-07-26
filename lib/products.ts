@@ -4,7 +4,9 @@
 // `https://api.unapologeticnm.com` (via the same-origin proxy in the browser).
 // ─────────────────────────────────────────────────────────────────────────────
 
+import { cache } from "react";
 import {
+  getCatalog,
   getCollection as fetchCollection,
   getProduct as fetchProduct,
   getRelatedProducts as fetchRelatedProducts,
@@ -19,31 +21,52 @@ import {
 import { BRAND_PLACEHOLDER } from "@/lib/data/placeholders";
 
 const FALLBACK_IMAGE = BRAND_PLACEHOLDER.textile;
+const SLUG_LOOKUP_TTL_MS = 60_000;
+
+let slugLookupTtl: { expiresAt: number; value: Map<string, string> } | null =
+  null;
 
 /**
  * The API currently serializes `product.collectionId` as an internal UUID while
  * `collection.id` / `collection.slug` are public slugs (e.g. `"freedom"`).
- * Search filters and PDP routes need the slug. Build a lookup from both.
+ * Search filters and PDP routes need the slug.
+ *
+ * Only collection details with `productCount > 0` are fetched — empty
+ * collections cannot contribute UUID→slug pairs.
  */
-async function getCollectionSlugLookup(): Promise<Map<string, string>> {
-  const collections = await fetchCollections();
-  const details = await Promise.all(
-    collections.map((c) => fetchCollection(c.slug)),
-  );
-  const lookup = new Map<string, string>();
-  for (let i = 0; i < collections.length; i++) {
-    const collection = collections[i];
-    const detail = details[i];
-    lookup.set(collection.id, collection.slug);
-    lookup.set(collection.slug, collection.slug);
-    for (const product of detail?.products ?? []) {
-      if (product.collectionId) {
-        lookup.set(product.collectionId, collection.slug);
+const getCollectionSlugLookup = cache(
+  async (): Promise<Map<string, string>> => {
+    if (slugLookupTtl && slugLookupTtl.expiresAt > Date.now()) {
+      return slugLookupTtl.value;
+    }
+
+    const collections = await fetchCollections();
+    const lookup = new Map<string, string>();
+    for (const collection of collections) {
+      lookup.set(collection.id, collection.slug);
+      lookup.set(collection.slug, collection.slug);
+    }
+
+    const withProducts = collections.filter((c) => c.productCount > 0);
+    const details = await Promise.all(
+      withProducts.map((c) => fetchCollection(c.slug)),
+    );
+    for (const detail of details) {
+      if (!detail) continue;
+      for (const product of detail.products ?? []) {
+        if (product.collectionId) {
+          lookup.set(product.collectionId, detail.slug);
+        }
       }
     }
-  }
-  return lookup;
-}
+
+    slugLookupTtl = {
+      value: lookup,
+      expiresAt: Date.now() + SLUG_LOOKUP_TTL_MS,
+    };
+    return lookup;
+  },
+);
 
 export type SizeStock = {
   size: string;
@@ -222,7 +245,8 @@ export async function getCollectionWithProducts(slug: string): Promise<{
 }
 
 /** All active collections with their products, in `sortOrder`. Used by the
- *  "browse everything" page. Skips a collection if its detail fetch fails. */
+ *  "browse everything" page. Skips a collection if its detail fetch fails.
+ *  Empty collections reuse the list payload — no per-collection detail call. */
 export async function getAllCollectionsWithProducts(): Promise<
   { collection: CollectionInfo; products: ProductSummary[] }[]
 > {
@@ -232,7 +256,22 @@ export async function getAllCollectionsWithProducts(): Promise<
     .sort((a, b) => a.sortOrder - b.sortOrder);
 
   const results = await Promise.all(
-    sorted.map((c) => getCollectionWithProducts(c.slug)),
+    sorted.map(async (c) => {
+      if (c.productCount === 0) {
+        return {
+          collection: {
+            id: c.slug,
+            subtitle: c.subtitle,
+            title: c.title,
+            tagline: c.tagline,
+            featured: c.featuredImageUrl || FALLBACK_IMAGE,
+            href: `/collections/${c.slug}`,
+          },
+          products: [] as ProductSummary[],
+        };
+      }
+      return getCollectionWithProducts(c.slug);
+    }),
   );
   return results.filter(
     (r): r is { collection: CollectionInfo; products: ProductSummary[] } =>
@@ -240,12 +279,17 @@ export async function getAllCollectionsWithProducts(): Promise<
   );
 }
 
-/** First N active products across the whole catalog, for home page previews. */
+/** First N active products across the whole catalog, for home page previews.
+ *  Uses `GET /catalog` (one call) instead of fetching every collection detail. */
 export async function getFeaturedProducts(limit = 4): Promise<ProductSummary[]> {
-  // Prefer collection-detail nesting so `category` is the public slug, not the
-  // internal UUID currently returned on `product.collectionId`.
-  const sections = await getAllCollectionsWithProducts();
-  return sections.flatMap((s) => s.products).slice(0, limit);
+  const [{ products }, lookup] = await Promise.all([
+    getCatalog(),
+    getCollectionSlugLookup(),
+  ]);
+  return products
+    .filter((p) => p.isActive !== false)
+    .slice(0, limit)
+    .map((p) => toSummary(p, lookup.get(p.collectionId)));
 }
 
 export function toReview(review: ApiReview): Review {

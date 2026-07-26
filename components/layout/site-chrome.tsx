@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import AnnouncementBanner from "@/components/layout/announcement-banner";
 import Header from "@/components/layout/header";
 import type { AnnouncementBannerData } from "@/lib/api/announcements";
+import type { CollectionNavItem } from "@/lib/collections-nav";
 import {
   BANNER_H,
   BANNER_SCROLL_DELTA,
@@ -13,9 +14,10 @@ import {
 
 type SiteChromeProps = {
   banner: AnnouncementBannerData;
+  collectionNav: CollectionNavItem[];
 };
 
-export default function SiteChrome({ banner }: SiteChromeProps) {
+export default function SiteChrome({ banner, collectionNav }: SiteChromeProps) {
   const { visible, scrollHidden, setScrollHidden } = useBannerStore();
   const lastScrollY = useRef(0);
   const scrollHiddenRef = useRef(false);
@@ -66,7 +68,7 @@ export default function SiteChrome({ banner }: SiteChromeProps) {
           <AnnouncementBanner data={banner} />
         </div>
       )}
-      <Header />
+      <Header collectionNav={collectionNav} />
     </div>
   );
 }

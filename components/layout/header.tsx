@@ -17,9 +17,7 @@ import { useWishlistStore } from "@/lib/stores/wishlist-store";
 import { useIsLoggedIn } from "@/lib/use-is-logged-in";
 import { cn } from "@/lib/utils";
 import { COLLECTIONS_CONTAINER } from "@/lib/layout/collections";
-import { listCollections } from "@/lib/api/catalog";
-
-type CollectionNavItem = { label: string; href: string };
+import type { CollectionNavItem } from "@/lib/collections-nav";
 
 type NavLink =
   | { label: string; href: string; dropdown?: never }
@@ -88,7 +86,11 @@ function MobileCollections({
   );
 }
 
-export default function Header() {
+export default function Header({
+  collectionNav = [],
+}: {
+  collectionNav?: CollectionNavItem[];
+}) {
   const pathname = usePathname();
   const router = useRouter();
   const cartCount = useCartStore((s) =>
@@ -102,29 +104,10 @@ export default function Header() {
   const isHome = pathname === "/";
   const [heroNavBlend, setHeroNavBlend] = useState(0);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
-  const [collectionItems, setCollectionItems] = useState<CollectionNavItem[]>(
-    [],
-  );
   const collectionsNav: CollectionNavItem[] = [
     { label: "All", href: "/collections" },
-    ...collectionItems,
+    ...collectionNav,
   ];
-
-  useEffect(() => {
-    listCollections()
-      .then((collections) => {
-        setCollectionItems(
-          [...collections]
-            .filter((c) => c.isActive)
-            .sort((a, b) => a.sortOrder - b.sortOrder)
-            .map((c) => ({
-              label: c.subtitle,
-              href: `/collections/${c.slug}`,
-            })),
-        );
-      })
-      .catch(() => setCollectionItems([]));
-  }, []);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [mobileSearchQuery, setMobileSearchQuery] = useState("");
@@ -649,7 +632,7 @@ export default function Header() {
             link.dropdown ? (
               <MobileCollections
                 key={link.href}
-                items={collectionItems}
+                items={collectionNav}
                 onClose={() => setMobileOpen(false)}
               />
             ) : (

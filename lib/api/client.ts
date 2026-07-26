@@ -47,6 +47,8 @@ type RequestOptions = {
   body?: unknown;
   headers?: HeadersInit;
   cache?: RequestCache;
+  /** Next.js Data Cache TTL (seconds). Server-side only; ignored in the browser. */
+  revalidate?: number | false;
   signal?: AbortSignal;
 };
 
@@ -99,18 +101,11 @@ export async function apiRequest<T>(
   path: string,
   options: RequestOptions = {},
 ): Promise<T> {
-  const { method = "GET", body, headers, cache, signal } = options;
+  const { method = "GET", body, headers, cache, revalidate, signal } = options;
   const url = `${getApiBase()}${path}`;
-
-  console.log("[apiRequest]", {
-    method,
-    endpoint: url,
-    payload: body ?? null,
-  });
 
   const res = await fetch(url, {
     method,
-    cache,
     signal,
     // Same-origin cookies (httpOnly session) travel automatically — no token
     // handling needed here at all.
@@ -121,6 +116,11 @@ export async function apiRequest<T>(
       ...headers,
     },
     body: body !== undefined ? JSON.stringify(body) : undefined,
+    ...(revalidate !== undefined
+      ? { next: { revalidate } }
+      : cache
+        ? { cache }
+        : {}),
   }).catch((err: unknown) => {
     const message =
       err instanceof Error && err.message

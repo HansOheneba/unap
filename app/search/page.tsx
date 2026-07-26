@@ -6,9 +6,12 @@ import { Suspense, useState, useRef, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, X } from "lucide-react";
+import { useCollectionsNav } from "@/components/layout/collections-nav-provider";
 import AddToCartButton from "@/components/ui/add-to-cart-button";
 import { formatPrice } from "@/lib/currency";
-import { listCollections, type ApiCollection } from "@/lib/api/catalog";
+import {
+  collectionSlugFromHref,
+} from "@/lib/collections-nav";
 import { searchProductSummaries, type ProductSummary } from "@/lib/products";
 import {
   chromeTopTransition,
@@ -24,25 +27,23 @@ const SEARCH_DEBOUNCE_MS = 300;
 
 function SearchPageInner() {
   const searchParams = useSearchParams();
+  const collectionNav = useCollectionsNav();
   const { visible: bannerVisible, scrollHidden } = useBannerStore();
   const bannerOffset = getBannerOffset(bannerVisible, scrollHidden);
   const stickyTop = bannerOffset + 56;
 
   const [query, setQuery] = useState(() => searchParams.get("q") ?? "");
   const [activeCategory, setActiveCategory] = useState("All");
-  const [collections, setCollections] = useState<ApiCollection[]>([]);
   const [results, setResults] = useState<ProductSummary[]>([]);
   const [loading, setLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    inputRef.current?.focus();
-  }, []);
+  const collectionSlugs = collectionNav
+    .map((item) => collectionSlugFromHref(item.href))
+    .filter((slug): slug is string => Boolean(slug));
 
   useEffect(() => {
-    listCollections()
-      .then(setCollections)
-      .catch(() => setCollections([]));
+    inputRef.current?.focus();
   }, []);
 
   useEffect(() => {
@@ -60,9 +61,10 @@ function SearchPageInner() {
     return () => clearTimeout(timeoutId);
   }, [query, activeCategory]);
 
-  const categories = ["All", ...collections.map((c) => c.slug)];
+  const categories = ["All", ...collectionSlugs];
   const categoryLabel = (slug: string) =>
-    collections.find((c) => c.slug === slug)?.subtitle ?? capitalize(slug);
+    collectionNav.find((item) => collectionSlugFromHref(item.href) === slug)
+      ?.label ?? capitalize(slug);
 
   const hasQuery = query.trim().length > 0;
   return (
