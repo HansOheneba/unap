@@ -12,6 +12,7 @@ import { useOnboardingStore } from "@/lib/stores/onboarding-store";
 import { useIsLoggedIn, useAuthReady } from "@/lib/use-is-logged-in";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { parseCartLineId, placeOrder, validatePromoCode } from "@/lib/api/orders";
+import { trackingPath } from "@/lib/tracking";
 
 type CheckoutStep = "details" | "review" | "confirmed";
 type PaymentMethod = "pay_now" | "pay_on_delivery";
@@ -73,6 +74,7 @@ export default function CheckoutPage() {
 
   const [step, setStep] = useState<CheckoutStep>("details");
   const [orderId, setOrderId] = useState<string | null>(null);
+  const [trackingNumber, setTrackingNumber] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
   const [paymentError, setPaymentError] = useState("");
@@ -233,6 +235,7 @@ export default function CheckoutPage() {
       }
 
       setOrderId(result.orderId);
+      setTrackingNumber(result.trackingNumber ?? null);
       clearCart();
       setStep("confirmed");
     } catch (err) {
@@ -279,13 +282,21 @@ export default function CheckoutPage() {
             You&apos;re in the system.
           </h1>
           <p className="text-zinc-600 text-sm leading-relaxed">
-            {orderId && (
+            {trackingNumber ? (
+              <>
+                Tracking number{" "}
+                <span className="text-zinc-900 font-medium">
+                  {trackingNumber}
+                </span>
+                .{" "}
+              </>
+            ) : orderId ? (
               <>
                 Order{" "}
                 <span className="text-zinc-900 font-medium">{orderId}</span>{" "}
                 is confirmed.{" "}
               </>
-            )}
+            ) : null}
             We&apos;ll send updates to{" "}
             <span className="text-zinc-900">{form.email}</span>.
           </p>
@@ -297,6 +308,16 @@ export default function CheckoutPage() {
 
           <div className="flex flex-col sm:flex-row gap-3 w-full mt-4">
             <Link
+              href={
+                trackingNumber ? trackingPath(trackingNumber) : "/tracking"
+              }
+              className={
+                buttonVariants({ size: "sm" }) + " flex-1 justify-center"
+              }
+            >
+              Track Your Order
+            </Link>
+            <Link
               href="/collections"
               className={
                 buttonVariants({ variant: "outline", size: "sm" }) +
@@ -304,15 +325,6 @@ export default function CheckoutPage() {
               }
             >
               Keep Shopping
-            </Link>
-            <Link
-              href="/tracking"
-              className={
-                buttonVariants({ variant: "secondary", size: "sm" }) +
-                " flex-1 justify-center"
-              }
-            >
-              Track Order
             </Link>
           </div>
         </motion.div>

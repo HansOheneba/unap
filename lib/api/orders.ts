@@ -26,6 +26,8 @@ export type PlaceOrderPayload = {
 
 export type PlaceOrderResult = {
   orderId: string;
+  /** Public shipment id for `GET /tracking/:trackingNumber` (e.g. UNAP-000052). */
+  trackingNumber?: string | null;
   subtotal?: number;
   discount?: number;
   shippingFee?: number;
@@ -44,9 +46,11 @@ export async function placeOrder(
   const data = await apiRequest<{
     order?: PlaceOrderResult & {
       id?: string;
+      trackingNumber?: string | null;
       payment?: PlaceOrderResult["payment"];
     };
     orderId?: string;
+    trackingNumber?: string | null;
     subtotal?: number;
     discount?: number;
     shippingFee?: number;
@@ -64,9 +68,12 @@ export async function placeOrder(
     throw new Error("Order created without an id");
   }
   const payment = data.payment ?? order.payment;
+  const trackingNumber =
+    order.trackingNumber ?? data.trackingNumber ?? null;
 
   return {
     orderId,
+    trackingNumber,
     subtotal: data.subtotal ?? order.subtotal,
     discount: data.discount ?? order.discount,
     shippingFee: data.shippingFee ?? order.shippingFee,
@@ -77,10 +84,11 @@ export async function placeOrder(
 
 export async function verifyPayment(
   reference: string,
-): Promise<{ success: boolean; orderId?: string }> {
+): Promise<{ success: boolean; orderId?: string; trackingNumber?: string }> {
   const data = await apiRequest<{
     success?: boolean;
     orderId?: string;
+    trackingNumber?: string | null;
   }>(`/payments/paystack/verify/${encodeURIComponent(reference)}`, {
     cache: "no-store",
   });
@@ -88,6 +96,7 @@ export async function verifyPayment(
   return {
     success: Boolean(data.success ?? true),
     orderId: data.orderId,
+    trackingNumber: data.trackingNumber ?? undefined,
   };
 }
 

@@ -7,6 +7,7 @@ import { ArrowLeft } from "lucide-react";
 import { orderStatusColor, orderStatusDot } from "@/lib/auth";
 import { getOrder, type ApiOrder } from "@/lib/api/orders";
 import { formatPrice } from "@/lib/currency";
+import { trackingPath } from "@/lib/tracking";
 import { buttonVariants } from "@/components/ui/button";
 
 export default function OrderDetailPage() {
@@ -140,7 +141,7 @@ export default function OrderDetailPage() {
                   {order.trackingNumber}
                 </p>
                 <Link
-                  href={`/tracking?q=${order.trackingNumber}`}
+                  href={trackingPath(order.trackingNumber)}
                   className={
                     buttonVariants({ variant: "outline", size: "sm" }) +
                     " w-full justify-center"

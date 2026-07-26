@@ -1,8 +1,11 @@
 /**
  * Order shipment tracking. Backed by the real `GET /tracking/:trackingNumber`
  * endpoint (public, no auth required) — see docs/frontend-api-spec.json.
+ *
+ * Tracking numbers look like `UNAP-000052`, not Paystack references
+ * (`UNAP-ORD-…`) or internal order ids (`ORD-…`).
  */
-import { apiRequest } from "@/lib/api/client";
+import { apiRequest, ApiError } from "@/lib/api/client";
 
 export type TrackingStatus =
   | "processing"
@@ -63,6 +66,12 @@ const NOT_FOUND: Omit<TrackingResult, "trackingNumber"> = {
   events: [],
 };
 
+/** Storefront path for a tracking number, e.g. `/tracking/UNAP-000052`. */
+export function trackingPath(trackingNumber: string): string {
+  const key = trackingNumber.trim();
+  return `/tracking/${encodeURIComponent(key)}`;
+}
+
 export async function lookupTrackingNumber(
   trackingNumber: string,
 ): Promise<TrackingResult> {
@@ -85,8 +94,11 @@ export async function lookupTrackingNumber(
       orderItems: result.orderItems ?? [],
       events: result.events ?? [],
     };
-  } catch {
-    return { ...NOT_FOUND, trackingNumber: key };
+  } catch (err) {
+    if (err instanceof ApiError) {
+      throw err;
+    }
+    throw new ApiError("Could not look up this tracking number.", 0);
   }
 }
 

@@ -4,7 +4,8 @@ import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
-import { verifyPayment } from "@/lib/api/orders";
+import { getOrder, verifyPayment } from "@/lib/api/orders";
+import { trackingPath } from "@/lib/tracking";
 import { useCartStore } from "@/lib/stores/cart-store";
 import { buttonVariants } from "@/components/ui/button";
 
@@ -18,21 +19,45 @@ function OrderConfirmationInner() {
     reference ? "loading" : "failed",
   );
   const [orderId, setOrderId] = useState<string | null>(null);
+  const [trackingNumber, setTrackingNumber] = useState<string | null>(null);
 
   useEffect(() => {
     if (!reference) return;
 
-    verifyPayment(reference)
-      .then((result) => {
-        if (result.success) {
-          clearCart();
-          setOrderId(result.orderId ?? null);
-          setStatus("success");
-        } else {
-          setStatus("failed");
+    let cancelled = false;
+
+    (async () => {
+      try {
+        const result = await verifyPayment(reference);
+        if (!result.success) {
+          if (!cancelled) setStatus("failed");
+          return;
         }
-      })
-      .catch(() => setStatus("failed"));
+
+        clearCart();
+
+        let nextTracking = result.trackingNumber ?? null;
+        if (!nextTracking && result.orderId) {
+          try {
+            const order = await getOrder(result.orderId);
+            nextTracking = order.trackingNumber ?? null;
+          } catch {
+            // Tracking is optional on the confirmation screen.
+          }
+        }
+
+        if (cancelled) return;
+        setOrderId(result.orderId ?? null);
+        setTrackingNumber(nextTracking);
+        setStatus("success");
+      } catch {
+        if (!cancelled) setStatus("failed");
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
   }, [reference, clearCart]);
 
   if (status === "loading") {
@@ -63,8 +88,8 @@ function OrderConfirmationInner() {
     );
   }
 
-  const trackingHref = orderId
-    ? `/tracking?q=${encodeURIComponent(orderId)}`
+  const trackingHref = trackingNumber
+    ? trackingPath(trackingNumber)
     : "/tracking";
 
   return (
@@ -95,7 +120,13 @@ function OrderConfirmationInner() {
           You&apos;re in the system.
         </h1>
         <p className="text-zinc-600 text-sm leading-relaxed">
-          {orderId ? (
+          {trackingNumber ? (
+            <>
+              Tracking number{" "}
+              <span className="text-zinc-900 font-medium">{trackingNumber}</span>
+              . Payment received.
+            </>
+          ) : orderId ? (
             <>
               Order <span className="text-zinc-900 font-medium">{orderId}</span>{" "}
               is confirmed. Payment received.

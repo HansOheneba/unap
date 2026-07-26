@@ -26,6 +26,7 @@ import {
   type ApiAddress,
 } from "@/lib/api/users";
 import { listOrders, type ApiOrderSummary } from "@/lib/api/orders";
+import { trackingPath } from "@/lib/tracking";
 import { useOnboardingStore } from "@/lib/stores/onboarding-store";
 import { useAuthStore } from "@/lib/stores/auth-store";
 import { useWishlistStore } from "@/lib/stores/wishlist-store";
@@ -755,7 +756,7 @@ function AccountPageInner() {
                           <div className="flex items-center justify-end gap-2 px-5 py-3 border-t border-zinc-100 bg-zinc-50">
                             {order.trackingNumber && (
                               <Link
-                                href={`/tracking?q=${encodeURIComponent(order.trackingNumber)}`}
+                                href={trackingPath(order.trackingNumber)}
                                 className="text-[10px] tracking-widest uppercase text-zinc-600 hover:text-zinc-900 px-3 py-2 transition-colors"
                               >
                                 Track
