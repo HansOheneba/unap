@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import FooterNewsletter from "@/components/layout/footer-newsletter";
 
 const explore = [
   { label: "Collections", href: "/collections" },
@@ -75,18 +76,7 @@ export default function Footer() {
             </a>
           </div>
 
-          {/* Newsletter micro-CTA */}
-          <div className="flex flex-col gap-3 pt-2">
-            <p className="text-[0.7rem] font-semibold tracking-widest uppercase text-white">
-              Join the Inner Circle
-            </p>
-            <Link
-              href="/inner-circle"
-              className="text-[0.7rem] font-semibold tracking-widest uppercase text-black bg-white border border-white px-6 py-3 inline-block hover:bg-black hover:text-white hover:border-white transition-colors duration-300"
-            >
-              Get First Access
-            </Link>
-          </div>
+          <FooterNewsletter />
         </div>
 
         {/* Nav columns */}
