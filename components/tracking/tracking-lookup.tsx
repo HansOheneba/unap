@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
+  formatTrackingDate,
+  formatTrackingDateTime,
   lookupTrackingNumber,
   statusConfig,
   trackingPath,
@@ -198,7 +200,9 @@ export function TrackingLookup({
                   <p className="text-[0.6rem] tracking-widest uppercase text-zinc-500 mb-3">
                     Order Date
                   </p>
-                  <p className="text-zinc-900 text-sm">{result.orderDate}</p>
+                  <p className="text-zinc-900 text-sm">
+                    {formatTrackingDateTime(result.orderDate)}
+                  </p>
                 </div>
               )}
 
@@ -208,7 +212,7 @@ export function TrackingLookup({
                     Estimated Delivery
                   </p>
                   <p className="text-zinc-900 text-sm font-medium mt-1">
-                    {result.estimatedDelivery}
+                    {formatTrackingDate(result.estimatedDelivery)}
                   </p>
                 </div>
               )}
@@ -219,7 +223,7 @@ export function TrackingLookup({
                     Last Updated
                   </p>
                   <p className="text-zinc-600 text-xs mt-1">
-                    {result.lastUpdated}
+                    {formatTrackingDateTime(result.lastUpdated)}
                   </p>
                 </div>
               )}
@@ -237,7 +241,7 @@ export function TrackingLookup({
                   <p className="text-zinc-600 text-sm mt-3">
                     Estimated arrival:{" "}
                     <span className="text-zinc-900 font-medium">
-                      {result.estimatedDelivery}
+                      {formatTrackingDate(result.estimatedDelivery)}
                     </span>
                   </p>
                 )}
@@ -245,7 +249,7 @@ export function TrackingLookup({
                   <p className="text-zinc-600 text-sm mt-3">
                     Delivered on{" "}
                     <span className="text-zinc-900 font-medium">
-                      {result.estimatedDelivery}
+                      {formatTrackingDate(result.estimatedDelivery)}
                     </span>
                   </p>
                 )}
@@ -343,11 +347,7 @@ export function TrackingLookup({
 
                         <time className="inline-block bg-zinc-50 border border-zinc-200 text-zinc-600 text-[0.6rem] font-medium tracking-widest uppercase px-2 py-0.5 rounded-sm mb-2">
                           {ev.date
-                            ? `${new Date(ev.date).toLocaleDateString("en-GB", {
-                                day: "numeric",
-                                month: "short",
-                                year: "numeric",
-                              })} · ${ev.time}`
+                            ? `${formatTrackingDate(ev.date)} · ${ev.time}`
                             : ev.time}
                         </time>
 

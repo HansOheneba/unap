@@ -72,6 +72,34 @@ export function trackingPath(trackingNumber: string): string {
   return `/tracking/${encodeURIComponent(key)}`;
 }
 
+function parseTrackingDate(value: string): Date | null {
+  const parsed = new Date(value);
+  return Number.isNaN(parsed.getTime()) ? null : parsed;
+}
+
+/** e.g. "27 Jul 2026" */
+export function formatTrackingDate(value: string): string {
+  const parsed = parseTrackingDate(value);
+  if (!parsed) return value;
+  return parsed.toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+}
+
+/** e.g. "27 Jul 2026 · 2:05 PM" */
+export function formatTrackingDateTime(value: string): string {
+  const parsed = parseTrackingDate(value);
+  if (!parsed) return value;
+  const date = formatTrackingDate(value);
+  const time = parsed.toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+  });
+  return `${date} · ${time}`;
+}
+
 export async function lookupTrackingNumber(
   trackingNumber: string,
 ): Promise<TrackingResult> {
