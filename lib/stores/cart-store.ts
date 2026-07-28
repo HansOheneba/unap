@@ -18,7 +18,7 @@ export interface CartToast {
 interface CartState {
   items: CartItem[];
   toast: CartToast | null;
-  addItem: (item: Omit<CartItem, "quantity">) => void;
+  addItem: (item: Omit<CartItem, "quantity">, quantity?: number) => void;
   removeItem: (id: string) => void;
   updateQuantity: (id: string, quantity: number) => void;
   clearCart: () => void;
@@ -34,18 +34,19 @@ export const useCartStore = create<CartState>()(
         items: [],
         toast: null,
 
-        addItem: (item) => {
+        addItem: (item, quantity = 1) => {
+          const qty = Math.max(1, Math.floor(quantity));
           const existing = get().items.find((i) => i.id === item.id);
           if (existing) {
             set({
               items: get().items.map((i) =>
-                i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i,
+                i.id === item.id ? { ...i, quantity: i.quantity + qty } : i,
               ),
               toast: { key: Date.now(), item },
             });
           } else {
             set({
-              items: [...get().items, { ...item, quantity: 1 }],
+              items: [...get().items, { ...item, quantity: qty }],
               toast: { key: Date.now(), item },
             });
           }

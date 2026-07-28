@@ -150,13 +150,16 @@ export default function ProductDetailClient({
 
   const handleAddToCart = () => {
     if (!canAdd) return;
-    addItem({
-      id: `${product.id}__${selectedVariant.id}__${selectedSize}`,
-      name: `${product.name} (${selectedVariant.colorName} / ${selectedSize})`,
-      price: product.price,
-      img: selectedVariant.images[0],
-      category: product.category,
-    });
+    addItem(
+      {
+        id: `${product.id}__${selectedVariant.id}__${selectedSize}`,
+        name: `${product.name} (${selectedVariant.colorName} / ${selectedSize})`,
+        price: product.price,
+        img: selectedVariant.images[0],
+        category: product.category,
+      },
+      quantity,
+    );
     setAdded(true);
     setTimeout(() => setAdded(false), 1500);
   };

@@ -100,6 +100,19 @@ export function formatTrackingDateTime(value: string): string {
   return `${date} · ${time}`;
 }
 
+/** Newest event first — tracking UI treats index 0 as the active status. */
+function sortEventsNewestFirst(events: TrackingEvent[]): TrackingEvent[] {
+  return [...events].sort((a, b) => {
+    const aMs = Date.parse(`${a.date} ${a.time}`);
+    const bMs = Date.parse(`${b.date} ${b.time}`);
+    if (!Number.isNaN(aMs) && !Number.isNaN(bMs)) return bMs - aMs;
+
+    const aDate = parseTrackingDate(a.date)?.getTime() ?? 0;
+    const bDate = parseTrackingDate(b.date)?.getTime() ?? 0;
+    return bDate - aDate;
+  });
+}
+
 export async function lookupTrackingNumber(
   trackingNumber: string,
 ): Promise<TrackingResult> {
@@ -120,7 +133,7 @@ export async function lookupTrackingNumber(
       found: true,
       trackingNumber: result.trackingNumber || key,
       orderItems: result.orderItems ?? [],
-      events: result.events ?? [],
+      events: sortEventsNewestFirst(result.events ?? []),
     };
   } catch (err) {
     if (err instanceof ApiError) {
