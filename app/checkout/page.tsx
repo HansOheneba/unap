@@ -303,7 +303,7 @@ export default function CheckoutPage() {
           <p className="text-zinc-400 text-xs leading-relaxed">
             {showPaidOnline
               ? "Payment received. Expect delivery within 48 working hours."
-              : "Pay in cash or MoMo when your order arrives. Expect delivery within 48 hours."}
+              : "Pay in cash or MoMo when your order arrives. Expect delivery within 48 working hours."}
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 w-full mt-4">
