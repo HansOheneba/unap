@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRef, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { buttonVariants } from "@/components/ui/button";
 import type { CollectionInfo, ProductSummary } from "@/lib/products";
@@ -14,6 +14,15 @@ import {
 } from "@/lib/stores/banner-store";
 import { COLLECTIONS_CONTAINER } from "@/lib/layout/collections";
 import { cn } from "@/lib/utils";
+
+const HERO_IMAGES = [
+  "/hero/collections/collection1.JPG",
+  "/hero/collections/collection2.JPG",
+  "/hero/collections/collection3.JPG",
+  "/hero/collections/collection4.JPG",
+] as const;
+
+const HERO_SLIDE_MS = 4500;
 
 export type CollectionSection = {
   collection: CollectionInfo;
@@ -40,10 +49,13 @@ export default function CollectionsOverview({
   const bannerOffset = getBannerOffset(bannerVisible, scrollHidden);
   // Sticky nav sits below: fixed header (56px) + collections subnav (44px)
   const stickyTop = bannerOffset + 56 + 44;
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const [heroIndex, setHeroIndex] = useState(0);
 
   useEffect(() => {
-    videoRef.current?.play().catch(() => {});
+    const id = window.setInterval(() => {
+      setHeroIndex((i) => (i + 1) % HERO_IMAGES.length);
+    }, HERO_SLIDE_MS);
+    return () => window.clearInterval(id);
   }, []);
 
   const scrollTo = (id: string) => {
@@ -57,17 +69,22 @@ export default function CollectionsOverview({
 
   return (
     <main className="bg-white text-zinc-900 min-h-screen overflow-x-hidden">
-      {/* ── VIDEO STRIP ─────────────────────────────────────────────────── */}
-      <section className="relative w-full h-[52vh] overflow-hidden">
-        <video
-          ref={videoRef}
-          src="/hero/hero_vid2.mp4"
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover"
-        />
+      {/* ── IMAGE STRIP ─────────────────────────────────────────────────── */}
+      <section className="relative w-full h-[52vh] overflow-hidden bg-black">
+        {HERO_IMAGES.map((src, index) => (
+          <Image
+            key={src}
+            src={src}
+            alt=""
+            fill
+            priority={index === 0}
+            sizes="100vw"
+            className={cn(
+              "object-cover transition-opacity duration-1000 ease-in-out",
+              index === heroIndex ? "opacity-100" : "opacity-0",
+            )}
+          />
+        ))}
         <div className="absolute inset-0 bg-black/50" />
         <div className="absolute inset-0 bg-linear-to-b from-black/20 via-transparent to-black/70" />
 
