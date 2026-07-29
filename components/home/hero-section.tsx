@@ -1,21 +1,62 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
-const HERO_VIDEO = "/hero/hero_candy.mp4";
+const VIDEOS = ["/hero/hero_candy.mp4", "/hero/hero_candy2.mp4"] as const;
+const CROSSFADE_MS = 700;
 
 export default function HeroSection() {
+  const [current, setCurrent] = useState(0);
+  const [incoming, setIncoming] = useState<number | null>(null);
+  const nextRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (incoming === null || !nextRef.current) return;
+    const el = nextRef.current;
+    el.currentTime = 0;
+    void el.play().catch(() => {});
+  }, [incoming]);
+
+  useEffect(() => {
+    if (incoming === null) return;
+    const id = window.setTimeout(() => {
+      setCurrent(incoming);
+      setIncoming(null);
+    }, CROSSFADE_MS);
+    return () => window.clearTimeout(id);
+  }, [incoming]);
+
+  const handleEnded = () => {
+    if (incoming !== null) return;
+    setIncoming((current + 1) % VIDEOS.length);
+  };
+
   return (
     <section className="relative w-full h-screen overflow-hidden bg-black">
       <video
-        src={HERO_VIDEO}
+        key={`current-${current}`}
+        src={VIDEOS[current]}
         autoPlay
         muted
-        loop
         playsInline
-        className="absolute inset-0 w-full h-full object-cover"
+        onEnded={handleEnded}
+        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
+          incoming !== null ? "opacity-0" : "opacity-100"
+        }`}
       />
+
+      {incoming !== null && (
+        <video
+          ref={nextRef}
+          key={`next-${incoming}`}
+          src={VIDEOS[incoming]}
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700 opacity-100"
+        />
+      )}
 
       {/* Cinematic vignette overlay */}
       <div className="absolute inset-0 bg-linear-to-t from-transparent via-black/60 to-transparent pointer-events-none" />
