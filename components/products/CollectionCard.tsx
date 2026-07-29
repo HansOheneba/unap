@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { Loader2 } from "lucide-react";
 import { formatPrice } from "@/lib/currency";
 import { cn } from "@/lib/utils";
 import { getProductBySlug, type Product, type ProductSummary } from "@/lib/products";
@@ -10,6 +11,7 @@ import QuickAddModal from "./QuickAddModal";
 import WishlistButton from "@/components/ui/wishlist-button";
 import { useWishlistStore } from "@/lib/stores/wishlist-store";
 import { toast } from "@/lib/stores/toast-store";
+import { useRequireLogin } from "@/lib/use-require-login";
 
 type Props = {
   product: ProductSummary;
@@ -30,6 +32,7 @@ export default function CollectionCard({
   imageSizes = "(max-width: 768px) 50vw, 25vw",
   large = false,
 }: Props) {
+  const requireLogin = useRequireLogin();
   const [modalOpen, setModalOpen] = useState(false);
   const [quickAddProduct, setQuickAddProduct] = useState<Product | null>(null);
   const [loadingQuickAdd, setLoadingQuickAdd] = useState(false);
@@ -48,6 +51,7 @@ export default function CollectionCard({
 
   const handleQuickAdd = async () => {
     if (loadingQuickAdd) return;
+    if (!requireLogin()) return;
     setLoadingQuickAdd(true);
     try {
       const resolved = await getProductBySlug(product.slug, product.category);
@@ -102,7 +106,11 @@ export default function CollectionCard({
           disabled={loadingQuickAdd}
           className="absolute bottom-3 inset-x-3 z-20 py-2.5 bg-black/70 backdrop-blur-sm text-white text-[0.6rem] tracking-widest uppercase opacity-0 translate-y-1.5 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 disabled:opacity-50"
         >
-          {loadingQuickAdd ? "Loading..." : "Quick Add"}
+          {loadingQuickAdd ? (
+            <Loader2 size={14} className="mx-auto animate-spin" aria-hidden />
+          ) : (
+            "Quick Add"
+          )}
         </button>
       </div>
 

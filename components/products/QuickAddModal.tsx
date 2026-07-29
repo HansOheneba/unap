@@ -8,6 +8,7 @@ import { useAnimate } from "framer-motion";
 import { Dialog, DialogContent, DialogClose } from "@/components/ui/dialog";
 import { useCartStore } from "@/lib/stores/cart-store";
 import { toast } from "@/lib/stores/toast-store";
+import { useRequireLogin } from "@/lib/use-require-login";
 import { formatPrice } from "@/lib/currency";
 import { cn } from "@/lib/utils";
 import {
@@ -29,6 +30,7 @@ type Props = {
 export default function QuickAddModal({ product, open, onClose }: Props) {
   const addItem = useCartStore((s) => s.addItem);
   const getLineQuantity = useCartStore((s) => s.getLineQuantity);
+  const requireLogin = useRequireLogin();
   const [selectedVariant, setSelectedVariant] = useState<ColorVariant>(
     product.variants[0],
   );
@@ -111,6 +113,7 @@ export default function QuickAddModal({ product, open, onClose }: Props) {
 
   const handleAddToCart = () => {
     if (!canAdd) return;
+    if (!requireLogin()) return;
     const result = addItem(
       {
         id: `${product.id}__${selectedVariant.id}__${selectedSize}`,
