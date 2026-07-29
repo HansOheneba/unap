@@ -74,7 +74,9 @@ export default function CartToast() {
                 {toast.item.name}
               </p>
               <p className="text-zinc-400 text-xs mt-0.5">
-                {formatPrice(toast.item.price)}
+                {toast.quantity > 1
+                  ? `Qty ${toast.quantity} · ${formatPrice(toast.item.price * toast.quantity)}`
+                  : formatPrice(toast.item.price)}
               </p>
               <Link
                 href="/cart"

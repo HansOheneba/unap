@@ -1,4 +1,4 @@
-import { apiRequest, asList } from "@/lib/api/client";
+import { apiRequest, asList, ApiError } from "@/lib/api/client";
 
 export function parseCartLineId(id: string): {
   productId: string;
@@ -43,7 +43,9 @@ export type PlaceOrderResult = {
 export async function placeOrder(
   payload: PlaceOrderPayload,
 ): Promise<PlaceOrderResult> {
-  const data = await apiRequest<{
+  console.log("[placeOrder] payload", JSON.stringify(payload, null, 2));
+
+  let data: {
     order?: PlaceOrderResult & {
       id?: string;
       trackingNumber?: string | null;
@@ -57,10 +59,34 @@ export async function placeOrder(
     total?: number;
     payment?: PlaceOrderResult["payment"];
     id?: string;
-  }>("/orders", {
-    method: "POST",
-    body: payload,
-  });
+  };
+
+  try {
+    data = await apiRequest("/orders", {
+      method: "POST",
+      body: payload,
+    });
+  } catch (err) {
+    if (err instanceof ApiError) {
+      console.error(
+        "[placeOrder] error",
+        JSON.stringify(
+          {
+            status: err.status,
+            message: err.message,
+            details: err.details,
+          },
+          null,
+          2,
+        ),
+      );
+    } else {
+      console.error("[placeOrder] error", err);
+    }
+    throw err;
+  }
+
+  console.log("[placeOrder] response", JSON.stringify(data, null, 2));
 
   const order = data.order ?? data;
   const orderId = order.orderId ?? order.id ?? data.orderId;

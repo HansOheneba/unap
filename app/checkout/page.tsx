@@ -13,6 +13,7 @@ import { useIsLoggedIn, useAuthReady } from "@/lib/use-is-logged-in";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { parseCartLineId, placeOrder, validatePromoCode } from "@/lib/api/orders";
 import { trackingPath } from "@/lib/tracking";
+import { syncCartStocks } from "@/lib/cart/sync-stock";
 
 type CheckoutStep = "details" | "review" | "confirmed";
 type PaymentMethod = "pay_now" | "pay_on_delivery";
@@ -205,7 +206,21 @@ export default function CheckoutPage() {
     setLoading(true);
 
     try {
-      const orderItems = items.map((item) => {
+      const adjustments = await syncCartStocks(useCartStore.getState().items);
+      if (adjustments.length > 0) {
+        setPaymentError(
+          "Stock changed for some items. Quantities were updated to match what is available. Review your bag and try again.",
+        );
+        return;
+      }
+
+      const latestItems = useCartStore.getState().items;
+      if (latestItems.length === 0) {
+        setPaymentError("Your cart is empty.");
+        return;
+      }
+
+      const orderItems = latestItems.map((item) => {
         const { productId, variantId, size } = parseCartLineId(item.id);
         return {
           productId,

@@ -13,6 +13,17 @@ import {
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
+/** Matches boxers / underwear / intimates regardless of API slug wording. */
+export function isBoxerCollection(categoryOrSlug: string): boolean {
+  const key = categoryOrSlug.toLowerCase();
+  return (
+    key === "boxers" ||
+    key === "underwear" ||
+    key === "intimates" ||
+    key.includes("boxer")
+  );
+}
+
 const sizeChart = [
   { size: "S", inches: "29 - 32", cm: "74 - 80" },
   { size: "M", inches: "32 - 34", cm: "80 - 86" },
@@ -23,9 +34,11 @@ const sizeChart = [
 ];
 
 const variantImages = [
+  "/collections/boxers/boxersWhite.jpeg",
   "/collections/boxers/boxersGray.jpg",
-  "/collections/boxers/boxersBlue.jpg",
   "/collections/boxers/boxersBrown.jpeg",
+  "/collections/boxers/boxersBlackWhite.jpeg",
+  "/collections/boxers/boxersBlue.jpg",
   "/collections/boxers/boxersCream.jpeg",
 ];
 
@@ -53,15 +66,14 @@ export default function BoxerSizeGuide({ variant = "button" }: Props) {
       </DialogTrigger>
 
       <DialogContent
-        className="max-w-lg w-full p-0 overflow-hidden rounded-none border-zinc-200"
+        className="max-w-lg w-full p-0 overflow-hidden rounded-none border-zinc-200 max-h-[90vh] overflow-y-auto"
         showCloseButton={false}
       >
-        {/* ── Header ─────────────────────────────────────────────── */}
         <DialogHeader className="px-8 pt-8 pb-0">
           <p className="eyebrow text-zinc-400 mb-1">Intimates &amp; Boxers</p>
           <div className="flex items-center justify-between">
             <DialogTitle className="text-lg font-bold tracking-tight normal-case text-zinc-900">
-              Size Guide
+              Size Chart
             </DialogTitle>
             <DialogClose
               className="text-zinc-400 hover:text-zinc-900 transition-colors text-lg leading-none"
@@ -72,18 +84,15 @@ export default function BoxerSizeGuide({ variant = "button" }: Props) {
           </div>
         </DialogHeader>
 
-        {/* ── Table ──────────────────────────────────────────────── */}
         <div className="px-8 pt-6 pb-4">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b-2 border-zinc-900">
                 <th className="text-left pb-3 eyebrow text-zinc-900">Size</th>
                 <th className="text-center pb-3 eyebrow text-zinc-900">
-                  Waist (in)
+                  Inches
                 </th>
-                <th className="text-center pb-3 eyebrow text-zinc-900">
-                  Waist (cm)
-                </th>
+                <th className="text-center pb-3 eyebrow text-zinc-900">Cm</th>
               </tr>
             </thead>
             <tbody>
@@ -105,7 +114,6 @@ export default function BoxerSizeGuide({ variant = "button" }: Props) {
           </table>
         </div>
 
-        {/* ── How to measure ─────────────────────────────────────── */}
         <div className="px-8 py-4 bg-zinc-50 border-t border-zinc-100">
           <p className="eyebrow text-zinc-500 mb-1">How to Measure</p>
           <p className="text-xs text-zinc-500 leading-relaxed">
@@ -115,18 +123,23 @@ export default function BoxerSizeGuide({ variant = "button" }: Props) {
           </p>
         </div>
 
-        {/* ── Colour strip ───────────────────────────────────────── */}
-        <div className="grid grid-cols-4 gap-px bg-zinc-100">
+        <div className="bg-zinc-200 px-8 py-5 flex items-center justify-center">
+          <p className="font-serif text-white text-2xl md:text-3xl tracking-[0.2em] uppercase">
+            Unapologetic
+          </p>
+        </div>
+
+        <div className="grid grid-cols-6 gap-px bg-zinc-100">
           {variantImages.map((src, i) => (
             <div
-              key={i}
+              key={src}
               className="relative aspect-square overflow-hidden bg-white"
             >
               <Image
                 src={src}
                 alt={`Boxer colour ${i + 1}`}
                 fill
-                sizes="25vw"
+                sizes="80px"
                 className="object-cover"
               />
             </div>

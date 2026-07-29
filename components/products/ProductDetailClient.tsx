@@ -25,7 +25,9 @@ import {
 import { submitReview, type ApiReview } from "@/lib/api/catalog";
 import ProductGallery from "./ProductGallery";
 import CollectionCard from "./CollectionCard";
-import BoxerSizeGuide from "./BoxerSizeGuide";
+import BoxerSizeGuide, {
+  isBoxerCollection,
+} from "./BoxerSizeGuide";
 import FindMySizeQuiz from "./FindMySizeQuiz";
 import { useCartStore } from "@/lib/stores/cart-store";
 import { useWishlistStore } from "@/lib/stores/wishlist-store";
@@ -108,6 +110,7 @@ export default function ProductDetailClient({
   const otherRecentlyViewed = recentlyViewed.filter((r) => r.id !== product.id);
 
   const addItem = useCartStore((s) => s.addItem);
+  const getLineQuantity = useCartStore((s) => s.getLineQuantity);
   const router = useRouter();
   const isLoggedIn = useIsLoggedIn();
   const toggleWishlist = useWishlistStore((s) => s.toggle);
@@ -127,9 +130,22 @@ export default function ProductDetailClient({
     (s) => s.size === selectedSize,
   );
   const currentStock = selectedSizeData?.stock ?? 0;
+  const lineId =
+    selectedSize != null
+      ? `${product.id}__${selectedVariant.id}__${selectedSize}`
+      : null;
+  const inCartQty = lineId ? getLineQuantity(lineId) : 0;
+  const roomLeft = Math.max(0, currentStock - inCartQty);
   const isLowStock = !!selectedSize && currentStock > 0 && currentStock <= 4;
   const isOutOfStock = !!selectedSize && currentStock === 0;
-  const canAdd = !!selectedSize && !isOutOfStock;
+  const canAdd = !!selectedSize && !isOutOfStock && roomLeft > 0;
+
+  // Keep the qty picker within what can still be added for this size.
+  if (selectedSize && quantity > roomLeft && roomLeft > 0) {
+    setQuantity(roomLeft);
+  } else if (selectedSize && roomLeft === 0 && quantity !== 1) {
+    setQuantity(1);
+  }
 
   const handleColorChange = (variant: ColorVariant) => {
     setSelectedVariant(variant);
@@ -149,17 +165,32 @@ export default function ProductDetailClient({
   };
 
   const handleAddToCart = () => {
-    if (!canAdd) return;
-    addItem(
+    if (!canAdd || !selectedSize) return;
+    const result = addItem(
       {
         id: `${product.id}__${selectedVariant.id}__${selectedSize}`,
         name: `${product.name} (${selectedVariant.colorName} / ${selectedSize})`,
         price: product.price,
         img: selectedVariant.images[0],
         category: product.category,
+        stock: currentStock,
+        slug: product.slug,
       },
       quantity,
     );
+    if (result.added <= 0) {
+      toast.error(
+        "Not enough stock",
+        `Only ${currentStock} available. You already have ${result.quantityInCart} in your cart.`,
+      );
+      return;
+    }
+    if (result.added < quantity) {
+      toast.info(
+        "Quantity adjusted",
+        `Only ${result.added} added. ${currentStock} in stock.`,
+      );
+    }
     setAdded(true);
     setTimeout(() => setAdded(false), 1500);
   };
@@ -325,7 +356,7 @@ export default function ProductDetailClient({
                       Select a size
                     </p>
                   )}
-                  {product.category === "underwear" && (
+                  {isBoxerCollection(product.category) && (
                     <BoxerSizeGuide variant="link" />
                   )}
                   {!["sunglasses", "accessories"].includes(product.category) && (
@@ -385,9 +416,9 @@ export default function ProductDetailClient({
                 </span>
                 <button
                   onClick={() =>
-                    setQuantity((q) => Math.min(currentStock, q + 1))
+                    setQuantity((q) => Math.min(roomLeft, q + 1))
                   }
-                  disabled={!selectedSize || quantity >= currentStock}
+                  disabled={!selectedSize || quantity >= roomLeft}
                   className="w-10 h-10 flex items-center justify-center text-zinc-500 hover:text-zinc-900 hover:bg-zinc-50 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                   aria-label="Increase quantity"
                 >
@@ -418,6 +449,8 @@ export default function ProductDetailClient({
                   "Select a Size to Continue"
                 ) : isOutOfStock ? (
                   "Out of Stock"
+                ) : roomLeft <= 0 ? (
+                  "Max in Cart"
                 ) : (
                   "Add to Cart"
                 )}

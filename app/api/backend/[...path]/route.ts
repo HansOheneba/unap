@@ -129,20 +129,15 @@ async function handle(
   const hasBody = !["GET", "HEAD"].includes(request.method);
   const rawBody = hasBody ? await request.text() : undefined;
   const bodyText = rawBody && rawBody.length > 0 ? rawBody : undefined;
-  const upstreamUrl = `${API_ORIGIN}/${path}${request.nextUrl.search}`;
-  let parsedPayload: unknown = null;
-  if (bodyText) {
+  const isOrders = path === "orders" || path.startsWith("orders/");
+  let ordersPayload: unknown = null;
+  if (isOrders && bodyText) {
     try {
-      parsedPayload = JSON.parse(bodyText);
+      ordersPayload = JSON.parse(bodyText);
     } catch {
-      parsedPayload = bodyText;
+      ordersPayload = bodyText;
     }
   }
-  console.log("[api/backend proxy]", {
-    method: request.method,
-    endpoint: upstreamUrl,
-    payload: parsedPayload,
-  });
 
   // ── Logout: always use OUR httpOnly refresh token, always drop the local session ──
   if (path === "auth/logout" && request.method === "POST") {
@@ -177,11 +172,35 @@ async function handle(
     }
   }
 
+  if (isOrders) {
+    console.log(
+      "[orders] request",
+      JSON.stringify(
+        {
+          method: request.method,
+          path,
+          bearerToken: accessToken,
+          authorization: accessToken ? `Bearer ${accessToken}` : null,
+          payload: ordersPayload,
+        },
+        null,
+        2,
+      ),
+    );
+  }
+
   if (res.status === 204) {
     return new NextResponse(null, { status: 204 });
   }
 
   const body = await readEnvelope(res);
+
+  if (isOrders) {
+    console.log(
+      "[orders] response",
+      JSON.stringify({ status: res.status, body }, null, 2),
+    );
+  }
 
   // ── Mint httpOnly cookies from token-bearing responses; the browser never sees a token ──
   if (TOKEN_MINTING_PATHS.has(path) && res.ok) {

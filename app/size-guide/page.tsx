@@ -142,7 +142,7 @@ export default function SizeGuidePage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-16 md:gap-10">
           <SizeTable eyebrow="Tops" primaryLabel="Chest" rows={topsChart} />
           <SizeTable eyebrow="Bottoms" primaryLabel="Waist" rows={bottomsChart} />
-          <SizeTable eyebrow="Underwear" primaryLabel="Waist" rows={underwearChart} />
+          <SizeTable eyebrow="Boxers" primaryLabel="Waist" rows={underwearChart} />
         </div>
         <FadeIn delay={0.1} className="mt-10 pt-8 border-t border-zinc-100">
           <p className="text-zinc-500 text-sm leading-relaxed max-w-2xl">

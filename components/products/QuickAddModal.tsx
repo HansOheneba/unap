@@ -7,6 +7,7 @@ import { X, Check, ArrowRight, ShoppingBag, Package } from "lucide-react";
 import { useAnimate } from "framer-motion";
 import { Dialog, DialogContent, DialogClose } from "@/components/ui/dialog";
 import { useCartStore } from "@/lib/stores/cart-store";
+import { toast } from "@/lib/stores/toast-store";
 import { formatPrice } from "@/lib/currency";
 import { cn } from "@/lib/utils";
 import {
@@ -27,6 +28,7 @@ type Props = {
 
 export default function QuickAddModal({ product, open, onClose }: Props) {
   const addItem = useCartStore((s) => s.addItem);
+  const getLineQuantity = useCartStore((s) => s.getLineQuantity);
   const [selectedVariant, setSelectedVariant] = useState<ColorVariant>(
     product.variants[0],
   );
@@ -66,9 +68,16 @@ export default function QuickAddModal({ product, open, onClose }: Props) {
   // Per color+size stock info
   const sizeData = selectedVariant.sizes.find((s) => s.size === selectedSize);
   const currentStock = sizeData?.stock ?? 0;
+  const lineId =
+    selectedSize != null
+      ? `${product.id}__${selectedVariant.id}__${selectedSize}`
+      : null;
+  const inCartQty = lineId ? getLineQuantity(lineId) : 0;
+  const roomLeft = Math.max(0, currentStock - inCartQty);
   const isOutOfStock = !!selectedSize && currentStock === 0;
   const isLowStock = !!selectedSize && currentStock > 0 && currentStock <= 4;
-  const canAdd = !!selectedSize && !isOutOfStock && phase === "idle";
+  const canAdd =
+    !!selectedSize && !isOutOfStock && roomLeft > 0 && phase === "idle";
 
   // Cart animation (same choreography as AddToCartButton)
   useEffect(() => {
@@ -102,13 +111,27 @@ export default function QuickAddModal({ product, open, onClose }: Props) {
 
   const handleAddToCart = () => {
     if (!canAdd) return;
-    addItem({
-      id: `${product.id}__${selectedVariant.id}__${selectedSize}`,
-      name: `${product.name} — ${selectedVariant.colorName} / ${selectedSize}`,
-      price: product.price,
-      img: selectedVariant.images[0],
-      category: product.category,
-    });
+    const result = addItem(
+      {
+        id: `${product.id}__${selectedVariant.id}__${selectedSize}`,
+        name: `${product.name} (${selectedVariant.colorName} / ${selectedSize})`,
+        price: product.price,
+        img: selectedVariant.images[0],
+        category: product.category,
+        stock: currentStock,
+        slug: product.slug,
+      },
+      1,
+    );
+    if (result.added <= 0) {
+      toast.error(
+        "Not enough stock",
+        currentStock <= 0
+          ? "This size is out of stock."
+          : `Only ${currentStock} available. You already have ${result.quantityInCart} in your cart.`,
+      );
+      return;
+    }
     setPhase("running");
   };
 
@@ -264,7 +287,9 @@ export default function QuickAddModal({ product, open, onClose }: Props) {
                 ? "Select a Size"
                 : isOutOfStock
                   ? "Out of Stock"
-                  : "Add to Cart"}
+                  : roomLeft <= 0
+                    ? "Max in Cart"
+                    : "Add to Cart"}
             </span>
 
             {/* Running animation icons */}

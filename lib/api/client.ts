@@ -152,7 +152,7 @@ export async function apiRequest<T>(
     throw new ApiError(
       extractErrorMessage(parsed, "Request failed"),
       parsed.status ?? res.status,
-      parsed.errors ?? parsed.error?.details,
+      parsed.errors ?? parsed.error?.details ?? parsed,
     );
   }
 
@@ -162,7 +162,7 @@ export async function apiRequest<T>(
         ? extractErrorMessage(parsed, res.statusText || "Request failed")
         : res.statusText || "Request failed",
       res.status,
-      parsed?.errors ?? parsed?.error?.details,
+      parsed?.errors ?? parsed?.error?.details ?? parsed,
     );
   }
 

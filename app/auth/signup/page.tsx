@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { Loader2 } from "lucide-react";
 import {
   countries,
   regionsByCountry,
@@ -381,7 +382,11 @@ export default function SignupPage() {
             </div>
 
             <Button type="submit" disabled={otpSending} className="mt-2 w-full">
-              {otpSending ? "Sending code…" : "Send Verification Code"}
+              {otpSending ? (
+                <Loader2 size={16} className="animate-spin" aria-hidden />
+              ) : (
+                "Send Verification Code"
+              )}
             </Button>
 
             <p className="text-center text-zinc-400 text-xs mt-2">
@@ -431,7 +436,11 @@ export default function SignupPage() {
             </div>
 
             <Button type="submit" disabled={otpSending} className="w-full">
-              {otpSending ? "Verifying…" : "Verify & Continue"}
+              {otpSending ? (
+                <Loader2 size={16} className="animate-spin" aria-hidden />
+              ) : (
+                "Verify & Continue"
+              )}
             </Button>
 
             <div className="flex flex-col items-center gap-3 text-center">
@@ -746,7 +755,11 @@ export default function SignupPage() {
                 Back
               </Button>
               <Button type="submit" className="flex-1" disabled={loading}>
-                {loading ? "Creating…" : "Finish"}
+                {loading ? (
+                  <Loader2 size={16} className="animate-spin" aria-hidden />
+                ) : (
+                  "Finish"
+                )}
               </Button>
             </div>
           </form>

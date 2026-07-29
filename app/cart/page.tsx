@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -9,10 +9,16 @@ import { Minus, Plus, X, ShoppingBag } from "lucide-react";
 import { useCartStore } from "@/lib/stores/cart-store";
 import { formatPrice } from "@/lib/currency";
 import AddToCartButton from "@/components/ui/add-to-cart-button";
+import CartRecommendations from "@/components/cart/cart-recommendations";
 import { Button, buttonVariants } from "@/components/ui/button";
 import ConfirmDialog from "@/components/ui/confirm-dialog";
 import { toast } from "@/lib/stores/toast-store";
 import { getFeaturedProducts, type ProductSummary } from "@/lib/products";
+import { syncCartStocks } from "@/lib/cart/sync-stock";
+
+function cartProductId(itemId: string): string {
+  return itemId.split("__")[0] ?? itemId;
+}
 
 export default function CartPage() {
   const router = useRouter();
@@ -20,15 +26,69 @@ export default function CartPage() {
     useCartStore();
   const [confirmRemoveId, setConfirmRemoveId] = useState<string | null>(null);
   const [featured, setFeatured] = useState<ProductSummary[]>([]);
+  const didSyncStock = useRef(false);
 
   const count = totalItems();
   const subtotal = totalPrice();
+  const cartProductIds = items.map((item) => cartProductId(item.id));
 
   useEffect(() => {
     if (count > 0) return;
     getFeaturedProducts(4)
       .then(setFeatured)
       .catch(() => setFeatured([]));
+  }, [count]);
+
+  useEffect(() => {
+    if (count === 0) {
+      didSyncStock.current = false;
+      return;
+    }
+
+    let cancelled = false;
+
+    const runSync = () => {
+      if (cancelled || didSyncStock.current) return;
+      const snapshot = useCartStore.getState().items;
+      if (snapshot.length === 0) return;
+      didSyncStock.current = true;
+      syncCartStocks(snapshot)
+        .then((adjustments) => {
+          if (cancelled || adjustments.length === 0) return;
+          const removed = adjustments.filter((a) => a.removed);
+          const reduced = adjustments.filter((a) => !a.removed);
+          if (removed.length > 0) {
+            toast.info(
+              "Stock updated",
+              `${removed.map((a) => a.name).join(", ")} ${removed.length === 1 ? "is" : "are"} no longer available and ${removed.length === 1 ? "was" : "were"} removed.`,
+            );
+          }
+          if (reduced.length > 0) {
+            toast.info(
+              "Quantity adjusted",
+              reduced
+                .map((a) => `${a.name}: ${a.previousQuantity} → ${a.quantity}`)
+                .join(". "),
+            );
+          }
+        })
+        .catch(() => {
+          didSyncStock.current = false;
+        });
+    };
+
+    const persistApi = useCartStore.persist;
+    if (persistApi.hasHydrated()) {
+      runSync();
+    }
+    const unsub = persistApi.onFinishHydration(() => {
+      runSync();
+    });
+
+    return () => {
+      cancelled = true;
+      unsub();
+    };
   }, [count]);
 
   const removingItem = items.find((i) => i.id === confirmRemoveId);
@@ -174,28 +234,42 @@ export default function CartPage() {
 
                       {/* Qty + Remove */}
                       <div className="flex items-center justify-between mt-4">
-                        <div className="flex items-center border border-zinc-200">
-                          <button
-                            onClick={() =>
-                              updateQuantity(item.id, item.quantity - 1)
-                            }
-                            className="w-8 h-8 flex items-center justify-center text-zinc-400 hover:text-zinc-900 hover:bg-zinc-50 transition-colors duration-150"
-                            aria-label="Decrease quantity"
-                          >
-                            <Minus size={12} />
-                          </button>
-                          <span className="w-8 text-center text-sm text-zinc-900">
-                            {item.quantity}
-                          </span>
-                          <button
-                            onClick={() =>
-                              updateQuantity(item.id, item.quantity + 1)
-                            }
-                            className="w-8 h-8 flex items-center justify-center text-zinc-400 hover:text-zinc-900 hover:bg-zinc-50 transition-colors duration-150"
-                            aria-label="Increase quantity"
-                          >
-                            <Plus size={12} />
-                          </button>
+                        <div className="flex flex-col gap-1.5">
+                          <div className="flex items-center border border-zinc-200">
+                            <button
+                              onClick={() =>
+                                updateQuantity(item.id, item.quantity - 1)
+                              }
+                              className="w-8 h-8 flex items-center justify-center text-zinc-400 hover:text-zinc-900 hover:bg-zinc-50 transition-colors duration-150"
+                              aria-label="Decrease quantity"
+                            >
+                              <Minus size={12} />
+                            </button>
+                            <span className="w-8 text-center text-sm text-zinc-900">
+                              {item.quantity}
+                            </span>
+                            <button
+                              onClick={() =>
+                                updateQuantity(item.id, item.quantity + 1)
+                              }
+                              disabled={
+                                typeof item.stock === "number" &&
+                                item.quantity >= item.stock
+                              }
+                              className="w-8 h-8 flex items-center justify-center text-zinc-400 hover:text-zinc-900 hover:bg-zinc-50 transition-colors duration-150 disabled:opacity-30 disabled:cursor-not-allowed"
+                              aria-label="Increase quantity"
+                            >
+                              <Plus size={12} />
+                            </button>
+                          </div>
+                          {typeof item.stock === "number" &&
+                            item.stock < Number.MAX_SAFE_INTEGER &&
+                            item.stock <= 4 &&
+                            item.stock > 0 && (
+                              <p className="text-[0.6rem] text-amber-600 tracking-wide">
+                                Only {item.stock} left
+                              </p>
+                            )}
                         </div>
 
                         <div className="flex items-center gap-4">
@@ -261,6 +335,10 @@ export default function CartPage() {
                   Continue Shopping
                 </Link>
               </div>
+            </div>
+
+            <div className="lg:col-span-3">
+              <CartRecommendations excludeProductIds={cartProductIds} />
             </div>
           </div>
         )}

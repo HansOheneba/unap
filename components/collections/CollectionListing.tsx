@@ -7,7 +7,9 @@ import { ArrowLeft } from "lucide-react";
 import type { CollectionInfo, ProductSummary } from "@/lib/products";
 import { formatPrice } from "@/lib/currency";
 import CollectionCard from "@/components/products/CollectionCard";
-import BoxerSizeGuide from "@/components/products/BoxerSizeGuide";
+import BoxerSizeGuide, {
+  isBoxerCollection,
+} from "@/components/products/BoxerSizeGuide";
 import { COLLECTIONS_CONTAINER } from "@/lib/layout/collections";
 import { cn } from "@/lib/utils";
 
@@ -91,9 +93,18 @@ export default function CollectionListing({
         </Link>
       </div>
 
-      {collectionId === "underwear" && (
+      {isBoxerCollection(collectionId) && (
         <div className={cn(COLLECTIONS_CONTAINER, "pt-6")}>
-          <BoxerSizeGuide />
+          <div className="flex flex-col gap-4 border border-zinc-100 bg-zinc-50 p-5 sm:flex-row sm:items-center sm:justify-between">
+            <div className="min-w-0">
+              <p className="eyebrow text-zinc-500 mb-1">Fit</p>
+              <p className="text-sm text-zinc-700 leading-relaxed max-w-md">
+                Waist sizes run S through XXXL. Check the boxers size chart
+                before you add to bag.
+              </p>
+            </div>
+            <BoxerSizeGuide />
+          </div>
         </div>
       )}
 
