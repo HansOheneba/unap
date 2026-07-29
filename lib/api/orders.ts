@@ -1,4 +1,5 @@
 import { apiRequest, asList, ApiError } from "@/lib/api/client";
+import { isDebugMode } from "@/lib/debug";
 
 export function parseCartLineId(id: string): {
   productId: string;
@@ -40,11 +41,27 @@ export type PlaceOrderResult = {
   };
 };
 
+type OrderDebugInfo = {
+  bearerToken?: string | null;
+  request?: unknown;
+  response?: unknown;
+};
+
+function logOrderDebug(
+  debugInfo: OrderDebugInfo | undefined,
+  fallbackRequest: PlaceOrderPayload,
+  fallbackResponse?: unknown,
+) {
+  if (typeof window === "undefined") return;
+  console.log("[orders] bearer token", debugInfo?.bearerToken ?? null);
+  console.log("[orders] request", debugInfo?.request ?? { payload: fallbackRequest });
+  console.log("[orders] response", debugInfo?.response ?? fallbackResponse);
+}
+
 export async function placeOrder(
   payload: PlaceOrderPayload,
 ): Promise<PlaceOrderResult> {
-  // Browser console — server terminal logs live in the `/api/backend/orders` proxy.
-  console.log("[placeOrder] payload", JSON.stringify(payload, null, 2));
+  const debug = isDebugMode();
 
   let data: {
     order?: PlaceOrderResult & {
@@ -60,6 +77,7 @@ export async function placeOrder(
     total?: number;
     payment?: PlaceOrderResult["payment"];
     id?: string;
+    _debug?: OrderDebugInfo;
   };
 
   try {
@@ -68,26 +86,32 @@ export async function placeOrder(
       body: payload,
     });
   } catch (err) {
-    if (err instanceof ApiError) {
-      console.error(
-        "[placeOrder] error",
-        JSON.stringify(
-          {
-            status: err.status,
-            message: err.message,
-            details: err.details,
-          },
-          null,
-          2,
-        ),
-      );
-    } else {
-      console.error("[placeOrder] error", err);
+    if (debug) {
+      const details =
+        err instanceof ApiError &&
+        err.details &&
+        typeof err.details === "object" &&
+        err.details !== null &&
+        "_debug" in err.details
+          ? (err.details as { _debug?: OrderDebugInfo })._debug
+          : undefined;
+      logOrderDebug(details, payload, {
+        error:
+          err instanceof ApiError
+            ? {
+                status: err.status,
+                message: err.message,
+                details: err.details,
+              }
+            : err,
+      });
     }
     throw err;
   }
 
-  console.log("[placeOrder] response", JSON.stringify(data, null, 2));
+  if (debug) {
+    logOrderDebug(data._debug, payload, data);
+  }
 
   const order = data.order ?? data;
   const orderId = order.orderId ?? order.id ?? data.orderId;

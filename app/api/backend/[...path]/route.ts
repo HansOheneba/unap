@@ -20,6 +20,7 @@ import {
   refreshAccessToken,
   setAuthCookies,
 } from "@/lib/api/server-auth";
+import { isDebugMode } from "@/lib/debug";
 
 const MUTATING_METHODS = new Set(["POST", "PUT", "PATCH", "DELETE"]);
 // The only two upstream endpoints that ever return raw tokens in their JSON body.
@@ -129,7 +130,9 @@ async function handle(
   const hasBody = !["GET", "HEAD"].includes(request.method);
   const rawBody = hasBody ? await request.text() : undefined;
   const bodyText = rawBody && rawBody.length > 0 ? rawBody : undefined;
+  const debug = isDebugMode();
   const isOrders = path === "orders" || path.startsWith("orders/");
+  const isPlaceOrder = path === "orders" && request.method === "POST";
   let ordersPayload: unknown = null;
   if (isOrders && bodyText) {
     try {
@@ -139,7 +142,7 @@ async function handle(
     }
   }
 
-  if (isOrders) {
+  if (debug && isOrders) {
     console.log("\n========== [orders] REQUEST ==========");
     console.log(
       JSON.stringify(
@@ -190,7 +193,7 @@ async function handle(
   }
 
   if (res.status === 204) {
-    if (isOrders) {
+    if (debug && isOrders) {
       console.log("\n========== [orders] RESPONSE ==========");
       console.log(JSON.stringify({ status: 204, body: null }, null, 2));
       console.log("=======================================\n");
@@ -200,7 +203,7 @@ async function handle(
 
   const body = await readEnvelope(res);
 
-  if (isOrders) {
+  if (debug && isOrders) {
     console.log("\n========== [orders] RESPONSE ==========");
     console.log(JSON.stringify({ status: res.status, body }, null, 2));
     console.log("=======================================\n");
@@ -219,6 +222,42 @@ async function handle(
   }
 
   const responseBody = TOKEN_MINTING_PATHS.has(path) ? stripTokens(body) : body;
+
+  // Debug-only: attach bearer + request/response so the browser can log them on
+  // place-order. Never included when NEXT_PUBLIC_DEBUG_MODE / DEBUG_MODE is off.
+  if (debug && isPlaceOrder && responseBody && typeof responseBody === "object") {
+    const orderDebug = {
+      bearerToken: accessToken,
+      request: {
+        method: request.method,
+        path: `/${path}`,
+        payload: ordersPayload,
+      },
+      response: { status: res.status, body },
+    };
+    const envelope = responseBody as Envelope;
+    if (
+      envelope.data &&
+      typeof envelope.data === "object" &&
+      !Array.isArray(envelope.data)
+    ) {
+      return NextResponse.json(
+        {
+          ...envelope,
+          data: {
+            ...(envelope.data as Record<string, unknown>),
+            _debug: orderDebug,
+          },
+        },
+        { status: res.status },
+      );
+    }
+    return NextResponse.json(
+      { ...responseBody, _debug: orderDebug },
+      { status: res.status },
+    );
+  }
+
   return NextResponse.json(responseBody ?? {}, { status: res.status });
 }
 

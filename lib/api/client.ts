@@ -149,10 +149,11 @@ export async function apiRequest<T>(
   }
 
   if (parsed && parsed.success === false) {
+    const details = parsed.errors ?? parsed.error?.details ?? parsed;
     throw new ApiError(
       extractErrorMessage(parsed, "Request failed"),
       parsed.status ?? res.status,
-      parsed.errors ?? parsed.error?.details ?? parsed,
+      attachDebugMeta(details, parsed),
     );
   }
 
@@ -162,10 +163,39 @@ export async function apiRequest<T>(
         ? extractErrorMessage(parsed, res.statusText || "Request failed")
         : res.statusText || "Request failed",
       res.status,
-      parsed?.errors ?? parsed?.error?.details ?? parsed,
+      attachDebugMeta(
+        parsed?.errors ?? parsed?.error?.details ?? parsed,
+        parsed,
+      ),
     );
   }
 
   if (!parsed) return undefined as T;
   return unwrapData(parsed);
+}
+
+/** Keeps `_debug` reachable on ApiError.details when the envelope used a different errors field. */
+function attachDebugMeta(
+  details: unknown,
+  parsed: ApiEnvelope<unknown> | null,
+): unknown {
+  if (!parsed || typeof parsed !== "object") return details;
+  const topDebug =
+    "_debug" in parsed
+      ? (parsed as ApiEnvelope<unknown> & { _debug?: unknown })._debug
+      : undefined;
+  const data = parsed.data;
+  const nestedDebug =
+    data &&
+    typeof data === "object" &&
+    !Array.isArray(data) &&
+    "_debug" in data
+      ? (data as { _debug?: unknown })._debug
+      : undefined;
+  const debug = topDebug ?? nestedDebug;
+  if (debug === undefined) return details;
+  if (details && typeof details === "object" && !Array.isArray(details)) {
+    return { ...(details as Record<string, unknown>), _debug: debug };
+  }
+  return { value: details, _debug: debug };
 }
