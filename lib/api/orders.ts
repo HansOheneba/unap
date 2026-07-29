@@ -43,6 +43,7 @@ export type PlaceOrderResult = {
 export async function placeOrder(
   payload: PlaceOrderPayload,
 ): Promise<PlaceOrderResult> {
+  // Browser console — server terminal logs live in the `/api/backend/orders` proxy.
   console.log("[placeOrder] payload", JSON.stringify(payload, null, 2));
 
   let data: {

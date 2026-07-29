@@ -139,6 +139,23 @@ async function handle(
     }
   }
 
+  if (isOrders) {
+    console.log("\n========== [orders] REQUEST ==========");
+    console.log(
+      JSON.stringify(
+        {
+          method: request.method,
+          path,
+          search: request.nextUrl.search || undefined,
+          payload: ordersPayload,
+        },
+        null,
+        2,
+      ),
+    );
+    console.log("======================================\n");
+  }
+
   // ── Logout: always use OUR httpOnly refresh token, always drop the local session ──
   if (path === "auth/logout" && request.method === "POST") {
     const [accessToken, refreshToken] = await Promise.all([
@@ -172,34 +189,21 @@ async function handle(
     }
   }
 
-  if (isOrders) {
-    console.log(
-      "[orders] request",
-      JSON.stringify(
-        {
-          method: request.method,
-          path,
-          bearerToken: accessToken,
-          authorization: accessToken ? `Bearer ${accessToken}` : null,
-          payload: ordersPayload,
-        },
-        null,
-        2,
-      ),
-    );
-  }
-
   if (res.status === 204) {
+    if (isOrders) {
+      console.log("\n========== [orders] RESPONSE ==========");
+      console.log(JSON.stringify({ status: 204, body: null }, null, 2));
+      console.log("=======================================\n");
+    }
     return new NextResponse(null, { status: 204 });
   }
 
   const body = await readEnvelope(res);
 
   if (isOrders) {
-    console.log(
-      "[orders] response",
-      JSON.stringify({ status: res.status, body }, null, 2),
-    );
+    console.log("\n========== [orders] RESPONSE ==========");
+    console.log(JSON.stringify({ status: res.status, body }, null, 2));
+    console.log("=======================================\n");
   }
 
   // ── Mint httpOnly cookies from token-bearing responses; the browser never sees a token ──

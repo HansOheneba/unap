@@ -1,77 +1,21 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
-const videos = [
-  "/hero/hero_vid1.mp4",
-  "/hero/hero_vid2.mp4",
-  "/hero/hero_vid3.mp4",
-];
+const HERO_VIDEO = "/hero/hero_candy.mp4";
 
 export default function HeroSection() {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [nextIndex, setNextIndex] = useState<number | null>(null);
-  const [transitioning, setTransitioning] = useState(false);
-  const currentRef = useRef<HTMLVideoElement>(null);
-  const nextRef = useRef<HTMLVideoElement>(null);
-
-  // Advance to next video with a crossfade
-  const handleVideoEnd = () => {
-    const next = (currentIndex + 1) % videos.length;
-    setNextIndex(next);
-    setTransitioning(true);
-  };
-
-  useEffect(() => {
-    if (transitioning && nextRef.current) {
-      nextRef.current.currentTime = 0;
-      nextRef.current.play().catch(() => {});
-    }
-  }, [transitioning, nextIndex]);
-
-  const handleNextCanPlay = () => {
-    if (!transitioning) return;
-    // After a short crossfade, swap
-    const timer = setTimeout(() => {
-      setCurrentIndex(nextIndex!);
-      setNextIndex(null);
-      setTransitioning(false);
-    }, 600);
-    return () => clearTimeout(timer);
-  };
-
   return (
     <section className="relative w-full h-screen overflow-hidden bg-black">
-      {/* Current video */}
       <video
-        ref={currentRef}
-        key={`current-${currentIndex}`}
-        src={videos[currentIndex]}
+        src={HERO_VIDEO}
         autoPlay
         muted
+        loop
         playsInline
-        onEnded={handleVideoEnd}
-        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
-          transitioning ? "opacity-0" : "opacity-100"
-        }`}
+        className="absolute inset-0 w-full h-full object-cover"
       />
-
-      {/* Next video (preloaded, fades in) */}
-      {nextIndex !== null && (
-        <video
-          ref={nextRef}
-          key={`next-${nextIndex}`}
-          src={videos[nextIndex]}
-          muted
-          playsInline
-          onCanPlay={handleNextCanPlay}
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
-            transitioning ? "opacity-100" : "opacity-0"
-          }`}
-        />
-      )}
 
       {/* Cinematic vignette overlay */}
       <div className="absolute inset-0 bg-linear-to-t from-transparent via-black/60 to-transparent pointer-events-none" />
