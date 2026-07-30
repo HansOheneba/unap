@@ -27,7 +27,6 @@ export function getApiBase(): string {
   }
 
   const base =
-    process.env.API_URL?.replace(/\/$/, "") ||
     process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") ||
     "https://api.unapologeticnm.com";
   return base;

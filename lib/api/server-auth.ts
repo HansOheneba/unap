@@ -25,7 +25,6 @@ const DEFAULT_ACCESS_TOKEN_TTL = 60 * 60; // 1 hour fallback if API omits expire
 const REFRESH_TOKEN_TTL = 60 * 60 * 24 * 30; // 30 days — industry-standard refresh lifetime
 
 export const API_ORIGIN = (
-  process.env.API_URL ||
   process.env.NEXT_PUBLIC_API_URL ||
   "https://api.unapologeticnm.com"
 ).replace(/\/$/, "");
