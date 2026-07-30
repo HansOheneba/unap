@@ -43,7 +43,7 @@ export default function AdminDashboard() {
           <Link
             key={label}
             href={href}
-            className="group bg-white border border-zinc-200 rounded p-7 flex items-center justify-between hover:border-zinc-400 transition-colors duration-200"
+            className="group bg-white border border-zinc-200 p-7 flex items-center justify-between hover:border-zinc-400 transition-colors duration-200"
           >
             <div>
               <p className="text-[0.65rem] tracking-[0.25em] uppercase text-zinc-400 mb-2">
@@ -96,7 +96,7 @@ export default function AdminDashboard() {
             View all
           </Link>
         </div>
-        <div className="bg-white border border-zinc-200 rounded overflow-hidden">
+        <div className="bg-white border border-zinc-200 overflow-hidden">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-zinc-100">

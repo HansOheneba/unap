@@ -141,5 +141,7 @@ export async function fetchCurrentUser(): Promise<Record<string, unknown> | null
   const body = await readEnvelope<{ user?: Record<string, unknown> }>(res);
   const data = body?.data ?? (body as Record<string, unknown> | null);
   const user = (data as { user?: Record<string, unknown> } | null)?.user ?? data;
+  console.log("[auth/me] raw envelope:", body);
+  console.log("[auth/me] resolved user:", user);
   return (user as Record<string, unknown> | null) ?? null;
 }

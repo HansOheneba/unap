@@ -71,7 +71,7 @@ function ToastItem({
       exit={{ x: 400, opacity: 0 }}
       transition={{ type: "spring", stiffness: 320, damping: 30 }}
       className={cn(
-        "pointer-events-auto w-80 max-w-[calc(100vw-2rem)] shadow-lg rounded-lg border overflow-hidden",
+        "pointer-events-auto w-80 max-w-[calc(100vw-2rem)] shadow-lg border overflow-hidden",
         wrap,
       )}
     >

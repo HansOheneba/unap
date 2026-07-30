@@ -85,31 +85,51 @@ type ApiPage<T> = {
   meta?: { page?: number; limit?: number; total?: number; totalPages?: number };
 };
 
-/** Public catalog reads are shared across users; short TTL cuts rate-limit pressure. */
-const CATALOG_REVALIDATE_SECONDS = 60;
+/**
+ * Short in-process TTL + Next revalidate for catalog GETs.
+ * Absorbs rapid refreshes / layout remounts without going stale for long
+ * after admin creates collections or products. In-flight coalescing ensures
+ * parallel callers for the same path share one upstream request.
+ */
+const CATALOG_REVALIDATE_SECONDS = 20;
 const CATALOG_TTL_MS = CATALOG_REVALIDATE_SECONDS * 1000;
 
 type TtlEntry = { expiresAt: number; value: unknown };
 const catalogTtlCache = new Map<string, TtlEntry>();
+const catalogInflight = new Map<string, Promise<unknown>>();
 
-/**
- * In-process TTL cache for catalog GETs. Covers:
- * - browser remounts (header/search previously re-hit the proxy every navigation)
- * - repeated server calls within the same Node process between Next revalidations
- */
 async function catalogGet<T>(path: string): Promise<T> {
   const hit = catalogTtlCache.get(path);
   if (hit && hit.expiresAt > Date.now()) {
     return hit.value as T;
   }
-  const value = await apiRequest<T>(path, {
+
+  const pending = catalogInflight.get(path);
+  if (pending) return pending as Promise<T>;
+
+  const request = apiRequest<T>(path, {
     revalidate: CATALOG_REVALIDATE_SECONDS,
-  });
-  catalogTtlCache.set(path, {
-    value,
-    expiresAt: Date.now() + CATALOG_TTL_MS,
-  });
-  return value;
+  })
+    .then((value) => {
+      catalogTtlCache.set(path, {
+        value,
+        expiresAt: Date.now() + CATALOG_TTL_MS,
+      });
+      catalogInflight.delete(path);
+      return value;
+    })
+    .catch((err: unknown) => {
+      catalogInflight.delete(path);
+      throw err;
+    });
+
+  catalogInflight.set(path, request);
+  return request;
+}
+
+/** Drop cached catalog reads (e.g. after an admin write once wired up). */
+export function clearCatalogCache(): void {
+  catalogTtlCache.clear();
 }
 
 function toPaginated<T>(payload: unknown, fallbackLimit = 20): PaginatedResult<T> {

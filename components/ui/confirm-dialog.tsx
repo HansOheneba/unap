@@ -45,12 +45,12 @@ export default function ConfirmDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
         showCloseButton={false}
-        className="sm:max-w-md p-0 gap-0 rounded-xl"
+        className="sm:max-w-md p-0 gap-0 rounded-none"
       >
         <div className="p-6">
           <div className="flex items-start gap-4">
             {isDestructive && (
-              <div className="shrink-0 w-10 h-10 rounded-full bg-red-50 border border-red-100 flex items-center justify-center">
+              <div className="shrink-0 w-10 h-10 bg-red-50 border border-red-100 flex items-center justify-center">
                 <AlertTriangle size={18} className="text-red-600" />
               </div>
             )}
@@ -66,7 +66,7 @@ export default function ConfirmDialog({
             </DialogHeader>
           </div>
         </div>
-        <DialogFooter className="bg-zinc-50 border-t border-zinc-100 rounded-b-xl m-0 px-5 py-3 flex sm:justify-end gap-2">
+        <DialogFooter className="bg-zinc-50 border-t border-zinc-100 m-0 px-5 py-3 flex sm:justify-end gap-2">
           <Button
             variant="secondary"
             size="sm"

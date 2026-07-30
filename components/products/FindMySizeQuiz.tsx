@@ -86,7 +86,7 @@ export default function FindMySizeQuiz({ open, onClose, category }: Props) {
 
         {result ? (
           <div className="text-center py-4">
-            <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-zinc-900 text-white mb-4">
+            <div className="inline-flex items-center justify-center w-14 h-14 bg-zinc-900 text-white mb-4">
               <Check size={24} />
             </div>
             <p className="text-sm text-zinc-600 mb-2">We recommend size</p>

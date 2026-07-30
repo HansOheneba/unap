@@ -17,9 +17,11 @@ import {
 } from "lucide-react";
 import { orderStatusPill } from "@/lib/auth";
 import {
+  getProfile,
   updateProfile,
   listAddresses,
   createAddress,
+  addressPayloadFromProfile,
   updateAddress,
   deleteAddress as apiDeleteAddress,
   setDefaultAddress as apiSetDefaultAddress,
@@ -265,6 +267,18 @@ function AccountPageInner() {
     if (!authReady || !isLoggedIn) return;
     let active = true;
 
+    // Fresh profile fetch so we always log /users/me when opening account
+    // (session hydrate only runs once on app boot).
+    getProfile()
+      .then((profile) => {
+        if (!active || !profile) return;
+        console.log("[account] /users/me profile:", profile);
+        setAuthUser(profile);
+      })
+      .catch((err) => {
+        console.error("[account] /users/me failed:", err);
+      });
+
     setOrdersLoading(true);
     setOrdersError(null);
     listOrders()
@@ -281,8 +295,27 @@ function AccountPageInner() {
 
     setAddressesLoading(true);
     listAddresses()
-      .then((data) => {
-        if (active) setAddresses(data);
+      .then(async (data) => {
+        if (!active) return;
+        if (data.length > 0) {
+          setAddresses(data);
+          return;
+        }
+
+        // Older signups stored shipping on the user profile only. Seed Address Book once.
+        const profile = useAuthStore.getState().user;
+        const payload = addressPayloadFromProfile(profile ?? {});
+        if (!payload) {
+          setAddresses([]);
+          return;
+        }
+        try {
+          const created = await createAddress(payload);
+          if (active) setAddresses([created]);
+        } catch (err) {
+          console.error("[account] could not backfill address from profile:", err);
+          if (active) setAddresses([]);
+        }
       })
       .catch(() => {
         if (active) toast.error("Could not load your saved addresses.");
@@ -294,7 +327,7 @@ function AccountPageInner() {
     return () => {
       active = false;
     };
-  }, [authReady, isLoggedIn]);
+  }, [authReady, isLoggedIn, setAuthUser]);
 
   if (!authReady || !isLoggedIn) return null;
 
@@ -551,10 +584,10 @@ function AccountPageInner() {
         <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
           {/* ── SIDEBAR ───────────────────────────────────────────── */}
           <aside className="w-full lg:w-72 shrink-0">
-            <div className="bg-white border border-zinc-200 rounded-lg overflow-hidden">
+            <div className="bg-white border border-zinc-200 overflow-hidden">
               {/* User card */}
               <div className="px-5 py-5 border-b border-zinc-100 flex items-center gap-3">
-                <div className="w-11 h-11 rounded-full bg-zinc-900 text-white flex items-center justify-center text-sm font-medium shrink-0">
+                <div className="w-11 h-11 bg-zinc-900 text-white flex items-center justify-center text-sm font-medium shrink-0">
                   {(firstName?.[0] ?? "?").toUpperCase()}
                   {(lastName?.[0] ?? "").toUpperCase()}
                 </div>
@@ -628,7 +661,7 @@ function AccountPageInner() {
               <div className="border-t border-zinc-100 p-3">
                 <button
                   onClick={() => setConfirmSignOut(true)}
-                  className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-zinc-600 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                  className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-zinc-600 hover:text-red-600 hover:bg-red-50 transition-colors"
                 >
                   <LogOut size={16} strokeWidth={1.6} />
                   <span>Sign Out</span>
@@ -639,7 +672,7 @@ function AccountPageInner() {
 
           {/* ── CONTENT ─────────────────────────────────────────── */}
           <section className="flex-1 min-w-0">
-            <div className="bg-white border border-zinc-200 rounded-lg overflow-hidden">
+            <div className="bg-white border border-zinc-200 overflow-hidden">
               {/* Section header */}
               <div className="px-6 md:px-8 py-6 border-b border-zinc-100">
                 <h1 className="text-xl md:text-2xl font-medium text-zinc-900">
@@ -688,7 +721,7 @@ function AccountPageInner() {
                       {orders.map((order) => (
                         <article
                           key={order.id}
-                          className="border border-zinc-200 rounded-lg overflow-hidden hover:border-zinc-300 transition-colors"
+                          className="border border-zinc-200 overflow-hidden hover:border-zinc-300 transition-colors"
                         >
                           {/* Order header */}
                           <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-4 bg-zinc-50 border-b border-zinc-200">
@@ -803,7 +836,7 @@ function AccountPageInner() {
                       {wishlistItems.map((item) => (
                         <div
                           key={item.id}
-                          className="border border-zinc-200 rounded-lg overflow-hidden group"
+                          className="border border-zinc-200 overflow-hidden group"
                         >
                           <Link
                             href={`/collections/${item.category}/${item.slug}`}
@@ -825,7 +858,7 @@ function AccountPageInner() {
                                 setConfirmRemoveWishlistId(item.id);
                               }}
                               aria-label="Remove from wishlist"
-                              className="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/90 hover:bg-white text-zinc-700 hover:text-red-600 flex items-center justify-center transition-colors shadow-sm"
+                              className="absolute top-2 right-2 w-7 h-7 bg-white/90 hover:bg-white text-zinc-700 hover:text-red-600 flex items-center justify-center transition-colors"
                             >
                               <X size={14} />
                             </button>
@@ -875,7 +908,7 @@ function AccountPageInner() {
 
                   {/* Add / Edit form */}
                   {addingAddress && (
-                    <div className="border border-zinc-200 rounded-lg p-5 md:p-6 mb-6 bg-zinc-50">
+                    <div className="border border-zinc-200 p-5 md:p-6 mb-6 bg-zinc-50">
                       <p className="text-xs tracking-widest uppercase text-zinc-700 font-medium mb-1">
                         {editingAddressId ? "Edit Address" : "New Address"}
                       </p>
@@ -907,7 +940,7 @@ function AccountPageInner() {
                               }))
                             }
                             className={cn(
-                              "w-9 h-5 rounded-full relative transition-colors duration-200 cursor-pointer shrink-0",
+                              "w-9 h-5 relative transition-colors duration-200 cursor-pointer shrink-0",
                               addrForm.isDefault
                                 ? "bg-zinc-900"
                                 : "bg-zinc-300",
@@ -915,7 +948,7 @@ function AccountPageInner() {
                           >
                             <span
                               className={cn(
-                                "absolute top-0.5 w-4 h-4 rounded-full bg-white shadow-sm transition-transform duration-200",
+                                "absolute top-0.5 w-4 h-4 bg-white shadow-sm transition-transform duration-200",
                                 addrForm.isDefault
                                   ? "translate-x-4"
                                   : "translate-x-0.5",
@@ -1318,7 +1351,7 @@ function AccountPageInner() {
                         <div
                           key={addr.id}
                           className={cn(
-                            "border rounded-lg p-5 transition-colors",
+                            "border p-5 transition-colors",
                             addr.isDefault
                               ? "border-zinc-900 bg-zinc-50"
                               : "border-zinc-200 hover:border-zinc-300",

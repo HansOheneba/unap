@@ -122,6 +122,10 @@ export default function SignupPage() {
     if (!region) e.region = "Please select a region.";
     if (!city.trim()) e.city = "City is required.";
     if (!address.trim()) e.address = "Delivery address is required.";
+    if (!googleMapsLink.trim())
+      e.googleMapsLink = "A Google Maps link is required so we can find you.";
+    else if (!/^https?:\/\/.+/i.test(googleMapsLink.trim()))
+      e.googleMapsLink = "Paste a valid Google Maps link (https://...).";
     if (!sameAsPhone && !whatsapp.trim())
       e.whatsapp = "WhatsApp number is required.";
     setErrors(e);
@@ -219,8 +223,6 @@ export default function SignupPage() {
         {/* Perks */}
         <div className="grid grid-cols-2 gap-px bg-zinc-100 border border-zinc-100 w-full max-w-sm mb-10 text-left">
           {[
-            { label: "WhatsApp Updates", desc: "Real-time delivery alerts" },
-            { label: "Ships Everywhere", desc: "Ghana, Nigeria and beyond" },
             { label: "Early Access", desc: "New drops before anyone else" },
             { label: "Inner Circle", desc: "Exclusive members only offers" },
           ].map((p) => (
@@ -292,13 +294,13 @@ export default function SignupPage() {
                   className={`text-[0.55rem] tracking-widest uppercase transition-colors duration-300 ${
                     step === s.n ? "text-zinc-900" : "text-zinc-300"
                   }`}
-                >
-                  {s.label}
-                </span>
-              </div>
-              {i < STEPS.length - 1 && (
-                <div
-                  className={`flex-1 h-px mx-2 mb-4 transition-colors duration-300 ${
+ >
+ {s.label}
+ </span>
+ </div>
+ {i < STEPS.length - 1 && (
+ <div
+ className={`flex-1 h-px mx-2 mb-4 transition-colors duration-300 ${
                     step > s.n ? "bg-zinc-400" : "bg-zinc-200"
                   }`}
                 />
@@ -677,18 +679,19 @@ export default function SignupPage() {
               </p>
             </Field>
 
-            <Field label="Google Maps Link (optional)">
+            <Field label="Google Maps Link" error={errors.googleMapsLink}>
               <input
                 type="url"
                 value={googleMapsLink}
                 onChange={(e) => setField("googleMapsLink", e.target.value)}
                 placeholder="https://maps.app.goo.gl/..."
                 autoComplete="off"
+                required
                 className={inputCls}
               />
               <p className="text-zinc-400 text-[0.6rem] leading-relaxed">
-                Open Google Maps, tap Share, and paste the link so our riders can
-                find your exact location.
+                Required. Open Google Maps, tap Share, and paste the link so our
+                riders can find your exact location.
               </p>
             </Field>
 

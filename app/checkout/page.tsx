@@ -560,7 +560,7 @@ export default function CheckoutPage() {
                               ? "border-zinc-900 bg-zinc-50"
                               : "border-zinc-200 hover:border-zinc-400"
                           }`}
-                        >
+ >
                           <div
                             className={`w-3.5 h-3.5 rounded-full border-2 flex items-center justify-center shrink-0 ${
                               paymentMethod === pm.id

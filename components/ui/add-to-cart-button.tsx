@@ -5,7 +5,6 @@ import { Loader2, Plus } from "lucide-react";
 import { getProductBySlug, type Product } from "@/lib/products";
 import QuickAddModal from "@/components/products/QuickAddModal";
 import { toast } from "@/lib/stores/toast-store";
-import { useRequireLogin } from "@/lib/use-require-login";
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -22,7 +21,6 @@ export default function AddToCartButton({
   label = "Quick Add",
   variant = "button",
 }: Props) {
-  const requireLogin = useRequireLogin();
   const [open, setOpen] = useState(false);
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(false);
@@ -31,7 +29,6 @@ export default function AddToCartButton({
     e.preventDefault();
     e.stopPropagation();
     if (loading) return;
-    if (!requireLogin()) return;
 
     setLoading(true);
     try {
@@ -72,7 +69,7 @@ export default function AddToCartButton({
           <Loader2 size={14} className="animate-spin" aria-hidden />
         ) : variant === "inline" ? (
           <>
-            <span className="flex h-5 w-5 items-center justify-center rounded-full border border-zinc-900">
+            <span className="flex h-5 w-5 items-center justify-center border border-zinc-900">
               <Plus size={11} strokeWidth={2} />
             </span>
             {label}

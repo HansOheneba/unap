@@ -11,7 +11,6 @@ import QuickAddModal from "./QuickAddModal";
 import WishlistButton from "@/components/ui/wishlist-button";
 import { useWishlistStore } from "@/lib/stores/wishlist-store";
 import { toast } from "@/lib/stores/toast-store";
-import { useRequireLogin } from "@/lib/use-require-login";
 
 type Props = {
   product: ProductSummary;
@@ -32,7 +31,6 @@ export default function CollectionCard({
   imageSizes = "(max-width: 768px) 50vw, 25vw",
   large = false,
 }: Props) {
-  const requireLogin = useRequireLogin();
   const [modalOpen, setModalOpen] = useState(false);
   const [quickAddProduct, setQuickAddProduct] = useState<Product | null>(null);
   const [loadingQuickAdd, setLoadingQuickAdd] = useState(false);
@@ -51,7 +49,6 @@ export default function CollectionCard({
 
   const handleQuickAdd = async () => {
     if (loadingQuickAdd) return;
-    if (!requireLogin()) return;
     setLoadingQuickAdd(true);
     try {
       const resolved = await getProductBySlug(product.slug, product.category);

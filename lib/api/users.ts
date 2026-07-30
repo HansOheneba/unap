@@ -39,6 +39,7 @@ export async function getProfile(): Promise<ApiUser | null> {
   const res = await apiRequest<{ user?: ApiUser } | ApiUser>("/users/me", {
     cache: "no-store",
   });
+  console.log("[getProfile] /users/me response:", res);
   return extractUser(res);
 }
 
@@ -56,7 +57,10 @@ export async function listAddresses(): Promise<ApiAddress[]> {
   const payload = await apiRequest<unknown>("/users/me/addresses", {
     cache: "no-store",
   });
-  return asList<ApiAddress>(payload);
+  const addresses = asList<ApiAddress>(payload);
+  console.log("[listAddresses] /users/me/addresses raw:", payload);
+  console.log("[listAddresses] parsed count:", addresses.length, addresses);
+  return addresses;
 }
 
 export async function createAddress(
@@ -66,6 +70,43 @@ export async function createAddress(
     method: "POST",
     body: payload,
   });
+}
+
+/** Build a default Home address from signup / profile shipping fields. */
+export function addressPayloadFromProfile(input: {
+  firstName?: string | null;
+  lastName?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  whatsapp?: string | null;
+  country?: string | null;
+  region?: string | null;
+  city?: string | null;
+  address?: string | null;
+  landmark?: string | null;
+  googleMapsLink?: string | null;
+}): AddressPayload | null {
+  if (!input.address?.trim() || !input.city?.trim() || !input.country?.trim()) {
+    return null;
+  }
+  if (!input.firstName?.trim() || !input.lastName?.trim() || !input.phone?.trim()) {
+    return null;
+  }
+  return {
+    label: "Home",
+    firstName: input.firstName.trim(),
+    lastName: input.lastName.trim(),
+    email: input.email?.trim() || undefined,
+    country: input.country.trim(),
+    region: input.region?.trim() || undefined,
+    city: input.city.trim(),
+    address: input.address.trim(),
+    address2: input.landmark?.trim() || undefined,
+    googleMapsLink: input.googleMapsLink?.trim() || undefined,
+    phone: input.phone.trim(),
+    whatsapp: input.whatsapp?.trim() || input.phone.trim(),
+    isDefault: true,
+  };
 }
 
 export async function updateAddress(

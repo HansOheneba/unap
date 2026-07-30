@@ -189,9 +189,9 @@ export default function CartPage() {
             </motion.div>
           </>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 items-start">
             {/* ── Item List ── */}
-            <div className="lg:col-span-2 flex flex-col gap-px bg-zinc-100">
+            <div className="lg:col-span-2 flex flex-col gap-3">
               <AnimatePresence initial={false}>
                 {items.map((item) => (
                   <motion.div
@@ -205,10 +205,10 @@ export default function CartPage() {
                       transition: { duration: 0.25 },
                     }}
                     transition={{ duration: 0.3 }}
-                    className="bg-white flex gap-5 p-5"
+                    className="bg-zinc-50 border border-zinc-200 flex gap-5 p-5"
                   >
                     {/* Thumbnail */}
-                    <div className="relative shrink-0 w-20 h-24 md:w-24 md:h-28 overflow-hidden">
+                    <div className="relative shrink-0 w-20 h-24 md:w-24 md:h-28 overflow-hidden border border-zinc-200 bg-white">
                       <Image
                         src={item.img}
                         alt={item.name}
@@ -235,7 +235,7 @@ export default function CartPage() {
                       {/* Qty + Remove */}
                       <div className="flex items-center justify-between mt-4">
                         <div className="flex flex-col gap-1.5">
-                          <div className="flex items-center border border-zinc-200">
+                          <div className="flex items-center border border-zinc-200 bg-white">
                             <button
                               onClick={() =>
                                 updateQuantity(item.id, item.quantity - 1)

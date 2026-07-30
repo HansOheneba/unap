@@ -36,7 +36,7 @@ export default function AdminCollectionsPage() {
         {collections.map((col) => (
           <div
             key={col.id}
-            className="bg-white border border-zinc-200 rounded overflow-hidden group"
+            className="bg-white border border-zinc-200 overflow-hidden group"
           >
             {/* Cover image */}
             <div className="relative h-44 overflow-hidden">

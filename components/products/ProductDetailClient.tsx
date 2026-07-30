@@ -33,10 +33,9 @@ import { useCartStore } from "@/lib/stores/cart-store";
 import { useWishlistStore } from "@/lib/stores/wishlist-store";
 import { useRecentlyViewedStore } from "@/lib/stores/recently-viewed-store";
 import { useIsLoggedIn } from "@/lib/use-is-logged-in";
-import { useRequireLogin } from "@/lib/use-require-login";
 import { useRouter } from "next/navigation";
 import { toast } from "@/lib/stores/toast-store";
-import { cn } from "@/lib/utils";
+import { cn, isLightHex } from "@/lib/utils";
 import { COLLECTIONS_CONTAINER } from "@/lib/layout/collections";
 
 type Props = {
@@ -44,8 +43,6 @@ type Props = {
   relatedProducts: ProductSummary[];
   initialReviews: ApiReview[];
 };
-
-const LIGHT_HEXES = new Set(["#f0f0f0", "#f0e6ce", "#e8dcc8", "#f5f5f5"]);
 
 export default function ProductDetailClient({
   product,
@@ -112,7 +109,6 @@ export default function ProductDetailClient({
 
   const addItem = useCartStore((s) => s.addItem);
   const getLineQuantity = useCartStore((s) => s.getLineQuantity);
-  const requireLogin = useRequireLogin();
   const router = useRouter();
   const isLoggedIn = useIsLoggedIn();
   const toggleWishlist = useWishlistStore((s) => s.toggle);
@@ -168,7 +164,6 @@ export default function ProductDetailClient({
 
   const handleAddToCart = () => {
     if (!canAdd || !selectedSize) return;
-    if (!requireLogin()) return;
     const result = addItem(
       {
         id: `${product.id}__${selectedVariant.id}__${selectedSize}`,
@@ -324,7 +319,7 @@ export default function ProductDetailClient({
               <div className="flex items-center gap-3 flex-wrap">
                 {product.variants.map((variant) => {
                   const isSelected = variant.id === selectedVariant.id;
-                  const isLight = LIGHT_HEXES.has(variant.colorHex);
+                  const isLight = isLightHex(variant.colorHex);
                   return (
                     <button
                       key={variant.id}

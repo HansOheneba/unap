@@ -8,16 +8,13 @@ import { useAnimate } from "framer-motion";
 import { Dialog, DialogContent, DialogClose } from "@/components/ui/dialog";
 import { useCartStore } from "@/lib/stores/cart-store";
 import { toast } from "@/lib/stores/toast-store";
-import { useRequireLogin } from "@/lib/use-require-login";
 import { formatPrice } from "@/lib/currency";
-import { cn } from "@/lib/utils";
+import { cn, isLightHex } from "@/lib/utils";
 import {
   getDefaultSelectedSize,
   type Product,
   type ColorVariant,
 } from "@/lib/products";
-
-const LIGHT_HEXES = new Set(["#f0f0f0", "#f0e6ce", "#e8dcc8", "#f5f5f5"]);
 
 type Phase = "idle" | "running" | "done";
 
@@ -30,7 +27,6 @@ type Props = {
 export default function QuickAddModal({ product, open, onClose }: Props) {
   const addItem = useCartStore((s) => s.addItem);
   const getLineQuantity = useCartStore((s) => s.getLineQuantity);
-  const requireLogin = useRequireLogin();
   const [selectedVariant, setSelectedVariant] = useState<ColorVariant>(
     product.variants[0],
   );
@@ -113,7 +109,6 @@ export default function QuickAddModal({ product, open, onClose }: Props) {
 
   const handleAddToCart = () => {
     if (!canAdd) return;
-    if (!requireLogin()) return;
     const result = addItem(
       {
         id: `${product.id}__${selectedVariant.id}__${selectedSize}`,
@@ -196,7 +191,7 @@ export default function QuickAddModal({ product, open, onClose }: Props) {
             <div className="flex items-center gap-2.5 flex-wrap">
               {product.variants.map((variant) => {
                 const isSelected = variant.id === selectedVariant.id;
-                const isLight = LIGHT_HEXES.has(variant.colorHex);
+                const isLight = isLightHex(variant.colorHex);
                 return (
                   <button
                     key={variant.id}
@@ -204,7 +199,7 @@ export default function QuickAddModal({ product, open, onClose }: Props) {
                     title={variant.colorName}
                     aria-label={`Select ${variant.colorName}`}
                     className={cn(
-                      "w-7 h-7 rounded-full transition-all duration-200",
+                      "w-7 h-7 transition-all duration-200",
                       isSelected
                         ? "ring-2 ring-offset-2 ring-zinc-900 scale-110"
                         : "hover:scale-110",

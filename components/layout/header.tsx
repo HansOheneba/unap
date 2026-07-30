@@ -289,14 +289,14 @@ export default function Header({
               className={`block h-px transition-all duration-300 ease-in-out origin-center bg-white ${
                 mobileOpen ? "w-6 translate-y-1.5 rotate-45" : "w-6"
               }`}
-            />
-            <span
-              className={`block h-px transition-all duration-300 ease-in-out bg-white ${
+ />
+ <span
+ className={`block h-px transition-all duration-300 ease-in-out bg-white ${
                 mobileOpen ? "w-0 opacity-0" : "w-4 opacity-100"
               }`}
-            />
-            <span
-              className={`block h-px transition-all duration-300 ease-in-out origin-center bg-white ${
+ />
+ <span
+ className={`block h-px transition-all duration-300 ease-in-out origin-center bg-white ${
                 mobileOpen ? "w-6 -translate-y-1.5 -rotate-45" : "w-6"
               }`}
             />
@@ -580,11 +580,11 @@ export default function Header({
             ? "opacity-100 pointer-events-auto"
             : "opacity-0 pointer-events-none"
         }`}
-      />
+ />
 
-      {/* Full-screen panel slides in from left */}
-      <div
-        className={`fixed inset-0 z-[70] bg-white md:hidden flex flex-col transition-transform duration-500 ease-in-out ${
+ {/* Full-screen panel slides in from left */}
+ <div
+ className={`fixed inset-0 z-[70] bg-white md:hidden flex flex-col transition-transform duration-500 ease-in-out ${
           mobileOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >

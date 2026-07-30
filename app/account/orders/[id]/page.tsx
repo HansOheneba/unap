@@ -7,7 +7,7 @@ import { ArrowLeft } from "lucide-react";
 import { orderStatusColor, orderStatusDot } from "@/lib/auth";
 import { getOrder, type ApiOrder } from "@/lib/api/orders";
 import { formatPrice } from "@/lib/currency";
-import { trackingPath } from "@/lib/tracking";
+import { trackingPath, fulfillmentStages, fulfillmentStageIndex, normalizeTrackingStatus, customerStatusCopy } from "@/lib/tracking";
 import { buttonVariants } from "@/components/ui/button";
 
 export default function OrderDetailPage() {
@@ -90,7 +90,10 @@ export default function OrderDetailPage() {
               className={`w-2 h-2 rounded-full ${orderStatusDot[order.status] ?? "bg-zinc-400"}`}
             />
             <span className="text-[0.65rem] tracking-widest uppercase font-medium">
-              {order.statusLabel || order.status}
+              {customerStatusCopy[normalizeTrackingStatus(order.status)]
+                ?.headline ??
+                order.statusLabel ??
+                order.status}
             </span>
           </div>
         </div>
@@ -157,22 +160,12 @@ export default function OrderDetailPage() {
               <p className="text-[0.6rem] tracking-widest uppercase text-zinc-500 mb-4">
                 Status
               </p>
-              {(
-                [
-                  { key: "processing", label: "Order Placed" },
-                  { key: "shipped", label: "Shipped" },
-                  { key: "in_transit", label: "In Transit" },
-                  { key: "out_for_delivery", label: "Out for Delivery" },
-                  { key: "delivered", label: "Delivered" },
-                ] as const
-              ).map((step, i, arr) => {
-                const statuses = arr.map((s) => s.key);
-                const currentIdx = statuses.indexOf(
-                  order.status as (typeof statuses)[number],
+              {fulfillmentStages.map((step, i) => {
+                const currentIdx = fulfillmentStageIndex(
+                  normalizeTrackingStatus(order.status),
                 );
-                const stepIdx = i;
-                const isDone = currentIdx >= 0 && stepIdx <= currentIdx;
-                const isCurrent = stepIdx === currentIdx;
+                const isDone = currentIdx >= 0 && i < currentIdx;
+                const isCurrent = i === currentIdx;
                 return (
                   <div
                     key={step.key}
@@ -188,7 +181,7 @@ export default function OrderDetailPage() {
                               : "bg-zinc-200"
                         }`}
                       />
-                      {i < arr.length - 1 && (
+                      {i < fulfillmentStages.length - 1 && (
                         <div
                           className={`w-px flex-1 min-h-[1.5rem] mt-1 ${isDone ? "bg-zinc-300" : "bg-zinc-100"}`}
                         />

@@ -46,19 +46,19 @@ export default function AdminProductsPage() {
       <div className="flex items-center gap-2 mb-6 flex-wrap">
         <button
           onClick={() => setFilter("all")}
-          className={`text-[0.65rem] tracking-widest uppercase px-3 py-1.5 rounded border transition-colors duration-150 ${
+          className={`text-[0.65rem] tracking-widest uppercase px-3 py-1.5  border transition-colors duration-150 ${
             filter === "all"
               ? "bg-black border-black text-white"
               : "border-zinc-200 text-zinc-500 hover:border-zinc-400"
           }`}
-        >
-          All
-        </button>
-        {collections.map((c) => (
-          <button
-            key={c.id}
-            onClick={() => setFilter(c.id)}
-            className={`text-[0.65rem] tracking-widest uppercase px-3 py-1.5 rounded border transition-colors duration-150 ${
+ >
+ All
+ </button>
+ {collections.map((c) => (
+ <button
+ key={c.id}
+ onClick={() => setFilter(c.id)}
+ className={`text-[0.65rem] tracking-widest uppercase px-3 py-1.5  border transition-colors duration-150 ${
               filter === c.id
                 ? "bg-black border-black text-white"
                 : "border-zinc-200 text-zinc-500 hover:border-zinc-400"
@@ -70,7 +70,7 @@ export default function AdminProductsPage() {
       </div>
 
       {/* Products table */}
-      <div className="bg-white border border-zinc-200 rounded overflow-hidden">
+      <div className="bg-white border border-zinc-200 overflow-hidden">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-zinc-100">
@@ -98,7 +98,7 @@ export default function AdminProductsPage() {
                   className="border-b border-zinc-50 last:border-0 hover:bg-zinc-50 transition-colors duration-150"
                 >
                   <td className="px-5 py-3">
-                    <div className="relative w-9 h-9 rounded overflow-hidden">
+                    <div className="relative w-9 h-9 overflow-hidden">
                       <Image
                         src={p.images[0]}
                         alt={p.name}
@@ -115,7 +115,7 @@ export default function AdminProductsPage() {
                     {col.subtitle}
                   </td>
                   <td className="px-5 py-3 hidden md:table-cell">
-                    <span className="text-[0.6rem] tracking-widest uppercase bg-zinc-100 text-zinc-500 px-2 py-0.5 rounded">
+                    <span className="text-[0.6rem] tracking-widest uppercase bg-zinc-100 text-zinc-500 px-2 py-0.5 rounded-full">
                       {p.tag}
                     </span>
                   </td>

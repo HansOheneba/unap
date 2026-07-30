@@ -42,7 +42,7 @@ export default function WishlistButton({ item, className, size = 14 }: Props) {
             : "Add to wishlist"
       }
       className={cn(
-        "flex items-center justify-center w-8 h-8 rounded-full transition-all duration-200",
+        "flex items-center justify-center w-8 h-8 transition-all duration-200",
         wishlisted
           ? "bg-white text-red-500 shadow-sm"
           : "bg-black/40 backdrop-blur-sm text-white hover:bg-white hover:text-zinc-900",

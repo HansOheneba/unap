@@ -9,7 +9,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { ArrowLeft, Pencil, Trash2, Plus } from "lucide-react";
 
 const inputCls =
-  "bg-zinc-50 border border-zinc-200 text-zinc-900 placeholder:text-zinc-400 px-4 py-2.5 text-sm focus:outline-none focus:border-zinc-400 transition-colors duration-200 w-full rounded";
+  "bg-zinc-50 border border-zinc-200 text-zinc-900 placeholder:text-zinc-400 px-4 py-2.5 text-sm focus:outline-none focus:border-zinc-400 transition-colors duration-200 w-full";
 
 export default function EditCollectionPage() {
   const router = useRouter();
@@ -144,7 +144,7 @@ export default function EditCollectionPage() {
               className={inputCls}
             />
             {form.featured && (
-              <div className="mt-2 relative h-28 rounded overflow-hidden">
+              <div className="mt-2 relative h-28 overflow-hidden">
                 <Image
                   src={form.featured}
                   alt="Cover preview"
@@ -189,9 +189,9 @@ export default function EditCollectionPage() {
             {col.products.map((p) => (
               <div
                 key={p.id}
-                className="flex items-center gap-3 bg-white border border-zinc-200 rounded p-3"
+                className="flex items-center gap-3 bg-white border border-zinc-200 p-3"
               >
-                <div className="relative w-10 h-10 rounded overflow-hidden shrink-0">
+                <div className="relative w-10 h-10 overflow-hidden shrink-0">
                   <Image
                     src={p.images[0]}
                     alt={p.name}

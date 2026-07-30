@@ -10,7 +10,7 @@ import { ArrowLeft, Plus, X } from "lucide-react";
 import type { ProductColor } from "@/lib/data/types";
 
 const inputCls =
-  "bg-zinc-50 border border-zinc-200 text-zinc-900 placeholder:text-zinc-400 px-4 py-2.5 text-sm focus:outline-none focus:border-zinc-400 transition-colors duration-200 w-full rounded";
+  "bg-zinc-50 border border-zinc-200 text-zinc-900 placeholder:text-zinc-400 px-4 py-2.5 text-sm focus:outline-none focus:border-zinc-400 transition-colors duration-200 w-full";
 
 export default function EditProductPage() {
   const router = useRouter();
@@ -179,7 +179,7 @@ export default function EditProductPage() {
             {images.map((img, i) => (
               <div key={i} className="flex gap-2 items-center">
                 {img.trim() !== "" && (
-                  <div className="relative w-10 h-10 rounded overflow-hidden shrink-0">
+                  <div className="relative w-10 h-10 overflow-hidden shrink-0">
                     <Image src={img} alt="" fill className="object-cover" />
                   </div>
                 )}
@@ -225,10 +225,10 @@ export default function EditProductPage() {
             {colors.map((c, i) => (
               <div
                 key={i}
-                className="flex items-center gap-1.5 border border-zinc-200 rounded px-2 py-1"
+                className="flex items-center gap-1.5 border border-zinc-200 px-2 py-1"
               >
                 <span
-                  className="w-3 h-3 rounded-full border border-zinc-200"
+                  className="w-3 h-3 border border-zinc-200"
                   style={{ background: c.hex }}
                 />
                 <span className="text-xs text-zinc-700">{c.name}</span>
@@ -254,7 +254,7 @@ export default function EditProductPage() {
               type="color"
               value={newColorHex}
               onChange={(e) => setNewColorHex(e.target.value)}
-              className="w-10 h-10 rounded border border-zinc-200 cursor-pointer p-0.5"
+              className="w-10 h-10 border border-zinc-200 cursor-pointer p-0.5"
             />
             <button
               type="button"

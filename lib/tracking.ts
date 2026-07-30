@@ -9,6 +9,8 @@ import { apiRequest, ApiError } from "@/lib/api/client";
 
 export type TrackingStatus =
   | "processing"
+  | "ready_for_pickup"
+  | "picked_up"
   | "shipped"
   | "in_transit"
   | "out_for_delivery"
@@ -132,6 +134,9 @@ export async function lookupTrackingNumber(
       ...result,
       found: true,
       trackingNumber: result.trackingNumber || key,
+      status: normalizeTrackingStatus(result.status),
+      statusLabel:
+        customerStatusCopy[normalizeTrackingStatus(result.status)].headline,
       orderItems: result.orderItems ?? [],
       events: sortEventsNewestFirst(result.events ?? []),
     };
@@ -148,10 +153,101 @@ export const statusConfig: Record<
   TrackingStatus,
   { color: string; dot: string }
 > = {
-  processing: { color: "text-yellow-400", dot: "bg-yellow-400" },
-  shipped: { color: "text-blue-400", dot: "bg-blue-400" },
-  in_transit: { color: "text-blue-400", dot: "bg-blue-400" },
-  out_for_delivery: { color: "text-orange-400", dot: "bg-orange-400" },
-  delivered: { color: "text-green-400", dot: "bg-green-400" },
-  exception: { color: "text-red-400", dot: "bg-red-400" },
+  processing: { color: "text-amber-700", dot: "bg-amber-500" },
+  ready_for_pickup: { color: "text-blue-700", dot: "bg-blue-500" },
+  picked_up: { color: "text-blue-700", dot: "bg-blue-500" },
+  shipped: { color: "text-blue-700", dot: "bg-blue-500" },
+  in_transit: { color: "text-blue-700", dot: "bg-blue-500" },
+  out_for_delivery: { color: "text-orange-700", dot: "bg-orange-500" },
+  delivered: { color: "text-emerald-700", dot: "bg-emerald-500" },
+  exception: { color: "text-red-700", dot: "bg-red-500" },
+};
+
+/**
+ * Customer-facing fulfillment stages (aligned with admin ops pipeline).
+ * Labels avoid "pickup" so customers don't think they must collect the order.
+ */
+export const fulfillmentStages = [
+  { key: "processing", label: "Processing" },
+  { key: "ready_for_pickup", label: "Awaiting rider" },
+  { key: "picked_up", label: "Rider collected" },
+  { key: "in_transit", label: "In transit" },
+  { key: "delivered", label: "Delivered" },
+] as const;
+
+export type FulfillmentStageKey = (typeof fulfillmentStages)[number]["key"];
+
+/** Map API / legacy statuses onto the 5-step customer timeline. */
+const STATUS_TO_STAGE_INDEX: Record<TrackingStatus, number> = {
+  processing: 0,
+  ready_for_pickup: 1,
+  picked_up: 2,
+  shipped: 2,
+  in_transit: 3,
+  out_for_delivery: 3,
+  delivered: 4,
+  exception: -1,
+};
+
+export function fulfillmentStageIndex(status: TrackingStatus): number {
+  return STATUS_TO_STAGE_INDEX[status] ?? -1;
+}
+
+export function normalizeTrackingStatus(status: string | undefined): TrackingStatus {
+  switch (status) {
+    case "processing":
+    case "ready_for_pickup":
+    case "picked_up":
+    case "shipped":
+    case "in_transit":
+    case "out_for_delivery":
+    case "delivered":
+    case "exception":
+      return status;
+    default:
+      return "exception";
+  }
+}
+
+/** Customer-facing copy. Prefer these over raw API statusLabel. */
+export const customerStatusCopy: Record<
+  TrackingStatus,
+  { headline: string; detail: string }
+> = {
+  processing: {
+    headline: "Being prepared",
+    detail: "We're getting your order ready for dispatch.",
+  },
+  ready_for_pickup: {
+    headline: "Waiting for our rider",
+    detail:
+      "A rider will collect your order and bring it to your delivery address. You do not need to pick it up yourself.",
+  },
+  picked_up: {
+    headline: "Collected by rider",
+    detail: "Your order is with our rider and heading your way.",
+  },
+  shipped: {
+    headline: "On its way",
+    detail: "Your order has left our facility.",
+  },
+  in_transit: {
+    headline: "In transit",
+    detail:
+      "Your order is on the way to you. Check your email for rider details.",
+  },
+  out_for_delivery: {
+    headline: "Out for delivery",
+    detail:
+      "Your order is with the rider for final delivery. Check your email for rider details.",
+  },
+  delivered: {
+    headline: "Delivered",
+    detail: "Your order has been delivered.",
+  },
+  exception: {
+    headline: "Needs attention",
+    detail:
+      "There is an issue with this shipment. Check the tracking history or contact support.",
+  },
 };

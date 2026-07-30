@@ -240,7 +240,7 @@ export default function FuturePage() {
                   </p>
                 </div>
                 <span
-                  className={`eyebrow shrink-0 px-3 py-1.5 rounded-sm whitespace-nowrap ${statusColor(phase.status)}`}
+                  className={`eyebrow shrink-0 px-3 py-1.5 rounded-full whitespace-nowrap ${statusColor(phase.status)}`}
                 >
                   {phase.status}
                 </span>

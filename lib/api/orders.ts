@@ -162,6 +162,8 @@ export type ApiOrderItem = {
 
 export type OrderStatus =
   | "processing"
+  | "ready_for_pickup"
+  | "picked_up"
   | "shipped"
   | "in_transit"
   | "out_for_delivery"

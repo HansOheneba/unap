@@ -10,7 +10,6 @@ import {
   getCollection as fetchCollection,
   getProduct as fetchProduct,
   getRelatedProducts as fetchRelatedProducts,
-  listCollections as fetchCollections,
   searchProducts as fetchSearchProducts,
   type ApiGender,
   type ApiProductDetail,
@@ -21,31 +20,28 @@ import {
 import { BRAND_PLACEHOLDER } from "@/lib/data/placeholders";
 
 const FALLBACK_IMAGE = BRAND_PLACEHOLDER.textile;
-const SLUG_LOOKUP_TTL_MS = 60_000;
-
-let slugLookupTtl: { expiresAt: number; value: Map<string, string> } | null =
-  null;
 
 /**
  * The API currently serializes `product.collectionId` as an internal UUID while
- * `collection.id` / `collection.slug` are public slugs (e.g. `"freedom"`).
- * Search filters and PDP routes need the slug.
+ * routing uses the public collection slug (e.g. `"freedom"`).
  *
- * Only collection details with `productCount > 0` are fetched — empty
- * collections cannot contribute UUID→slug pairs.
+ * Prefer a single `GET /catalog` to build the map. Only fall back to per-
+ * collection detail fetches when product UUIDs are not present on collection rows.
  */
 const getCollectionSlugLookup = cache(
   async (): Promise<Map<string, string>> => {
-    if (slugLookupTtl && slugLookupTtl.expiresAt > Date.now()) {
-      return slugLookupTtl.value;
-    }
-
-    const collections = await fetchCollections();
+    const { collections, products } = await getCatalog();
     const lookup = new Map<string, string>();
     for (const collection of collections) {
       lookup.set(collection.id, collection.slug);
       lookup.set(collection.slug, collection.slug);
     }
+
+    const needsBridge = products.some(
+      (product) =>
+        Boolean(product.collectionId) && !lookup.has(product.collectionId),
+    );
+    if (!needsBridge) return lookup;
 
     const withProducts = collections.filter((c) => c.productCount > 0);
     const details = await Promise.all(
@@ -60,10 +56,6 @@ const getCollectionSlugLookup = cache(
       }
     }
 
-    slugLookupTtl = {
-      value: lookup,
-      expiresAt: Date.now() + SLUG_LOOKUP_TTL_MS,
-    };
     return lookup;
   },
 );
@@ -245,15 +237,50 @@ export async function getCollectionWithProducts(slug: string): Promise<{
 }
 
 /** All active collections with their products, in `sortOrder`. Used by the
- *  "browse everything" page. Skips a collection if its detail fetch fails.
- *  Empty collections reuse the list payload — no per-collection detail call. */
+ *  "browse everything" page. Prefers a single `GET /catalog` when product
+ *  `collectionId` values match collection ids; otherwise falls back to
+ *  per-collection detail fetches. */
 export async function getAllCollectionsWithProducts(): Promise<
   { collection: CollectionInfo; products: ProductSummary[] }[]
 > {
-  const collections = await fetchCollections();
+  const { collections, products } = await getCatalog();
   const sorted = [...collections]
     .filter((c) => c.isActive)
     .sort((a, b) => a.sortOrder - b.sortOrder);
+
+  const byCollectionId = new Map<string, ApiProductSummary[]>();
+  for (const product of products) {
+    if (product.isActive === false || !product.collectionId) continue;
+    const bucket = byCollectionId.get(product.collectionId);
+    if (bucket) bucket.push(product);
+    else byCollectionId.set(product.collectionId, [product]);
+  }
+
+  const catalogGroupsCleanly =
+    products.length === 0 ||
+    sorted.some(
+      (c) =>
+        (byCollectionId.get(c.id)?.length ?? 0) > 0 ||
+        (byCollectionId.get(c.slug)?.length ?? 0) > 0,
+    );
+
+  if (catalogGroupsCleanly) {
+    return sorted.map((c) => {
+      const rows =
+        byCollectionId.get(c.id) ?? byCollectionId.get(c.slug) ?? [];
+      return {
+        collection: {
+          id: c.slug,
+          subtitle: c.subtitle,
+          title: c.title,
+          tagline: c.tagline,
+          featured: c.featuredImageUrl || FALLBACK_IMAGE,
+          href: `/collections/${c.slug}`,
+        },
+        products: rows.map((p) => toSummary(p, c.slug)),
+      };
+    });
+  }
 
   const results = await Promise.all(
     sorted.map(async (c) => {

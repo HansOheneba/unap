@@ -8,6 +8,10 @@ import {
   type OtpPurpose,
 } from "@/lib/api/auth";
 import { ApiError } from "@/lib/api/client";
+import {
+  addressPayloadFromProfile,
+  createAddress,
+} from "@/lib/api/users";
 import type { OrderStatus } from "@/lib/api/orders";
 
 export interface UserAddress {
@@ -224,6 +228,21 @@ export async function finishSignup(
     };
     const result = await apiCompleteSignup(payload);
     const apiUser = extractUser(result);
+
+    // Signup writes shipping fields onto the user profile, but the Address Book
+    // is a separate resource. Create the default Home address so /account shows it.
+    const addressPayload = addressPayloadFromProfile({
+      ...data,
+      email: data.email,
+    });
+    if (addressPayload) {
+      try {
+        await createAddress(addressPayload);
+      } catch (err) {
+        console.error("[finishSignup] could not create default address:", err);
+      }
+    }
+
     return {
       success: true,
       apiUser: apiUser ?? undefined,
@@ -287,6 +306,8 @@ export async function mockLogin(
 
 export const orderStatusColor: Partial<Record<OrderStatus, string>> = {
   processing: "text-amber-700",
+  ready_for_pickup: "text-blue-700",
+  picked_up: "text-blue-700",
   shipped: "text-blue-700",
   in_transit: "text-blue-700",
   out_for_delivery: "text-orange-700",
@@ -295,6 +316,8 @@ export const orderStatusColor: Partial<Record<OrderStatus, string>> = {
 
 export const orderStatusDot: Partial<Record<OrderStatus, string>> = {
   processing: "bg-amber-500",
+  ready_for_pickup: "bg-blue-500",
+  picked_up: "bg-blue-500",
   shipped: "bg-blue-500",
   in_transit: "bg-blue-500",
   out_for_delivery: "bg-orange-500",
@@ -303,6 +326,8 @@ export const orderStatusDot: Partial<Record<OrderStatus, string>> = {
 
 export const orderStatusPill: Partial<Record<OrderStatus, string>> = {
   processing: "bg-amber-50 text-amber-700 border-amber-200",
+  ready_for_pickup: "bg-blue-50 text-blue-700 border-blue-200",
+  picked_up: "bg-blue-50 text-blue-700 border-blue-200",
   shipped: "bg-blue-50 text-blue-700 border-blue-200",
   in_transit: "bg-blue-50 text-blue-700 border-blue-200",
   out_for_delivery: "bg-orange-50 text-orange-700 border-orange-200",

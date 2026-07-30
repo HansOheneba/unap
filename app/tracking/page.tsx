@@ -17,7 +17,7 @@ function TrackingQueryRedirect() {
 
   if (q) {
     return (
-      <main className="min-h-screen bg-white text-zinc-900 flex items-center justify-center px-6">
+      <main className="min-h-screen bg-zinc-50 text-zinc-900 flex items-center justify-center px-6">
         <p className="text-zinc-500 text-sm">Loading tracking…</p>
       </main>
     );
@@ -30,7 +30,7 @@ export default function TrackingPage() {
   return (
     <Suspense
       fallback={
-        <main className="min-h-screen bg-white text-zinc-900 flex items-center justify-center px-6">
+        <main className="min-h-screen bg-zinc-50 text-zinc-900 flex items-center justify-center px-6">
           <p className="text-zinc-500 text-sm">Loading…</p>
         </main>
       }
