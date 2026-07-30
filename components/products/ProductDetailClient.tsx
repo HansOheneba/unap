@@ -124,6 +124,11 @@ export default function ProductDetailClient({
     slug: product.slug,
   };
 
+  // Flat gallery of every variant image so shoppers can browse the full set.
+  const galleryImages = product.variants.flatMap((variant) =>
+    variant.images.map((src) => ({ src, variantId: variant.id })),
+  );
+
   const selectedSizeData = selectedVariant.sizes.find(
     (s) => s.size === selectedSize,
   );
@@ -266,10 +271,15 @@ export default function ProductDetailClient({
 
         {/* ── PRODUCT LAYOUT ──────────────────────────────────────────── */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-20 pb-20">
-          {/* LEFT — Gallery */}
+          {/* LEFT — Gallery (all variant images) */}
           <ProductGallery
-            images={selectedVariant.images}
+            images={galleryImages}
             productName={product.name}
+            selectedVariantId={selectedVariant.id}
+            onVariantSelect={(variantId) => {
+              const variant = product.variants.find((v) => v.id === variantId);
+              if (variant) handleColorChange(variant);
+            }}
           />
 
           {/* RIGHT — Info (sticky on desktop) */}
