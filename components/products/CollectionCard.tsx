@@ -28,7 +28,7 @@ export default function CollectionCard({
   product,
   categoryLabel,
   imageClassName,
-  imageSizes = "(max-width: 768px) 50vw, 25vw",
+  imageSizes = "(max-width: 1024px) 50vw, 33vw",
   large = false,
 }: Props) {
   const [modalOpen, setModalOpen] = useState(false);
@@ -69,7 +69,12 @@ export default function CollectionCard({
   return (
     <div className="group bg-white">
       {/* ── Image area ─────────────────────────────────────────────── */}
-      <div className="relative overflow-hidden aspect-3/4">
+      <div
+        className={cn(
+          "relative overflow-hidden",
+          large ? "aspect-4/5" : "aspect-2/3",
+        )}
+      >
         {/* Clicking the image navigates to the product */}
         <Link href={href} className="absolute inset-0 z-0" tabIndex={-1}>
           <Image
@@ -78,14 +83,14 @@ export default function CollectionCard({
             fill
             sizes={imageSizes}
             className={cn(
-              "object-cover transition-transform duration-700 group-hover:scale-[1.04]",
+              "object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]",
               imageClassName,
             )}
           />
         </Link>
 
         {/* Hover overlay */}
-        <div className="pointer-events-none absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-500 z-10" />
+        <div className="pointer-events-none absolute inset-0 bg-black/0 group-hover:bg-black/8 transition-colors duration-500 z-10" />
 
         {/* Wishlist button — top right corner */}
         <div
@@ -111,23 +116,21 @@ export default function CollectionCard({
         </button>
       </div>
 
-      {/* ── Info ───────────────────────────────────────────────────── */}
+      {/* ── Info — compact so photography stays dominant ───────────── */}
       <Link
         href={href}
         className={cn(
           "block border-t border-zinc-100",
-          large ? "p-6 flex flex-col gap-3" : "p-5",
+          large ? "px-5 py-5 flex flex-col gap-2" : "px-4 py-4 sm:px-5 sm:py-5",
         )}
       >
-        <p className="eyebrow text-zinc-500 mb-2">{categoryLabel}</p>
+        <p className="eyebrow text-zinc-400 mb-1.5">{categoryLabel}</p>
         {large ? (
-          <h4 className="text-zinc-900">{product.name}</h4>
+          <h4 className="text-zinc-900 leading-snug">{product.name}</h4>
         ) : (
-          <h5 className="text-zinc-900">{product.name}</h5>
+          <h5 className="text-zinc-900 leading-snug">{product.name}</h5>
         )}
-        <p className={cn("text-zinc-600", large ? "mt-1" : "mt-2")}>
-          {formatPrice(product.price)}
-        </p>
+        <p className="text-zinc-600 mt-1.5">{formatPrice(product.price)}</p>
       </Link>
 
       {quickAddProduct && (

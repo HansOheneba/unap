@@ -23,6 +23,7 @@ import {
   type Review,
 } from "@/lib/products";
 import { submitReview, type ApiReview } from "@/lib/api/catalog";
+import { createStockAlert } from "@/lib/api/forms";
 import ProductGallery from "./ProductGallery";
 import CollectionCard from "./CollectionCard";
 import BoxerSizeGuide, {
@@ -80,6 +81,7 @@ export default function ProductDetailClient({
   // ── Back-in-stock notify ─────────────────────────────────────────────
   const [notifyEmail, setNotifyEmail] = useState("");
   const [notifiedKeys, setNotifiedKeys] = useState<Set<string>>(new Set());
+  const [submittingNotify, setSubmittingNotify] = useState(false);
 
   // ── Find My Size quiz ────────────────────────────────────────────────
   const [showSizeQuiz, setShowSizeQuiz] = useState(false);
@@ -385,17 +387,24 @@ export default function ProductDetailClient({
                   return (
                     <button
                       key={s.size}
-                      disabled={unavailable}
+                      type="button"
                       onClick={() => {
                         setSelectedSize(s.size);
-                        setQuantity((q) => Math.min(q, s.stock));
+                        setQuantity((q) =>
+                          unavailable ? 1 : Math.min(q, s.stock),
+                        );
                       }}
+                      aria-label={
+                        unavailable
+                          ? `${s.size}, out of stock. Select to get notified`
+                          : s.size
+                      }
                       className={cn(
                         "h-11 px-4 min-w-13 border text-sm font-medium transition-all duration-200",
                         isSelected
                           ? "bg-zinc-900 text-white border-zinc-900"
                           : unavailable
-                            ? "bg-zinc-50 text-zinc-300 border-zinc-200 cursor-not-allowed line-through"
+                            ? "bg-zinc-50 text-zinc-400 border-zinc-200 line-through hover:border-zinc-400"
                             : "bg-white text-zinc-900 border-zinc-300 hover:border-zinc-900 hover:bg-zinc-50",
                       )}
                     >
@@ -404,6 +413,13 @@ export default function ProductDetailClient({
                   );
                 })}
               </div>
+              {selectedVariant.sizes.some((s) => s.stock === 0) &&
+                !isOutOfStock && (
+                  <p className="mt-3 text-xs text-zinc-500">
+                    Struck-through sizes are out of stock. Select one to sign up
+                    for a restock alert.
+                  </p>
+                )}
             </div>
 
             {/* Quantity ───────────────────────────────────────────── */}
@@ -512,15 +528,42 @@ export default function ProductDetailClient({
                       </div>
                     ) : (
                       <form
-                        onSubmit={(e) => {
+                        onSubmit={async (e) => {
                           e.preventDefault();
-                          if (!notifyEmail.trim()) return;
-                          setNotifiedKeys((prev) => new Set(prev).add(key));
-                          setNotifyEmail("");
+                          const email = notifyEmail.trim();
+                          if (!email || submittingNotify) return;
+                          setSubmittingNotify(true);
+                          try {
+                            await createStockAlert({
+                              email,
+                              productId: product.slug,
+                              variantId: selectedVariant.id,
+                              size: selectedSize,
+                            });
+                            setNotifiedKeys((prev) => new Set(prev).add(key));
+                            setNotifyEmail("");
+                            toast.success(
+                              "You are on the list",
+                              `We will email you when ${selectedSize} is back.`,
+                            );
+                          } catch (err) {
+                            toast.error(
+                              "Could not save alert",
+                              err instanceof Error
+                                ? err.message
+                                : "Please try again.",
+                            );
+                          } finally {
+                            setSubmittingNotify(false);
+                          }
                         }}
                       >
-                        <p className="text-[10px] tracking-[0.25em] uppercase text-zinc-600 mb-2">
+                        <p className="text-[10px] tracking-[0.25em] uppercase text-zinc-600 mb-1">
                           Get Notified When Back
+                        </p>
+                        <p className="text-sm text-zinc-600 mb-3">
+                          Size {selectedSize} is out of stock. Leave your email
+                          and we will let you know when it returns.
                         </p>
                         <div className="flex gap-2">
                           <input
@@ -534,9 +577,10 @@ export default function ProductDetailClient({
                           />
                           <button
                             type="submit"
-                            className="text-[10px] tracking-[0.25em] uppercase bg-zinc-900 text-white px-5 py-2.5 hover:bg-zinc-700 transition-colors"
+                            disabled={submittingNotify}
+                            className="text-[10px] tracking-[0.25em] uppercase bg-zinc-900 text-white px-5 py-2.5 hover:bg-zinc-700 transition-colors disabled:opacity-50"
                           >
-                            Notify Me
+                            {submittingNotify ? "Saving..." : "Notify Me"}
                           </button>
                         </div>
                       </form>

@@ -22,3 +22,15 @@ export async function submitContact(payload: {
     body: payload,
   });
 }
+
+export async function createStockAlert(payload: {
+  email: string;
+  productId: string;
+  variantId: string;
+  size: string;
+}): Promise<{ success?: boolean; message?: string }> {
+  return apiRequest("/stock-alerts", {
+    method: "POST",
+    body: payload,
+  });
+}

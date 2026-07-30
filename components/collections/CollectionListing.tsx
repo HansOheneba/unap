@@ -124,12 +124,7 @@ export default function CollectionListing({
           </p>
         </div>
       ) : accessoryGroups ? (
-        <div
-          className={cn(
-            COLLECTIONS_CONTAINER,
-            "pt-10 pb-32 flex flex-col gap-16",
-          )}
-        >
+        <div className="flex flex-col gap-12 md:gap-16 pb-32">
           {(
             [
               ["Caps", accessoryGroups.caps],
@@ -141,7 +136,6 @@ export default function CollectionListing({
               group.length > 0 && (
                 <ProductSection
                   key={label}
-                  className=""
                   label={label}
                   count={group.length}
                   products={group}
@@ -151,21 +145,14 @@ export default function CollectionListing({
           )}
         </div>
       ) : hasGenderSplit ? (
-        <div
-          className={cn(
-            COLLECTIONS_CONTAINER,
-            "pt-10 pb-32 flex flex-col gap-16",
-          )}
-        >
+        <div className="flex flex-col gap-12 md:gap-16 pb-32">
           <ProductSection
-            className=""
             label="Mens"
             count={maleProducts.length}
             products={maleProducts}
             categoryLabel={collection.subtitle}
           />
           <ProductSection
-            className=""
             label="Womens"
             count={femaleProducts.length}
             products={femaleProducts}
@@ -173,14 +160,15 @@ export default function CollectionListing({
           />
         </div>
       ) : (
-        <ProductSection
-          className={cn(COLLECTIONS_CONTAINER, "pt-10 pb-32")}
-          label={`All ${collection.subtitle}`}
-          count={products.length}
-          products={products}
-          categoryLabel={collection.subtitle}
-          large={collectionId === "tracksuits"}
-        />
+        <div className="pb-32">
+          <ProductSection
+            label={`All ${collection.subtitle}`}
+            count={products.length}
+            products={products}
+            categoryLabel={collection.subtitle}
+            large={collectionId === "tracksuits"}
+          />
+        </div>
       )}
     </main>
   );
@@ -191,7 +179,7 @@ function ProductSection({
   count,
   products,
   categoryLabel,
-  className = COLLECTIONS_CONTAINER,
+  className,
   large = false,
 }: {
   label: string;
@@ -202,8 +190,13 @@ function ProductSection({
   large?: boolean;
 }) {
   return (
-    <section className={className}>
-      <div className="flex items-end justify-between mb-10">
+    <section className={cn("pt-10", className)}>
+      <div
+        className={cn(
+          COLLECTIONS_CONTAINER,
+          "flex items-end justify-between mb-8 md:mb-10",
+        )}
+      >
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -218,32 +211,40 @@ function ProductSection({
         </p>
       </div>
 
-      <div
-        className={
-          large
-            ? "grid grid-cols-1 md:grid-cols-2 gap-px bg-zinc-100"
-            : "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-px bg-zinc-100"
-        }
-      >
-        {products.map((product, i) => (
-          <motion.div
-            key={product.slug}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{
-              duration: 0.7,
-              delay: i * 0.06,
-              ease: [0.22, 1, 0.36, 1],
-            }}
-          >
-            <CollectionCard
-              product={product}
-              categoryLabel={categoryLabel}
-              large={large}
-            />
-          </motion.div>
-        ))}
+      {/* Near full-bleed photography wall within the site content width */}
+      <div className="max-w-360 mx-auto">
+        <div
+          className={
+            large
+              ? "grid grid-cols-1 md:grid-cols-2 gap-px bg-zinc-100"
+              : "grid grid-cols-2 lg:grid-cols-3 gap-px bg-zinc-100"
+          }
+        >
+          {products.map((product, i) => (
+            <motion.div
+              key={product.slug}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{
+                duration: 0.7,
+                delay: i * 0.06,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+            >
+              <CollectionCard
+                product={product}
+                categoryLabel={categoryLabel}
+                large={large}
+                imageSizes={
+                  large
+                    ? "(max-width: 768px) 100vw, 50vw"
+                    : "(max-width: 1024px) 50vw, 33vw"
+                }
+              />
+            </motion.div>
+          ))}
+        </div>
       </div>
     </section>
   );
