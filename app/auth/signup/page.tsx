@@ -2,7 +2,7 @@
 
 import { Suspense, useState } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import {
   countries,
@@ -15,6 +15,7 @@ import {
 } from "@/lib/auth";
 import { useOnboardingStore } from "@/lib/stores/onboarding-store";
 import { useAuthStore } from "@/lib/stores/auth-store";
+import { useCartStore } from "@/lib/stores/cart-store";
 import { Button } from "@/components/ui/button";
 import OtpField from "@/components/auth/otp-field";
 
@@ -68,14 +69,19 @@ export default function SignupPage() {
 }
 
 function SignupPageInner() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const nextPath = searchParams.get("next");
+  const cartItemCount = useCartStore((s) => s.items.length);
+  const wasShopping =
+    nextPath === "/checkout" ||
+    nextPath === "/cart" ||
+    cartItemCount > 0;
   const loginHref = nextPath
     ? `/auth/login?next=${encodeURIComponent(nextPath)}`
     : "/auth/login";
-  const continueHref = nextPath || "/collections";
-  const continueLabel =
-    nextPath === "/checkout" ? "Continue to Checkout" : "Shop Now";
+  const continueHref = wasShopping ? "/cart" : nextPath || "/collections";
+  const continueLabel = wasShopping ? "Back to Cart" : "Shop Now";
 
   const {
     step,
@@ -140,10 +146,12 @@ function SignupPageInner() {
     if (!region) e.region = "Please select a region.";
     if (!city.trim()) e.city = "City is required.";
     if (!address.trim()) e.address = "Delivery address is required.";
-    if (!googleMapsLink.trim())
-      e.googleMapsLink = "A Google Maps link is required so we can find you.";
-    else if (!/^https?:\/\/.+/i.test(googleMapsLink.trim()))
+    if (
+      googleMapsLink.trim() &&
+      !/^https?:\/\/.+/i.test(googleMapsLink.trim())
+    ) {
       e.googleMapsLink = "Paste a valid Google Maps link (https://...).";
+    }
     if (!sameAsPhone && !whatsapp.trim())
       e.whatsapp = "WhatsApp number is required.";
     setErrors(e);
@@ -220,6 +228,12 @@ function SignupPageInner() {
       return;
     }
     if (result.apiUser) setAuthUser(result.apiUser);
+    // Shoppers came from checkout/cart. Send them back to their bag so they
+    // never land on an empty account orders screen mid-purchase.
+    if (wasShopping) {
+      router.replace("/cart");
+      return;
+    }
     nextStep();
   };
 
@@ -697,19 +711,21 @@ function SignupPageInner() {
               </p>
             </Field>
 
-            <Field label="Google Maps Link" error={errors.googleMapsLink}>
+            <Field
+              label="Google Maps Link (optional)"
+              error={errors.googleMapsLink}
+            >
               <input
                 type="url"
                 value={googleMapsLink}
                 onChange={(e) => setField("googleMapsLink", e.target.value)}
                 placeholder="https://maps.app.goo.gl/..."
                 autoComplete="off"
-                required
                 className={inputCls}
               />
               <p className="text-zinc-400 text-[0.6rem] leading-relaxed">
-                Required. Open Google Maps, tap Share, and paste the link so our
-                riders can find your exact location.
+                Optional for now. You can add it at checkout so our riders can
+                find your exact location.
               </p>
             </Field>
 

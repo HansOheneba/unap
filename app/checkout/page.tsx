@@ -196,6 +196,12 @@ export default function CheckoutPage() {
     if (!form.phone.trim()) e.phone = "Required";
     if (!form.address.trim()) e.address = "Required";
     if (!form.city.trim()) e.city = "Required";
+    if (
+      form.googleMapsLink.trim() &&
+      !/^https?:\/\/.+/i.test(form.googleMapsLink.trim())
+    ) {
+      e.googleMapsLink = "Paste a valid Google Maps link (https://...)";
+    }
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -486,7 +492,10 @@ export default function CheckoutPage() {
                     />
                   </Field>
 
-                  <Field label="Google Maps Link (optional)">
+                  <Field
+                    label="Google Maps Link (recommended)"
+                    error={errors.googleMapsLink}
+                  >
                     <input
                       type="url"
                       value={form.googleMapsLink}
@@ -497,10 +506,17 @@ export default function CheckoutPage() {
                       autoComplete="off"
                       className={inputCls}
                     />
-                    <p className="text-zinc-400 text-[0.6rem] leading-relaxed">
-                      Open Google Maps, tap Share, and paste the link so our
-                      riders can find your exact location.
-                    </p>
+                    {!form.googleMapsLink.trim() ? (
+                      <p className="text-zinc-600 text-[0.65rem] leading-relaxed border border-zinc-200 bg-zinc-50 px-3 py-2">
+                        Add a Google Maps pin if you can. It helps riders find
+                        you faster and cuts down on delivery calls. Open Maps,
+                        tap Share, then paste the link here.
+                      </p>
+                    ) : (
+                      <p className="text-zinc-400 text-[0.6rem] leading-relaxed">
+                        Looks good. Our riders will use this to find you.
+                      </p>
+                    )}
                   </Field>
 
                   <div className="grid grid-cols-2 gap-4">
