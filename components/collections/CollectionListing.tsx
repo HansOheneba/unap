@@ -174,6 +174,24 @@ export default function CollectionListing({
   );
 }
 
+/** Grid that fills the wall even when a section only has 1–2 styles. */
+function productGridClass(count: number, large: boolean): string {
+  if (count === 1) {
+    // One piece → centered featured card (not a lonely cell in a 3-col grid)
+    return "grid grid-cols-1 max-w-md md:max-w-xl mx-auto gap-px bg-zinc-100";
+  }
+  if (count === 2 || large) {
+    return "grid grid-cols-1 md:grid-cols-2 gap-px bg-zinc-100";
+  }
+  return "grid grid-cols-2 lg:grid-cols-3 gap-px bg-zinc-100";
+}
+
+function productImageSizes(count: number, large: boolean): string {
+  if (count === 1) return "(max-width: 448px) 100vw, 36rem";
+  if (count === 2 || large) return "(max-width: 768px) 100vw, 50vw";
+  return "(max-width: 1024px) 50vw, 33vw";
+}
+
 function ProductSection({
   label,
   count,
@@ -189,6 +207,10 @@ function ProductSection({
   className?: string;
   large?: boolean;
 }) {
+  // Single-style sections use the large card treatment so the drop feels intentional
+  const useLargeCard = large || count === 1;
+  const styleLabel = count === 1 ? "1 Style" : `${count} Styles`;
+
   return (
     <section className={cn("pt-10", className)}>
       <div
@@ -203,7 +225,7 @@ function ProductSection({
           viewport={{ once: true }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
         >
-          <p className="eyebrow text-zinc-400 mb-2">{count} Styles</p>
+          <p className="eyebrow text-zinc-400 mb-2">{styleLabel}</p>
           <h3 className="text-zinc-900">{label}</h3>
         </motion.div>
         <p className="eyebrow text-zinc-400 hidden md:block">
@@ -213,24 +235,14 @@ function ProductSection({
 
       {/* Near full-bleed photography wall within the site content width */}
       <div className="max-w-360 mx-auto">
-        <div
-          className={
-            large
-              ? "grid grid-cols-1 md:grid-cols-2 gap-px bg-zinc-100"
-              : "grid grid-cols-2 lg:grid-cols-3 gap-px bg-zinc-100"
-          }
-        >
+        <div className={productGridClass(count, large)}>
           {products.map((product) => (
             <CollectionCard
               key={product.slug}
               product={product}
               categoryLabel={categoryLabel}
-              large={large}
-              imageSizes={
-                large
-                  ? "(max-width: 768px) 100vw, 50vw"
-                  : "(max-width: 1024px) 50vw, 33vw"
-              }
+              large={useLargeCard}
+              imageSizes={productImageSizes(count, large)}
             />
           ))}
         </div>

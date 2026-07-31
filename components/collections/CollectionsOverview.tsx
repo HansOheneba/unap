@@ -320,26 +320,45 @@ export default function CollectionsOverview({
             )}
           </div>
 
-          {/* Product grid */}
+          {/* Product grid — adapt columns so sparse collections don’t look unfinished */}
           <div className={cn(COLLECTIONS_CONTAINER, "pt-14 pb-24")}>
             {products.length === 0 ? (
               <p className="text-zinc-400 text-sm text-center py-16">
                 New pieces for {col.subtitle} are on the way.
               </p>
             ) : (
-              <div className="grid gap-px bg-zinc-100 grid-cols-2 md:grid-cols-4">
+              <div
+                className={cn(
+                  "grid gap-px bg-zinc-100",
+                  products.length === 1 && "grid-cols-1 max-w-lg mx-auto",
+                  products.length === 2 && "grid-cols-2",
+                  products.length === 3 && "grid-cols-2 md:grid-cols-3",
+                  products.length >= 4 && "grid-cols-2 md:grid-cols-4",
+                )}
+              >
                 {products.map((product) => (
                   <div key={product.slug} className="group bg-white">
                     <Link
                       href={`/collections/${col.id}/${product.slug}`}
                       className="block"
                     >
-                      <div className="relative overflow-hidden aspect-3/4">
+                      <div
+                        className={cn(
+                          "relative overflow-hidden",
+                          products.length === 1 ? "aspect-4/5" : "aspect-3/4",
+                        )}
+                      >
                         <FadeImage
                           src={product.image}
                           alt={product.name}
                           fill
-                          sizes="(max-width: 768px) 50vw, 25vw"
+                          sizes={
+                            products.length === 1
+                              ? "(max-width: 512px) 100vw, 32rem"
+                              : products.length === 2
+                                ? "50vw"
+                                : "(max-width: 768px) 50vw, 25vw"
+                          }
                           className="object-cover duration-700 group-hover:scale-[1.04]"
                         />
                       </div>
@@ -348,7 +367,11 @@ export default function CollectionsOverview({
                         <p className="eyebrow text-zinc-500 mb-2">
                           {col.subtitle}
                         </p>
-                        <h5 className="text-zinc-900">{product.name}</h5>
+                        {products.length === 1 ? (
+                          <h4 className="text-zinc-900">{product.name}</h4>
+                        ) : (
+                          <h5 className="text-zinc-900">{product.name}</h5>
+                        )}
                         <p className="text-zinc-600 mt-2">
                           {formatPrice(product.price)}
                         </p>
