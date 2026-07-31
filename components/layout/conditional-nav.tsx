@@ -3,11 +3,7 @@
 import { usePathname } from "next/navigation";
 import Footer from "./footer";
 import CartToast from "@/components/ui/cart-toast";
-import {
-  bannerSlotTransition,
-  getBannerOffset,
-  useBannerStore,
-} from "@/lib/stores/banner-store";
+import { getBannerOffset, useBannerStore } from "@/lib/stores/banner-store";
 
 // Pages where the first section intentionally sits behind the fixed header
 // (full-bleed video/image heroes with dark overlays).
@@ -44,13 +40,14 @@ export default function ConditionalNav({
 
   return (
     <>
-      {/* Banner spacer — matches the visible banner slot in SiteChrome */}
+      {/*
+        Banner spacer — matches the visible banner slot in SiteChrome.
+        No height transition: animating in-flow height during scroll is a
+        known Safari feedback-loop (scroll → layout → scroll → … → crash).
+      */}
       {bannerEnabled && bannerVisible && needsHeaderOffset && (
         <div
-          style={{
-            height: bannerOffset,
-            transition: bannerSlotTransition(scrollHidden),
-          }}
+          style={{ height: bannerOffset }}
           className="shrink-0"
           aria-hidden="true"
         />

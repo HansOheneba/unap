@@ -21,16 +21,6 @@ export function getBannerOffset(
   return visible && !scrollHidden ? BANNER_H : 0;
 }
 
-export function bannerSlotTransition(scrollHidden: boolean): string {
-  const ms = scrollHidden ? BANNER_HIDE_MS : BANNER_REVEAL_MS;
-  return `height ${ms}ms ease-out, opacity ${ms}ms ease-out`;
-}
-
-export function chromeTopTransition(scrollHidden: boolean): string {
-  const ms = scrollHidden ? BANNER_HIDE_MS : BANNER_REVEAL_MS;
-  return `top ${ms}ms ease-out`;
-}
-
 // In-memory only — resets every session so the banner is always fresh on new visits
 export const useBannerStore = create<BannerState>((set) => ({
   visible: true,

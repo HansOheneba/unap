@@ -13,11 +13,7 @@ import {
   collectionSlugFromHref,
 } from "@/lib/collections-nav";
 import { searchProductSummaries, type ProductSummary } from "@/lib/products";
-import {
-  chromeTopTransition,
-  getBannerOffset,
-  useBannerStore,
-} from "@/lib/stores/banner-store";
+import { getBannerOffset, useBannerStore } from "@/lib/stores/banner-store";
 
 function capitalize(s: string) {
   return s.charAt(0).toUpperCase() + s.slice(1);
@@ -71,10 +67,7 @@ function SearchPageInner() {
     <main className="bg-white text-zinc-900 min-h-screen">
       {/* Search bar */}
       <div
-        style={{
-          top: stickyTop,
-          transition: chromeTopTransition(scrollHidden),
-        }}
+        style={{ top: stickyTop }}
         className="border-b border-zinc-100 sticky z-30 bg-white"
       >
         <div className="max-w-360 mx-auto px-6 md:px-20 py-6 flex items-center gap-4">

@@ -134,14 +134,16 @@ export default function Header({
 
   useEffect(() => {
     const FADE_RANGE = 80;
+    let prev = -1;
 
     const handleScroll = () => {
-      if (!isHome) {
-        setHeroNavBlend(1);
-        return;
-      }
-      const y = window.scrollY;
-      setHeroNavBlend(Math.min(1, Math.max(0, y / FADE_RANGE)));
+      const next = isHome
+        ? Math.min(1, Math.max(0, window.scrollY / FADE_RANGE))
+        : 1;
+      // Skip identical updates — Safari fires scroll very aggressively.
+      if (next === prev) return;
+      prev = next;
+      setHeroNavBlend(next);
     };
 
     handleScroll();

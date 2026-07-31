@@ -8,11 +8,7 @@ import { buttonVariants } from "@/components/ui/button";
 import FadeImage from "@/components/ui/fade-image";
 import type { CollectionInfo, ProductSummary } from "@/lib/products";
 import { formatPrice } from "@/lib/currency";
-import {
-  chromeTopTransition,
-  getBannerOffset,
-  useBannerStore,
-} from "@/lib/stores/banner-store";
+import { getBannerOffset, useBannerStore } from "@/lib/stores/banner-store";
 import { COLLECTIONS_CONTAINER } from "@/lib/layout/collections";
 import { cn } from "@/lib/utils";
 
@@ -123,10 +119,7 @@ export default function CollectionsOverview({
 
       {/* ── STICKY NAV ──────────────────────────────────────────────────── */}
       <nav
-        style={{
-          top: stickyTop,
-          transition: chromeTopTransition(scrollHidden),
-        }}
+        style={{ top: stickyTop }}
         className="sticky z-30 bg-white/90 backdrop-blur-md border-b border-zinc-200"
       >
         <div
