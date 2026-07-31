@@ -157,28 +157,40 @@ export default function CollectionsOverview({
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-5 gap-px bg-zinc-100">
-          {overviewCards.map((card, i) => (
-            <button
-              key={i}
-              onClick={() => scrollTo(card.id)}
-              className="group relative bg-white overflow-hidden aspect-3/4 cursor-pointer text-left"
-            >
-              <FadeImage
-                src={card.img}
-                alt={card.label}
-                fill
-                sizes="(max-width: 768px) 50vw, 20vw"
-                className="object-cover duration-700 group-hover:scale-[1.04]"
-              />
-              <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent" />
-              <div className="absolute bottom-0 left-0 p-4">
-                <p className="eyebrow text-white mb-1">{card.label}</p>
-                <span className="eyebrow text-white/60 group-hover:text-white transition-colors duration-300">
-                  Shop →
-                </span>
-              </div>
-            </button>
-          ))}
+          {overviewCards.map((card, i) => {
+            const isLastOddOnMobile =
+              overviewCards.length % 2 === 1 && i === overviewCards.length - 1;
+
+            return (
+              <button
+                key={i}
+                onClick={() => scrollTo(card.id)}
+                className={cn(
+                  "group relative bg-white overflow-hidden aspect-3/4 cursor-pointer text-left",
+                  isLastOddOnMobile && "col-span-2 md:col-span-1",
+                )}
+              >
+                <FadeImage
+                  src={card.img}
+                  alt={card.label}
+                  fill
+                  sizes={
+                    isLastOddOnMobile
+                      ? "(max-width: 768px) 100vw, 20vw"
+                      : "(max-width: 768px) 50vw, 20vw"
+                  }
+                  className="object-cover duration-700 group-hover:scale-[1.04]"
+                />
+                <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent" />
+                <div className="absolute bottom-0 left-0 p-4">
+                  <p className="eyebrow text-white mb-1">{card.label}</p>
+                  <span className="eyebrow text-white/60 group-hover:text-white transition-colors duration-300">
+                    Shop →
+                  </span>
+                </div>
+              </button>
+            );
+          })}
         </div>
       </section>
 
