@@ -22,6 +22,8 @@ type Props = {
   imageSizes?: string;
   /** Use h4 + extra padding for large 2-col cards (e.g. Tracks) */
   large?: boolean;
+  /** Grid span / layout classes on the card root */
+  className?: string;
 };
 
 export default function CollectionCard({
@@ -30,6 +32,7 @@ export default function CollectionCard({
   imageClassName,
   imageSizes = "(max-width: 1024px) 50vw, 33vw",
   large = false,
+  className,
 }: Props) {
   const [modalOpen, setModalOpen] = useState(false);
   const [quickAddProduct, setQuickAddProduct] = useState<Product | null>(null);
@@ -67,7 +70,7 @@ export default function CollectionCard({
   };
 
   return (
-    <div className="group bg-white">
+    <div className={cn("group bg-white", className)}>
       {/* ── Image area ─────────────────────────────────────────────── */}
       <div
         className={cn(

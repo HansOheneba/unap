@@ -38,6 +38,38 @@ type Props = {
   overviewCards: OverviewCard[];
 };
 
+/**
+ * Stretch trailing cards so incomplete last rows look intentional.
+ * Layouts: 1 featured · 2 even · 3 → 2-col mobile / 3-col md · 4+ → 2-col mobile / 4-col md
+ */
+function overviewProductSpanClass(index: number, count: number): string | undefined {
+  if (count <= 2) return undefined;
+
+  const isLast = index === count - 1;
+  const mobileOrphan = count % 2 === 1;
+
+  if (count === 3) {
+    return isLast && mobileOrphan ? "col-span-2 md:col-span-1" : undefined;
+  }
+
+  // count >= 4: grid-cols-2 md:grid-cols-4
+  const mdRem = count % 4;
+
+  // Rem 2: both trailing cards take half width so the row fills
+  if (mdRem === 2 && (index === count - 1 || index === count - 2)) {
+    return cn(isLast && mobileOrphan && "col-span-2", "md:col-span-2");
+  }
+
+  if (!isLast) return undefined;
+
+  return cn(
+    mobileOrphan && "col-span-2",
+    mdRem === 1 && "md:col-span-4",
+    mdRem === 3 && "md:col-span-2",
+    mobileOrphan && mdRem === 0 && "md:col-span-1",
+  );
+}
+
 export default function CollectionsOverview({
   sections,
   overviewCards,
@@ -348,49 +380,61 @@ export default function CollectionsOverview({
                   products.length >= 4 && "grid-cols-2 md:grid-cols-4",
                 )}
               >
-                {products.map((product) => (
-                  <div key={product.slug} className="group bg-white">
-                    <Link
-                      href={`/collections/${col.id}/${product.slug}`}
-                      className="block"
-                    >
-                      <div
-                        className={cn(
-                          "relative overflow-hidden",
-                          products.length === 1 ? "aspect-4/5" : "aspect-3/4",
-                        )}
-                      >
-                        <FadeImage
-                          src={product.image}
-                          alt={product.name}
-                          fill
-                          sizes={
-                            products.length === 1
-                              ? "(max-width: 512px) 100vw, 32rem"
-                              : products.length === 2
-                                ? "50vw"
-                                : "(max-width: 768px) 50vw, 25vw"
-                          }
-                          className="object-cover duration-700 group-hover:scale-[1.04]"
-                        />
-                      </div>
+                {products.map((product, index) => {
+                  const spanClass = overviewProductSpanClass(
+                    index,
+                    products.length,
+                  );
 
-                      <div className="p-5 border-t border-zinc-100">
-                        <p className="eyebrow text-zinc-500 mb-2">
-                          {col.subtitle}
-                        </p>
-                        {products.length === 1 ? (
-                          <h4 className="text-zinc-900">{product.name}</h4>
-                        ) : (
-                          <h5 className="text-zinc-900">{product.name}</h5>
-                        )}
-                        <p className="text-zinc-600 mt-2">
-                          {formatPrice(product.price)}
-                        </p>
-                      </div>
-                    </Link>
-                  </div>
-                ))}
+                  return (
+                    <div
+                      key={product.slug}
+                      className={cn("group bg-white", spanClass)}
+                    >
+                      <Link
+                        href={`/collections/${col.id}/${product.slug}`}
+                        className="block"
+                      >
+                        <div
+                          className={cn(
+                            "relative overflow-hidden",
+                            products.length === 1 ? "aspect-4/5" : "aspect-3/4",
+                          )}
+                        >
+                          <FadeImage
+                            src={product.image}
+                            alt={product.name}
+                            fill
+                            sizes={
+                              products.length === 1
+                                ? "(max-width: 512px) 100vw, 32rem"
+                                : products.length === 2
+                                  ? "50vw"
+                                  : spanClass
+                                    ? "(max-width: 768px) 100vw, 50vw"
+                                    : "(max-width: 768px) 50vw, 25vw"
+                            }
+                            className="object-cover duration-700 group-hover:scale-[1.04]"
+                          />
+                        </div>
+
+                        <div className="p-5 border-t border-zinc-100">
+                          <p className="eyebrow text-zinc-500 mb-2">
+                            {col.subtitle}
+                          </p>
+                          {products.length === 1 ? (
+                            <h4 className="text-zinc-900">{product.name}</h4>
+                          ) : (
+                            <h5 className="text-zinc-900">{product.name}</h5>
+                          )}
+                          <p className="text-zinc-600 mt-2">
+                            {formatPrice(product.price)}
+                          </p>
+                        </div>
+                      </Link>
+                    </div>
+                  );
+                })}
               </div>
             )}
 

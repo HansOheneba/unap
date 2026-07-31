@@ -192,6 +192,36 @@ function productImageSizes(count: number, large: boolean): string {
   return "(max-width: 1024px) 50vw, 33vw";
 }
 
+/**
+ * Stretch the last card so an incomplete final row reads as intentional.
+ * - 2-col (mobile / large): orphan → full width
+ * - 3-col (lg): rem 1 → full width; rem 2 → last spans 2
+ */
+function productSpanClass(
+  index: number,
+  count: number,
+  large: boolean,
+): string | undefined {
+  if (count <= 1 || index !== count - 1) return undefined;
+
+  // large / pair layout: md:grid-cols-2
+  if (count === 2 || large) {
+    return count % 2 === 1 ? "md:col-span-2" : undefined;
+  }
+
+  // Default: grid-cols-2 lg:grid-cols-3
+  const mobileOrphan = count % 2 === 1;
+  const desktopRem = count % 3;
+  if (!mobileOrphan && desktopRem === 0) return undefined;
+
+  return cn(
+    mobileOrphan && "col-span-2",
+    desktopRem === 1 && "lg:col-span-3",
+    desktopRem === 2 && "lg:col-span-2",
+    mobileOrphan && desktopRem === 0 && "lg:col-span-1",
+  );
+}
+
 function ProductSection({
   label,
   count,
@@ -236,13 +266,14 @@ function ProductSection({
       {/* Near full-bleed photography wall within the site content width */}
       <div className="max-w-360 mx-auto">
         <div className={productGridClass(count, large)}>
-          {products.map((product) => (
+          {products.map((product, index) => (
             <CollectionCard
               key={product.slug}
               product={product}
               categoryLabel={categoryLabel}
               large={useLargeCard}
               imageSizes={productImageSizes(count, large)}
+              className={productSpanClass(index, count, large)}
             />
           ))}
         </div>
