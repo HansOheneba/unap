@@ -69,7 +69,7 @@ export default function CheckoutPage() {
   useEffect(() => {
     if (!authReady) return;
     if (!isLoggedIn) {
-      router.replace("/auth/login?next=/checkout");
+      router.replace("/auth/signup?next=/checkout");
     }
   }, [authReady, isLoggedIn, router]);
 

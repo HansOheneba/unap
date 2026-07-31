@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import {
   countries,
@@ -59,6 +60,23 @@ const STEPS = [
 ];
 
 export default function SignupPage() {
+  return (
+    <Suspense fallback={null}>
+      <SignupPageInner />
+    </Suspense>
+  );
+}
+
+function SignupPageInner() {
+  const searchParams = useSearchParams();
+  const nextPath = searchParams.get("next");
+  const loginHref = nextPath
+    ? `/auth/login?next=${encodeURIComponent(nextPath)}`
+    : "/auth/login";
+  const continueHref = nextPath || "/collections";
+  const continueLabel =
+    nextPath === "/checkout" ? "Continue to Checkout" : "Shop Now";
+
   const {
     step,
     loading,
@@ -237,10 +255,10 @@ export default function SignupPage() {
 
         <div className="flex gap-3 w-full max-w-sm">
           <Link
-            href="/collections"
+            href={continueHref}
             className="flex-1 border border-zinc-900 bg-transparent text-zinc-900 px-6 py-3 text-[0.65rem] tracking-widest uppercase hover:bg-zinc-900 hover:text-white transition-colors duration-300 text-center whitespace-nowrap"
           >
-            Shop Now
+            {continueLabel}
           </Link>
           <Link
             href="/account"
@@ -394,7 +412,7 @@ export default function SignupPage() {
             <p className="text-center text-zinc-400 text-xs mt-2">
               Already have an account?{" "}
               <Link
-                href="/auth/login"
+                href={loginHref}
                 className="text-zinc-900 underline underline-offset-4 hover:opacity-70"
               >
                 Sign in

@@ -209,7 +209,11 @@ function LoginPageInner() {
         <p className="text-center text-zinc-500 text-xs">
           New to Unapologetic?{" "}
           <Link
-            href="/auth/signup"
+            href={
+              nextPath && nextPath !== "/account"
+                ? `/auth/signup?next=${encodeURIComponent(nextPath)}`
+                : "/auth/signup"
+            }
             className="text-zinc-900 underline underline-offset-4 hover:opacity-70 transition-opacity duration-200"
           >
             Create an account
