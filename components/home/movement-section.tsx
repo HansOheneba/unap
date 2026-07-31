@@ -118,7 +118,80 @@ const testimonials = [
 export default function MovementSection() {
   return (
     <section className="bg-white text-zinc-900 overflow-hidden">
-      {/* ── SPLIT HERO ────────────────────────────────────── */}
+      {/* ── 003  TESTIMONIALS ─────────────────────────────── */}
+      <div className="px-8 md:px-20 py-32 max-w-360 mx-auto flex flex-col gap-16">
+        <FadeIn>
+          <p className="eyebrow text-zinc-500">003 | Voices from the Tribe</p>
+        </FadeIn>
+
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-px bg-zinc-100">
+          {/* Large card with image background */}
+          <FadeIn className="md:col-span-5 bg-white relative overflow-hidden min-h-80 flex flex-col justify-end">
+            <Image
+              src="/home/boxModel.jpg"
+              alt={testimonials[0].name}
+              fill
+              className="object-cover brightness-75"
+            />
+            <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/30 to-transparent" />
+            <div className="relative z-10 p-8 flex flex-col gap-4">
+              <span
+                className="text-white/60"
+                style={{
+                  fontSize: "5rem",
+                  lineHeight: 0.8,
+                  fontFamily: "var(--font-space-grotesk)",
+                  fontWeight: 800,
+                }}
+              >
+                &ldquo;
+              </span>
+              <p className="text-white/90 text-lg leading-relaxed italic">
+                {testimonials[0].quote}
+              </p>
+              <div className="pt-2">
+                <p className="eyebrow text-white/75">
+                  {testimonials[0].name} / {testimonials[0].location}
+                </p>
+              </div>
+            </div>
+          </FadeIn>
+
+          {/* Two stacked cards */}
+          <div className="md:col-span-7 flex flex-col gap-px bg-zinc-100">
+            {testimonials.slice(1).map((t, i) => (
+              <FadeIn
+                key={t.name}
+                delay={0.15 * (i + 1)}
+                className="bg-zinc-50 p-10 flex flex-col gap-5 justify-between min-h-52"
+              >
+                <span
+                  className="text-zinc-300"
+                  style={{
+                    fontSize: "4rem",
+                    lineHeight: 0.8,
+                    fontFamily: "var(--font-space-grotesk)",
+                    fontWeight: 800,
+                  }}
+                >
+                  &quot;
+                </span>
+                <p className="text-zinc-800 text-lg leading-relaxed italic">
+                  {t.quote}
+                </p>
+                <p className="eyebrow text-zinc-500">
+                  {t.name} / {t.location}
+                </p>
+              </FadeIn>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* ── DIVIDER LINE ─────────────────────────────────── */}
+      <div className="border-t border-zinc-100" />
+
+      {/* ── 004  SPLIT HERO ───────────────────────────────── */}
       <div className="grid grid-cols-1 md:grid-cols-2 min-h-[70vh]">
         {/* Left: Image */}
         <div className="relative min-h-[50vh] md:min-h-0">
@@ -220,76 +293,6 @@ export default function MovementSection() {
       </div>
 
       <div className="border-t border-zinc-100" /> */}
-
-      {/* ── TESTIMONIALS ─────────────────────────────────── */}
-      <div className="px-8 md:px-20 py-32 max-w-360 mx-auto flex flex-col gap-16">
-        <FadeIn>
-          <p className="eyebrow text-zinc-500">Voices from the Tribe</p>
-        </FadeIn>
-
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-px bg-zinc-100">
-          {/* Large card with image background */}
-          <FadeIn className="md:col-span-5 bg-white relative overflow-hidden min-h-80 flex flex-col justify-end">
-            <Image
-              src="/home/boxModel.jpg"
-              alt={testimonials[0].name}
-              fill
-              className="object-cover brightness-75"
-            />
-            <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/30 to-transparent" />
-            <div className="relative z-10 p-8 flex flex-col gap-4">
-              <span
-                className="text-white/60"
-                style={{
-                  fontSize: "5rem",
-                  lineHeight: 0.8,
-                  fontFamily: "var(--font-space-grotesk)",
-                  fontWeight: 800,
-                }}
-              >
-                &ldquo;
-              </span>
-              <p className="text-white/90 text-lg leading-relaxed italic">
-                {testimonials[0].quote}
-              </p>
-              <div className="pt-2">
-                <p className="eyebrow text-white/75">
-                  {testimonials[0].name} / {testimonials[0].location}
-                </p>
-              </div>
-            </div>
-          </FadeIn>
-
-          {/* Two stacked cards */}
-          <div className="md:col-span-7 flex flex-col gap-px bg-zinc-100">
-            {testimonials.slice(1).map((t, i) => (
-              <FadeIn
-                key={t.name}
-                delay={0.15 * (i + 1)}
-                className="bg-zinc-50 p-10 flex flex-col gap-5 justify-between min-h-52"
-              >
-                <span
-                  className="text-zinc-300"
-                  style={{
-                    fontSize: "4rem",
-                    lineHeight: 0.8,
-                    fontFamily: "var(--font-space-grotesk)",
-                    fontWeight: 800,
-                  }}
-                >
-                  &quot;
-                </span>
-                <p className="text-zinc-800 text-lg leading-relaxed italic">
-                  {t.quote}
-                </p>
-                <p className="eyebrow text-zinc-500">
-                  {t.name} / {t.location}
-                </p>
-              </FadeIn>
-            ))}
-          </div>
-        </div>
-      </div>
     </section>
   );
 }

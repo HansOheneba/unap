@@ -22,6 +22,32 @@ import { BRAND_PLACEHOLDER } from "@/lib/data/placeholders";
 const FALLBACK_IMAGE = BRAND_PLACEHOLDER.textile;
 
 /**
+ * Catalog occasionally ships absolute machine paths (e.g. `/Users/.../logo.png`)
+ * or empty strings from bad admin uploads. Next/Image can only serve `/public`
+ * paths or remote https URLs — everything else falls back.
+ */
+function resolveImageUrl(url: string | null | undefined): string {
+  if (!url?.trim()) return FALLBACK_IMAGE;
+  const trimmed = url.trim();
+  if (trimmed.startsWith("https://") || trimmed.startsWith("http://")) {
+    return trimmed;
+  }
+  if (trimmed.startsWith("/") && !trimmed.startsWith("//")) {
+    // Reject absolute filesystem paths that look like site-root URLs.
+    if (
+      trimmed.startsWith("/Users/") ||
+      trimmed.startsWith("/home/") ||
+      trimmed.startsWith("/var/") ||
+      trimmed.startsWith("/tmp/")
+    ) {
+      return FALLBACK_IMAGE;
+    }
+    return trimmed;
+  }
+  return FALLBACK_IMAGE;
+}
+
+/**
  * The API currently serializes `product.collectionId` as an internal UUID while
  * routing uses the public collection slug (e.g. `"freedom"`).
  *
@@ -134,7 +160,9 @@ function toColorVariants(variants: ApiProductVariant[]): ColorVariant[] {
     id: v.id || v.colorName?.toLowerCase().replace(/\s+/g, "-") || `variant-${i}`,
     colorName: v.colorName || "Default",
     colorHex: v.colorHex || "#1a1a1a",
-    images: v.imageUrls?.length ? v.imageUrls : [FALLBACK_IMAGE],
+    images: v.imageUrls?.length
+      ? v.imageUrls.map((url) => resolveImageUrl(url))
+      : [FALLBACK_IMAGE],
     sizes: v.sizes ?? [],
   }));
 }
@@ -175,7 +203,7 @@ function toSummary(
     category: categorySlug || product.collectionId,
     subcategory: product.subcategory ?? undefined,
     tag: product.tag ?? "",
-    image: product.imageUrl || FALLBACK_IMAGE,
+    image: resolveImageUrl(product.imageUrl),
   };
 }
 
@@ -229,7 +257,7 @@ export async function getCollectionWithProducts(slug: string): Promise<{
       subtitle: detail.subtitle,
       title: detail.title,
       tagline: detail.tagline,
-      featured: detail.featuredImageUrl || FALLBACK_IMAGE,
+      featured: resolveImageUrl(detail.featuredImageUrl),
       href: `/collections/${detail.slug}`,
     },
     products,
@@ -274,7 +302,7 @@ export async function getAllCollectionsWithProducts(): Promise<
           subtitle: c.subtitle,
           title: c.title,
           tagline: c.tagline,
-          featured: c.featuredImageUrl || FALLBACK_IMAGE,
+          featured: resolveImageUrl(c.featuredImageUrl),
           href: `/collections/${c.slug}`,
         },
         products: rows.map((p) => toSummary(p, c.slug)),
@@ -291,7 +319,7 @@ export async function getAllCollectionsWithProducts(): Promise<
             subtitle: c.subtitle,
             title: c.title,
             tagline: c.tagline,
-            featured: c.featuredImageUrl || FALLBACK_IMAGE,
+            featured: resolveImageUrl(c.featuredImageUrl),
             href: `/collections/${c.slug}`,
           },
           products: [] as ProductSummary[],
