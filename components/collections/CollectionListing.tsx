@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
@@ -10,6 +9,7 @@ import CollectionCard from "@/components/products/CollectionCard";
 import BoxerSizeGuide, {
   isBoxerCollection,
 } from "@/components/products/BoxerSizeGuide";
+import FadeImage from "@/components/ui/fade-image";
 import { COLLECTIONS_CONTAINER } from "@/lib/layout/collections";
 import { cn } from "@/lib/utils";
 
@@ -39,7 +39,7 @@ export default function CollectionListing({
   return (
     <main className="bg-white text-zinc-900 min-h-screen overflow-x-hidden">
       <section className="relative w-full h-[65vh] overflow-hidden">
-        <Image
+        <FadeImage
           src={collection.featured}
           alt={collection.title}
           fill
@@ -220,29 +220,18 @@ function ProductSection({
               : "grid grid-cols-2 lg:grid-cols-3 gap-px bg-zinc-100"
           }
         >
-          {products.map((product, i) => (
-            <motion.div
+          {products.map((product) => (
+            <CollectionCard
               key={product.slug}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{
-                duration: 0.7,
-                delay: i * 0.06,
-                ease: [0.22, 1, 0.36, 1],
-              }}
-            >
-              <CollectionCard
-                product={product}
-                categoryLabel={categoryLabel}
-                large={large}
-                imageSizes={
-                  large
-                    ? "(max-width: 768px) 100vw, 50vw"
-                    : "(max-width: 1024px) 50vw, 33vw"
-                }
-              />
-            </motion.div>
+              product={product}
+              categoryLabel={categoryLabel}
+              large={large}
+              imageSizes={
+                large
+                  ? "(max-width: 768px) 100vw, 50vw"
+                  : "(max-width: 1024px) 50vw, 33vw"
+              }
+            />
           ))}
         </div>
       </div>

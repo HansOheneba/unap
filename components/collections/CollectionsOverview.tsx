@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { buttonVariants } from "@/components/ui/button";
+import FadeImage from "@/components/ui/fade-image";
 import type { CollectionInfo, ProductSummary } from "@/lib/products";
 import { formatPrice } from "@/lib/currency";
 import {
@@ -162,36 +163,19 @@ export default function CollectionsOverview({
           </motion.div>
         </div>
 
-        <motion.div
-          className="grid grid-cols-2 md:grid-cols-5 gap-px bg-zinc-100"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          variants={{
-            hidden: {},
-            visible: { transition: { staggerChildren: 0.07 } },
-          }}
-        >
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-px bg-zinc-100">
           {overviewCards.map((card, i) => (
-            <motion.button
+            <button
               key={i}
               onClick={() => scrollTo(card.id)}
-              variants={{
-                hidden: { opacity: 0, y: 16 },
-                visible: {
-                  opacity: 1,
-                  y: 0,
-                  transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
-                },
-              }}
               className="group relative bg-white overflow-hidden aspect-3/4 cursor-pointer text-left"
             >
-              <Image
+              <FadeImage
                 src={card.img}
                 alt={card.label}
                 fill
                 sizes="(max-width: 768px) 50vw, 20vw"
-                className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                className="object-cover duration-700 group-hover:scale-[1.04]"
               />
               <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent" />
               <div className="absolute bottom-0 left-0 p-4">
@@ -200,9 +184,9 @@ export default function CollectionsOverview({
                   Shop →
                 </span>
               </div>
-            </motion.button>
+            </button>
           ))}
-        </motion.div>
+        </div>
       </section>
 
       <div className="w-full h-px bg-zinc-100" />
@@ -212,7 +196,7 @@ export default function CollectionsOverview({
         <section key={col.id} id={col.id}>
           {/* Cinematic featured banner */}
           <div className="relative w-full h-[78vh] overflow-hidden">
-            <Image
+            <FadeImage
               src={col.featured}
               alt={col.title}
               fill
@@ -350,40 +334,20 @@ export default function CollectionsOverview({
                 New pieces for {col.subtitle} are on the way.
               </p>
             ) : (
-              <motion.div
-                className="grid gap-px bg-zinc-100 grid-cols-2 md:grid-cols-4"
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, margin: "-60px" }}
-                variants={{
-                  hidden: {},
-                  visible: { transition: { staggerChildren: 0.08 } },
-                }}
-              >
+              <div className="grid gap-px bg-zinc-100 grid-cols-2 md:grid-cols-4">
                 {products.map((product) => (
-                  <motion.div
-                    key={product.slug}
-                    variants={{
-                      hidden: { opacity: 0, y: 20 },
-                      visible: {
-                        opacity: 1,
-                        y: 0,
-                        transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] },
-                      },
-                    }}
-                    className="group bg-white"
-                  >
+                  <div key={product.slug} className="group bg-white">
                     <Link
                       href={`/collections/${col.id}/${product.slug}`}
                       className="block"
                     >
                       <div className="relative overflow-hidden aspect-3/4">
-                        <Image
+                        <FadeImage
                           src={product.image}
                           alt={product.name}
                           fill
                           sizes="(max-width: 768px) 50vw, 25vw"
-                          className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                          className="object-cover duration-700 group-hover:scale-[1.04]"
                         />
                       </div>
 
@@ -397,9 +361,9 @@ export default function CollectionsOverview({
                         </p>
                       </div>
                     </Link>
-                  </motion.div>
+                  </div>
                 ))}
-              </motion.div>
+              </div>
             )}
 
             <div className="flex justify-center mt-10 md:hidden">

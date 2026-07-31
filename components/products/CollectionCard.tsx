@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { Loader2 } from "lucide-react";
 import { formatPrice } from "@/lib/currency";
 import { cn } from "@/lib/utils";
 import { getProductBySlug, type Product, type ProductSummary } from "@/lib/products";
 import QuickAddModal from "./QuickAddModal";
+import FadeImage from "@/components/ui/fade-image";
 import WishlistButton from "@/components/ui/wishlist-button";
 import { useWishlistStore } from "@/lib/stores/wishlist-store";
 import { toast } from "@/lib/stores/toast-store";
@@ -77,13 +77,13 @@ export default function CollectionCard({
       >
         {/* Clicking the image navigates to the product */}
         <Link href={href} className="absolute inset-0 z-0" tabIndex={-1}>
-          <Image
+          <FadeImage
             src={product.image}
             alt={product.name}
             fill
             sizes={imageSizes}
             className={cn(
-              "object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]",
+              "object-cover duration-700 ease-out group-hover:scale-[1.03]",
               imageClassName,
             )}
           />
