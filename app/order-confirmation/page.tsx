@@ -135,8 +135,10 @@ function OrderConfirmationInner() {
             "Your order is confirmed. Payment received."
           )}
         </p>
-        <p className="text-zinc-400 text-xs leading-relaxed">
-          Expect delivery within 48 hours. You can track your order anytime.
+        <p className="text-zinc-500 text-xs leading-relaxed">
+          If you are in Accra, your order should be sent within 24 to 48 working
+          hours. Outside Accra, delivery timing will vary. You can track your
+          order anytime.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-3 w-full mt-4">

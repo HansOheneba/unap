@@ -321,10 +321,12 @@ export default function CheckoutPage() {
             We&apos;ll send updates to{" "}
             <span className="text-zinc-900">{form.email}</span>.
           </p>
-          <p className="text-zinc-400 text-xs leading-relaxed">
+          <p className="text-zinc-500 text-xs leading-relaxed">
             {showPaidOnline
-              ? "Payment received. Expect delivery within 48 working hours."
-              : "Pay in cash or MoMo when your order arrives. Expect delivery within 48 working hours."}
+              ? "Payment received. "
+              : "Pay in cash or MoMo when your order arrives. "}
+            If you are in Accra, your order should be sent within 24 to 48
+            working hours. Outside Accra, delivery timing will vary.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 w-full mt-4">
