@@ -2,7 +2,7 @@ import HeroSection from "@/components/home/hero-section";
 import CreedCta from "@/components/home/creed-cta";
 import CollectionsPreview from "@/components/home/collections-preview";
 import MovementSection from "@/components/home/movement-section";
-import FutureSection from "@/components/home/future-section";
+// import FutureSection from "@/components/home/future-section";
 import InnerCircleSection from "@/components/home/inner-circle-section";
 import { getFeaturedProducts } from "@/lib/products";
 
@@ -19,7 +19,7 @@ export default async function Home() {
       <CollectionsPreview products={featuredProducts} />
       <CreedCta />
       <MovementSection />
-      <FutureSection />
+      {/* <FutureSection /> */}
       <InnerCircleSection />
     </main>
   );

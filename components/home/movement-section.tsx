@@ -197,8 +197,8 @@ export default function MovementSection() {
       {/* ── DIVIDER LINE ─────────────────────────────────── */}
       <div className="border-t border-zinc-100" />
 
-      {/* ── FULL-BLEED STATEMENT ─────────────────────────── */}
-      <div className="relative py-40 px-8 flex items-center justify-center overflow-hidden">
+      {/* ── FULL-BLEED STATEMENT (lives on /movement) ─────── */}
+      {/* <div className="relative py-40 px-8 flex items-center justify-center overflow-hidden">
         <Image
           src="/home/womanXman.jpg"
           alt="The World Noticed"
@@ -219,8 +219,7 @@ export default function MovementSection() {
         </FadeIn>
       </div>
 
-      {/* ── DIVIDER LINE ─────────────────────────────────── */}
-      <div className="border-t border-zinc-100" />
+      <div className="border-t border-zinc-100" /> */}
 
       {/* ── TESTIMONIALS ─────────────────────────────────── */}
       <div className="px-8 md:px-20 py-32 max-w-360 mx-auto flex flex-col gap-16">

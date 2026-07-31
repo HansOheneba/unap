@@ -9,7 +9,9 @@ import {
   useInView,
 } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-import { buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { subscribeNewsletter } from "@/lib/api/forms";
+import { ApiError } from "@/lib/api/client";
 
 /* ── tiny helpers (kept local, mirrors the-creed / inner-circle pattern) ── */
 function FadeIn({
@@ -141,6 +143,33 @@ export default function MovementPage() {
   const heroImgY = useTransform(heroProgress, [0, 1], ["0%", "30%"]);
   const heroOpacity = useTransform(heroProgress, [0, 0.6], [1, 0]);
   const heroTextY = useTransform(heroProgress, [0, 1], ["0%", "20%"]);
+
+  const [email, setEmail] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
+
+  async function handleCommunitySubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!email.trim()) return;
+    setError("");
+    setSubmitting(true);
+    try {
+      await subscribeNewsletter({
+        email: email.trim(),
+        source: "movement",
+      });
+      setSubmitted(true);
+    } catch (err) {
+      setError(
+        err instanceof ApiError
+          ? err.message
+          : "Could not join right now. Please try again.",
+      );
+    } finally {
+      setSubmitting(false);
+    }
+  }
 
   return (
     <main className="bg-white text-zinc-900 overflow-x-hidden">
@@ -338,31 +367,70 @@ export default function MovementPage() {
         </div>
       </section>
 
-      {/* ── 07  SECOND PARALLAX ── */}
-      <ParallaxImage
-        src="/home/hoodieBlackMan.jpg"
-        speed={0.15}
-        className="h-[55vh]"
-        overlay={<div className="absolute inset-0 bg-linear-to-t from-black via-black/20 to-transparent" />}
-      />
+      {/* ── 07  JOIN THE COMMUNITY ── */}
+      <section className="relative flex flex-col items-center justify-center text-center py-32 md:py-44 px-8 overflow-hidden">
+        <Image
+          src="/home/hoodieBlackMan.jpg"
+          alt=""
+          fill
+          className="object-cover brightness-25"
+        />
+        <div className="absolute inset-0 bg-linear-to-b from-black/80 via-black/50 to-black/80" />
 
-      {/* ── 08  CTA ── */}
-      <section className="py-56 px-8 flex flex-col items-center text-center gap-8">
-        <FadeIn className="flex flex-col items-center gap-8">
-          <p className="eyebrow">You Already Feel It</p>
-          <h2 className="max-w-xl text-zinc-900">Now Make It Official.</h2>
-          <p className="text-zinc-600 max-w-sm text-lg font-light leading-relaxed">
-            Join the Inner Circle for early access, or go straight to the
-            collection and start now.
+        <FadeIn className="relative z-10 flex flex-col items-center gap-6 max-w-lg w-full">
+          <p className="eyebrow text-white/65">You Already Feel It</p>
+          <h2 className="text-white">Join the Community</h2>
+          <p className="text-white/75 leading-relaxed">
+            Get movement updates, early drops, and what we share first with the
+            tribe. No spam. Just signal.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4">
-            <Link href="/inner-circle" className={buttonVariants()}>
-              Join the Inner Circle
-            </Link>
-            <Link href="/collections" className={buttonVariants({ variant: "outline" })}>
-              Shop Collections
-            </Link>
-          </div>
+
+          {submitted ? (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+              className="flex flex-col gap-2 pt-2"
+            >
+              <p className="eyebrow text-white">You are in.</p>
+              <p className="text-white/70 text-sm">
+                Welcome to the community. Watch your inbox.
+              </p>
+            </motion.div>
+          ) : (
+            <form
+              onSubmit={handleCommunitySubmit}
+              className="flex flex-col sm:flex-row gap-3 w-full max-w-md pt-2"
+            >
+              <input
+                type="email"
+                required
+                autoComplete="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Your email"
+                disabled={submitting}
+                className="flex-1 bg-black border border-white/40 text-white placeholder:text-white/40 px-6 py-3 text-[0.7rem] tracking-widest uppercase outline-none focus:border-white/60 transition-colors duration-300 disabled:opacity-60"
+              />
+              <Button
+                type="submit"
+                variant="outline-white"
+                disabled={submitting}
+                className="shrink-0"
+              >
+                {submitting ? "Joining…" : "Join Free"}
+              </Button>
+            </form>
+          )}
+
+          {error && <p className="text-red-400 text-xs">{error}</p>}
+
+          <Link
+            href="/collections"
+            className={buttonVariants({ variant: "outline-white" })}
+          >
+            Shop Collections
+          </Link>
         </FadeIn>
       </section>
     </main>
