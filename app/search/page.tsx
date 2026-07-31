@@ -24,9 +24,9 @@ const SEARCH_DEBOUNCE_MS = 300;
 function SearchPageInner() {
   const searchParams = useSearchParams();
   const collectionNav = useCollectionsNav();
-  const { visible: bannerVisible, scrollHidden } = useBannerStore();
-  const bannerOffset = getBannerOffset(bannerVisible, scrollHidden);
-  const stickyTop = bannerOffset + 56;
+  const bannerVisible = useBannerStore((s) => s.visible);
+  // Sticky top ignores scrollHidden so Safari can't loop on layout shifts.
+  const stickyTop = getBannerOffset(bannerVisible) + 56;
 
   const [query, setQuery] = useState(() => searchParams.get("q") ?? "");
   const [activeCategory, setActiveCategory] = useState("All");

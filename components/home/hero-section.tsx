@@ -5,58 +5,41 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
 const VIDEOS = ["/hero/hero_candy.mp4", "/hero/hero_candy2.mp4"] as const;
-const CROSSFADE_MS = 700;
 
+/**
+ * Single <video> element that advances sources on `ended`.
+ * Dual crossfade remounts were decoding ~35MB of video at once and
+ * contributing to iPhone Safari tab reloads under memory pressure.
+ */
 export default function HeroSection() {
-  const [current, setCurrent] = useState(0);
-  const [incoming, setIncoming] = useState<number | null>(null);
-  const nextRef = useRef<HTMLVideoElement>(null);
+  const [index, setIndex] = useState(0);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    if (incoming === null || !nextRef.current) return;
-    const el = nextRef.current;
-    el.currentTime = 0;
+    const el = videoRef.current;
+    if (!el) return;
+    if (el.getAttribute("src") !== VIDEOS[index]) {
+      el.src = VIDEOS[index];
+    }
     void el.play().catch(() => {});
-  }, [incoming]);
-
-  useEffect(() => {
-    if (incoming === null) return;
-    const id = window.setTimeout(() => {
-      setCurrent(incoming);
-      setIncoming(null);
-    }, CROSSFADE_MS);
-    return () => window.clearTimeout(id);
-  }, [incoming]);
+  }, [index]);
 
   const handleEnded = () => {
-    if (incoming !== null) return;
-    setIncoming((current + 1) % VIDEOS.length);
+    setIndex((i) => (i + 1) % VIDEOS.length);
   };
 
   return (
-    <section className="relative w-full h-screen overflow-hidden bg-black">
+    <section className="relative w-full h-dvh overflow-hidden bg-black">
       <video
-        key={`current-${current}`}
-        src={VIDEOS[current]}
+        ref={videoRef}
+        src={VIDEOS[0]}
         autoPlay
         muted
         playsInline
+        preload="metadata"
         onEnded={handleEnded}
-        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
-          incoming !== null ? "opacity-0" : "opacity-100"
-        }`}
+        className="absolute inset-0 w-full h-full object-cover"
       />
-
-      {incoming !== null && (
-        <video
-          ref={nextRef}
-          key={`next-${incoming}`}
-          src={VIDEOS[incoming]}
-          muted
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700 opacity-100"
-        />
-      )}
 
       {/* Cinematic vignette overlay */}
       <div className="absolute inset-0 bg-linear-to-t from-transparent via-black/60 to-transparent pointer-events-none" />

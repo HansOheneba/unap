@@ -8,6 +8,7 @@
  * for SPA/token-based auth and the Next.js "Backend for Frontend" pattern.
  */
 import { cookies } from "next/headers";
+import { fetchWithRetry } from "@/lib/api/fetch-with-retry";
 
 export const ACCESS_TOKEN_COOKIE = "unap_at";
 export const REFRESH_TOKEN_COOKIE = "unap_rt";
@@ -90,12 +91,20 @@ export async function refreshAccessToken(): Promise<string | null> {
   const refreshToken = await getRefreshToken();
   if (!refreshToken) return null;
 
-  const res = await fetch(`${API_ORIGIN}/auth/refresh`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Accept: "application/json" },
-    body: JSON.stringify({ refreshToken }),
-    cache: "no-store",
-  });
+  const res = await fetchWithRetry(
+    `${API_ORIGIN}/auth/refresh`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Connection: "close",
+      },
+      body: JSON.stringify({ refreshToken }),
+      cache: "no-store",
+    },
+    { retries: 2 },
+  );
 
   const body = await readEnvelope<{
     accessToken?: string;
@@ -123,10 +132,18 @@ export async function fetchCurrentUser(): Promise<Record<string, unknown> | null
   if (!accessToken) return null;
 
   const call = (token: string) =>
-    fetch(`${API_ORIGIN}/auth/me`, {
-      headers: { Accept: "application/json", Authorization: `Bearer ${token}` },
-      cache: "no-store",
-    });
+    fetchWithRetry(
+      `${API_ORIGIN}/auth/me`,
+      {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+          Connection: "close",
+        },
+        cache: "no-store",
+      },
+      { retries: 2 },
+    );
 
   let res = await call(accessToken);
   if (res.status === 401) {

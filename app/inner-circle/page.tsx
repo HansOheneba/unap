@@ -153,7 +153,7 @@ export default function InnerCirclePage() {
       {/* 01  HERO - dark, full-bleed image */}
       <section
         ref={heroRef}
-        className="relative h-screen overflow-hidden flex items-center justify-center"
+        className="relative h-dvh overflow-hidden flex items-center justify-center"
       >
         <motion.div style={{ y: heroImgY }} className="absolute inset-0">
           <Image

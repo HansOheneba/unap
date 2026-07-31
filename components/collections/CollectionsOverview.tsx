@@ -74,10 +74,9 @@ export default function CollectionsOverview({
   sections,
   overviewCards,
 }: Props) {
-  const { visible: bannerVisible, scrollHidden } = useBannerStore();
-  const bannerOffset = getBannerOffset(bannerVisible, scrollHidden);
-  // Sticky nav sits below: fixed header (56px) + collections subnav (44px)
-  const stickyTop = bannerOffset + 56 + 44;
+  const bannerVisible = useBannerStore((s) => s.visible);
+  // Sticky top ignores scrollHidden so Safari can't loop on layout shifts.
+  const stickyTop = getBannerOffset(bannerVisible) + 56 + 44;
   const [heroIndex, setHeroIndex] = useState(0);
 
   useEffect(() => {

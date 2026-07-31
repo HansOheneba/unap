@@ -13,12 +13,13 @@ interface BannerState {
   setScrollHidden: (hidden: boolean) => void;
 }
 
-/** Layout offset for the visible banner slot (0 when hidden or dismissed). */
-export function getBannerOffset(
-  visible: boolean,
-  scrollHidden: boolean,
-): number {
-  return visible && !scrollHidden ? BANNER_H : 0;
+/**
+ * Stable in-flow / sticky offset for the banner slot.
+ * Intentionally ignores `scrollHidden` — layout must not change when the
+ * banner slides away via transform, or Safari enters a scroll↔layout loop.
+ */
+export function getBannerOffset(visible: boolean): number {
+  return visible ? BANNER_H : 0;
 }
 
 // In-memory only — resets every session so the banner is always fresh on new visits

@@ -20,6 +20,7 @@ import {
   refreshAccessToken,
   setAuthCookies,
 } from "@/lib/api/server-auth";
+import { fetchWithRetry } from "@/lib/api/fetch-with-retry";
 import { isDebugMode } from "@/lib/debug";
 
 const MUTATING_METHODS = new Set(["POST", "PUT", "PATCH", "DELETE"]);
@@ -101,16 +102,24 @@ async function forwardOnce(
   bodyText: string | undefined,
   accessToken: string | null,
 ): Promise<Response> {
-  const headers = new Headers({ Accept: "application/json" });
+  const headers = new Headers({
+    Accept: "application/json",
+    // Origin often drops idle keep-alive sockets; close avoids UND_ERR_SOCKET.
+    Connection: "close",
+  });
   if (bodyText !== undefined) headers.set("Content-Type", "application/json");
   if (accessToken) headers.set("Authorization", `Bearer ${accessToken}`);
 
-  return fetch(`${API_ORIGIN}/${path}${request.nextUrl.search}`, {
-    method: request.method,
-    headers,
-    body: bodyText,
-    cache: "no-store",
-  });
+  return fetchWithRetry(
+    `${API_ORIGIN}/${path}${request.nextUrl.search}`,
+    {
+      method: request.method,
+      headers,
+      body: bodyText,
+      cache: "no-store",
+    },
+    { retries: 2 },
+  );
 }
 
 async function handle(
@@ -181,14 +190,36 @@ async function handle(
   }
 
   let accessToken = await getAccessToken();
-  let res = await forwardOnce(request, path, bodyText, accessToken);
+  let res: Response;
+  try {
+    res = await forwardOnce(request, path, bodyText, accessToken);
+  } catch {
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Could not reach the server. Check your connection and try again.",
+      },
+      { status: 502 },
+    );
+  }
 
   // ── One silent refresh-and-retry when the access token has expired ──
   if (res.status === 401 && !TOKEN_MINTING_PATHS.has(path)) {
     const refreshed = await refreshAccessToken();
     if (refreshed) {
       accessToken = refreshed;
-      res = await forwardOnce(request, path, bodyText, accessToken);
+      try {
+        res = await forwardOnce(request, path, bodyText, accessToken);
+      } catch {
+        return NextResponse.json(
+          {
+            success: false,
+            message:
+              "Could not reach the server. Check your connection and try again.",
+          },
+          { status: 502 },
+        );
+      }
     }
   }
 

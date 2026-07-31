@@ -18,11 +18,9 @@ export default function ConditionalNav({
   bannerEnabled?: boolean;
 }) {
   const pathname = usePathname();
-  const { visible: bannerVisible, scrollHidden } = useBannerStore();
-  const bannerOffset = getBannerOffset(
-    bannerEnabled && bannerVisible,
-    scrollHidden,
-  );
+  const bannerVisible = useBannerStore((s) => s.visible);
+  // Layout offset must ignore scrollHidden — see getBannerOffset docs.
+  const bannerOffset = getBannerOffset(bannerEnabled && bannerVisible);
   // Account pages should still show the global header/footer so users can
   // navigate around the site while signed in.
   const noNav = false;

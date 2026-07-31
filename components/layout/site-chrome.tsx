@@ -14,12 +14,19 @@ import {
 } from "@/lib/stores/banner-store";
 
 /** Extra pad so layout/sticky settle before scroll can toggle again (Safari). */
-const SCROLL_LOCK_PAD_MS = 80;
+const SCROLL_LOCK_PAD_MS = 120;
 
 type SiteChromeProps = {
   banner: AnnouncementBannerData;
   collectionNav: CollectionNavItem[];
 };
+
+/** Touch / coarse pointers: iPhone Safari's URL-bar resize + rubber-band
+ *  scroll makes scroll-driven chrome hide unreliable. Keep the banner pinned. */
+function canScrollHideBanner(): boolean {
+  if (typeof window === "undefined") return false;
+  return window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+}
 
 export default function SiteChrome({ banner, collectionNav }: SiteChromeProps) {
   const { visible, scrollHidden, setScrollHidden } = useBannerStore();
@@ -30,11 +37,10 @@ export default function SiteChrome({ banner, collectionNav }: SiteChromeProps) {
     banner.isEnabled && banner.messages.length > 0 && visible;
 
   // Scroll-direction latch — hide on downward tick, reveal on upward tick.
-  // A post-toggle lock is required: collapsing chrome/spacers/sticky `top`
-  // adjusts scrollY in WebKit, which would otherwise re-fire this handler
-  // and oscillate until Safari kills the tab.
+  // Desktop only. Layout (spacers / sticky top) never follows scrollHidden;
+  // only transform moves, which is what keeps Safari from looping.
   useEffect(() => {
-    if (!bannerActive) {
+    if (!bannerActive || !canScrollHideBanner()) {
       scrollHiddenRef.current = false;
       lockUntilRef.current = 0;
       setScrollHidden(false);

@@ -44,7 +44,13 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const [banner, collections] = await Promise.all([
-    getAnnouncementBanner(),
+    getAnnouncementBanner().catch(() => ({
+      isEnabled: false,
+      rotationIntervalMs: 4000,
+      backgroundColor: "#18181b",
+      textColor: "#ffffff",
+      messages: [],
+    })),
     listCollections().catch(() => []),
   ]);
   const collectionNav = toCollectionNavItems(collections);

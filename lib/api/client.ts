@@ -8,6 +8,8 @@
  * Responses use { success, data, errors } — always check `success`, not only HTTP status.
  */
 
+import { fetchWithRetry } from "@/lib/api/fetch-with-retry";
+
 export class ApiError extends Error {
   status: number;
   details?: unknown;
@@ -102,31 +104,39 @@ export async function apiRequest<T>(
 ): Promise<T> {
   const { method = "GET", body, headers, cache, revalidate, signal } = options;
   const url = `${getApiBase()}${path}`;
+  const isServer = typeof window === "undefined";
 
-  const res = await fetch(url, {
-    method,
-    signal,
-    // Same-origin cookies (httpOnly session) travel automatically — no token
-    // handling needed here at all.
-    credentials: "same-origin",
-    headers: {
-      Accept: "application/json",
-      ...(body !== undefined ? { "Content-Type": "application/json" } : {}),
-      ...headers,
+  const res = await fetchWithRetry(
+    url,
+    {
+      method,
+      signal,
+      // Same-origin cookies (httpOnly session) travel automatically — no token
+      // handling needed here at all.
+      credentials: "same-origin",
+      headers: {
+        Accept: "application/json",
+        // Avoid stale keep-alive sockets to a flaky origin (Vercel → API).
+        ...(isServer ? { Connection: "close" } : {}),
+        ...(body !== undefined ? { "Content-Type": "application/json" } : {}),
+        ...headers,
+      },
+      body: body !== undefined ? JSON.stringify(body) : undefined,
+      ...(revalidate !== undefined
+        ? { next: { revalidate } }
+        : cache
+          ? { cache }
+          : {}),
     },
-    body: body !== undefined ? JSON.stringify(body) : undefined,
-    ...(revalidate !== undefined
-      ? { next: { revalidate } }
-      : cache
-        ? { cache }
-        : {}),
-  }).catch((err: unknown) => {
+    // Server SSR is where UND_ERR_SOCKET shows up; browser hits our proxy.
+    { retries: isServer ? 2 : 1 },
+  ).catch((err: unknown) => {
     const message =
       err instanceof Error && err.message
         ? err.message
         : "Failed to reach the API";
     throw new ApiError(
-      message.includes("fetch")
+      message.includes("fetch") || message.includes("socket")
         ? "Could not reach the server. Check your connection and try again."
         : message,
       0,
