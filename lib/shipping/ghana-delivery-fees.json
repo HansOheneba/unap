@@ -1,0 +1,2658 @@
+{
+  "currency": "GHS",
+  "locations": [
+    {
+      "location": "Bechem",
+      "region": "Ahafo",
+      "fee": 85
+    },
+    {
+      "location": "Duayaw Nkwanta",
+      "region": "Ahafo",
+      "fee": 85
+    },
+    {
+      "location": "Goaso",
+      "region": "Ahafo",
+      "fee": 85
+    },
+    {
+      "location": "Hwidiem",
+      "region": "Ahafo",
+      "fee": 85
+    },
+    {
+      "location": "Kenyasi",
+      "region": "Ahafo",
+      "fee": 85
+    },
+    {
+      "location": "Kukuom",
+      "region": "Ahafo",
+      "fee": 85
+    },
+    {
+      "location": "Mim",
+      "region": "Ahafo",
+      "fee": 85
+    },
+    {
+      "location": "Sankore",
+      "region": "Ahafo",
+      "fee": 85
+    },
+    {
+      "location": "Yamfo",
+      "region": "Ahafo",
+      "fee": 85
+    },
+    {
+      "location": "Aboabo",
+      "region": "Ashanti",
+      "fee": 80
+    },
+    {
+      "location": "Aboaso",
+      "region": "Ashanti",
+      "fee": 80
+    },
+    {
+      "location": "Abuakwa",
+      "region": "Ashanti",
+      "fee": 80
+    },
+    {
+      "location": "Adanwomase",
+      "region": "Ashanti",
+      "fee": 80
+    },
+    {
+      "location": "Ahinsan",
+      "region": "Ashanti",
+      "fee": 80
+    },
+    {
+      "location": "Asafo",
+      "region": "Ashanti",
+      "fee": 80
+    },
+    {
+      "location": "Asokwa",
+      "region": "Ashanti",
+      "fee": 80
+    },
+    {
+      "location": "Bantama",
+      "region": "Ashanti",
+      "fee": 80
+    },
+    {
+      "location": "Bekwai",
+      "region": "Ashanti",
+      "fee": 80
+    },
+    {
+      "location": "Bomso",
+      "region": "Ashanti",
+      "fee": 80
+    },
+    {
+      "location": "Buokrom",
+      "region": "Ashanti",
+      "fee": 80
+    },
+    {
+      "location": "Effiduase",
+      "region": "Ashanti",
+      "fee": 80
+    },
+    {
+      "location": "Ejisu",
+      "region": "Ashanti",
+      "fee": 80
+    },
+    {
+      "location": "Ejura",
+      "region": "Ashanti",
+      "fee": 80
+    },
+    {
+      "location": "Fomena",
+      "region": "Ashanti",
+      "fee": 80
+    },
+    {
+      "location": "Juaben",
+      "region": "Ashanti",
+      "fee": 80
+    },
+    {
+      "location": "Konongo",
+      "region": "Ashanti",
+      "fee": 80
+    },
+    {
+      "location": "Kumasi",
+      "region": "Ashanti",
+      "fee": 80
+    },
+    {
+      "location": "Kwadaso",
+      "region": "Ashanti",
+      "fee": 80
+    },
+    {
+      "location": "Mampong",
+      "region": "Ashanti",
+      "fee": 80
+    },
+    {
+      "location": "Manhyia",
+      "region": "Ashanti",
+      "fee": 80
+    },
+    {
+      "location": "Obuasi",
+      "region": "Ashanti",
+      "fee": 80
+    },
+    {
+      "location": "Oforikrom",
+      "region": "Ashanti",
+      "fee": 80
+    },
+    {
+      "location": "Santasi",
+      "region": "Ashanti",
+      "fee": 80
+    },
+    {
+      "location": "Suame",
+      "region": "Ashanti",
+      "fee": 80
+    },
+    {
+      "location": "Tafo",
+      "region": "Ashanti",
+      "fee": 80
+    },
+    {
+      "location": "Trede",
+      "region": "Ashanti",
+      "fee": 80
+    },
+    {
+      "location": "Abesim",
+      "region": "Bono",
+      "fee": 85
+    },
+    {
+      "location": "Airport Area, Sunyani",
+      "region": "Bono",
+      "fee": 85
+    },
+    {
+      "location": "Baakoniaba",
+      "region": "Bono",
+      "fee": 85
+    },
+    {
+      "location": "Banda Ahenkro",
+      "region": "Bono",
+      "fee": 85
+    },
+    {
+      "location": "Berekum",
+      "region": "Bono",
+      "fee": 85
+    },
+    {
+      "location": "Berlin Top",
+      "region": "Bono",
+      "fee": 85
+    },
+    {
+      "location": "Dormaa Ahenkro",
+      "region": "Bono",
+      "fee": 85
+    },
+    {
+      "location": "Drobo",
+      "region": "Bono",
+      "fee": 85
+    },
+    {
+      "location": "Estate, Sunyani",
+      "region": "Bono",
+      "fee": 85
+    },
+    {
+      "location": "Fiapre",
+      "region": "Bono",
+      "fee": 85
+    },
+    {
+      "location": "Jinijini",
+      "region": "Bono",
+      "fee": 85
+    },
+    {
+      "location": "New Dormaa",
+      "region": "Bono",
+      "fee": 85
+    },
+    {
+      "location": "Nkrankwanta",
+      "region": "Bono",
+      "fee": 85
+    },
+    {
+      "location": "Nkwabeng",
+      "region": "Bono",
+      "fee": 85
+    },
+    {
+      "location": "Nsawkaw",
+      "region": "Bono",
+      "fee": 85
+    },
+    {
+      "location": "Odumase",
+      "region": "Bono",
+      "fee": 85
+    },
+    {
+      "location": "Penkwase",
+      "region": "Bono",
+      "fee": 85
+    },
+    {
+      "location": "Sampa",
+      "region": "Bono",
+      "fee": 85
+    },
+    {
+      "location": "Sunyani",
+      "region": "Bono",
+      "fee": 80
+    },
+    {
+      "location": "Tanoso, Sunyani",
+      "region": "Bono",
+      "fee": 85
+    },
+    {
+      "location": "University of Energy and Natural Resources",
+      "region": "Bono",
+      "fee": 85
+    },
+    {
+      "location": "Wamfie",
+      "region": "Bono",
+      "fee": 85
+    },
+    {
+      "location": "Wenchi",
+      "region": "Bono",
+      "fee": 85
+    },
+    {
+      "location": "Atebubu",
+      "region": "Bono East",
+      "fee": 85
+    },
+    {
+      "location": "Busunya",
+      "region": "Bono East",
+      "fee": 85
+    },
+    {
+      "location": "Jema",
+      "region": "Bono East",
+      "fee": 85
+    },
+    {
+      "location": "Kajaji",
+      "region": "Bono East",
+      "fee": 85
+    },
+    {
+      "location": "Kintampo",
+      "region": "Bono East",
+      "fee": 85
+    },
+    {
+      "location": "Kwame Danso",
+      "region": "Bono East",
+      "fee": 85
+    },
+    {
+      "location": "Nkoranza",
+      "region": "Bono East",
+      "fee": 85
+    },
+    {
+      "location": "Prang",
+      "region": "Bono East",
+      "fee": 85
+    },
+    {
+      "location": "Techiman",
+      "region": "Bono East",
+      "fee": 85
+    },
+    {
+      "location": "Tuobodom",
+      "region": "Bono East",
+      "fee": 85
+    },
+    {
+      "location": "Yeji",
+      "region": "Bono East",
+      "fee": 85
+    },
+    {
+      "location": "Abura Dunkwa",
+      "region": "Central",
+      "fee": 85
+    },
+    {
+      "location": "Agona Swedru",
+      "region": "Central",
+      "fee": 85
+    },
+    {
+      "location": "Ajumako",
+      "region": "Central",
+      "fee": 85
+    },
+    {
+      "location": "Anomabo",
+      "region": "Central",
+      "fee": 85
+    },
+    {
+      "location": "Apam",
+      "region": "Central",
+      "fee": 85
+    },
+    {
+      "location": "Assin Fosu",
+      "region": "Central",
+      "fee": 85
+    },
+    {
+      "location": "Assin Manso",
+      "region": "Central",
+      "fee": 85
+    },
+    {
+      "location": "Awutu Bereku",
+      "region": "Central",
+      "fee": 85
+    },
+    {
+      "location": "Bawjiase",
+      "region": "Central",
+      "fee": 85
+    },
+    {
+      "location": "Breman Asikuma",
+      "region": "Central",
+      "fee": 85
+    },
+    {
+      "location": "Breman Essiam",
+      "region": "Central",
+      "fee": 85
+    },
+    {
+      "location": "Cape Coast",
+      "region": "Central",
+      "fee": 80
+    },
+    {
+      "location": "Dunkwa-on-Offin",
+      "region": "Central",
+      "fee": 85
+    },
+    {
+      "location": "Ekon",
+      "region": "Central",
+      "fee": 85
+    },
+    {
+      "location": "Elmina",
+      "region": "Central",
+      "fee": 85
+    },
+    {
+      "location": "Gomoa Afransi",
+      "region": "Central",
+      "fee": 85
+    },
+    {
+      "location": "Gomoa Buduburam",
+      "region": "Central",
+      "fee": 85
+    },
+    {
+      "location": "Gomoa Fetteh",
+      "region": "Central",
+      "fee": 85
+    },
+    {
+      "location": "Kasoa",
+      "region": "Central",
+      "fee": 70
+    },
+    {
+      "location": "Kasoa Millennium City",
+      "region": "Central",
+      "fee": 70
+    },
+    {
+      "location": "Kasoa Ofaakor",
+      "region": "Central",
+      "fee": 70
+    },
+    {
+      "location": "Komenda",
+      "region": "Central",
+      "fee": 85
+    },
+    {
+      "location": "Mankessim",
+      "region": "Central",
+      "fee": 85
+    },
+    {
+      "location": "Moree",
+      "region": "Central",
+      "fee": 85
+    },
+    {
+      "location": "Nyakrom",
+      "region": "Central",
+      "fee": 85
+    },
+    {
+      "location": "Oduponkpehe",
+      "region": "Central",
+      "fee": 85
+    },
+    {
+      "location": "Saltpond",
+      "region": "Central",
+      "fee": 85
+    },
+    {
+      "location": "Senya Beraku",
+      "region": "Central",
+      "fee": 85
+    },
+    {
+      "location": "Twifo Hemang",
+      "region": "Central",
+      "fee": 85
+    },
+    {
+      "location": "Twifo Praso",
+      "region": "Central",
+      "fee": 85
+    },
+    {
+      "location": "Winneba",
+      "region": "Central",
+      "fee": 85
+    },
+    {
+      "location": "Abetifi",
+      "region": "Eastern",
+      "fee": 85
+    },
+    {
+      "location": "Abirim",
+      "region": "Eastern",
+      "fee": 85
+    },
+    {
+      "location": "Aburi",
+      "region": "Eastern",
+      "fee": 50
+    },
+    {
+      "location": "Adeiso",
+      "region": "Eastern",
+      "fee": 85
+    },
+    {
+      "location": "Akim Oda",
+      "region": "Eastern",
+      "fee": 85
+    },
+    {
+      "location": "Akim Swedru",
+      "region": "Eastern",
+      "fee": 85
+    },
+    {
+      "location": "Akropong",
+      "region": "Eastern",
+      "fee": 85
+    },
+    {
+      "location": "Akuse",
+      "region": "Eastern",
+      "fee": 85
+    },
+    {
+      "location": "Akwatia",
+      "region": "Eastern",
+      "fee": 85
+    },
+    {
+      "location": "Akyem Tafo",
+      "region": "Eastern",
+      "fee": 85
+    },
+    {
+      "location": "Anyinam",
+      "region": "Eastern",
+      "fee": 85
+    },
+    {
+      "location": "Asamankese",
+      "region": "Eastern",
+      "fee": 85
+    },
+    {
+      "location": "Asesewa",
+      "region": "Eastern",
+      "fee": 85
+    },
+    {
+      "location": "Atibie",
+      "region": "Eastern",
+      "fee": 85
+    },
+    {
+      "location": "Begoro",
+      "region": "Eastern",
+      "fee": 85
+    },
+    {
+      "location": "Coaltar",
+      "region": "Eastern",
+      "fee": 85
+    },
+    {
+      "location": "Donkorkrom",
+      "region": "Eastern",
+      "fee": 85
+    },
+    {
+      "location": "Kade",
+      "region": "Eastern",
+      "fee": 85
+    },
+    {
+      "location": "Koforidua",
+      "region": "Eastern",
+      "fee": 85
+    },
+    {
+      "location": "Kpong",
+      "region": "Eastern",
+      "fee": 85
+    },
+    {
+      "location": "Kukurantumi",
+      "region": "Eastern",
+      "fee": 85
+    },
+    {
+      "location": "Kyebi",
+      "region": "Eastern",
+      "fee": 85
+    },
+    {
+      "location": "Larteh",
+      "region": "Eastern",
+      "fee": 85
+    },
+    {
+      "location": "Mampong-Akuapem",
+      "region": "Eastern",
+      "fee": 85
+    },
+    {
+      "location": "Mpraeso",
+      "region": "Eastern",
+      "fee": 85
+    },
+    {
+      "location": "New Abirem",
+      "region": "Eastern",
+      "fee": 85
+    },
+    {
+      "location": "Nkawkaw",
+      "region": "Eastern",
+      "fee": 85
+    },
+    {
+      "location": "Nsawam",
+      "region": "Eastern",
+      "fee": 85
+    },
+    {
+      "location": "Odumase Krobo",
+      "region": "Eastern",
+      "fee": 85
+    },
+    {
+      "location": "Ofoase",
+      "region": "Eastern",
+      "fee": 85
+    },
+    {
+      "location": "Osino",
+      "region": "Eastern",
+      "fee": 85
+    },
+    {
+      "location": "Somanya",
+      "region": "Eastern",
+      "fee": 85
+    },
+    {
+      "location": "Suhum",
+      "region": "Eastern",
+      "fee": 85
+    },
+    {
+      "location": "Tease",
+      "region": "Eastern",
+      "fee": 85
+    },
+    {
+      "location": "Abeka",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Abelemkpe",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Ability Square",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Ablekuma",
+      "region": "Greater Accra",
+      "fee": 40
+    },
+    {
+      "location": "Ablekuma Fan Milk",
+      "region": "Greater Accra",
+      "fee": 40
+    },
+    {
+      "location": "Abofu",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Abokobi",
+      "region": "Greater Accra",
+      "fee": 30
+    },
+    {
+      "location": "Abossey Okai",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Abossey Okai Central",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Abossey Okai Industrial",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Abossey Okai North",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Accra Sports Stadium",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Achimota",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Achimota Golf Hills",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Adabraka",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Adenta",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Adenta Frafraha",
+      "region": "Greater Accra",
+      "fee": 45
+    },
+    {
+      "location": "Adjiringanor",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Adom Estate",
+      "region": "Greater Accra",
+      "fee": 40
+    },
+    {
+      "location": "Airport City",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Airport Hills",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Airport Residential Area",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Akweteyman",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Alajo",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Amasaman",
+      "region": "Greater Accra",
+      "fee": 60
+    },
+    {
+      "location": "American House",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Anyaa",
+      "region": "Greater Accra",
+      "fee": 40
+    },
+    {
+      "location": "Ashaiman",
+      "region": "Greater Accra",
+      "fee": 50
+    },
+    {
+      "location": "Ashaley Botwe",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Ashongman",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Ashongman Estate",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Atomic Junction",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Awoshie",
+      "region": "Greater Accra",
+      "fee": 40
+    },
+    {
+      "location": "Baatsona",
+      "region": "Greater Accra",
+      "fee": 40
+    },
+    {
+      "location": "Bawaleshie",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Botwe",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Botwe School Junction",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Boundary Road",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Burma Camp",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Cantonments",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Central University",
+      "region": "Greater Accra",
+      "fee": 85
+    },
+    {
+      "location": "Chantan",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Chorkor",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Christian Village",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Circle",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Community 18 Junction",
+      "region": "Greater Accra",
+      "fee": 45
+    },
+    {
+      "location": "Community 25 Junction",
+      "region": "Greater Accra",
+      "fee": 60
+    },
+    {
+      "location": "Danfa",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Dansoman",
+      "region": "Greater Accra",
+      "fee": 40
+    },
+    {
+      "location": "Darkuman",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Dawhenya",
+      "region": "Greater Accra",
+      "fee": 60
+    },
+    {
+      "location": "Dodowa",
+      "region": "Greater Accra",
+      "fee": 50
+    },
+    {
+      "location": "Dome",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Dome Paraku Estate",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Dzorwulu",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "East Airport",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "East Legon",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "East Legon Hills",
+      "region": "Greater Accra",
+      "fee": 45
+    },
+    {
+      "location": "Fadama",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Frafraha",
+      "region": "Greater Accra",
+      "fee": 45
+    },
+    {
+      "location": "Franco Estate",
+      "region": "Greater Accra",
+      "fee": 40
+    },
+    {
+      "location": "Gbawe",
+      "region": "Greater Accra",
+      "fee": 40
+    },
+    {
+      "location": "Gbetsile",
+      "region": "Greater Accra",
+      "fee": 60
+    },
+    {
+      "location": "GIMPA",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Gra Spintex",
+      "region": "Greater Accra",
+      "fee": 40
+    },
+    {
+      "location": "Graphic Road",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Haatso",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Haatso Ecomog",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Haatso-Atomic",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "James Town",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Kaneshie",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Kasoa",
+      "region": "Greater Accra",
+      "fee": 70
+    },
+    {
+      "location": "Kasoa Millennium City",
+      "region": "Greater Accra",
+      "fee": 70
+    },
+    {
+      "location": "Kasoa Ofaakor",
+      "region": "Greater Accra",
+      "fee": 70
+    },
+    {
+      "location": "Katamanso",
+      "region": "Greater Accra",
+      "fee": 50
+    },
+    {
+      "location": "Klagon",
+      "region": "Greater Accra",
+      "fee": 40
+    },
+    {
+      "location": "Kokomlemle",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Kokrobite",
+      "region": "Greater Accra",
+      "fee": 70
+    },
+    {
+      "location": "Korle Bu",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Korle Gonno",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Korle Klottey",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Kpone",
+      "region": "Greater Accra",
+      "fee": 50
+    },
+    {
+      "location": "Kwabenya",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Kwashieman",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Labadi",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Labone",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Lakeside Estate",
+      "region": "Greater Accra",
+      "fee": 40
+    },
+    {
+      "location": "Lapaz",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Lartebiokorshie",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Lashibi",
+      "region": "Greater Accra",
+      "fee": 40
+    },
+    {
+      "location": "Legon",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Liberation Road",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Madina",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Madina Estate",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Mallam",
+      "region": "Greater Accra",
+      "fee": 40
+    },
+    {
+      "location": "Mamobi",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Mamprobi",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Manet Spintex",
+      "region": "Greater Accra",
+      "fee": 40
+    },
+    {
+      "location": "Mataheko",
+      "region": "Greater Accra",
+      "fee": 40
+    },
+    {
+      "location": "Mataheko (Dansoman)",
+      "region": "Greater Accra",
+      "fee": 40
+    },
+    {
+      "location": "McCarthy Hill",
+      "region": "Greater Accra",
+      "fee": 45
+    },
+    {
+      "location": "Medie",
+      "region": "Greater Accra",
+      "fee": 50
+    },
+    {
+      "location": "Michel Camp",
+      "region": "Greater Accra",
+      "fee": 50
+    },
+    {
+      "location": "Mile 11",
+      "region": "Greater Accra",
+      "fee": 50
+    },
+    {
+      "location": "Mile 12",
+      "region": "Greater Accra",
+      "fee": 55
+    },
+    {
+      "location": "Mile 7",
+      "region": "Greater Accra",
+      "fee": 40
+    },
+    {
+      "location": "Nanakrom",
+      "region": "Greater Accra",
+      "fee": 40
+    },
+    {
+      "location": "New Achimota",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "New Legon",
+      "region": "Greater Accra",
+      "fee": 40
+    },
+    {
+      "location": "New Town",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Nima",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "North Dzorwulu",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "North Kaneshie",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "North Legon",
+      "region": "Greater Accra",
+      "fee": 40
+    },
+    {
+      "location": "North Ridge",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Nungua",
+      "region": "Greater Accra",
+      "fee": 40
+    },
+    {
+      "location": "Oblogo",
+      "region": "Greater Accra",
+      "fee": 40
+    },
+    {
+      "location": "Odorkor",
+      "region": "Greater Accra",
+      "fee": 40
+    },
+    {
+      "location": "Ofankor",
+      "region": "Greater Accra",
+      "fee": 40
+    },
+    {
+      "location": "Ofankor Barrier",
+      "region": "Greater Accra",
+      "fee": 40
+    },
+    {
+      "location": "Ogbojo",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Okaishie",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Old Ashongman",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Old Barrier (Kasoa)",
+      "region": "Greater Accra",
+      "fee": 60
+    },
+    {
+      "location": "Old Fadama",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Osu",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Osu RE",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Oxford Street (Osu)",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Oyarifa",
+      "region": "Greater Accra",
+      "fee": 30
+    },
+    {
+      "location": "Oyarifa Special Ice",
+      "region": "Greater Accra",
+      "fee": 30
+    },
+    {
+      "location": "Oyarifa Teiman",
+      "region": "Greater Accra",
+      "fee": 30
+    },
+    {
+      "location": "Oyibi",
+      "region": "Greater Accra",
+      "fee": 45
+    },
+    {
+      "location": "Pantang",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Pokuase",
+      "region": "Greater Accra",
+      "fee": 50
+    },
+    {
+      "location": "Prampram",
+      "region": "Greater Accra",
+      "fee": 85
+    },
+    {
+      "location": "Ridge",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Ritz Junction",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Roman Ridge",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Sakaman",
+      "region": "Greater Accra",
+      "fee": 40
+    },
+    {
+      "location": "Sakumono",
+      "region": "Greater Accra",
+      "fee": 45
+    },
+    {
+      "location": "Santa Maria",
+      "region": "Greater Accra",
+      "fee": 45
+    },
+    {
+      "location": "Sapeiman",
+      "region": "Greater Accra",
+      "fee": 50
+    },
+    {
+      "location": "School Junction (Adenta)",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Shiashie",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "South Kaneshie",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "South Labadi",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Sowutuom",
+      "region": "Greater Accra",
+      "fee": 40
+    },
+    {
+      "location": "Spintex",
+      "region": "Greater Accra",
+      "fee": 40
+    },
+    {
+      "location": "Spintex Road",
+      "region": "Greater Accra",
+      "fee": 40
+    },
+    {
+      "location": "Sukura",
+      "region": "Greater Accra",
+      "fee": 40
+    },
+    {
+      "location": "Tabora",
+      "region": "Greater Accra",
+      "fee": 40
+    },
+    {
+      "location": "Taifa",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Taifa-Burkina",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Tantra Hill",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "TDC (Tema)",
+      "region": "Greater Accra",
+      "fee": 45
+    },
+    {
+      "location": "Tema Community 1",
+      "region": "Greater Accra",
+      "fee": 50
+    },
+    {
+      "location": "Tema Community 10",
+      "region": "Greater Accra",
+      "fee": 50
+    },
+    {
+      "location": "Tema Community 11",
+      "region": "Greater Accra",
+      "fee": 50
+    },
+    {
+      "location": "Tema Community 12",
+      "region": "Greater Accra",
+      "fee": 50
+    },
+    {
+      "location": "Tema Community 13",
+      "region": "Greater Accra",
+      "fee": 50
+    },
+    {
+      "location": "Tema Community 14",
+      "region": "Greater Accra",
+      "fee": 50
+    },
+    {
+      "location": "Tema Community 15",
+      "region": "Greater Accra",
+      "fee": 50
+    },
+    {
+      "location": "Tema Community 16",
+      "region": "Greater Accra",
+      "fee": 50
+    },
+    {
+      "location": "Tema Community 17",
+      "region": "Greater Accra",
+      "fee": 50
+    },
+    {
+      "location": "Tema Community 18",
+      "region": "Greater Accra",
+      "fee": 50
+    },
+    {
+      "location": "Tema Community 19",
+      "region": "Greater Accra",
+      "fee": 50
+    },
+    {
+      "location": "Tema Community 2",
+      "region": "Greater Accra",
+      "fee": 50
+    },
+    {
+      "location": "Tema Community 20",
+      "region": "Greater Accra",
+      "fee": 50
+    },
+    {
+      "location": "Tema Community 21",
+      "region": "Greater Accra",
+      "fee": 50
+    },
+    {
+      "location": "Tema Community 22",
+      "region": "Greater Accra",
+      "fee": 50
+    },
+    {
+      "location": "Tema Community 23",
+      "region": "Greater Accra",
+      "fee": 50
+    },
+    {
+      "location": "Tema Community 24",
+      "region": "Greater Accra",
+      "fee": 60
+    },
+    {
+      "location": "Tema Community 25",
+      "region": "Greater Accra",
+      "fee": 60
+    },
+    {
+      "location": "Tema Community 3",
+      "region": "Greater Accra",
+      "fee": 50
+    },
+    {
+      "location": "Tema Community 4",
+      "region": "Greater Accra",
+      "fee": 50
+    },
+    {
+      "location": "Tema Community 5",
+      "region": "Greater Accra",
+      "fee": 50
+    },
+    {
+      "location": "Tema Community 6",
+      "region": "Greater Accra",
+      "fee": 50
+    },
+    {
+      "location": "Tema Community 7",
+      "region": "Greater Accra",
+      "fee": 50
+    },
+    {
+      "location": "Tema Community 8",
+      "region": "Greater Accra",
+      "fee": 50
+    },
+    {
+      "location": "Tema Community 9",
+      "region": "Greater Accra",
+      "fee": 50
+    },
+    {
+      "location": "Tema New Town",
+      "region": "Greater Accra",
+      "fee": 50
+    },
+    {
+      "location": "Tesano",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Teshie",
+      "region": "Greater Accra",
+      "fee": 40
+    },
+    {
+      "location": "Teshie-Nungua Estates",
+      "region": "Greater Accra",
+      "fee": 40
+    },
+    {
+      "location": "Trassaco Estate",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Tudu",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "University of Ghana (Legon)",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "UPSA",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Valley View University",
+      "region": "Greater Accra",
+      "fee": 50
+    },
+    {
+      "location": "Weija",
+      "region": "Greater Accra",
+      "fee": 50
+    },
+    {
+      "location": "West Hills Mall",
+      "region": "Greater Accra",
+      "fee": 50
+    },
+    {
+      "location": "West Legon (Westlands)",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "Westlands",
+      "region": "Greater Accra",
+      "fee": 35
+    },
+    {
+      "location": "White House (Spintex)",
+      "region": "Greater Accra",
+      "fee": 40
+    },
+    {
+      "location": "Zenu",
+      "region": "Greater Accra",
+      "fee": 50
+    },
+    {
+      "location": "Bunkpurugu",
+      "region": "North East",
+      "fee": 85
+    },
+    {
+      "location": "Chereponi",
+      "region": "North East",
+      "fee": 85
+    },
+    {
+      "location": "Gambaga",
+      "region": "North East",
+      "fee": 85
+    },
+    {
+      "location": "Kubori",
+      "region": "North East",
+      "fee": 85
+    },
+    {
+      "location": "Langbinsi",
+      "region": "North East",
+      "fee": 85
+    },
+    {
+      "location": "Nakpanduri",
+      "region": "North East",
+      "fee": 85
+    },
+    {
+      "location": "Nalerigu",
+      "region": "North East",
+      "fee": 85
+    },
+    {
+      "location": "Nasuan",
+      "region": "North East",
+      "fee": 85
+    },
+    {
+      "location": "Sakogu",
+      "region": "North East",
+      "fee": 85
+    },
+    {
+      "location": "Walewale",
+      "region": "North East",
+      "fee": 85
+    },
+    {
+      "location": "Wulugu",
+      "region": "North East",
+      "fee": 85
+    },
+    {
+      "location": "Yagaba",
+      "region": "North East",
+      "fee": 85
+    },
+    {
+      "location": "Yunyoo",
+      "region": "North East",
+      "fee": 85
+    },
+    {
+      "location": "Aboabo, Tamale",
+      "region": "Northern",
+      "fee": 85
+    },
+    {
+      "location": "Bimbilla",
+      "region": "Northern",
+      "fee": 85
+    },
+    {
+      "location": "Choggu",
+      "region": "Northern",
+      "fee": 85
+    },
+    {
+      "location": "Dungu",
+      "region": "Northern",
+      "fee": 85
+    },
+    {
+      "location": "Gusheigu",
+      "region": "Northern",
+      "fee": 85
+    },
+    {
+      "location": "Jisonayili",
+      "region": "Northern",
+      "fee": 85
+    },
+    {
+      "location": "Kalpohin",
+      "region": "Northern",
+      "fee": 85
+    },
+    {
+      "location": "Kanvili",
+      "region": "Northern",
+      "fee": 85
+    },
+    {
+      "location": "Karaga",
+      "region": "Northern",
+      "fee": 85
+    },
+    {
+      "location": "Kpandai",
+      "region": "Northern",
+      "fee": 85
+    },
+    {
+      "location": "Kumbungu",
+      "region": "Northern",
+      "fee": 85
+    },
+    {
+      "location": "Lamashegu",
+      "region": "Northern",
+      "fee": 85
+    },
+    {
+      "location": "Nanton",
+      "region": "Northern",
+      "fee": 85
+    },
+    {
+      "location": "Nyankpala",
+      "region": "Northern",
+      "fee": 85
+    },
+    {
+      "location": "Saboba",
+      "region": "Northern",
+      "fee": 85
+    },
+    {
+      "location": "Sagnerigu",
+      "region": "Northern",
+      "fee": 85
+    },
+    {
+      "location": "Sang",
+      "region": "Northern",
+      "fee": 85
+    },
+    {
+      "location": "Savelugu",
+      "region": "Northern",
+      "fee": 85
+    },
+    {
+      "location": "Tamale",
+      "region": "Northern",
+      "fee": 85
+    },
+    {
+      "location": "Tatale",
+      "region": "Northern",
+      "fee": 85
+    },
+    {
+      "location": "Tolon",
+      "region": "Northern",
+      "fee": 85
+    },
+    {
+      "location": "Vittin",
+      "region": "Northern",
+      "fee": 85
+    },
+    {
+      "location": "Wulensi",
+      "region": "Northern",
+      "fee": 85
+    },
+    {
+      "location": "Yendi",
+      "region": "Northern",
+      "fee": 85
+    },
+    {
+      "location": "Zabzugu",
+      "region": "Northern",
+      "fee": 85
+    },
+    {
+      "location": "Akpafu",
+      "region": "Oti",
+      "fee": 85
+    },
+    {
+      "location": "Chinderi",
+      "region": "Oti",
+      "fee": 85
+    },
+    {
+      "location": "Dambai",
+      "region": "Oti",
+      "fee": 85
+    },
+    {
+      "location": "Jasikan",
+      "region": "Oti",
+      "fee": 85
+    },
+    {
+      "location": "Kadjebi",
+      "region": "Oti",
+      "fee": 85
+    },
+    {
+      "location": "Kete Krachi",
+      "region": "Oti",
+      "fee": 85
+    },
+    {
+      "location": "Kpassa",
+      "region": "Oti",
+      "fee": 85
+    },
+    {
+      "location": "Krachi",
+      "region": "Oti",
+      "fee": 85
+    },
+    {
+      "location": "Krachi Nchumuru",
+      "region": "Oti",
+      "fee": 85
+    },
+    {
+      "location": "Likpe-Mate",
+      "region": "Oti",
+      "fee": 85
+    },
+    {
+      "location": "Lolobi",
+      "region": "Oti",
+      "fee": 85
+    },
+    {
+      "location": "Nkonya Ahenkro",
+      "region": "Oti",
+      "fee": 85
+    },
+    {
+      "location": "Nkwanta",
+      "region": "Oti",
+      "fee": 85
+    },
+    {
+      "location": "Nkwanta North",
+      "region": "Oti",
+      "fee": 85
+    },
+    {
+      "location": "Nkwanta South",
+      "region": "Oti",
+      "fee": 85
+    },
+    {
+      "location": "Santrokofi",
+      "region": "Oti",
+      "fee": 85
+    },
+    {
+      "location": "Worawora",
+      "region": "Oti",
+      "fee": 85
+    },
+    {
+      "location": "Bole",
+      "region": "Savannah",
+      "fee": 85
+    },
+    {
+      "location": "Buipe",
+      "region": "Savannah",
+      "fee": 85
+    },
+    {
+      "location": "Daboya",
+      "region": "Savannah",
+      "fee": 85
+    },
+    {
+      "location": "Damongo",
+      "region": "Savannah",
+      "fee": 85
+    },
+    {
+      "location": "Fufulso",
+      "region": "Savannah",
+      "fee": 85
+    },
+    {
+      "location": "Larabanga",
+      "region": "Savannah",
+      "fee": 85
+    },
+    {
+      "location": "Mpaha",
+      "region": "Savannah",
+      "fee": 85
+    },
+    {
+      "location": "Salaga",
+      "region": "Savannah",
+      "fee": 85
+    },
+    {
+      "location": "Sawla",
+      "region": "Savannah",
+      "fee": 85
+    },
+    {
+      "location": "Tinga",
+      "region": "Savannah",
+      "fee": 85
+    },
+    {
+      "location": "Tuna",
+      "region": "Savannah",
+      "fee": 85
+    },
+    {
+      "location": "Yapei",
+      "region": "Savannah",
+      "fee": 85
+    },
+    {
+      "location": "Bawku",
+      "region": "Upper East",
+      "fee": 85
+    },
+    {
+      "location": "Binduri",
+      "region": "Upper East",
+      "fee": 85
+    },
+    {
+      "location": "Bolgatanga",
+      "region": "Upper East",
+      "fee": 85
+    },
+    {
+      "location": "Bongo",
+      "region": "Upper East",
+      "fee": 85
+    },
+    {
+      "location": "Bugri",
+      "region": "Upper East",
+      "fee": 85
+    },
+    {
+      "location": "Fumbisi",
+      "region": "Upper East",
+      "fee": 85
+    },
+    {
+      "location": "Garu",
+      "region": "Upper East",
+      "fee": 85
+    },
+    {
+      "location": "Kandiga",
+      "region": "Upper East",
+      "fee": 85
+    },
+    {
+      "location": "Nangodi",
+      "region": "Upper East",
+      "fee": 85
+    },
+    {
+      "location": "Navrongo",
+      "region": "Upper East",
+      "fee": 85
+    },
+    {
+      "location": "Paga",
+      "region": "Upper East",
+      "fee": 85
+    },
+    {
+      "location": "Pusiga",
+      "region": "Upper East",
+      "fee": 85
+    },
+    {
+      "location": "Sandema",
+      "region": "Upper East",
+      "fee": 85
+    },
+    {
+      "location": "Tempane",
+      "region": "Upper East",
+      "fee": 85
+    },
+    {
+      "location": "Tongo",
+      "region": "Upper East",
+      "fee": 85
+    },
+    {
+      "location": "Wiaga",
+      "region": "Upper East",
+      "fee": 85
+    },
+    {
+      "location": "Widana",
+      "region": "Upper East",
+      "fee": 85
+    },
+    {
+      "location": "Zebilla",
+      "region": "Upper East",
+      "fee": 85
+    },
+    {
+      "location": "Zuarungu",
+      "region": "Upper East",
+      "fee": 85
+    },
+    {
+      "location": "Bussie",
+      "region": "Upper West",
+      "fee": 85
+    },
+    {
+      "location": "Daffiama",
+      "region": "Upper West",
+      "fee": 85
+    },
+    {
+      "location": "Funsi",
+      "region": "Upper West",
+      "fee": 85
+    },
+    {
+      "location": "Gwollu",
+      "region": "Upper West",
+      "fee": 85
+    },
+    {
+      "location": "Hamile",
+      "region": "Upper West",
+      "fee": 85
+    },
+    {
+      "location": "Han",
+      "region": "Upper West",
+      "fee": 85
+    },
+    {
+      "location": "Issa",
+      "region": "Upper West",
+      "fee": 85
+    },
+    {
+      "location": "Jeffisi",
+      "region": "Upper West",
+      "fee": 85
+    },
+    {
+      "location": "Jirapa",
+      "region": "Upper West",
+      "fee": 85
+    },
+    {
+      "location": "Kaleo",
+      "region": "Upper West",
+      "fee": 85
+    },
+    {
+      "location": "Ko",
+      "region": "Upper West",
+      "fee": 85
+    },
+    {
+      "location": "Lambussie",
+      "region": "Upper West",
+      "fee": 85
+    },
+    {
+      "location": "Lawra",
+      "region": "Upper West",
+      "fee": 85
+    },
+    {
+      "location": "Nadawli",
+      "region": "Upper West",
+      "fee": 85
+    },
+    {
+      "location": "Nadowli",
+      "region": "Upper West",
+      "fee": 85
+    },
+    {
+      "location": "Nandom",
+      "region": "Upper West",
+      "fee": 85
+    },
+    {
+      "location": "Piina",
+      "region": "Upper West",
+      "fee": 85
+    },
+    {
+      "location": "Tumu",
+      "region": "Upper West",
+      "fee": 85
+    },
+    {
+      "location": "Wa",
+      "region": "Upper West",
+      "fee": 85
+    },
+    {
+      "location": "Wechiau",
+      "region": "Upper West",
+      "fee": 85
+    },
+    {
+      "location": "Adidome",
+      "region": "Volta",
+      "fee": 85
+    },
+    {
+      "location": "Aflao",
+      "region": "Volta",
+      "fee": 85
+    },
+    {
+      "location": "Agbozume",
+      "region": "Volta",
+      "fee": 85
+    },
+    {
+      "location": "Akatsi",
+      "region": "Volta",
+      "fee": 85
+    },
+    {
+      "location": "Akatsi North",
+      "region": "Volta",
+      "fee": 85
+    },
+    {
+      "location": "Anfoega",
+      "region": "Volta",
+      "fee": 85
+    },
+    {
+      "location": "Anloga",
+      "region": "Volta",
+      "fee": 85
+    },
+    {
+      "location": "Anyako",
+      "region": "Volta",
+      "fee": 85
+    },
+    {
+      "location": "Ave-Dakpa",
+      "region": "Volta",
+      "fee": 85
+    },
+    {
+      "location": "Aveyime",
+      "region": "Volta",
+      "fee": 85
+    },
+    {
+      "location": "Battor",
+      "region": "Volta",
+      "fee": 85
+    },
+    {
+      "location": "Dzodze",
+      "region": "Volta",
+      "fee": 85
+    },
+    {
+      "location": "Have",
+      "region": "Volta",
+      "fee": 85
+    },
+    {
+      "location": "Ho",
+      "region": "Volta",
+      "fee": 85
+    },
+    {
+      "location": "Hohoe",
+      "region": "Volta",
+      "fee": 85
+    },
+    {
+      "location": "Keta",
+      "region": "Volta",
+      "fee": 85
+    },
+    {
+      "location": "Kpando",
+      "region": "Volta",
+      "fee": 85
+    },
+    {
+      "location": "Kpedze",
+      "region": "Volta",
+      "fee": 85
+    },
+    {
+      "location": "Kpetoe",
+      "region": "Volta",
+      "fee": 85
+    },
+    {
+      "location": "Kpeve",
+      "region": "Volta",
+      "fee": 85
+    },
+    {
+      "location": "Likpe",
+      "region": "Volta",
+      "fee": 85
+    },
+    {
+      "location": "Mepe",
+      "region": "Volta",
+      "fee": 85
+    },
+    {
+      "location": "Sogakope",
+      "region": "Volta",
+      "fee": 85
+    },
+    {
+      "location": "Sokode",
+      "region": "Volta",
+      "fee": 85
+    },
+    {
+      "location": "Tadzewu",
+      "region": "Volta",
+      "fee": 85
+    },
+    {
+      "location": "Tegbi",
+      "region": "Volta",
+      "fee": 85
+    },
+    {
+      "location": "Tsito",
+      "region": "Volta",
+      "fee": 85
+    },
+    {
+      "location": "Ve-Golokwati",
+      "region": "Volta",
+      "fee": 85
+    },
+    {
+      "location": "Weta",
+      "region": "Volta",
+      "fee": 85
+    },
+    {
+      "location": "Wli",
+      "region": "Volta",
+      "fee": 85
+    },
+    {
+      "location": "Agona Nkwanta",
+      "region": "Western",
+      "fee": 85
+    },
+    {
+      "location": "Airport Ridge",
+      "region": "Western",
+      "fee": 80
+    },
+    {
+      "location": "Aiyinasi",
+      "region": "Western",
+      "fee": 85
+    },
+    {
+      "location": "Anaji",
+      "region": "Western",
+      "fee": 80
+    },
+    {
+      "location": "Apremdo",
+      "region": "Western",
+      "fee": 80
+    },
+    {
+      "location": "Asankragwa",
+      "region": "Western",
+      "fee": 85
+    },
+    {
+      "location": "Axim",
+      "region": "Western",
+      "fee": 85
+    },
+    {
+      "location": "Beach Road",
+      "region": "Western",
+      "fee": 80
+    },
+    {
+      "location": "Bogoso",
+      "region": "Western",
+      "fee": 85
+    },
+    {
+      "location": "Bompieso",
+      "region": "Western",
+      "fee": 85
+    },
+    {
+      "location": "Busua",
+      "region": "Western",
+      "fee": 85
+    },
+    {
+      "location": "Dixcove",
+      "region": "Western",
+      "fee": 85
+    },
+    {
+      "location": "Dompim",
+      "region": "Western",
+      "fee": 85
+    },
+    {
+      "location": "Effia",
+      "region": "Western",
+      "fee": 80
+    },
+    {
+      "location": "Esiama",
+      "region": "Western",
+      "fee": 85
+    },
+    {
+      "location": "Essikado",
+      "region": "Western",
+      "fee": 80
+    },
+    {
+      "location": "Fijai",
+      "region": "Western",
+      "fee": 80
+    },
+    {
+      "location": "Half Assini",
+      "region": "Western",
+      "fee": 85
+    },
+    {
+      "location": "Huni Valley",
+      "region": "Western",
+      "fee": 85
+    },
+    {
+      "location": "Inchaban",
+      "region": "Western",
+      "fee": 80
+    },
+    {
+      "location": "Kansaworodo",
+      "region": "Western",
+      "fee": 80
+    },
+    {
+      "location": "Ketan",
+      "region": "Western",
+      "fee": 80
+    },
+    {
+      "location": "Kojokrom",
+      "region": "Western",
+      "fee": 80
+    },
+    {
+      "location": "Kwesimintsim",
+      "region": "Western",
+      "fee": 80
+    },
+    {
+      "location": "Manso Amenfi",
+      "region": "Western",
+      "fee": 85
+    },
+    {
+      "location": "Market Circle",
+      "region": "Western",
+      "fee": 80
+    },
+    {
+      "location": "Mpintsin",
+      "region": "Western",
+      "fee": 80
+    },
+    {
+      "location": "Mpohor",
+      "region": "Western",
+      "fee": 85
+    },
+    {
+      "location": "New Site",
+      "region": "Western",
+      "fee": 80
+    },
+    {
+      "location": "New Takoradi",
+      "region": "Western",
+      "fee": 80
+    },
+    {
+      "location": "Nkroful",
+      "region": "Western",
+      "fee": 85
+    },
+    {
+      "location": "Ntankoful",
+      "region": "Western",
+      "fee": 80
+    },
+    {
+      "location": "Prestea",
+      "region": "Western",
+      "fee": 85
+    },
+    {
+      "location": "Samreboi",
+      "region": "Western",
+      "fee": 85
+    },
+    {
+      "location": "Sekondi",
+      "region": "Western",
+      "fee": 80
+    },
+    {
+      "location": "Sekondi College Area",
+      "region": "Western",
+      "fee": 80
+    },
+    {
+      "location": "Shama",
+      "region": "Western",
+      "fee": 85
+    },
+    {
+      "location": "Takoradi",
+      "region": "Western",
+      "fee": 80
+    },
+    {
+      "location": "Tanokrom",
+      "region": "Western",
+      "fee": 80
+    },
+    {
+      "location": "Tarkwa",
+      "region": "Western",
+      "fee": 85
+    },
+    {
+      "location": "Wassa Akropong",
+      "region": "Western",
+      "fee": 85
+    },
+    {
+      "location": "Wassa Dunkwa",
+      "region": "Western",
+      "fee": 85
+    },
+    {
+      "location": "West Tanokrom",
+      "region": "Western",
+      "fee": 80
+    },
+    {
+      "location": "Adabokrom",
+      "region": "Western North",
+      "fee": 85
+    },
+    {
+      "location": "Akontombra",
+      "region": "Western North",
+      "fee": 85
+    },
+    {
+      "location": "Awaso",
+      "region": "Western North",
+      "fee": 85
+    },
+    {
+      "location": "Bekwai",
+      "region": "Western North",
+      "fee": 85
+    },
+    {
+      "location": "Bibiani",
+      "region": "Western North",
+      "fee": 85
+    },
+    {
+      "location": "Bodi",
+      "region": "Western North",
+      "fee": 85
+    },
+    {
+      "location": "Debiso",
+      "region": "Western North",
+      "fee": 85
+    },
+    {
+      "location": "Enchi",
+      "region": "Western North",
+      "fee": 85
+    },
+    {
+      "location": "Essam",
+      "region": "Western North",
+      "fee": 85
+    },
+    {
+      "location": "Essam-Debiso",
+      "region": "Western North",
+      "fee": 85
+    },
+    {
+      "location": "Juaboso",
+      "region": "Western North",
+      "fee": 85
+    },
+    {
+      "location": "Sefwi Akontombra",
+      "region": "Western North",
+      "fee": 85
+    },
+    {
+      "location": "Sefwi Asafo",
+      "region": "Western North",
+      "fee": 85
+    },
+    {
+      "location": "Sefwi Bekwai",
+      "region": "Western North",
+      "fee": 85
+    },
+    {
+      "location": "Sefwi Boako",
+      "region": "Western North",
+      "fee": 85
+    },
+    {
+      "location": "Sefwi Dwenase",
+      "region": "Western North",
+      "fee": 85
+    },
+    {
+      "location": "Sefwi Wiawso",
+      "region": "Western North",
+      "fee": 85
+    },
+    {
+      "location": "Suaman",
+      "region": "Western North",
+      "fee": 85
+    }
+  ],
+  "regionDefaults": {
+    "Ahafo": 85,
+    "Ashanti": 80,
+    "Bono": 85,
+    "Bono East": 85,
+    "Central": 85,
+    "Eastern": 85,
+    "Greater Accra": 35,
+    "North East": 85,
+    "Northern": 85,
+    "Oti": 85,
+    "Savannah": 85,
+    "Upper East": 85,
+    "Upper West": 85,
+    "Volta": 85,
+    "Western": 80,
+    "Western North": 85
+  }
+}

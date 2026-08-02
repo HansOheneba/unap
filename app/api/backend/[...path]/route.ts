@@ -141,6 +141,7 @@ async function handle(
   const bodyText = rawBody && rawBody.length > 0 ? rawBody : undefined;
   const debug = isDebugMode();
   const isOrders = path === "orders" || path.startsWith("orders/");
+  const isAuthOtp = path.startsWith("auth/otp/");
   const isPlaceOrder = path === "orders" && request.method === "POST";
   let ordersPayload: unknown = null;
   if (isOrders && bodyText) {
@@ -151,7 +152,16 @@ async function handle(
     }
   }
 
-  if (debug && isOrders) {
+  let authOtpPayload: unknown = null;
+  if (isAuthOtp && bodyText) {
+    try {
+      authOtpPayload = JSON.parse(bodyText);
+    } catch {
+      authOtpPayload = bodyText;
+    }
+  }
+
+  if (isOrders) {
     console.log("\n========== [orders] REQUEST ==========");
     console.log(
       JSON.stringify(
@@ -166,6 +176,23 @@ async function handle(
       ),
     );
     console.log("======================================\n");
+  }
+
+  if (isAuthOtp) {
+    console.log("\n========== [auth/otp] REQUEST ==========");
+    console.log(
+      JSON.stringify(
+        {
+          method: request.method,
+          path,
+          upstream: `${API_ORIGIN}/${path}`,
+          payload: authOtpPayload,
+        },
+        null,
+        2,
+      ),
+    );
+    console.log("========================================\n");
   }
 
   // ── Logout: always use OUR httpOnly refresh token, always drop the local session ──
@@ -193,7 +220,12 @@ async function handle(
   let res: Response;
   try {
     res = await forwardOnce(request, path, bodyText, accessToken);
-  } catch {
+  } catch (err) {
+    console.error("[proxy] upstream fetch failed", {
+      path,
+      method: request.method,
+      error: err instanceof Error ? err.message : err,
+    });
     return NextResponse.json(
       {
         success: false,
@@ -224,30 +256,56 @@ async function handle(
   }
 
   if (res.status === 204) {
-    if (debug && isOrders) {
+    if (isOrders) {
       console.log("\n========== [orders] RESPONSE ==========");
       console.log(JSON.stringify({ status: 204, body: null }, null, 2));
       console.log("=======================================\n");
+    }
+    if (isAuthOtp) {
+      console.log("\n========== [auth/otp] RESPONSE ==========");
+      console.log(JSON.stringify({ status: 204, body: null }, null, 2));
+      console.log("=========================================\n");
     }
     return new NextResponse(null, { status: 204 });
   }
 
   const body = await readEnvelope(res);
 
-  if (debug && isOrders) {
+  if (isOrders) {
     console.log("\n========== [orders] RESPONSE ==========");
     console.log(JSON.stringify({ status: res.status, body }, null, 2));
     console.log("=======================================\n");
+  }
+
+  if (isAuthOtp) {
+    console.log("\n========== [auth/otp] RESPONSE ==========");
+    console.log(JSON.stringify({ status: res.status, body }, null, 2));
+    console.log("=========================================\n");
   }
 
   // ── Mint httpOnly cookies from token-bearing responses; the browser never sees a token ──
   if (TOKEN_MINTING_PATHS.has(path) && res.ok) {
     const tokens = extractTokens(body);
     if (tokens?.accessToken && tokens?.refreshToken) {
+      console.log("[auth/otp] minting session cookies", {
+        path,
+        hasAccessToken: true,
+        hasRefreshToken: true,
+        expiresIn: tokens.expiresIn,
+      });
       await setAuthCookies({
         accessToken: tokens.accessToken,
         refreshToken: tokens.refreshToken,
         expiresIn: tokens.expiresIn,
+      });
+    } else if (path === "auth/otp/verify") {
+      console.warn("[auth/otp/verify] ok response but no tokens to mint", {
+        status: res.status,
+        keys: body ? Object.keys(body) : [],
+        dataKeys:
+          body?.data && typeof body.data === "object"
+            ? Object.keys(body.data as object)
+            : [],
       });
     }
   }

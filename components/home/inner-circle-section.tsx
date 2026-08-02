@@ -41,6 +41,7 @@ export default function InnerCircleSection() {
         src="/home/manXmanModels.jpg"
         alt=""
         fill
+        sizes="100vw"
         className="object-cover brightness-25"
       />
       <div className="absolute inset-0 bg-linear-to-b from-black/80 via-black/50 to-black/80" />

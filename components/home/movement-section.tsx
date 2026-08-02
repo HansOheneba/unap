@@ -131,6 +131,7 @@ export default function MovementSection() {
               src="/home/boxModel.jpg"
               alt={testimonials[0].name}
               fill
+              sizes="(max-width: 768px) 100vw, 42vw"
               className="object-cover brightness-75"
             />
             <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/30 to-transparent" />
@@ -199,6 +200,7 @@ export default function MovementSection() {
             src="/home/manXmanModels.jpg"
             alt="The Movement"
             fill
+            sizes="(max-width: 768px) 100vw, 50vw"
             className="object-cover brightness-70"
           />
           {/* diagonal cut overlay */}

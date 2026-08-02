@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist, devtools } from "zustand/middleware";
+import { logPricing } from "@/lib/api/pricing-log";
 
 export interface CartItem {
   id: string; // `${productId}__${variantId}__${size}`
@@ -45,6 +46,8 @@ interface CartState {
     quantity: number;
     removed: boolean;
   } | null;
+  /** Apply server-quoted unit price (location / catalog pricing). */
+  setItemPrice: (id: string, price: number) => void;
   clearCart: () => void;
   dismissToast: () => void;
   totalItems: () => number;
@@ -111,6 +114,30 @@ export const useCartStore = create<CartState>()(
             });
           }
 
+          const cartItems = get().items;
+          logPricing("cart.add", {
+            line: {
+              id: line.id,
+              name: line.name,
+              price: line.price,
+              category: line.category,
+              slug: line.slug,
+              stock: line.stock,
+            },
+            requested,
+            added,
+            quantityInCart: nextQty,
+            cartSubtotal: cartItems.reduce(
+              (sum, i) => sum + i.price * i.quantity,
+              0,
+            ),
+            lines: cartItems.map((i) => ({
+              id: i.id,
+              price: i.price,
+              quantity: i.quantity,
+            })),
+          });
+
           return { added, quantityInCart: nextQty, stock };
         },
 
@@ -171,6 +198,15 @@ export const useCartStore = create<CartState>()(
             quantity: nextQty,
             removed: false,
           };
+        },
+
+        setItemPrice: (id, price) => {
+          if (!Number.isFinite(price) || price < 0) return;
+          set({
+            items: get().items.map((i) =>
+              i.id === id ? { ...i, price } : i,
+            ),
+          });
         },
 
         clearCart: () => set({ items: [] }),

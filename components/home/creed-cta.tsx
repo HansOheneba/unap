@@ -33,6 +33,7 @@ export default function CreedCta() {
             src="/home/manStudio.jpg"
             alt="The Creed"
             fill
+            sizes="(max-width: 768px) 100vw, 50vw"
             className="object-cover grayscale group-hover:grayscale-0 transition-[filter] duration-700"
           />
           {/* subtle corner label */}

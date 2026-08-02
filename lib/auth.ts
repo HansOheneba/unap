@@ -1,12 +1,39 @@
 import {
   completeSignup as apiCompleteSignup,
   extractUser,
+  normalizePhoneForApi,
   sendOtp,
   verifyOtp,
   type ApiUser,
   type CompleteSignupPayload,
+  type OtpIdentifier,
   type OtpPurpose,
 } from "@/lib/api/auth";
+
+export type { OtpIdentifier, OtpPurpose };
+export { normalizePhoneForApi };
+
+/** Soft-format phone for auth OTP (supports local 0XX… and +233…). */
+export function formatAuthPhoneInput(raw: string): string {
+  const trimmed = raw.trimStart();
+  const hasPlus = trimmed.startsWith("+");
+  const digits = raw.replace(/\D/g, "").slice(0, 15);
+  if (!digits) return hasPlus ? "+" : "";
+
+  if (hasPlus) {
+    const country = digits.slice(0, 3);
+    const rest = digits.slice(3);
+    const groups = rest.match(/.{1,3}/g) ?? [];
+    return ["+" + country, ...groups].join(" ").trim();
+  }
+
+  if (digits.length <= 3) return digits;
+  if (digits.length <= 6) return `${digits.slice(0, 3)} ${digits.slice(3)}`;
+  if (digits.length <= 10) {
+    return `${digits.slice(0, 3)} ${digits.slice(3, 6)} ${digits.slice(6)}`;
+  }
+  return `${digits.slice(0, 3)} ${digits.slice(3, 6)} ${digits.slice(6, 10)} ${digits.slice(10)}`;
+}
 import { ApiError } from "@/lib/api/client";
 import {
   addressPayloadFromProfile,
@@ -158,13 +185,13 @@ function toErrorMessage(err: unknown, fallback: string) {
   return fallback;
 }
 
-/** Send a one-time email code. Use purpose "signup" for new accounts. */
+/** Send a one-time email or SMS code. Use purpose "signup" for new accounts. */
 export async function requestOtp(
-  email: string,
+  identifier: OtpIdentifier,
   purpose: OtpPurpose = "login",
 ): Promise<{ success: boolean; message?: string }> {
   try {
-    const result = await sendOtp(email, purpose);
+    const result = await sendOtp(identifier, purpose);
     return {
       success: true,
       message:
@@ -181,7 +208,7 @@ export async function requestOtp(
  * server-side, so this layer only needs to reflect the user profile back to the UI.
  */
 export async function confirmOtp(
-  email: string,
+  identifier: OtpIdentifier,
   code: string,
   purpose: OtpPurpose = "login",
 ): Promise<{
@@ -192,13 +219,15 @@ export async function confirmOtp(
   apiUser?: ApiUser;
 }> {
   try {
-    const result = await verifyOtp(email, code, purpose);
+    const result = await verifyOtp(identifier, code, purpose);
     const apiUser = extractUser(result) ?? result.user ?? null;
+    const fallbackEmail =
+      identifier.channel === "email" ? identifier.email : "";
     return {
       success: true,
       isNewUser: result.isNewUser,
       apiUser: apiUser ?? undefined,
-      user: apiUser ? mapApiUser(apiUser, email) : undefined,
+      user: apiUser ? mapApiUser(apiUser, fallbackEmail) : undefined,
     };
   } catch (err) {
     return {
@@ -258,15 +287,15 @@ export async function finishSignup(
 
 /** @deprecated Use requestOtp */
 export async function mockSendOtp(
-  email: string,
+  identifier: OtpIdentifier,
   purpose: OtpPurpose = "login",
 ): Promise<{ success: boolean; message?: string }> {
-  return requestOtp(email, purpose);
+  return requestOtp(identifier, purpose);
 }
 
 /** @deprecated Use confirmOtp */
 export async function mockVerifyOtp(
-  email: string,
+  identifier: OtpIdentifier,
   code: string,
   purpose: OtpPurpose = "login",
 ): Promise<{
@@ -276,7 +305,7 @@ export async function mockVerifyOtp(
   apiUser?: ApiUser;
   isNewUser?: boolean;
 }> {
-  return confirmOtp(email, code, purpose);
+  return confirmOtp(identifier, code, purpose);
 }
 
 /** @deprecated Use finishSignup */
@@ -293,7 +322,7 @@ export async function mockSignup(
 
 /** Login after OTP verification. */
 export async function mockLogin(
-  email: string,
+  identifier: OtpIdentifier,
   otp: string,
 ): Promise<{
   success: boolean;
@@ -301,7 +330,7 @@ export async function mockLogin(
   user?: User;
   apiUser?: ApiUser;
 }> {
-  return confirmOtp(email, otp, "login");
+  return confirmOtp(identifier, otp, "login");
 }
 
 export const orderStatusColor: Partial<Record<OrderStatus, string>> = {

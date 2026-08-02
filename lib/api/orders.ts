@@ -1,4 +1,5 @@
 import { apiRequest, asList, ApiError } from "@/lib/api/client";
+import { logPricing } from "@/lib/api/pricing-log";
 import { isDebugMode } from "@/lib/debug";
 
 export function parseCartLineId(id: string): {
@@ -62,6 +63,17 @@ export async function placeOrder(
   payload: PlaceOrderPayload,
 ): Promise<PlaceOrderResult> {
   const debug = isDebugMode();
+  logPricing("order.place.request", {
+    items: payload.items,
+    shipping: {
+      country: payload.shipping.country,
+      region: payload.shipping.region,
+      city: payload.shipping.city,
+      address: payload.shipping.address,
+    },
+    payment: payload.payment,
+    promoCode: payload.promoCode ?? null,
+  });
 
   let data: {
     order?: PlaceOrderResult & {
@@ -75,6 +87,8 @@ export async function placeOrder(
     discount?: number;
     shippingFee?: number;
     total?: number;
+    currency?: string | null;
+    shippingZone?: string | null;
     payment?: PlaceOrderResult["payment"];
     id?: string;
     _debug?: OrderDebugInfo;
@@ -86,6 +100,16 @@ export async function placeOrder(
       body: payload,
     });
   } catch (err) {
+    logPricing("order.place.error", {
+      error:
+        err instanceof ApiError
+          ? {
+              status: err.status,
+              message: err.message,
+              details: err.details,
+            }
+          : err,
+    });
     if (debug) {
       const details =
         err instanceof ApiError &&
@@ -109,6 +133,7 @@ export async function placeOrder(
     throw err;
   }
 
+  logPricing("order.place.response", data);
   if (debug) {
     logOrderDebug(data._debug, payload, data);
   }
@@ -140,9 +165,17 @@ export async function verifyPayment(
     success?: boolean;
     orderId?: string;
     trackingNumber?: string | null;
+    subtotal?: number;
+    discount?: number;
+    shippingFee?: number;
+    total?: number;
+    currency?: string | null;
+    [key: string]: unknown;
   }>(`/payments/paystack/verify/${encodeURIComponent(reference)}`, {
     cache: "no-store",
   });
+
+  logPricing("payment.verify.response", { reference, data });
 
   return {
     success: Boolean(data.success ?? true),
@@ -216,6 +249,7 @@ export async function getOrder(id: string): Promise<ApiOrder> {
     `/orders/${encodeURIComponent(id)}`,
     { cache: "no-store" },
   );
+  logPricing("order.get.response", { id, payload });
   if (payload && typeof payload === "object" && "id" in payload) {
     return payload as ApiOrder;
   }
@@ -228,6 +262,58 @@ export async function getOrder(id: string): Promise<ApiOrder> {
     return payload.data;
   }
   throw new Error("Order not found");
+}
+
+export type CartValidateItem = {
+  productId: string;
+  variantId: string;
+  size: string;
+  quantity: number;
+  unitPrice: number;
+  lineTotal: number;
+  inStock: boolean;
+  availableStock: number;
+};
+
+export type CartValidateResult = {
+  valid: boolean;
+  items: CartValidateItem[];
+  subtotal: number;
+  discount: number;
+  shippingFee: number;
+  shippingZone: string | null;
+  shippingStatus: "quoted" | "pending_quote" | string;
+  deliveryType: string | null;
+  feeMatched: boolean;
+  total: number;
+  currency?: string | null;
+};
+
+export async function validateCart(
+  payload: {
+    items: PlaceOrderPayload["items"];
+    shipping: {
+      country: string;
+      city: string;
+      region?: string;
+    };
+    promoCode?: string;
+  },
+  options?: { signal?: AbortSignal },
+): Promise<CartValidateResult> {
+  logPricing("cart.validate.request", payload);
+  const result = await apiRequest<CartValidateResult>("/cart/validate", {
+    method: "POST",
+    body: {
+      items: payload.items,
+      shipping: payload.shipping,
+      promoCode: payload.promoCode ?? "",
+    },
+    signal: options?.signal,
+    cache: "no-store",
+  });
+  logPricing("cart.validate.response", result);
+  return result;
 }
 
 export async function validatePromoCode(payload: {
@@ -247,8 +333,24 @@ export async function validatePromoCode(payload: {
   newTotal?: number;
   message?: string;
 }> {
-  return apiRequest("/promo/validate", {
+  logPricing("promo.validate.request", payload);
+  const result = await apiRequest<{
+    valid: boolean;
+    code?: string;
+    label?: string;
+    discountType?: string;
+    discountValue?: number;
+    discountAmount?: number;
+    shippingFee?: number;
+    shippingZone?: string;
+    newTotal?: number;
+    message?: string;
+    currency?: string | null;
+    [key: string]: unknown;
+  }>("/promo/validate", {
     method: "POST",
     body: payload,
   });
+  logPricing("promo.validate.response", result);
+  return result;
 }

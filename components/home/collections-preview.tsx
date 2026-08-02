@@ -69,6 +69,7 @@ export default function CollectionsPreview({ products }: Props) {
                 src={hero.image}
                 alt={hero.name}
                 fill
+                sizes="(max-width: 768px) 100vw, 58vw"
                 className="object-cover brightness-90 group-hover:brightness-100 transition-[filter] duration-700"
               />
               <span className="absolute top-6 left-6 eyebrow text-white/70 capitalize">
@@ -99,6 +100,7 @@ export default function CollectionsPreview({ products }: Props) {
                     src={product.image}
                     alt={product.name}
                     fill
+                    sizes="(max-width: 768px) 100vw, 42vw"
                     className="object-cover brightness-85 group-hover:brightness-100 transition-[filter] duration-700"
                   />
                   <span className="absolute top-4 left-4 eyebrow text-white/70 capitalize">

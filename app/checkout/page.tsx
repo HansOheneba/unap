@@ -11,12 +11,93 @@ import { formatPrice } from "@/lib/currency";
 import { useOnboardingStore } from "@/lib/stores/onboarding-store";
 import { useIsLoggedIn, useAuthReady } from "@/lib/use-is-logged-in";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { parseCartLineId, placeOrder, validatePromoCode } from "@/lib/api/orders";
+import {
+  parseCartLineId,
+  placeOrder,
+  validateCart,
+  validatePromoCode,
+  type CartValidateResult,
+} from "@/lib/api/orders";
+import { logPricing } from "@/lib/api/pricing-log";
 import { trackingPath } from "@/lib/tracking";
-import { syncCartStocks } from "@/lib/cart/sync-stock";
+import {
+  listGhanaDeliveryLocations,
+  listGhanaRegions,
+  lookupGhanaDeliveryFee,
+  type GhanaDeliveryMatch,
+} from "@/lib/shipping/ghana-delivery";
 
 type CheckoutStep = "details" | "review" | "confirmed";
 type PaymentMethod = "pay_now" | "pay_on_delivery";
+
+const CART_QUOTE_DEBOUNCE_MS = 400;
+const ACCRA_REGION_DEFAULT = "Greater Accra";
+const GHANA_DELIVERY_LOCATIONS = listGhanaDeliveryLocations();
+const GHANA_REGIONS = listGhanaRegions();
+
+function isAccraCity(city: string): boolean {
+  return /^accra$/i.test(city.trim());
+}
+
+function cartLineIdFromQuoteItem(item: {
+  productId: string;
+  variantId: string;
+  size: string;
+}): string {
+  return `${item.productId}__${item.variantId}__${item.size}`;
+}
+
+/**
+ * Product money from API when priced; delivery from the nationwide master list
+ * (same table the backend uses) so Accra + outside Accra quote without waiting
+ * on /cart/validate shipping status.
+ */
+function resolveCheckoutTotals(input: {
+  cartSubtotal: number;
+  promoDiscount: number;
+  quote: CartValidateResult | null;
+  localDelivery: GhanaDeliveryMatch | null;
+}): {
+  subtotal: number;
+  discountAmount: number;
+  shippingFee: number | null;
+  shippingQuoted: boolean;
+  grandTotal: number;
+  usingApiSubtotal: boolean;
+} {
+  const localFee = input.localDelivery?.fee ?? null;
+  const apiShippingQuoted = input.quote?.shippingStatus === "quoted";
+  // Prefer local master-list fee; fall back to API quote.
+  const shippingFee =
+    localFee != null
+      ? localFee
+      : apiShippingQuoted
+        ? input.quote!.shippingFee
+        : null;
+  const shippingQuoted = shippingFee != null;
+  const usingApiSubtotal = Boolean(
+    input.quote && input.quote.items.some((line) => line.unitPrice > 0),
+  );
+  const subtotal = usingApiSubtotal
+    ? input.quote!.subtotal
+    : input.cartSubtotal;
+  const discountAmount = usingApiSubtotal
+    ? input.quote!.discount
+    : input.promoDiscount;
+  const grandTotal =
+    shippingFee != null
+      ? Math.max(0, subtotal - discountAmount + shippingFee)
+      : Math.max(0, subtotal - discountAmount);
+
+  return {
+    subtotal,
+    discountAmount,
+    shippingFee,
+    shippingQuoted,
+    grandTotal,
+    usingApiSubtotal,
+  };
+}
 
 const PAYMENT_METHODS: {
   id: PaymentMethod;
@@ -60,7 +141,15 @@ const inputCls =
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { items, totalItems, totalPrice, clearCart } = useCartStore();
+  const { items, totalItems, totalPrice, clearCart, setItemStock, setItemPrice } =
+    useCartStore();
+  const syncCartFromQuote = (result: CartValidateResult) => {
+    for (const line of result.items) {
+      const id = cartLineIdFromQuoteItem(line);
+      if (line.unitPrice > 0) setItemPrice(id, line.unitPrice);
+      setItemStock(id, line.availableStock);
+    }
+  };
   const onboarding = useOnboardingStore();
   const authReady = useAuthReady();
   const isLoggedIn = useIsLoggedIn();
@@ -91,11 +180,167 @@ export default function CheckoutPage() {
     label: string;
     amount: number;
   } | null>(null);
+  const [quote, setQuote] = useState<CartValidateResult | null>(null);
+  const [quoteLoading, setQuoteLoading] = useState(false);
+  const [quoteError, setQuoteError] = useState("");
 
   useEffect(() => {
     if (!paymentRedirectUrl) return;
     window.location.assign(paymentRedirectUrl);
   }, [paymentRedirectUrl]);
+
+  /* Pre-fill from onboarding store if available */
+  const [form, setForm] = useState({
+    firstName: onboarding.firstName || "",
+    lastName: onboarding.lastName || "",
+    email: onboarding.email || "",
+    phone: onboarding.phone !== "+" ? onboarding.phone : "",
+    address: onboarding.address || "",
+    googleMapsLink: onboarding.googleMapsLink || "",
+    city: onboarding.city || "",
+    region:
+      onboarding.region ||
+      (isAccraCity(onboarding.city || "") ? ACCRA_REGION_DEFAULT : ""),
+    country: onboarding.country || "Ghana",
+    whatsapp: onboarding.sameAsPhone
+      ? onboarding.phone !== "+"
+        ? onboarding.phone
+        : ""
+      : onboarding.whatsapp !== "+"
+        ? onboarding.whatsapp
+        : "",
+    notes: "",
+  });
+
+  const setFormField = (key: keyof typeof form, value: string) => {
+    setForm((f) => {
+      const next = { ...f, [key]: value };
+      if (key === "city") {
+        const match = lookupGhanaDeliveryFee({
+          city: value,
+          region: f.region,
+          country: f.country,
+        });
+        if (match?.region) {
+          next.region = match.region;
+        } else if (isAccraCity(value) && !f.region.trim()) {
+          next.region = ACCRA_REGION_DEFAULT;
+        }
+      }
+      return next;
+    });
+  };
+
+  const count = totalItems();
+  const cartSubtotal = totalPrice();
+  const localDelivery = lookupGhanaDeliveryFee({
+    city: form.city,
+    region: form.region,
+    country: form.country,
+  });
+  const {
+    subtotal,
+    discountAmount,
+    shippingFee,
+    shippingQuoted,
+    grandTotal,
+  } = resolveCheckoutTotals({
+    cartSubtotal,
+    promoDiscount: discount?.amount ?? 0,
+    quote,
+    localDelivery,
+  });
+  const quoteStockIssues =
+    quote?.items.filter(
+      (line) => !line.inStock || line.availableStock < line.quantity,
+    ) ?? [];
+  // Delivery is quoted from the local master list; stock comes from /cart/validate.
+  const canPlaceOrder =
+    shippingQuoted && quoteStockIssues.length === 0;
+
+  // Debounced stock/pricing quote from POST /cart/validate.
+  // All setState stays inside the timer callback (not sync in the effect body).
+  useEffect(() => {
+    const country = form.country.trim();
+    const city = form.city.trim();
+    const region =
+      form.region.trim() ||
+      (isAccraCity(city) ? ACCRA_REGION_DEFAULT : "");
+    const canQuote = Boolean(country && city && items.length > 0);
+    const controller = new AbortController();
+
+    const timer = window.setTimeout(async () => {
+      if (!canQuote) {
+        setQuote(null);
+        setQuoteError("");
+        setQuoteLoading(false);
+        return;
+      }
+
+      setQuoteLoading(true);
+      setQuoteError("");
+      try {
+        let cartItems: {
+          productId: string;
+          variantId: string;
+          size: string;
+          quantity: number;
+        }[];
+        try {
+          cartItems = items.map((item) => {
+            const { productId, variantId, size } = parseCartLineId(item.id);
+            return { productId, variantId, size, quantity: item.quantity };
+          });
+        } catch {
+          setQuote(null);
+          setQuoteError("Cart items could not be priced. Refresh and try again.");
+          setQuoteLoading(false);
+          return;
+        }
+
+        const result = await validateCart(
+          {
+            items: cartItems,
+            shipping: {
+              country,
+              city,
+              region: region || undefined,
+            },
+            promoCode: discount?.code,
+          },
+          { signal: controller.signal },
+        );
+        if (controller.signal.aborted) return;
+        setQuote(result);
+        logPricing("checkout.quote", {
+          location: { country, city, region: region || null },
+          promoCode: discount?.code ?? null,
+          subtotal: result.subtotal,
+          discount: result.discount,
+          shippingFee: result.shippingFee,
+          shippingZone: result.shippingZone,
+          shippingStatus: result.shippingStatus,
+          deliveryType: result.deliveryType,
+          total: result.total,
+          valid: result.valid,
+        });
+      } catch (err) {
+        if (controller.signal.aborted) return;
+        if (err instanceof DOMException && err.name === "AbortError") return;
+        setQuote(null);
+        setQuoteError(
+          err instanceof Error ? err.message : "Could not estimate delivery.",
+        );
+      } finally {
+        if (!controller.signal.aborted) setQuoteLoading(false);
+      }
+    }, canQuote ? CART_QUOTE_DEBOUNCE_MS : 0);
+
+    return () => {
+      controller.abort();
+      window.clearTimeout(timer);
+    };
+  }, [form.country, form.city, form.region, items, discount?.code]);
 
   async function applyPromo() {
     const code = promoCode.trim().toUpperCase();
@@ -105,7 +350,7 @@ export default function CheckoutPage() {
     try {
       const result = await validatePromoCode({
         code,
-        subtotal,
+        subtotal: cartSubtotal,
         country: form.country || undefined,
         city: form.city || undefined,
       });
@@ -134,35 +379,6 @@ export default function CheckoutPage() {
     setPromoCode("");
     setPromoError("");
   }
-
-  /* Pre-fill from onboarding store if available */
-  const [form, setForm] = useState({
-    firstName: onboarding.firstName || "",
-    lastName: onboarding.lastName || "",
-    email: onboarding.email || "",
-    phone: onboarding.phone !== "+" ? onboarding.phone : "",
-    address: onboarding.address || "",
-    googleMapsLink: onboarding.googleMapsLink || "",
-    city: onboarding.city || "",
-    region: onboarding.region || "",
-    country: onboarding.country || "Ghana",
-    whatsapp: onboarding.sameAsPhone
-      ? onboarding.phone !== "+"
-        ? onboarding.phone
-        : ""
-      : onboarding.whatsapp !== "+"
-        ? onboarding.whatsapp
-        : "",
-    notes: "",
-  });
-
-  const setFormField = (key: keyof typeof form, value: string) =>
-    setForm((f) => ({ ...f, [key]: value }));
-
-  const count = totalItems();
-  const subtotal = totalPrice();
-  const discountAmount = discount?.amount ?? 0;
-  const grandTotal = subtotal - discountAmount;
 
   if (!authReady || !isLoggedIn) {
     return (
@@ -196,6 +412,9 @@ export default function CheckoutPage() {
     if (!form.phone.trim()) e.phone = "Required";
     if (!form.address.trim()) e.address = "Required";
     if (!form.city.trim()) e.city = "Required";
+    if (isAccraCity(form.city) && !form.region.trim()) {
+      e.region = "Required for Accra delivery";
+    }
     if (
       form.googleMapsLink.trim() &&
       !/^https?:\/\/.+/i.test(form.googleMapsLink.trim())
@@ -206,20 +425,30 @@ export default function CheckoutPage() {
     return Object.keys(e).length === 0;
   };
 
+  const ensureQuotedTotals = () => {
+    if (!shippingQuoted) {
+      setPaymentError(
+        "Enter a Ghana city or town from our delivery list so we can quote the fee.",
+      );
+      return false;
+    }
+    if (quoteStockIssues.length > 0) {
+      setPaymentError(
+        "Some items are unavailable at the requested quantity. Update your bag and try again.",
+      );
+      return false;
+    }
+    return true;
+  };
+
   const handlePlaceOrder = async () => {
     if (!validate()) return;
+    if (!ensureQuotedTotals()) return;
     setPaymentError("");
     setLoading(true);
 
     try {
-      const adjustments = await syncCartStocks(useCartStore.getState().items);
-      if (adjustments.length > 0) {
-        setPaymentError(
-          "Stock changed for some items. Quantities were updated to match what is available. Review your bag and try again.",
-        );
-        return;
-      }
-
+      // Fresh quote right before commit so totals/stock match what we charge.
       const latestItems = useCartStore.getState().items;
       if (latestItems.length === 0) {
         setPaymentError("Your cart is empty.");
@@ -236,15 +465,119 @@ export default function CheckoutPage() {
         };
       });
 
-      const result = await placeOrder({
+      const region =
+        form.region.trim() ||
+        (isAccraCity(form.city) ? ACCRA_REGION_DEFAULT : "");
+      const freshQuote = await validateCart({
         items: orderItems,
-        shipping: form,
+        shipping: {
+          country: form.country.trim(),
+          city: form.city.trim(),
+          region: region || undefined,
+        },
+        promoCode: discount?.code,
+      });
+      setQuote(freshQuote);
+      syncCartFromQuote(freshQuote);
+
+      const stockIssues = freshQuote.items.filter(
+        (line) => !line.inStock || line.availableStock < line.quantity,
+      );
+      if (stockIssues.length > 0) {
+        setPaymentError(
+          "Stock changed for some items. Quantities were updated to match what is available. Review your bag and try again.",
+        );
+        return;
+      }
+
+      const committedItems = useCartStore.getState().items;
+      if (committedItems.length === 0) {
+        setPaymentError("Your cart is empty.");
+        return;
+      }
+
+      const committedOrderItems = committedItems.map((item) => {
+        const { productId, variantId, size } = parseCartLineId(item.id);
+        return {
+          productId,
+          variantId,
+          size,
+          quantity: item.quantity,
+        };
+      });
+
+      const localAtCommit = lookupGhanaDeliveryFee({
+        city: form.city,
+        region: region || form.region,
+        country: form.country,
+      });
+      const totals = resolveCheckoutTotals({
+        cartSubtotal: useCartStore.getState().totalPrice(),
+        promoDiscount: discount?.amount ?? 0,
+        quote: freshQuote,
+        localDelivery: localAtCommit,
+      });
+
+      if (!totals.shippingQuoted) {
+        setPaymentError(
+          "Could not confirm delivery for this address. Pick a city from the delivery list.",
+        );
+        return;
+      }
+
+      logPricing("checkout.client.totals", {
+        location: {
+          country: form.country,
+          region: localAtCommit?.region || region || form.region,
+          city: form.city,
+        },
+        lines: committedItems.map((item) => ({
+          id: item.id,
+          name: item.name,
+          price: item.price,
+          quantity: item.quantity,
+          lineTotal: item.price * item.quantity,
+        })),
+        subtotal: totals.subtotal,
+        discount: discount
+          ? { code: discount.code, amount: totals.discountAmount }
+          : null,
+        shippingFee: totals.shippingFee,
+        shippingZone:
+          localAtCommit?.shippingZone ?? freshQuote.shippingZone,
+        shippingStatus: totals.shippingQuoted ? "quoted" : "pending_quote",
+        localDelivery: localAtCommit,
+        apiShippingStatus: freshQuote.shippingStatus,
+        grandTotal: totals.grandTotal,
+        paymentMethod,
+      });
+
+      const shippingPayload = {
+        ...form,
+        region: localAtCommit?.region || region || form.region,
+        city: localAtCommit?.location || form.city,
+      };
+
+      const result = await placeOrder({
+        items: committedOrderItems,
+        shipping: shippingPayload,
         payment: {
           method:
             paymentMethod === "pay_now" ? "paystack" : "pay_on_delivery",
         },
-        promoCode: promoCode.trim() || undefined,
+        promoCode: discount?.code || promoCode.trim() || undefined,
       });
+
+      logPricing("checkout.order.mapped", {
+        orderId: result.orderId,
+        trackingNumber: result.trackingNumber ?? null,
+        subtotal: result.subtotal ?? null,
+        discount: result.discount ?? null,
+        shippingFee: result.shippingFee ?? null,
+        total: result.total ?? null,
+        payment: result.payment ?? null,
+      });
+
       if (paymentMethod === "pay_now") {
         const paymentUrl = result.payment?.authorizationUrl;
         if (!paymentUrl) {
@@ -412,7 +745,32 @@ export default function CheckoutPage() {
                   transition={{ duration: 0.25 }}
                   onSubmit={(e) => {
                     e.preventDefault();
-                    if (validate()) setStep("review");
+                    setPaymentError("");
+                    if (!validate()) return;
+                    if (!ensureQuotedTotals()) return;
+                    if (quote) syncCartFromQuote(quote);
+                    logPricing("checkout.details.submit", {
+                      location: {
+                        country: form.country,
+                        region: form.region,
+                        city: form.city,
+                      },
+                      lines: items.map((item) => ({
+                        id: item.id,
+                        price: item.price,
+                        quantity: item.quantity,
+                        lineTotal: item.price * item.quantity,
+                      })),
+                      subtotal,
+                      discount: discount
+                        ? { code: discount.code, amount: discountAmount }
+                        : null,
+                      shippingFee,
+                      shippingZone: quote?.shippingZone ?? null,
+                      shippingStatus: quote?.shippingStatus ?? null,
+                      grandTotal,
+                    });
+                    setStep("review");
                   }}
                   className="flex flex-col gap-5"
                 >
@@ -522,27 +880,55 @@ export default function CheckoutPage() {
                   </Field>
 
                   <div className="grid grid-cols-2 gap-4">
-                    <Field label="City" error={errors.city}>
+                    <Field label="City / Town" error={errors.city}>
                       <input
                         type="text"
                         value={form.city}
                         onChange={(e) => setFormField("city", e.target.value)}
-                        placeholder="Accra"
+                        placeholder="Kumasi, Adenta, Tamale…"
                         autoComplete="address-level2"
+                        list="ghana-delivery-locations"
                         className={inputCls}
                       />
+                      <datalist id="ghana-delivery-locations">
+                        {GHANA_DELIVERY_LOCATIONS.map((location) => (
+                          <option key={location} value={location} />
+                        ))}
+                      </datalist>
                     </Field>
-                    <Field label="Region / State">
+                    <Field
+                      label={
+                        isAccraCity(form.city)
+                          ? "Region / State (required)"
+                          : "Region / State"
+                      }
+                      error={errors.region}
+                    >
                       <input
                         type="text"
                         value={form.region}
                         onChange={(e) => setFormField("region", e.target.value)}
                         placeholder="Greater Accra"
                         autoComplete="address-level1"
+                        list="ghana-delivery-regions"
                         className={inputCls}
                       />
+                      <datalist id="ghana-delivery-regions">
+                        {GHANA_REGIONS.map((region) => (
+                          <option key={region} value={region} />
+                        ))}
+                      </datalist>
                     </Field>
                   </div>
+                  {localDelivery && (
+                    <p className="text-zinc-500 text-[0.65rem] leading-relaxed -mt-2">
+                      Delivery to {localDelivery.location}
+                      {localDelivery.match === "region"
+                        ? ` (${localDelivery.region} rate)`
+                        : ""}
+                      : {formatPrice(localDelivery.fee)}
+                    </p>
+                  )}
 
                   <Field label="Country">
                     <input
@@ -616,8 +1002,25 @@ export default function CheckoutPage() {
                     )}
                   </div>
 
-                  <Button type="submit" className="mt-2 w-full">
-                    Review Order
+                  {(paymentError || quoteError) && step === "details" && (
+                    <p className="text-red-400 text-xs border border-red-400/30 bg-red-400/5 px-4 py-3">
+                      {paymentError || quoteError}
+                    </p>
+                  )}
+                  {quoteStockIssues.length > 0 && (
+                    <p className="text-red-400 text-xs border border-red-400/30 bg-red-400/5 px-4 py-3">
+                      Some items are out of stock or low on stock. Update your
+                      bag before continuing.
+                    </p>
+                  )}
+                  <Button
+                    type="submit"
+                    className="mt-2 w-full"
+                    disabled={!shippingQuoted || quoteStockIssues.length > 0}
+                  >
+                    {!shippingQuoted
+                      ? "Enter delivery city"
+                      : "Review Order"}
                   </Button>
                 </motion.form>
               )}
@@ -727,15 +1130,17 @@ export default function CheckoutPage() {
                     <Button
                       className="flex-1"
                       onClick={handlePlaceOrder}
-                      disabled={loading}
+                      disabled={loading || !canPlaceOrder}
                     >
                       {loading
                         ? isPayNow
                           ? "Opening payment…"
                           : "Placing Order…"
-                        : isPayNow
-                          ? "Pay Now"
-                          : "Place Order"}
+                        : quoteLoading
+                          ? "Calculating delivery…"
+                          : isPayNow
+                            ? `Pay ${formatPrice(grandTotal)}`
+                            : `Place Order · ${formatPrice(grandTotal)}`}
                     </Button>
                   </div>
                 </motion.div>
@@ -751,30 +1156,49 @@ export default function CheckoutPage() {
               </p>
 
               <div className="flex flex-col gap-3 max-h-64 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-                {items.map((item) => (
-                  <div key={item.id} className="flex gap-3 items-center">
-                    <div className="relative w-10 h-12 shrink-0 overflow-hidden">
-                      <Image
-                        src={item.img}
-                        alt={item.name}
-                        fill
-                        className="object-cover"
-                        sizes="40px"
-                      />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-zinc-900 text-xs truncate">
-                        {item.name}
+                {items.map((item) => {
+                  let lineTotal = item.price * item.quantity;
+                  if (quote) {
+                    try {
+                      const parsed = parseCartLineId(item.id);
+                      const quoted = quote.items.find(
+                        (line) =>
+                          line.productId === parsed.productId &&
+                          line.variantId === parsed.variantId &&
+                          line.size === parsed.size,
+                      );
+                      if (quoted && quoted.unitPrice > 0) {
+                        lineTotal = quoted.lineTotal;
+                      }
+                    } catch {
+                      // keep cart line total
+                    }
+                  }
+                  return (
+                    <div key={item.id} className="flex gap-3 items-center">
+                      <div className="relative w-10 h-12 shrink-0 overflow-hidden">
+                        <Image
+                          src={item.img}
+                          alt={item.name}
+                          fill
+                          className="object-cover"
+                          sizes="40px"
+                        />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-zinc-900 text-xs truncate">
+                          {item.name}
+                        </p>
+                        <p className="text-zinc-400 text-[0.6rem]">
+                          ×{item.quantity}
+                        </p>
+                      </div>
+                      <p className="text-zinc-900 text-xs shrink-0">
+                        {formatPrice(lineTotal)}
                       </p>
-                      <p className="text-zinc-400 text-[0.6rem]">
-                        ×{item.quantity}
-                      </p>
                     </div>
-                    <p className="text-zinc-900 text-xs shrink-0">
-                      {formatPrice(item.price * item.quantity)}
-                    </p>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
 
               <div className="border-t border-zinc-100 pt-4 flex flex-col gap-2 text-sm">
@@ -782,22 +1206,58 @@ export default function CheckoutPage() {
                   <span className="text-zinc-500">Subtotal</span>
                   <span className="text-zinc-900">{formatPrice(subtotal)}</span>
                 </div>
-                {discount && (
+                {discountAmount > 0 && (
                   <div className="flex justify-between text-emerald-600">
-                    <span>{discount.label}</span>
+                    <span>{discount?.label || "Discount"}</span>
                     <span>-{formatPrice(discountAmount)}</span>
                   </div>
                 )}
                 <div className="flex justify-between">
                   <span className="text-zinc-500">Delivery</span>
-                  <span className="text-zinc-400">TBD</span>
+                  <span
+                    className={
+                      shippingFee != null ? "text-zinc-900" : "text-zinc-400"
+                    }
+                  >
+                    {quoteLoading
+                      ? "Calculating…"
+                      : shippingFee != null
+                        ? formatPrice(shippingFee)
+                        : !form.city.trim()
+                          ? "Enter city"
+                          : "Pending quote"}
+                  </span>
                 </div>
+                {quoteError && (
+                  <p className="text-red-400 text-[0.6rem]">{quoteError}</p>
+                )}
+                {!shippingQuoted && form.city.trim() && (
+                  <p className="text-zinc-500 text-[0.6rem] leading-relaxed">
+                    Pick a city/town from the list (or a region) for nationwide
+                    delivery pricing.
+                  </p>
+                )}
+                {localDelivery && (
+                  <p className="text-zinc-400 text-[0.6rem]">
+                    {localDelivery.shippingZone === "accra"
+                      ? "Accra delivery"
+                      : "Outside Accra delivery"}
+                    {localDelivery.match === "location"
+                      ? ` · ${localDelivery.location}`
+                      : ` · ${localDelivery.region}`}
+                  </p>
+                )}
                 <div className="flex justify-between font-medium mt-1">
                   <span className="text-zinc-900">Total</span>
                   <span className="text-zinc-900">
                     {formatPrice(grandTotal)}
                   </span>
                 </div>
+                {shippingFee == null && (
+                  <p className="text-zinc-400 text-[0.6rem]">
+                    Total updates once delivery is quoted.
+                  </p>
+                )}
               </div>
 
               {/* Promo code */}

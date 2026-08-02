@@ -17,6 +17,7 @@ import {
   type ApiProductVariant,
   type ApiReview,
 } from "@/lib/api/catalog";
+import { logPricing } from "@/lib/api/pricing-log";
 import { BRAND_PLACEHOLDER } from "@/lib/data/placeholders";
 
 const FALLBACK_IMAGE = BRAND_PLACEHOLDER.textile;
@@ -215,6 +216,8 @@ export async function getProductBySlug(
 ): Promise<Product | null> {
   const detail = await fetchProduct(slug);
   if (!detail) return null;
+  // Log the raw product payload so we can see any location/currency pricing fields.
+  logPricing("product.detail.response", detail);
   if (categorySlug) return toProduct(detail, categorySlug);
   const lookup = await getCollectionSlugLookup();
   return toProduct(detail, lookup.get(detail.collectionId));

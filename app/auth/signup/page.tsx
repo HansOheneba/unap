@@ -6,11 +6,14 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import {
   countries,
+  formatAuthPhoneInput,
   regionsByCountry,
   mockSendOtp,
   mockSignup,
   mockVerifyOtp,
+  normalizePhoneForApi,
   OTP_LENGTH,
+  type OtpIdentifier,
   type SignupData,
 } from "@/lib/auth";
 import { useOnboardingStore } from "@/lib/stores/onboarding-store";
@@ -18,6 +21,10 @@ import { useAuthStore } from "@/lib/stores/auth-store";
 import { useCartStore } from "@/lib/stores/cart-store";
 import { Button } from "@/components/ui/button";
 import OtpField from "@/components/auth/otp-field";
+// Phone OTP signup is temporarily disabled while SMS delivery is being fixed.
+// import OtpChannelToggle, {
+//   type OtpChannel,
+// } from "@/components/auth/otp-channel-toggle";
 
 const inputCls =
   "bg-zinc-50 border border-zinc-200 text-zinc-900 placeholder-zinc-400 px-4 py-3 text-sm focus:outline-none focus:border-zinc-400 transition-colors duration-200";
@@ -45,13 +52,7 @@ function Field({
 }
 
 function formatPhoneInput(raw: string): string {
-  const digits = raw.replace(/\D/g, "");
-  if (!digits) return "+";
-  const a = digits.slice(0, 3);
-  const b = digits.slice(3, 6);
-  const c = digits.slice(6, 10);
-  const d = digits.slice(10, 15);
-  return ["+" + a, b, c, d].filter(Boolean).join(" ");
+  return formatAuthPhoneInput(raw) || "+";
 }
 
 const STEPS = [
@@ -110,15 +111,34 @@ function SignupPageInner() {
   const setAuthUser = useAuthStore((s) => s.setUser);
 
   const regions = regionsByCountry[country] ?? [];
-  const [step1Phase, setStep1Phase] = useState<"email" | "otp">("email");
+  // Phone OTP channel temporarily disabled — email only.
+  const otpChannel = "email" as const;
+  // const [otpChannel, setOtpChannel] = useState<OtpChannel>("email");
+  const [step1Phase, setStep1Phase] = useState<"identity" | "otp">("identity");
   const [otp, setOtp] = useState("");
   const [otpSending, setOtpSending] = useState(false);
+  /** Phone verified via SMS OTP; step 2 phone field stays locked. */
+  const [phoneVerified, setPhoneVerified] = useState(false);
+
+  const buildOtpIdentifier = (): OtpIdentifier | null => {
+    const value = email.trim();
+    if (!value || !/\S+@\S+\.\S+/.test(value)) return null;
+    return { channel: "email", email: value };
+    // Phone OTP (disabled):
+    // const digits = normalizePhoneForApi(phone);
+    // if (digits.length < 9) return null;
+    // return { channel: "phone", phone: digits };
+  };
 
   /* ── Validation ── */
-  const validateStep1Email = () => {
+  const validateStep1Identity = () => {
     const e: Record<string, string> = {};
     if (!email) e.email = "Email is required.";
     else if (!/\S+@\S+\.\S+/.test(email)) e.email = "Enter a valid email.";
+    // Phone OTP identity validation (disabled):
+    // if (normalizePhoneForApi(phone).length < 9) {
+    //   e.phone = "Enter a valid phone number.";
+    // }
     if (!agreed) e.agreed = "You must agree to continue.";
     setErrors(e);
     return Object.keys(e).length === 0;
@@ -126,7 +146,9 @@ function SignupPageInner() {
 
   const validateStep1Otp = () => {
     const e: Record<string, string> = {};
-    if (otp.length !== OTP_LENGTH) e.otp = "Enter the 6-digit code from your email.";
+    if (otp.length !== OTP_LENGTH) {
+      e.otp = "Enter the 6-digit code from your email.";
+    }
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -135,7 +157,7 @@ function SignupPageInner() {
     const e: Record<string, string> = {};
     if (!firstName.trim()) e.firstName = "First name is required.";
     if (!lastName.trim()) e.lastName = "Last name is required.";
-    if (phone.replace(/\D/g, "").length < 7)
+    if (!phoneVerified && normalizePhoneForApi(phone).length < 9)
       e.phone = "Enter a valid phone number.";
     setErrors(e);
     return Object.keys(e).length === 0;
@@ -166,13 +188,16 @@ function SignupPageInner() {
   const handleSendSignupCode = async (e: React.FormEvent) => {
     e.preventDefault();
     clearErrors();
-    if (!validateStep1Email()) return;
+    if (!validateStep1Identity()) return;
+    const id = buildOtpIdentifier();
+    if (!id) return;
     setOtpSending(true);
-    const result = await mockSendOtp(email.trim(), "signup");
+    const result = await mockSendOtp(id, "signup");
     setOtpSending(false);
     if (!result.success) {
       setErrors({
-        email: result.message || "Could not send your code. Please try again.",
+        [otpChannel === "email" ? "email" : "phone"]:
+          result.message || "Could not send your code. Please try again.",
       });
       return;
     }
@@ -184,8 +209,10 @@ function SignupPageInner() {
     e.preventDefault();
     clearErrors();
     if (!validateStep1Otp()) return;
+    const id = buildOtpIdentifier();
+    if (!id) return;
     setOtpSending(true);
-    const result = await mockVerifyOtp(email.trim(), otp, "signup");
+    const result = await mockVerifyOtp(id, otp, "signup");
     setOtpSending(false);
     if (!result.success) {
       setErrors({
@@ -196,8 +223,17 @@ function SignupPageInner() {
     // httpOnly session cookies were already minted server-side by the proxy.
     if (result.apiUser) {
       setAuthUser(result.apiUser);
+      if (result.apiUser.phone) {
+        const formatted = formatAuthPhoneInput(result.apiUser.phone);
+        setField("phone", formatted);
+        if (sameAsPhone) setField("whatsapp", formatted);
+      }
     } else {
       await useAuthStore.getState().hydrate();
+    }
+    if (id.channel === "phone") {
+      setPhoneVerified(true);
+      if (sameAsPhone) setField("whatsapp", phone);
     }
     nextStep();
   };
@@ -342,7 +378,7 @@ function SignupPageInner() {
         </div>
 
         {/* ── Step 1: Account ── */}
-        {step === 1 && step1Phase === "email" && (
+        {step === 1 && step1Phase === "identity" && (
           <form onSubmit={handleSendSignupCode} className="flex flex-col gap-4">
             <div className="mb-2">
               <p className="text-zinc-500 text-[0.65rem] tracking-[0.25em] uppercase mb-1">
@@ -352,9 +388,20 @@ function SignupPageInner() {
                 Create Your Account
               </h1>
               <p className="text-zinc-500 text-sm mt-2">
-                Verify your email with a one-time code.
+                Verify with a one-time code by email.
               </p>
             </div>
+
+            {/* Phone OTP signup temporarily disabled
+            <OtpChannelToggle
+              value={otpChannel}
+              disabled={otpSending}
+              onChange={(next) => {
+                setOtpChannel(next);
+                clearErrors();
+              }}
+            />
+            */}
 
             <Field label="Email Address" error={errors.email}>
               <input
@@ -366,6 +413,22 @@ function SignupPageInner() {
                 className={inputCls}
               />
             </Field>
+            {/* Phone OTP input (disabled)
+            <Field label="Phone Number" error={errors.phone}>
+              <input
+                type="tel"
+                value={phone === "+" ? "" : phone}
+                onChange={(e) => {
+                  const formatted = formatAuthPhoneInput(e.target.value);
+                  setField("phone", formatted || "+");
+                  if (sameAsPhone) setField("whatsapp", formatted || "+");
+                }}
+                placeholder="020 111 2223"
+                autoComplete="tel"
+                className={inputCls}
+              />
+            </Field>
+            */}
 
             <div className="flex flex-col gap-1">
               <label className="flex items-start gap-3 cursor-pointer group">
@@ -482,8 +545,10 @@ function SignupPageInner() {
                 type="button"
                 onClick={async () => {
                   clearErrors();
+                  const id = buildOtpIdentifier();
+                  if (!id) return;
                   setOtpSending(true);
-                  const result = await mockSendOtp(email.trim(), "signup");
+                  const result = await mockSendOtp(id, "signup");
                   setOtpSending(false);
                   if (!result.success) {
                     setErrors({
@@ -503,7 +568,7 @@ function SignupPageInner() {
               <button
                 type="button"
                 onClick={() => {
-                  setStep1Phase("email");
+                  setStep1Phase("identity");
                   setOtp("");
                   clearErrors();
                 }}
@@ -554,19 +619,29 @@ function SignupPageInner() {
               </Field>
             </div>
 
-            <Field label="Phone Number" error={errors.phone}>
+            <Field
+              label="Phone Number"
+              error={errors.phone}
+            >
               <input
                 type="tel"
-                value={phone}
+                value={phone === "+" ? "" : phone}
                 onChange={(e) => {
+                  if (phoneVerified) return;
                   const formatted = formatPhoneInput(e.target.value);
                   setField("phone", formatted);
                   if (sameAsPhone) setField("whatsapp", formatted);
                 }}
-                placeholder="+233 059 207 8493"
+                placeholder="020 111 2223"
                 autoComplete="tel"
-                className={inputCls}
+                readOnly={phoneVerified}
+                className={`${inputCls}${phoneVerified ? " text-zinc-500 cursor-default" : ""}`}
               />
+              {phoneVerified && (
+                <p className="text-zinc-400 text-[0.6rem]">
+                  Verified via SMS. This number is linked to your account.
+                </p>
+              )}
             </Field>
 
             <div className="flex gap-3 mt-2">

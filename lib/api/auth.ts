@@ -1,12 +1,29 @@
-import { apiRequest } from "@/lib/api/client";
+import { ApiError, apiRequest } from "@/lib/api/client";
+
+function logAuthError(label: string, err: unknown) {
+  if (err instanceof ApiError) {
+    console.error(label, {
+      message: err.message,
+      status: err.status,
+      details: err.details,
+    });
+    return;
+  }
+  console.error(label, err);
+}
 
 export type OtpPurpose = "login" | "signup";
+
+/** Identity used for passwordless OTP (email or SMS). */
+export type OtpIdentifier =
+  | { channel: "email"; email: string }
+  | { channel: "phone"; phone: string };
 
 export type ApiUser = {
   id: string;
   firstName?: string | null;
   lastName?: string | null;
-  email: string;
+  email?: string | null;
   phone?: string | null;
   whatsapp?: string | null;
   country?: string | null;
@@ -57,49 +74,83 @@ export type CompleteSignupPayload = {
   agreedToTerms: boolean;
 };
 
+/** Digits-only phone for `/auth/otp/*` (matches Postman SMS examples). */
+export function normalizePhoneForApi(phone: string): string {
+  return phone.replace(/\D/g, "");
+}
+
+function otpRequestBody(identifier: OtpIdentifier, purpose: OtpPurpose) {
+  if (identifier.channel === "email") {
+    return { email: identifier.email.trim().toLowerCase(), purpose };
+  }
+  return { phone: normalizePhoneForApi(identifier.phone), purpose };
+}
+
 export async function sendOtp(
-  email: string,
+  identifier: OtpIdentifier,
   purpose: OtpPurpose,
 ): Promise<SendOtpResult> {
-  const payload = await apiRequest<SendOtpResult | null>("/auth/otp/send", {
-    method: "POST",
-    body: { email: email.trim().toLowerCase(), purpose },
-  });
-  // OTP send is side-effecting; a 2xx with an empty/null body still means the
-  // code was accepted for delivery (matches Postman / live API behavior).
-  return payload ?? { success: true };
+  const body = otpRequestBody(identifier, purpose);
+  console.log("[auth/otp/send] request", body);
+  try {
+    const payload = await apiRequest<SendOtpResult | null>("/auth/otp/send", {
+      method: "POST",
+      body,
+    });
+    console.log("[auth/otp/send] response", payload);
+    // OTP send is side-effecting; a 2xx with an empty/null body still means the
+    // code was accepted for delivery (matches Postman / live API behavior).
+    return payload ?? { success: true };
+  } catch (err) {
+    logAuthError("[auth/otp/send] error", err);
+    throw err;
+  }
 }
 
 export async function verifyOtp(
-  email: string,
+  identifier: OtpIdentifier,
   code: string,
   purpose: OtpPurpose,
 ): Promise<VerifyOtpResult> {
-  const payload = await apiRequest<VerifyOtpResult & { data?: VerifyOtpResult }>(
-    "/auth/otp/verify",
-    {
+  const body = {
+    ...otpRequestBody(identifier, purpose),
+    code: code.trim(),
+  };
+  console.log("[auth/otp/verify] request", {
+    ...body,
+    code: body.code ? `[${body.code.length} digits]` : "",
+  });
+  try {
+    const payload = await apiRequest<
+      VerifyOtpResult & { data?: VerifyOtpResult }
+    >("/auth/otp/verify", {
       method: "POST",
-      body: {
-        email: email.trim().toLowerCase(),
-        code: code.trim(),
-        purpose,
-      },
-    },
-  );
-  // Support both flat `{ user, accessToken }` and nested `{ data: { user } }`.
-  if (payload && typeof payload === "object" && "user" in payload && payload.user) {
-    return payload;
+      body,
+    });
+    console.log("[auth/otp/verify] response", payload);
+    // Support both flat `{ user, accessToken }` and nested `{ data: { user } }`.
+    if (
+      payload &&
+      typeof payload === "object" &&
+      "user" in payload &&
+      payload.user
+    ) {
+      return payload;
+    }
+    if (
+      payload &&
+      typeof payload === "object" &&
+      "data" in payload &&
+      payload.data &&
+      typeof payload.data === "object"
+    ) {
+      return payload.data;
+    }
+    return payload ?? {};
+  } catch (err) {
+    logAuthError("[auth/otp/verify] error", err);
+    throw err;
   }
-  if (
-    payload &&
-    typeof payload === "object" &&
-    "data" in payload &&
-    payload.data &&
-    typeof payload.data === "object"
-  ) {
-    return payload.data;
-  }
-  return payload ?? {};
 }
 
 export async function completeSignup(
@@ -126,6 +177,8 @@ export function extractUser(
 ): ApiUser | null {
   if (!payload) return null;
   if ("user" in payload && payload.user) return payload.user;
-  if ("email" in payload) return payload as ApiUser;
+  if ("id" in payload && typeof payload.id === "string") {
+    return payload as ApiUser;
+  }
   return null;
 }

@@ -60,7 +60,7 @@ export default async function RootLayout({
     <html
       lang="en"
       className={cn(
-        "h-full",
+        "relative h-full",
         "antialiased",
         spaceGrotesk.variable,
         sora.variable,

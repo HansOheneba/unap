@@ -3,9 +3,21 @@
 import { Suspense, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { mockLogin, mockSendOtp, OTP_LENGTH, type User } from "@/lib/auth";
+import {
+  // formatAuthPhoneInput,
+  mockLogin,
+  mockSendOtp,
+  // normalizePhoneForApi,
+  OTP_LENGTH,
+  type OtpIdentifier,
+  type User,
+} from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import OtpField from "@/components/auth/otp-field";
+// Phone OTP login is temporarily disabled while SMS delivery is being fixed.
+// import OtpChannelToggle, {
+//   type OtpChannel,
+// } from "@/components/auth/otp-channel-toggle";
 import { useOnboardingStore } from "@/lib/stores/onboarding-store";
 import { useAuthStore } from "@/lib/stores/auth-store";
 
@@ -27,11 +39,25 @@ function LoginPageInner() {
   const setField = useOnboardingStore((s) => s.setField);
   const setAuthUser = useAuthStore((s) => s.setUser);
 
-  const [phase, setPhase] = useState<"email" | "otp">("email");
+  // Phone channel temporarily disabled — email OTP only.
+  const [phase, setPhase] = useState<"identity" | "otp">("identity");
   const [email, setEmail] = useState("");
+  // const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const identifier = (): OtpIdentifier | null => {
+    const value = email.trim();
+    if (!value || !/\S+@\S+\.\S+/.test(value)) return null;
+    return { channel: "email", email: value };
+    // Phone OTP (disabled):
+    // const digits = normalizePhoneForApi(phone);
+    // if (digits.length < 9) return null;
+    // return { channel: "phone", phone: digits };
+  };
+
+  const destinationLabel = email.trim() || "your email";
 
   const hydrateSession = (u: User) => {
     setField("firstName", u.firstName);
@@ -55,12 +81,13 @@ function LoginPageInner() {
   const handleSendCode = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    if (!email.trim() || !/\S+@\S+\.\S+/.test(email)) {
+    const id = identifier();
+    if (!id) {
       setError("Enter a valid email address.");
       return;
     }
     setLoading(true);
-    const result = await mockSendOtp(email.trim(), "login");
+    const result = await mockSendOtp(id, "login");
     setLoading(false);
     if (!result.success) {
       setError(result.message || "Could not send your code. Please try again.");
@@ -73,12 +100,17 @@ function LoginPageInner() {
   const handleVerify = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    const id = identifier();
+    if (!id) {
+      setError("Enter a valid email address.");
+      return;
+    }
     if (otp.length !== OTP_LENGTH) {
       setError("Enter the 6-digit code from your email.");
       return;
     }
     setLoading(true);
-    const result = await mockLogin(email.trim(), otp);
+    const result = await mockLogin(id, otp);
     setLoading(false);
     if (result.success) {
       // Cookies were minted by the proxy on this verify call. Prefer the
@@ -89,7 +121,8 @@ function LoginPageInner() {
         await useAuthStore.getState().hydrate();
       }
       if (result.user) hydrateSession(result.user);
-      else setField("email", email.trim());
+      else if (id.channel === "email") setField("email", id.email);
+      // else setField("phone", phone.trim() || id.phone);
       router.push(nextPath);
     } else {
       setError(result.message || "Invalid or expired code. Please try again.");
@@ -98,8 +131,13 @@ function LoginPageInner() {
 
   const handleResend = async () => {
     setError("");
+    const id = identifier();
+    if (!id) {
+      setError("Enter a valid email address.");
+      return;
+    }
     setLoading(true);
-    const result = await mockSendOtp(email.trim(), "login");
+    const result = await mockSendOtp(id, "login");
     setLoading(false);
     if (!result.success) {
       setError(result.message || "Could not resend your code. Please try again.");
@@ -116,13 +154,24 @@ function LoginPageInner() {
         </p>
         <h1 className="text-2xl font-light tracking-tight mb-2">Sign In</h1>
         <p className="text-zinc-500 text-sm mb-8">
-          {phase === "email"
-            ? "We will email you a one-time code."
-            : `Enter the code we sent to ${email}.`}
+          {phase === "identity"
+            ? "We will send you a one-time code by email."
+            : `Enter the code we sent to ${destinationLabel}.`}
         </p>
 
-        {phase === "email" ? (
+        {phase === "identity" ? (
           <form onSubmit={handleSendCode} className="flex flex-col gap-4">
+            {/* Phone OTP login temporarily disabled
+            <OtpChannelToggle
+              value={channel}
+              disabled={loading}
+              onChange={(next) => {
+                setChannel(next);
+                setError("");
+              }}
+            />
+            */}
+
             <div className="flex flex-col gap-1.5">
               <label className="text-[0.65rem] tracking-widest uppercase text-zinc-500">
                 Email Address
@@ -136,6 +185,21 @@ function LoginPageInner() {
                 className={inputCls}
               />
             </div>
+            {/* Phone OTP input (disabled)
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[0.65rem] tracking-widest uppercase text-zinc-500">
+                Phone Number
+              </label>
+              <input
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(formatAuthPhoneInput(e.target.value))}
+                placeholder="020 111 2223"
+                autoComplete="tel"
+                className={inputCls}
+              />
+            </div>
+            */}
 
             {error && (
               <p className="text-red-400 text-xs border border-red-400/30 bg-red-400/5 px-4 py-3">
@@ -186,7 +250,7 @@ function LoginPageInner() {
               <button
                 type="button"
                 onClick={() => {
-                  setPhase("email");
+                  setPhase("identity");
                   setOtp("");
                   setError("");
                 }}
