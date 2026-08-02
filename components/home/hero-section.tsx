@@ -1,28 +1,69 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
-const VIDEOS = ["/hero/hero_candy.mp4", "/hero/hero_candy2.mp4"] as const;
+const VIDEOS = ["/hero/hero-vid1.mp4", "/hero/hero-vid2.mp4"] as const;
+const POSTER = "/hero/hero-poster.jpg";
+
+type NetworkInformation = {
+  saveData?: boolean;
+  effectiveType?: string;
+};
+
+function shouldLoadHeroVideo(): boolean {
+  if (typeof window === "undefined") return false;
+
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    return false;
+  }
+
+  const connection = (
+    navigator as Navigator & { connection?: NetworkInformation }
+  ).connection;
+
+  if (connection?.saveData) return false;
+  if (
+    connection?.effectiveType === "slow-2g" ||
+    connection?.effectiveType === "2g"
+  ) {
+    return false;
+  }
+
+  return true;
+}
 
 /**
  * Single <video> element that advances sources on `ended`.
  * Dual crossfade remounts were decoding ~35MB of video at once and
  * contributing to iPhone Safari tab reloads under memory pressure.
+ *
+ * Sources are 720p, audio-stripped, fast-start MP4s (~1.7–2.4MB each).
+ * A poster paints immediately; video is skipped on Save-Data / 2G /
+ * prefers-reduced-motion so slow connections keep a static hero.
  */
 export default function HeroSection() {
   const [index, setIndex] = useState(0);
+  const [loadVideo, setLoadVideo] = useState(false);
+  const [videoReady, setVideoReady] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
+    setLoadVideo(shouldLoadHeroVideo());
+  }, []);
+
+  useEffect(() => {
+    if (!loadVideo) return;
     const el = videoRef.current;
     if (!el) return;
+
     if (el.getAttribute("src") !== VIDEOS[index]) {
       el.src = VIDEOS[index];
     }
     void el.play().catch(() => {});
-  }, [index]);
+  }, [index, loadVideo]);
 
   const handleEnded = () => {
     setIndex((i) => (i + 1) % VIDEOS.length);
@@ -30,16 +71,31 @@ export default function HeroSection() {
 
   return (
     <section className="relative w-full h-dvh overflow-hidden bg-black">
-      <video
-        ref={videoRef}
-        src={VIDEOS[0]}
-        autoPlay
-        muted
-        playsInline
-        preload="metadata"
-        onEnded={handleEnded}
-        className="absolute inset-0 w-full h-full object-cover"
+      {/* Instant paint while video buffers (or as fallback on slow links) */}
+      <Image
+        src={POSTER}
+        alt=""
+        fill
+        priority
+        sizes="100vw"
+        className="object-cover"
+        aria-hidden
       />
+
+      {loadVideo ? (
+        <video
+          ref={videoRef}
+          muted
+          playsInline
+          preload="none"
+          poster={POSTER}
+          onEnded={handleEnded}
+          onPlaying={() => setVideoReady(true)}
+          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
+            videoReady ? "opacity-100" : "opacity-0"
+          }`}
+        />
+      ) : null}
 
       {/* Cinematic vignette overlay */}
       <div className="absolute inset-0 bg-linear-to-t from-transparent via-black/60 to-transparent pointer-events-none" />
