@@ -8,8 +8,6 @@ import { cn } from "@/lib/utils";
 import { getProductBySlug, type Product, type ProductSummary } from "@/lib/products";
 import QuickAddModal from "./QuickAddModal";
 import FadeImage from "@/components/ui/fade-image";
-import WishlistButton from "@/components/ui/wishlist-button";
-import { useWishlistStore } from "@/lib/stores/wishlist-store";
 import { toast } from "@/lib/stores/toast-store";
 
 type Props = {
@@ -38,17 +36,6 @@ export default function CollectionCard({
   const [quickAddProduct, setQuickAddProduct] = useState<Product | null>(null);
   const [loadingQuickAdd, setLoadingQuickAdd] = useState(false);
   const href = `/collections/${product.category}/${product.slug}`;
-  const isWishlisted = useWishlistStore((s) =>
-    s.has(product.id, product.slug),
-  );
-  const wishlistItem = {
-    id: product.id,
-    name: product.name,
-    price: product.price,
-    img: product.image,
-    category: product.category,
-    slug: product.slug,
-  };
 
   const handleQuickAdd = async () => {
     if (loadingQuickAdd) return;
@@ -98,18 +85,6 @@ export default function CollectionCard({
 
         {/* Hover overlay */}
         <div className="pointer-events-none absolute inset-0 bg-black/0 group-hover:bg-black/8 transition-colors duration-500 z-10" />
-
-        {/* Wishlist — always visible on touch; hover-reveal on pointer devices */}
-        <div
-          className={cn(
-            "absolute top-3 right-3 z-20 transition-opacity duration-300",
-            isWishlisted
-              ? "opacity-100"
-              : "opacity-100 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:opacity-100",
-          )}
-        >
-          <WishlistButton item={wishlistItem} />
-        </div>
 
         {/* Quick Add — always visible on touch; slides up on hover for pointer */}
         <button
