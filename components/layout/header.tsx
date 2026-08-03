@@ -7,6 +7,7 @@ import {
   useCallback,
   useSyncExternalStore,
 } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
@@ -572,141 +573,148 @@ export default function Header({
         </AnimatePresence>
       </header>
 
-      {/* ── MOBILE MENU ─────────────────────────────────────── */}
-
-      {/* Backdrop */}
-      <div
-        onClick={() => setMobileOpen(false)}
-        className={`fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm md:hidden transition-opacity duration-300 ${
-          mobileOpen
-            ? "opacity-100 pointer-events-auto"
-            : "opacity-0 pointer-events-none"
-        }`}
-      />
-
-      {/* Full-screen panel slides in from left */}
-      <div
-        className={`fixed inset-0 z-[70] flex flex-col bg-white transition-transform duration-300 md:hidden ease-[cubic-bezier(0.32,0.72,0,1)] ${
-          mobileOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
-      >
-        {/* Top bar */}
-        <div className="flex items-center justify-between px-6 py-5 border-b border-zinc-100">
-          <Link
-            href="/"
-            onClick={() => setMobileOpen(false)}
-            aria-label="Unapologetic home"
-          >
-            <Image
-              src="/logos/unap_logo_black.png"
-              alt="Unapologetic"
-              width={40}
-              height={40}
-              className="object-contain"
-              priority
-            />
-          </Link>
-          <button
-            onClick={() => setMobileOpen(false)}
-            aria-label="Close menu"
-            className="text-zinc-900 hover:opacity-60 transition-opacity duration-200"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="22"
-              height="22"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
-          </button>
-        </div>
-
-        {/* Nav links */}
-        <nav className="flex-1 overflow-y-auto flex flex-col justify-center">
-          {navLinks.map((link, i) =>
-            link.dropdown ? (
-              <MobileCollections
-                key={link.href}
-                items={collectionNav}
-                onClose={() => setMobileOpen(false)}
-              />
-            ) : (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setMobileOpen(false)}
-                style={{ transitionDelay: mobileOpen ? `${i * 60}ms` : "0ms" }}
-                className={`block px-8 py-5 border-b border-zinc-100 text-xs tracking-widest uppercase transition-all duration-500 ${
-                  mobileOpen
-                    ? "opacity-100 translate-x-0"
-                    : "opacity-0 -translate-x-4"
-                } text-zinc-500 hover:text-zinc-900 hover:pl-10`}
-              >
-                {link.label}
-              </Link>
-            ),
-          )}
-          {/* Utility links — only needed on mobile (hidden in desktop header) */}
-          {[
-            { label: "Search", href: "/search" },
-            { label: "Wishlist", href: "/account?tab=wishlist" },
-            { label: "Account", href: "/account" },
-          ].map((link, i) => (
-            <Link
-              key={link.href}
-              href={link.href}
+      {/*
+        Portal out of SiteChrome: that wrapper is fixed + overflow-hidden and
+        always has a transform, which makes fixed descendants position/clip
+        against the chrome strip instead of the viewport.
+      */}
+      {isClient &&
+        createPortal(
+          <>
+            <div
               onClick={() => setMobileOpen(false)}
-              style={{
-                transitionDelay: mobileOpen
-                  ? `${(navLinks.length + i) * 60}ms`
-                  : "0ms",
-              }}
-              className={`block px-8 py-5 border-b border-zinc-100 text-xs tracking-widest uppercase transition-all duration-500 ${
+              className={`fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm md:hidden transition-opacity duration-300 ${
                 mobileOpen
-                  ? "opacity-100 translate-x-0"
-                  : "opacity-0 -translate-x-4"
-              } text-zinc-500 hover:text-zinc-900 hover:pl-10`}
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
+                  ? "opacity-100 pointer-events-auto"
+                  : "opacity-0 pointer-events-none"
+              }`}
+            />
 
-        {/* Bottom: brand tagline + CTA */}
-        <div className="px-8 py-10 border-t border-zinc-100 flex flex-col gap-4">
-          <p className="eyebrow text-zinc-400">Est. 2024 | A Global Movement</p>
-          <Link
-            href="/collections"
-            onClick={() => setMobileOpen(false)}
-            className="border border-zinc-900 bg-transparent text-zinc-900 px-8 py-3 text-[0.7rem] tracking-widest uppercase hover:bg-zinc-900 hover:text-white transition-colors duration-300 text-center"
-          >
-            Shop Now
-          </Link>
-          <div className="flex gap-3">
-            <Link
-              href="/auth/login"
-              onClick={() => setMobileOpen(false)}
-              className="flex-1 border border-zinc-200 text-zinc-500 px-4 py-2.5 text-[0.6rem] tracking-widest uppercase hover:text-zinc-900 hover:border-zinc-400 transition-colors duration-200 text-center"
+            <div
+              className={`fixed inset-0 z-[70] flex flex-col bg-white transition-transform duration-300 md:hidden ease-[cubic-bezier(0.32,0.72,0,1)] ${
+                mobileOpen ? "translate-x-0" : "-translate-x-full"
+              }`}
             >
-              Sign In
-            </Link>
-            <Link
-              href="/tracking"
-              onClick={() => setMobileOpen(false)}
-              className="flex-1 border border-zinc-200 text-zinc-500 px-4 py-2.5 text-[0.6rem] tracking-widest uppercase hover:text-zinc-900 hover:border-zinc-400 transition-colors duration-200 text-center"
-            >
-              Track Order
-            </Link>
-          </div>
-        </div>
-      </div>
+              <div className="flex items-center justify-between px-6 py-5 border-b border-zinc-100">
+                <Link
+                  href="/"
+                  onClick={() => setMobileOpen(false)}
+                  aria-label="Unapologetic home"
+                >
+                  <Image
+                    src="/logos/unap_logo_black.png"
+                    alt="Unapologetic"
+                    width={40}
+                    height={40}
+                    className="object-contain"
+                    priority
+                  />
+                </Link>
+                <button
+                  onClick={() => setMobileOpen(false)}
+                  aria-label="Close menu"
+                  className="text-zinc-900 hover:opacity-60 transition-opacity duration-200"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="22"
+                    height="22"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                  </svg>
+                </button>
+              </div>
+
+              <nav className="flex-1 overflow-y-auto flex flex-col justify-center">
+                {navLinks.map((link, i) =>
+                  link.dropdown ? (
+                    <MobileCollections
+                      key={link.href}
+                      items={collectionNav}
+                      onClose={() => setMobileOpen(false)}
+                    />
+                  ) : (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      onClick={() => setMobileOpen(false)}
+                      style={{
+                        transitionDelay: mobileOpen ? `${i * 60}ms` : "0ms",
+                      }}
+                      className={`block px-8 py-5 border-b border-zinc-100 text-xs tracking-widest uppercase transition-all duration-500 ${
+                        mobileOpen
+                          ? "opacity-100 translate-x-0"
+                          : "opacity-0 -translate-x-4"
+                      } text-zinc-500 hover:text-zinc-900 hover:pl-10`}
+                    >
+                      {link.label}
+                    </Link>
+                  ),
+                )}
+                {[
+                  { label: "Search", href: "/search" },
+                  { label: "Wishlist", href: "/account?tab=wishlist" },
+                  { label: "Account", href: "/account" },
+                ].map((link, i) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={() => setMobileOpen(false)}
+                    style={{
+                      transitionDelay: mobileOpen
+                        ? `${(navLinks.length + i) * 60}ms`
+                        : "0ms",
+                    }}
+                    className={`block px-8 py-5 border-b border-zinc-100 text-xs tracking-widest uppercase transition-all duration-500 ${
+                      mobileOpen
+                        ? "opacity-100 translate-x-0"
+                        : "opacity-0 -translate-x-4"
+                    } text-zinc-500 hover:text-zinc-900 hover:pl-10`}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </nav>
+
+              <div className="px-8 py-10 border-t border-zinc-100 flex flex-col gap-4">
+                <p className="eyebrow text-zinc-400">
+                  Est. 2024 | A Global Movement
+                </p>
+                <Link
+                  href="/collections"
+                  onClick={() => setMobileOpen(false)}
+                  className="border border-zinc-900 bg-transparent text-zinc-900 px-8 py-3 text-[0.7rem] tracking-widest uppercase hover:bg-zinc-900 hover:text-white transition-colors duration-300 text-center"
+                >
+                  Shop Now
+                </Link>
+                <div className="flex gap-3">
+                  <Link
+                    href="/auth/login"
+                    onClick={() => setMobileOpen(false)}
+                    className="flex-1 border border-zinc-200 text-zinc-500 px-4 py-2.5 text-[0.6rem] tracking-widest uppercase hover:text-zinc-900 hover:border-zinc-400 transition-colors duration-200 text-center"
+                  >
+                    Sign In
+                  </Link>
+                  <Link
+                    href="/tracking"
+                    onClick={() => setMobileOpen(false)}
+                    className="flex-1 border border-zinc-200 text-zinc-500 px-4 py-2.5 text-[0.6rem] tracking-widest uppercase hover:text-zinc-900 hover:border-zinc-400 transition-colors duration-200 text-center"
+                  >
+                    Track Order
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </>,
+          document.body,
+        )}
     </>
   );
 }
