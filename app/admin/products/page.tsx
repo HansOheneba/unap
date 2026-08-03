@@ -105,6 +105,7 @@ export default function AdminProductsPage() {
                         fill
                         className="object-cover"
                         sizes="36px"
+                        unoptimized
                       />
                     </div>
                   </td>

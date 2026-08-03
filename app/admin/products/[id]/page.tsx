@@ -180,7 +180,13 @@ export default function EditProductPage() {
               <div key={i} className="flex gap-2 items-center">
                 {img.trim() !== "" && (
                   <div className="relative w-10 h-10 overflow-hidden shrink-0">
-                    <Image src={img} alt="" fill className="object-cover" />
+                    <Image
+                      src={img}
+                      alt=""
+                      fill
+                      className="object-cover"
+                      unoptimized
+                    />
                   </div>
                 )}
                 <input

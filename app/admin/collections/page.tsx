@@ -46,6 +46,7 @@ export default function AdminCollectionsPage() {
                 fill
                 className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                 sizes="(max-width: 768px) 100vw, 33vw"
+                unoptimized
               />
               <div className="absolute inset-0 bg-black/40" />
               <div className="absolute bottom-0 left-0 p-4">

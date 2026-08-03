@@ -19,6 +19,12 @@ const nextConfig: NextConfig = {
     // something still goes through /_next/image. Prefer CDN transforms, but
     // don't 413 the rare untransformed remote.
     maximumResponseBody: 100_000_000,
+    // Cut Image Cache Writes: stop re-optimizing every ~60s default, skip AVIF
+    // twin variants, and only mint widths we actually use in sizes=.
+    minimumCacheTTL: 60 * 60 * 24 * 31,
+    formats: ["image/webp"],
+    deviceSizes: [640, 750, 1080, 1920],
+    imageSizes: [48, 64, 96, 128, 256],
   },
 };
 
