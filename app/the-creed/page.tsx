@@ -54,7 +54,7 @@ export default function TheCreedPage() {
       >
         <motion.div style={{ y: heroImgY }} className="absolute inset-0">
           <Image
-            src="/home/manBeach.jpg"
+            src="/creed/creedgroup.jpg"
             alt=""
             fill
             className="object-cover brightness-60"
