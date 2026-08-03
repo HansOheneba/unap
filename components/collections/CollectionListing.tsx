@@ -53,7 +53,7 @@ function groupAccessories(
     const raw = product.subcategory?.trim();
     const label = raw
       ? raw.charAt(0).toUpperCase() + raw.slice(1).toLowerCase()
-      : "More";
+      : "All Accessories";
     const bucket = byLabel.get(label);
     if (bucket) bucket.push(product);
     else byLabel.set(label, [product]);
@@ -130,7 +130,7 @@ export default function CollectionListing({
       <div className={cn(COLLECTIONS_CONTAINER, "pt-10 pb-2")}>
         <Link
           href="/collections"
-          className="inline-flex items-center gap-2 eyebrow text-zinc-400 hover:text-zinc-900 transition-colors duration-300"
+          className="inline-flex items-center gap-2 eyebrow text-zinc-500 hover:text-zinc-900 transition-colors duration-300"
         >
           <ArrowLeft size={14} />
           All Collections
@@ -162,7 +162,7 @@ export default function CollectionListing({
           <p className="text-zinc-900 text-lg font-light">
             Nothing here yet.
           </p>
-          <p className="text-zinc-400 text-sm max-w-xs leading-relaxed">
+          <p className="text-zinc-500 text-sm max-w-xs leading-relaxed">
             New pieces for {collection.subtitle} are on the way. Check back
             soon.
           </p>
@@ -290,10 +290,10 @@ function ProductSection({
           viewport={{ once: true }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
         >
-          <p className="eyebrow text-zinc-400 mb-2">{styleLabel}</p>
+          <p className="eyebrow text-zinc-500 mb-2">{styleLabel}</p>
           <h3 className="text-zinc-900">{label}</h3>
         </motion.div>
-        <p className="eyebrow text-zinc-400 hidden md:block">
+        <p className="eyebrow text-zinc-600 hidden md:block">
           From {formatPrice(Math.min(...products.map((p) => p.price)))}
         </p>
       </div>

@@ -130,7 +130,7 @@ export default function CollectionCard({
           large ? "px-5 py-5 flex flex-col gap-2" : "px-4 py-4 sm:px-5 sm:py-5",
         )}
       >
-        <p className="eyebrow text-zinc-400 mb-1.5">{categoryLabel}</p>
+        <p className="eyebrow text-zinc-500 mb-1.5">{categoryLabel}</p>
         {large ? (
           <h4 className="text-zinc-900 leading-snug">{product.name}</h4>
         ) : (
