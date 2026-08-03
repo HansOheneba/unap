@@ -71,25 +71,29 @@ export default function CollectionCard({
 
   return (
     <div className={cn("group bg-white", className)}>
-      {/* ── Image area ─────────────────────────────────────────────── */}
+      {/* ── Image area ───────────────────────────────────────────────
+          Edge-to-edge cell; inset + object-contain keeps packshot
+          breathing room so garments aren't cropped flush to the frame. */}
       <div
         className={cn(
-          "relative overflow-hidden",
+          "relative overflow-hidden bg-white",
           large ? "aspect-4/5" : "aspect-2/3",
         )}
       >
         {/* Clicking the image navigates to the product */}
         <Link href={href} className="absolute inset-0 z-0" tabIndex={-1}>
-          <FadeImage
-            src={product.image}
-            alt={product.name}
-            fill
-            sizes={imageSizes}
-            className={cn(
-              "object-cover duration-700 ease-out group-hover:scale-[1.03]",
-              imageClassName,
-            )}
-          />
+          <div className="absolute inset-[6%] sm:inset-[7%]">
+            <FadeImage
+              src={product.image}
+              alt={product.name}
+              fill
+              sizes={imageSizes}
+              className={cn(
+                "object-contain object-center duration-700 ease-out group-hover:scale-[1.03]",
+                imageClassName,
+              )}
+            />
+          </div>
         </Link>
 
         {/* Hover overlay */}

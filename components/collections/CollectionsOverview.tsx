@@ -485,25 +485,28 @@ export default function CollectionsOverview({
                       >
                         <div
                           className={cn(
-                            "relative overflow-hidden",
+                            "relative overflow-hidden bg-white",
                             products.length === 1 ? "aspect-4/5" : "aspect-3/4",
                           )}
                         >
-                          <FadeImage
-                            src={product.image}
-                            alt={product.name}
-                            fill
-                            sizes={
-                              products.length === 1
-                                ? "(max-width: 512px) 100vw, 32rem"
-                                : products.length === 2
-                                  ? "50vw"
-                                  : spanClass
-                                    ? "(max-width: 768px) 100vw, 50vw"
-                                    : "(max-width: 768px) 50vw, 25vw"
-                            }
-                            className="object-cover duration-700 group-hover:scale-[1.04]"
-                          />
+                          {/* Inset + contain: full-bleed cells, packshots keep air */}
+                          <div className="absolute inset-[6%] sm:inset-[7%]">
+                            <FadeImage
+                              src={product.image}
+                              alt={product.name}
+                              fill
+                              sizes={
+                                products.length === 1
+                                  ? "(max-width: 512px) 100vw, 32rem"
+                                  : products.length === 2
+                                    ? "50vw"
+                                    : spanClass
+                                      ? "(max-width: 768px) 100vw, 50vw"
+                                      : "(max-width: 768px) 50vw, 25vw"
+                              }
+                              className="object-contain object-center duration-700 group-hover:scale-[1.04]"
+                            />
+                          </div>
                         </div>
 
                         <div className="p-5 border-t border-zinc-100">
