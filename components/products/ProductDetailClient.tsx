@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import Link from "next/link";
+import FadeImage from "@/components/ui/fade-image";
 import {
   ChevronDown,
   ChevronUp,
@@ -815,7 +815,7 @@ export default function ProductDetailClient({
                 >
                   <div className="relative aspect-3/4 overflow-hidden bg-zinc-100">
                     {item.img && (
-                      <Image
+                      <FadeImage
                         src={item.img}
                         alt={item.name}
                         fill

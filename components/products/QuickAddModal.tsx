@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import Image from "next/image";
 import Link from "next/link";
+import FadeImage from "@/components/ui/fade-image";
 import { X, Check, ArrowRight, ShoppingBag, Package } from "lucide-react";
 import { useAnimate } from "framer-motion";
 import { Dialog, DialogContent, DialogClose } from "@/components/ui/dialog";
@@ -146,9 +146,9 @@ export default function QuickAddModal({ product, open, onClose }: Props) {
       >
         {/* ── Product image (changes with color) ───────────────────── */}
         <div className="relative aspect-[16/9] w-full overflow-hidden bg-zinc-100">
-          <Image
+          <FadeImage
             src={selectedVariant.images[0]}
-            alt={`${product.name} — ${selectedVariant.colorName}`}
+            alt={`${product.name}, ${selectedVariant.colorName}`}
             fill
             className="object-cover transition-opacity duration-300"
             sizes="448px"

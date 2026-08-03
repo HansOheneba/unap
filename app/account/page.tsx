@@ -2,8 +2,8 @@
 
 import { useState, useEffect, useMemo, Suspense } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
+import FadeImage from "@/components/ui/fade-image";
 import {
   Package,
   Heart,
@@ -843,7 +843,7 @@ function AccountPageInner() {
                             className="block relative aspect-4/5 bg-zinc-100"
                           >
                             {item.img && (
-                              <Image
+                              <FadeImage
                                 src={item.img}
                                 alt={item.name}
                                 fill

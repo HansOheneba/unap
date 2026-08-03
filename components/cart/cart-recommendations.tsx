@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { getFeaturedProducts, type ProductSummary } from "@/lib/products";
 import { formatPrice } from "@/lib/currency";
 import AddToCartButton from "@/components/ui/add-to-cart-button";
+import FadeImage from "@/components/ui/fade-image";
 
 type Props = {
   /** Product ids already in the cart (without variant/size suffix). */
@@ -56,7 +56,7 @@ export default function CartRecommendations({ excludeProductIds }: Props) {
               href={`/collections/${product.category}/${product.slug}`}
               className="relative shrink-0 w-20 h-20 md:w-24 md:h-24 overflow-hidden bg-zinc-100"
             >
-              <Image
+              <FadeImage
                 src={product.image}
                 alt={product.name}
                 fill

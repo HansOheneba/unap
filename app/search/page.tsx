@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { Suspense, useState, useRef, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
@@ -8,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Search, X } from "lucide-react";
 import { useCollectionsNav } from "@/components/layout/collections-nav-provider";
 import AddToCartButton from "@/components/ui/add-to-cart-button";
+import FadeImage from "@/components/ui/fade-image";
 import { formatPrice } from "@/lib/currency";
 import {
   collectionSlugFromHref,
@@ -150,7 +150,7 @@ function SearchPageInner() {
                     href={`/collections/${product.category}/${product.slug}`}
                     className="relative aspect-3/4 overflow-hidden block"
                   >
-                    <Image
+                    <FadeImage
                       src={product.image}
                       alt={product.name}
                       fill

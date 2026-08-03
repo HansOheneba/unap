@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
@@ -11,6 +10,7 @@ import { formatPrice } from "@/lib/currency";
 import AddToCartButton from "@/components/ui/add-to-cart-button";
 import CartRecommendations from "@/components/cart/cart-recommendations";
 import { Button, buttonVariants } from "@/components/ui/button";
+import FadeImage from "@/components/ui/fade-image";
 import ConfirmDialog from "@/components/ui/confirm-dialog";
 import { toast } from "@/lib/stores/toast-store";
 import { getFeaturedProducts, type ProductSummary } from "@/lib/products";
@@ -159,7 +159,7 @@ export default function CartPage() {
                         className="block"
                       >
                         <div className="relative overflow-hidden aspect-3/4">
-                          <Image
+                          <FadeImage
                             src={product.image}
                             alt={product.name}
                             fill
@@ -209,7 +209,7 @@ export default function CartPage() {
                   >
                     {/* Thumbnail */}
                     <div className="relative shrink-0 w-20 h-24 md:w-24 md:h-28 overflow-hidden border border-zinc-200 bg-white">
-                      <Image
+                      <FadeImage
                         src={item.img}
                         alt={item.name}
                         fill

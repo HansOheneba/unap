@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
+import FadeImage from "@/components/ui/fade-image";
 import { cn } from "@/lib/utils";
 
 export type GalleryImage = {
@@ -110,7 +110,7 @@ export default function ProductGallery({
               aria-label={`View image ${i + 1}`}
               aria-current={i === safeIndex}
             >
-              <Image
+              <FadeImage
                 src={img.src}
                 alt={`${productName} thumbnail ${i + 1}`}
                 fill
@@ -131,7 +131,7 @@ export default function ProductGallery({
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
       >
-        <Image
+        <FadeImage
           src={active.src}
           alt={`${productName}, view ${safeIndex + 1}`}
           fill

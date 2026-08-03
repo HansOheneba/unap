@@ -18,35 +18,10 @@ import {
   type ApiReview,
 } from "@/lib/api/catalog";
 import { logPricing } from "@/lib/api/pricing-log";
-import { BRAND_PLACEHOLDER } from "@/lib/data/placeholders";
-
-const FALLBACK_IMAGE = BRAND_PLACEHOLDER.textile;
-
-/**
- * Catalog occasionally ships absolute machine paths (e.g. `/Users/.../logo.png`)
- * or empty strings from bad admin uploads. Next/Image can only serve `/public`
- * paths or remote https URLs — everything else falls back.
- */
-function resolveImageUrl(url: string | null | undefined): string {
-  if (!url?.trim()) return FALLBACK_IMAGE;
-  const trimmed = url.trim();
-  if (trimmed.startsWith("https://") || trimmed.startsWith("http://")) {
-    return trimmed;
-  }
-  if (trimmed.startsWith("/") && !trimmed.startsWith("//")) {
-    // Reject absolute filesystem paths that look like site-root URLs.
-    if (
-      trimmed.startsWith("/Users/") ||
-      trimmed.startsWith("/home/") ||
-      trimmed.startsWith("/var/") ||
-      trimmed.startsWith("/tmp/")
-    ) {
-      return FALLBACK_IMAGE;
-    }
-    return trimmed;
-  }
-  return FALLBACK_IMAGE;
-}
+import {
+  resolveImageUrl,
+  STOREFRONT_FALLBACK_IMAGE as FALLBACK_IMAGE,
+} from "@/lib/media/resolve-image-url";
 
 /**
  * The API currently serializes `product.collectionId` as an internal UUID while

@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronRight } from "lucide-react";
@@ -11,6 +10,7 @@ import { formatPrice } from "@/lib/currency";
 import { useOnboardingStore } from "@/lib/stores/onboarding-store";
 import { useIsLoggedIn, useAuthReady } from "@/lib/use-is-logged-in";
 import { Button, buttonVariants } from "@/components/ui/button";
+import FadeImage from "@/components/ui/fade-image";
 import {
   parseCartLineId,
   placeOrder,
@@ -1090,7 +1090,7 @@ export default function CheckoutPage() {
                         className="bg-white flex items-center gap-4 px-5 py-4"
                       >
                         <div className="relative w-12 h-14 shrink-0 overflow-hidden">
-                          <Image
+                          <FadeImage
                             src={item.img}
                             alt={item.name}
                             fill
@@ -1177,7 +1177,7 @@ export default function CheckoutPage() {
                   return (
                     <div key={item.id} className="flex gap-3 items-center">
                       <div className="relative w-10 h-12 shrink-0 overflow-hidden">
-                        <Image
+                        <FadeImage
                           src={item.img}
                           alt={item.name}
                           fill

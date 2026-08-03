@@ -1,11 +1,11 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
 import { buttonVariants } from "@/components/ui/button";
+import FadeImage from "@/components/ui/fade-image";
 import { formatPrice } from "@/lib/currency";
 import type { ProductSummary } from "@/lib/products";
 
@@ -65,7 +65,7 @@ export default function CollectionsPreview({ products }: Props) {
               className="block relative w-full"
               style={{ aspectRatio: "3/4" }}
             >
-              <Image
+              <FadeImage
                 src={hero.image}
                 alt={hero.name}
                 fill
@@ -96,7 +96,7 @@ export default function CollectionsPreview({ products }: Props) {
                   className="block relative w-full"
                   style={{ aspectRatio: "4/3" }}
                 >
-                  <Image
+                  <FadeImage
                     src={product.image}
                     alt={product.name}
                     fill

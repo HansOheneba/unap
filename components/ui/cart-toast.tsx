@@ -2,11 +2,11 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import Image from "next/image";
 import Link from "next/link";
 import { X } from "lucide-react";
 import { useCartStore } from "@/lib/stores/cart-store";
 import { formatPrice } from "@/lib/currency";
+import FadeImage from "@/components/ui/fade-image";
 
 const DURATION = 3500;
 
@@ -56,7 +56,7 @@ export default function CartToast() {
           <div className="flex gap-3 p-4 pr-8">
             {/* Thumbnail */}
             <div className="relative w-14 h-[72px] shrink-0 overflow-hidden bg-zinc-800">
-              <Image
+              <FadeImage
                 src={toast.item.img}
                 alt={toast.item.name}
                 fill
