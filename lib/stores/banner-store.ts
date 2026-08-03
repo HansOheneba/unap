@@ -1,6 +1,10 @@
 import { create } from "zustand";
 
 export const BANNER_H = 32;
+/** Main nav bar height (matches header `py-5` + in-flow controls). */
+export const HEADER_H = 72;
+/** Collections category subnav strip inside the header. */
+export const COLLECTIONS_SUBNAV_H = 44;
 export const BANNER_REVEAL_MS = 200;
 export const BANNER_HIDE_MS = 200;
 /** Minimum scroll delta before toggling banner visibility */

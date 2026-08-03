@@ -3,7 +3,12 @@
 import { usePathname } from "next/navigation";
 import Footer from "./footer";
 import CartToast from "@/components/ui/cart-toast";
-import { getBannerOffset, useBannerStore } from "@/lib/stores/banner-store";
+import {
+  COLLECTIONS_SUBNAV_H,
+  getBannerOffset,
+  HEADER_H,
+  useBannerStore,
+} from "@/lib/stores/banner-store";
 
 // Pages where the first section intentionally sits behind the fixed header
 // (full-bleed video/image heroes with dark overlays).
@@ -50,10 +55,14 @@ export default function ConditionalNav({
           aria-hidden="true"
         />
       )}
-      {/* Spacer for fixed header height (56px) + collections subnav (44px) when present */}
+      {/* Spacer for fixed header + collections subnav when present */}
       {needsHeaderOffset && (
         <div
-          style={{ height: isCollectionsPath ? 100 : 56 }}
+          style={{
+            height: isCollectionsPath
+              ? HEADER_H + COLLECTIONS_SUBNAV_H
+              : HEADER_H,
+          }}
           className="shrink-0"
           aria-hidden="true"
         />

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { usePathname } from "next/navigation";
 import AnnouncementBanner from "@/components/layout/announcement-banner";
 import Header from "@/components/layout/header";
 import type { AnnouncementBannerData } from "@/lib/api/announcements";
@@ -10,6 +11,8 @@ import {
   BANNER_HIDE_MS,
   BANNER_REVEAL_MS,
   BANNER_SCROLL_DELTA,
+  COLLECTIONS_SUBNAV_H,
+  HEADER_H,
   useBannerStore,
 } from "@/lib/stores/banner-store";
 
@@ -29,12 +32,16 @@ function canScrollHideBanner(): boolean {
 }
 
 export default function SiteChrome({ banner, collectionNav }: SiteChromeProps) {
+  const pathname = usePathname();
   const { visible, scrollHidden, setScrollHidden } = useBannerStore();
   const lastScrollY = useRef(0);
   const scrollHiddenRef = useRef(false);
   const lockUntilRef = useRef(0);
   const bannerActive =
     banner.isEnabled && banner.messages.length > 0 && visible;
+  const headerHeight =
+    HEADER_H +
+    (pathname?.startsWith("/collections") ? COLLECTIONS_SUBNAV_H : 0);
 
   // Scroll-direction latch — hide on downward tick, reveal on upward tick.
   // Desktop only. Layout (spacers / sticky top) never follows scrollHidden;
@@ -79,11 +86,11 @@ export default function SiteChrome({ banner, collectionNav }: SiteChromeProps) {
   }, [bannerActive, setScrollHidden]);
 
   const slideMs = scrollHidden ? BANNER_HIDE_MS : BANNER_REVEAL_MS;
-  // Header is 56px. Clip the fixed layer when the banner is slid away —
-  // safe because fixed chrome is out of document flow (unlike in-flow spacers).
-  const chromeHeight = 56 + (bannerActive ? BANNER_H : 0);
+  // Clip the fixed layer when the banner is slid away — safe because fixed
+  // chrome is out of document flow (unlike in-flow spacers).
+  const chromeHeight = headerHeight + (bannerActive ? BANNER_H : 0);
   const visibleChromeHeight =
-    bannerActive && scrollHidden ? 56 : chromeHeight;
+    bannerActive && scrollHidden ? headerHeight : chromeHeight;
 
   return (
     <div
