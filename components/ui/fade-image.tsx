@@ -70,8 +70,10 @@ export default function FadeImage({
         }}
         ref={(node) => {
           // Cached bitmaps may skip onLoad in some browsers.
+          // Guard: never setState when already loaded — inline ref callbacks
+          // re-fire every commit and must not schedule work on iOS Safari.
           if (node?.complete && node.naturalWidth > 0) {
-            setLoaded(true);
+            setLoaded((wasLoaded) => (wasLoaded ? wasLoaded : true));
           }
         }}
         className={cn(

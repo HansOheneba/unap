@@ -314,13 +314,28 @@ export async function getAllCollectionsWithProducts(): Promise<
 
 /** First N active products across the whole catalog, for home page previews.
  *  Uses `GET /catalog` (one call) instead of fetching every collection detail. */
+/** Always shown first on the homepage collections preview. */
+const HOMEPAGE_PINNED_SLUGS = [
+  "premium-cotton-boxer-brief-3-mixed",
+  "bigband-boxer-briefs-mixed-pack",
+] as const;
+
 export async function getFeaturedProducts(limit = 4): Promise<ProductSummary[]> {
   const [{ products }, lookup] = await Promise.all([
     getCatalog(),
     getCollectionSlugLookup(),
   ]);
-  return products
-    .filter((p) => p.isActive !== false)
+
+  const active = products.filter((p) => p.isActive !== false);
+  const bySlug = new Map(active.map((p) => [p.slug, p]));
+
+  const pinned = HOMEPAGE_PINNED_SLUGS.map((slug) => bySlug.get(slug)).filter(
+    (p): p is NonNullable<typeof p> => p != null,
+  );
+  const pinnedSlugs = new Set(pinned.map((p) => p.slug));
+  const rest = active.filter((p) => !pinnedSlugs.has(p.slug));
+
+  return [...pinned, ...rest]
     .slice(0, limit)
     .map((p) => toSummary(p, lookup.get(p.collectionId)));
 }

@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { buttonVariants } from "@/components/ui/button";
 import FadeImage from "@/components/ui/fade-image";
@@ -20,6 +20,89 @@ const HERO_IMAGES = [
 ] as const;
 
 const HERO_SLIDE_MS = 4500;
+
+type HeroSlide = {
+  current: number;
+  /** Previous index kept mounted only for the crossfade, then dropped. */
+  previous: number | null;
+};
+
+/** Only keep current + previous slides mounted — mounting all four OOMs iOS Safari. */
+function useHeroSlideshow(enabled: boolean) {
+  const [slide, setSlide] = useState<HeroSlide>({
+    current: 0,
+    previous: null,
+  });
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    if (!enabled) return;
+
+    const reducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    if (reducedMotion) return;
+
+    let intervalId: number | null = null;
+    let releasePrevId: number | null = null;
+    let inView = true;
+    let pageVisible = document.visibilityState === "visible";
+
+    const tick = () => {
+      setSlide(({ current }) => ({
+        previous: current,
+        current: (current + 1) % HERO_IMAGES.length,
+      }));
+      if (releasePrevId != null) window.clearTimeout(releasePrevId);
+      // Drop the outgoing bitmap after the opacity fade finishes.
+      releasePrevId = window.setTimeout(() => {
+        setSlide((s) =>
+          s.previous == null ? s : { ...s, previous: null },
+        );
+      }, 1100);
+    };
+
+    const syncInterval = () => {
+      if (intervalId != null) {
+        window.clearInterval(intervalId);
+        intervalId = null;
+      }
+      if (inView && pageVisible) {
+        intervalId = window.setInterval(tick, HERO_SLIDE_MS);
+      }
+    };
+
+    const onVisibility = () => {
+      pageVisible = document.visibilityState === "visible";
+      syncInterval();
+    };
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        inView = entry?.isIntersecting ?? false;
+        syncInterval();
+      },
+      { threshold: 0.15 },
+    );
+
+    if (sectionRef.current) observer.observe(sectionRef.current);
+    document.addEventListener("visibilitychange", onVisibility);
+    syncInterval();
+
+    return () => {
+      if (intervalId != null) window.clearInterval(intervalId);
+      if (releasePrevId != null) window.clearTimeout(releasePrevId);
+      observer.disconnect();
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
+  }, [enabled]);
+
+  return {
+    heroIndex: slide.current,
+    prevIndex: slide.previous,
+    sectionRef,
+  };
+}
 
 export type CollectionSection = {
   collection: CollectionInfo;
@@ -77,14 +160,9 @@ export default function CollectionsOverview({
   const bannerVisible = useBannerStore((s) => s.visible);
   // Sticky top ignores scrollHidden so Safari can't loop on layout shifts.
   const stickyTop = getBannerOffset(bannerVisible) + 56 + 44;
-  const [heroIndex, setHeroIndex] = useState(0);
-
-  useEffect(() => {
-    const id = window.setInterval(() => {
-      setHeroIndex((i) => (i + 1) % HERO_IMAGES.length);
-    }, HERO_SLIDE_MS);
-    return () => window.clearInterval(id);
-  }, []);
+  const { heroIndex, prevIndex, sectionRef } = useHeroSlideshow(
+    HERO_IMAGES.length > 1,
+  );
 
   const scrollTo = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
@@ -95,14 +173,22 @@ export default function CollectionsOverview({
     label: s.collection.subtitle,
   }));
 
+  const heroSlots =
+    prevIndex != null && prevIndex !== heroIndex
+      ? [prevIndex, heroIndex]
+      : [heroIndex];
+
   return (
-    <main className="bg-white text-zinc-900 min-h-screen overflow-x-hidden">
+    <main className="bg-white text-zinc-900 min-h-dvh overflow-x-hidden">
       {/* ── IMAGE STRIP ─────────────────────────────────────────────────── */}
-      <section className="relative w-full h-[52vh] overflow-hidden bg-black">
-        {HERO_IMAGES.map((src, index) => (
+      <section
+        ref={sectionRef}
+        className="relative w-full h-[52dvh] overflow-hidden bg-black"
+      >
+        {heroSlots.map((index) => (
           <Image
-            key={src}
-            src={src}
+            key={HERO_IMAGES[index]}
+            src={HERO_IMAGES[index]}
             alt=""
             fill
             priority={index === 0}
@@ -231,14 +317,17 @@ export default function CollectionsOverview({
       {sections.map(({ collection: col, products }, i) => (
         <section key={col.id} id={col.id}>
           {/* Cinematic featured banner */}
-          <div className="relative w-full h-[78vh] overflow-hidden">
+          <div className="relative w-full h-[70dvh] overflow-hidden">
             <FadeImage
               src={col.featured}
               alt={col.title}
               fill
               sizes="100vw"
               className="object-cover"
-              priority={i < 2}
+              // Only the first banner is LCP-critical; eager-loading every
+              // full-bleed section thrash-decodes on iPhone Safari.
+              priority={i === 0}
+              loading={i === 0 ? "eager" : "lazy"}
             />
             {i % 2 === 0 ? (
               <>

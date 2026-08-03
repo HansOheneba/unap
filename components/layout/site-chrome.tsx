@@ -79,14 +79,23 @@ export default function SiteChrome({ banner, collectionNav }: SiteChromeProps) {
   }, [bannerActive, setScrollHidden]);
 
   const slideMs = scrollHidden ? BANNER_HIDE_MS : BANNER_REVEAL_MS;
+  // Header is 56px. Clip the fixed layer when the banner is slid away —
+  // safe because fixed chrome is out of document flow (unlike in-flow spacers).
+  const chromeHeight = 56 + (bannerActive ? BANNER_H : 0);
+  const visibleChromeHeight =
+    bannerActive && scrollHidden ? 56 : chromeHeight;
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 overflow-hidden">
+    <div
+      className="fixed top-0 left-0 right-0 z-50 overflow-hidden"
+      style={{
+        height: visibleChromeHeight,
+        transition: `height ${slideMs}ms ease-out`,
+      }}
+    >
       {/*
-        Slide the whole chrome with transform instead of animating banner
-        height. Height changes on fixed + in-flow spacers during scroll are
-        what kick off Safari's feedback loop; transform keeps chrome size
-        stable while the banner visually leaves.
+        Slide the whole chrome with transform. Never animate in-flow spacer
+        height during scroll — that is Safari's scroll↔layout crash loop.
       */}
       <div
         style={{
@@ -94,8 +103,7 @@ export default function SiteChrome({ banner, collectionNav }: SiteChromeProps) {
             bannerActive && scrollHidden
               ? `translateY(-${BANNER_H}px)`
               : "translateY(0)",
-          marginBottom: bannerActive && scrollHidden ? -BANNER_H : 0,
-          transition: `transform ${slideMs}ms ease-out, margin-bottom ${slideMs}ms ease-out`,
+          transition: `transform ${slideMs}ms ease-out`,
         }}
       >
         {bannerActive && (

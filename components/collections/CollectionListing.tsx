@@ -81,8 +81,8 @@ export default function CollectionListing({
       : null;
 
   return (
-    <main className="bg-white text-zinc-900 min-h-screen overflow-x-hidden">
-      <section className="relative w-full h-[65vh] overflow-hidden">
+    <main className="bg-white text-zinc-900 min-h-dvh overflow-x-hidden">
+      <section className="relative w-full h-[65dvh] overflow-hidden">
         <FadeImage
           src={collection.featured}
           alt={collection.title}
