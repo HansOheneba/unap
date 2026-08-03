@@ -5,9 +5,9 @@ import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
 import { buttonVariants } from "@/components/ui/button";
-import FadeImage from "@/components/ui/fade-image";
-import { formatPrice } from "@/lib/currency";
+import CollectionCard from "@/components/products/CollectionCard";
 import type { ProductSummary } from "@/lib/products";
+import { cn } from "@/lib/utils";
 
 function FadeIn({
   children,
@@ -37,11 +37,22 @@ type Props = {
   products: ProductSummary[];
 };
 
-export default function CollectionsPreview({ products }: Props) {
-  const hero = products[0];
-  const rest = products.slice(1);
+function previewGridClass(count: number): string {
+  if (count === 1) return "grid grid-cols-1 max-w-lg mx-auto gap-px bg-zinc-100";
+  if (count === 2) return "grid grid-cols-2 gap-px bg-zinc-100";
+  if (count === 3) return "grid grid-cols-2 md:grid-cols-3 gap-px bg-zinc-100";
+  return "grid grid-cols-2 md:grid-cols-4 gap-px bg-zinc-100";
+}
 
-  if (!hero) return null;
+function previewImageSizes(count: number): string {
+  if (count === 1) return "(max-width: 512px) 100vw, 32rem";
+  if (count === 2) return "50vw";
+  if (count === 3) return "(max-width: 768px) 50vw, 33vw";
+  return "(max-width: 768px) 50vw, 25vw";
+}
+
+export default function CollectionsPreview({ products }: Props) {
+  if (products.length === 0) return null;
 
   return (
     <section className="bg-white text-zinc-900 py-32 px-8 md:px-20">
@@ -58,67 +69,19 @@ export default function CollectionsPreview({ products }: Props) {
           </FadeIn>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-px bg-zinc-100">
-          <FadeIn className="md:col-span-7 bg-white group">
-            <Link
-              href={`/collections/${hero.category}/${hero.slug}`}
-              className="block relative w-full"
-              style={{ aspectRatio: "3/4" }}
-            >
-              <FadeImage
-                src={hero.image}
-                alt={hero.name}
-                fill
-                sizes="(max-width: 768px) 100vw, 58vw"
-                className="object-cover brightness-90 group-hover:brightness-100 transition-[filter] duration-700"
-              />
-              <span className="absolute top-6 left-6 eyebrow text-white/70 capitalize">
-                {hero.category.replace("-", " ")}
-              </span>
-            </Link>
-            <div className="flex items-center justify-between gap-3 bg-white border-t border-zinc-100 px-6 py-5">
-              <h5 className="min-w-0 truncate text-zinc-900">{hero.name}</h5>
-              <span className="shrink-0 text-base font-semibold tabular-nums text-zinc-900">
-                {formatPrice(hero.price)}
-              </span>
-            </div>
-          </FadeIn>
-
-          <div className="md:col-span-5 flex flex-col gap-px bg-zinc-100">
-            {rest.map((product, i) => (
-              <FadeIn
+        <FadeIn delay={0.1}>
+          <div className={cn(previewGridClass(products.length))}>
+            {products.map((product) => (
+              <CollectionCard
                 key={product.slug}
-                delay={0.1 * (i + 1)}
-                className="bg-white group"
-              >
-                <Link
-                  href={`/collections/${product.category}/${product.slug}`}
-                  className="block relative w-full"
-                  style={{ aspectRatio: "4/3" }}
-                >
-                  <FadeImage
-                    src={product.image}
-                    alt={product.name}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 42vw"
-                    className="object-cover brightness-85 group-hover:brightness-100 transition-[filter] duration-700"
-                  />
-                  <span className="absolute top-4 left-4 eyebrow text-white/70 capitalize">
-                    {product.category.replace("-", " ")}
-                  </span>
-                </Link>
-                <div className="flex items-center justify-between gap-3 bg-white border-t border-zinc-100 px-5 py-4">
-                  <h5 className="min-w-0 truncate text-sm text-zinc-900">
-                    {product.name}
-                  </h5>
-                  <span className="shrink-0 text-sm font-semibold tabular-nums text-zinc-900">
-                    {formatPrice(product.price)}
-                  </span>
-                </div>
-              </FadeIn>
+                product={product}
+                categoryLabel={product.category.replace("-", " ")}
+                imageSizes={previewImageSizes(products.length)}
+                large={products.length === 1}
+              />
             ))}
           </div>
-        </div>
+        </FadeIn>
 
         <FadeIn delay={0.2}>
           <p className="text-zinc-500 text-center text-sm tracking-wider uppercase">
