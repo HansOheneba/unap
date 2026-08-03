@@ -2,6 +2,9 @@ import { BRAND_PLACEHOLDER } from "@/lib/data/placeholders";
 
 export const STOREFRONT_FALLBACK_IMAGE = BRAND_PLACEHOLDER.textile;
 
+/** Soft zinc surface behind packshots so transparent PNGs don't clash with grid/page colors. */
+export const PRODUCT_IMAGE_SURFACE_CLASS = "bg-zinc-50";
+
 /**
  * Ask Cloudinary for a storefront-sized derivative instead of the camera master.
  * Catalog shots are often 6–8k / multi‑MB; those stall Next/Image and blank the UI.

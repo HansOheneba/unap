@@ -155,7 +155,7 @@ export default function QuickAddModal({ product, open, onClose }: Props) {
         showCloseButton={false}
       >
         {/* ── Product image (changes with color) ───────────────────── */}
-        <div className="relative aspect-[16/9] w-full overflow-hidden bg-zinc-100">
+        <div className="relative aspect-[16/9] w-full overflow-hidden bg-zinc-50">
           <FadeImage
             src={selectedVariant.images[0]}
             alt={`${product.name}, ${selectedVariant.colorName}`}

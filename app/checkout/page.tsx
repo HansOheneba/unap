@@ -1089,7 +1089,7 @@ export default function CheckoutPage() {
                         key={item.id}
                         className="bg-white flex items-center gap-4 px-5 py-4"
                       >
-                        <div className="relative w-12 h-14 shrink-0 overflow-hidden">
+                        <div className="relative w-12 h-14 shrink-0 overflow-hidden bg-zinc-50">
                           <FadeImage
                             src={item.img}
                             alt={item.name}
@@ -1176,7 +1176,7 @@ export default function CheckoutPage() {
                   }
                   return (
                     <div key={item.id} className="flex gap-3 items-center">
-                      <div className="relative w-10 h-12 shrink-0 overflow-hidden">
+                      <div className="relative w-10 h-12 shrink-0 overflow-hidden bg-zinc-50">
                         <FadeImage
                           src={item.img}
                           alt={item.name}

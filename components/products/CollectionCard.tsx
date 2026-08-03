@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { getProductBySlug, type Product, type ProductSummary } from "@/lib/products";
 import QuickAddModal from "./QuickAddModal";
 import FadeImage from "@/components/ui/fade-image";
+import { PRODUCT_IMAGE_SURFACE_CLASS } from "@/lib/media/resolve-image-url";
 import { toast } from "@/lib/stores/toast-store";
 
 type Props = {
@@ -63,7 +64,8 @@ export default function CollectionCard({
           breathing room so garments aren't cropped flush to the frame. */}
       <div
         className={cn(
-          "relative overflow-hidden bg-white",
+          "relative overflow-hidden",
+          PRODUCT_IMAGE_SURFACE_CLASS,
           large ? "aspect-4/5" : "aspect-2/3",
         )}
       >

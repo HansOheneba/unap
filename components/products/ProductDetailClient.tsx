@@ -822,7 +822,7 @@ export default function ProductDetailClient({
                   href={`/collections/${item.category}/${item.slug}`}
                   className="group block bg-white"
                 >
-                  <div className="relative aspect-3/4 overflow-hidden bg-zinc-100">
+                  <div className="relative aspect-3/4 overflow-hidden bg-zinc-50">
                     {item.img && (
                       <FadeImage
                         src={item.img}

@@ -83,7 +83,13 @@ export default function CollectionsPreview({ products }: Props) {
           </div>
         </FadeIn>
 
-        <FadeIn delay={0.2}>
+        <FadeIn delay={0.2} className="flex justify-center">
+          <Link href="/collections" className={buttonVariants({ variant: "outline" })}>
+            View All Collections
+          </Link>
+        </FadeIn>
+
+        <FadeIn delay={0.25}>
           <p className="text-zinc-500 text-center text-sm tracking-wider uppercase">
             Every piece carries intention. None of it is accidental.
           </p>

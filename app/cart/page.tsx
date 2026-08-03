@@ -158,7 +158,7 @@ export default function CartPage() {
                         href={`/collections/${product.category}/${product.slug}`}
                         className="block"
                       >
-                        <div className="relative overflow-hidden aspect-3/4">
+                        <div className="relative overflow-hidden aspect-3/4 bg-zinc-50">
                           <FadeImage
                             src={product.image}
                             alt={product.name}
@@ -208,7 +208,7 @@ export default function CartPage() {
                     className="bg-zinc-50 border border-zinc-200 flex gap-5 p-5"
                   >
                     {/* Thumbnail */}
-                    <div className="relative shrink-0 w-20 h-24 md:w-24 md:h-28 overflow-hidden border border-zinc-200 bg-white">
+                    <div className="relative shrink-0 w-20 h-24 md:w-24 md:h-28 overflow-hidden border border-zinc-200 bg-zinc-50">
                       <FadeImage
                         src={item.img}
                         alt={item.name}

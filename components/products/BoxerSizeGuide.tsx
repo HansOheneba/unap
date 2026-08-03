@@ -133,7 +133,7 @@ export default function BoxerSizeGuide({ variant = "button" }: Props) {
           {variantImages.map((src, i) => (
             <div
               key={src}
-              className="relative aspect-square overflow-hidden bg-white"
+              className="relative aspect-square overflow-hidden bg-zinc-50"
             >
               <Image
                 src={src}

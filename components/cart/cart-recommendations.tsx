@@ -54,7 +54,7 @@ export default function CartRecommendations({ excludeProductIds }: Props) {
           >
             <Link
               href={`/collections/${product.category}/${product.slug}`}
-              className="relative shrink-0 w-20 h-20 md:w-24 md:h-24 overflow-hidden bg-zinc-100"
+              className="relative shrink-0 w-20 h-20 md:w-24 md:h-24 overflow-hidden bg-zinc-50"
             >
               <FadeImage
                 src={product.image}

@@ -840,7 +840,7 @@ function AccountPageInner() {
                         >
                           <Link
                             href={`/collections/${item.category}/${item.slug}`}
-                            className="block relative aspect-4/5 bg-zinc-100"
+                            className="block relative aspect-4/5 bg-zinc-50"
                           >
                             {item.img && (
                               <FadeImage

@@ -485,7 +485,7 @@ export default function CollectionsOverview({
                       >
                         <div
                           className={cn(
-                            "relative overflow-hidden bg-white",
+                            "relative overflow-hidden bg-zinc-50",
                             products.length === 1 ? "aspect-4/5" : "aspect-3/4",
                           )}
                         >

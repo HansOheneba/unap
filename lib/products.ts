@@ -314,10 +314,12 @@ export async function getAllCollectionsWithProducts(): Promise<
 
 /** First N active products across the whole catalog, for home page previews.
  *  Uses `GET /catalog` (one call) instead of fetching every collection detail. */
-/** Always shown first on the homepage collections preview. */
+/** Fixed homepage preview order. First four slots stay constant. */
 const HOMEPAGE_PINNED_SLUGS = [
   "premium-cotton-boxer-brief-3-mixed",
   "bigband-boxer-briefs-mixed-pack",
+  "standard-issue-tee",
+  "untamed-bikini",
 ] as const;
 
 export async function getFeaturedProducts(limit = 4): Promise<ProductSummary[]> {
@@ -335,6 +337,8 @@ export async function getFeaturedProducts(limit = 4): Promise<ProductSummary[]> 
   const pinnedSlugs = new Set(pinned.map((p) => p.slug));
   const rest = active.filter((p) => !pinnedSlugs.has(p.slug));
 
+  // Homepage (limit 4) is always the pinned set. Higher limits (e.g. cart)
+  // append other active products after the pins.
   return [...pinned, ...rest]
     .slice(0, limit)
     .map((p) => toSummary(p, lookup.get(p.collectionId)));

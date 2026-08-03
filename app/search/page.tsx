@@ -148,7 +148,7 @@ function SearchPageInner() {
                 >
                   <Link
                     href={`/collections/${product.category}/${product.slug}`}
-                    className="relative aspect-3/4 overflow-hidden block"
+                    className="relative aspect-3/4 overflow-hidden block bg-zinc-50"
                   >
                     <FadeImage
                       src={product.image}

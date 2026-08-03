@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Image, { type ImageProps } from "next/image";
 import {
   isRemoteImageSrc,
+  PRODUCT_IMAGE_SURFACE_CLASS,
   resolveImageUrl,
   STOREFRONT_FALLBACK_IMAGE,
 } from "@/lib/media/resolve-image-url";
@@ -45,6 +46,8 @@ export default function FadeImage({
 
   return (
     <>
+      {/* Stays after load so transparent PNGs keep a brand-safe light surface. */}
+      <div aria-hidden className={cn("absolute inset-0", PRODUCT_IMAGE_SURFACE_CLASS)} />
       <div
         aria-hidden
         className={cn(

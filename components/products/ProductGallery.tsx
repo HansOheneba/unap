@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import FadeImage from "@/components/ui/fade-image";
+import { PRODUCT_IMAGE_SURFACE_CLASS } from "@/lib/media/resolve-image-url";
 import { cn } from "@/lib/utils";
 
 export type GalleryImage = {
@@ -103,6 +104,7 @@ export default function ProductGallery({
               onClick={() => handleSelect(i)}
               className={cn(
                 "relative shrink-0 w-16 h-16 sm:w-20 sm:h-20 lg:w-28 lg:h-28 overflow-hidden border-2 transition-all duration-300",
+                PRODUCT_IMAGE_SURFACE_CLASS,
                 i === safeIndex
                   ? "border-zinc-900"
                   : "border-transparent hover:border-zinc-300",
@@ -127,7 +129,10 @@ export default function ProductGallery({
 
       {/* ── MAIN IMAGE ───────────────────────────────────────────────── */}
       <div
-        className="relative flex-1 aspect-square lg:aspect-5/6 overflow-hidden bg-zinc-100 min-w-0 cursor-zoom-in max-lg:cursor-default"
+        className={cn(
+          "relative flex-1 aspect-square lg:aspect-5/6 overflow-hidden min-w-0 cursor-zoom-in max-lg:cursor-default",
+          PRODUCT_IMAGE_SURFACE_CLASS,
+        )}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
       >
