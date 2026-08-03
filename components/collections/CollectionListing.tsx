@@ -19,6 +19,53 @@ type Props = {
   products: ProductSummary[];
 };
 
+const ACCESSORY_SUBCATEGORY_SECTIONS = [
+  { key: "caps", label: "Caps" },
+  { key: "beanies", label: "Beanies" },
+  { key: "socks", label: "Socks" },
+] as const;
+
+/**
+ * Groups accessories by known subcategory. Products without a matching
+ * subcategory still render (under their subcategory label, or "More") so
+ * API-backed items aren't silently dropped from /collections/accessories.
+ */
+function groupAccessories(
+  products: ProductSummary[],
+): { label: string; products: ProductSummary[] }[] {
+  const remaining = new Set(products);
+  const sections: { label: string; products: ProductSummary[] }[] = [];
+
+  for (const { key, label } of ACCESSORY_SUBCATEGORY_SECTIONS) {
+    const group = products.filter(
+      (p) => p.subcategory?.trim().toLowerCase() === key,
+    );
+    if (group.length === 0) continue;
+    for (const product of group) remaining.delete(product);
+    sections.push({ label, products: group });
+  }
+
+  if (remaining.size === 0) return sections;
+
+  const ungrouped = [...remaining];
+  const byLabel = new Map<string, ProductSummary[]>();
+  for (const product of ungrouped) {
+    const raw = product.subcategory?.trim();
+    const label = raw
+      ? raw.charAt(0).toUpperCase() + raw.slice(1).toLowerCase()
+      : "More";
+    const bucket = byLabel.get(label);
+    if (bucket) bucket.push(product);
+    else byLabel.set(label, [product]);
+  }
+
+  for (const [label, group] of byLabel) {
+    sections.push({ label, products: group });
+  }
+
+  return sections;
+}
+
 export default function CollectionListing({
   collectionId,
   collection,
@@ -28,13 +75,10 @@ export default function CollectionListing({
   const femaleProducts = products.filter((p) => p.gender === "female");
   const hasGenderSplit = maleProducts.length > 0 && femaleProducts.length > 0;
 
-  const accessoryGroups = collectionId === "accessories"
-    ? {
-        caps: products.filter((p) => p.subcategory === "caps"),
-        beanies: products.filter((p) => p.subcategory === "beanies"),
-        socks: products.filter((p) => p.subcategory === "socks"),
-      }
-    : null;
+  const accessoryGroups =
+    collectionId === "accessories"
+      ? groupAccessories(products)
+      : null;
 
   return (
     <main className="bg-white text-zinc-900 min-h-screen overflow-x-hidden">
@@ -125,24 +169,15 @@ export default function CollectionListing({
         </div>
       ) : accessoryGroups ? (
         <div className="flex flex-col gap-12 md:gap-16 pb-32">
-          {(
-            [
-              ["Caps", accessoryGroups.caps],
-              ["Beanies", accessoryGroups.beanies],
-              ["Socks", accessoryGroups.socks],
-            ] as const
-          ).map(
-            ([label, group]) =>
-              group.length > 0 && (
-                <ProductSection
-                  key={label}
-                  label={label}
-                  count={group.length}
-                  products={group}
-                  categoryLabel={collection.subtitle}
-                />
-              ),
-          )}
+          {accessoryGroups.map(({ label, products: group }) => (
+            <ProductSection
+              key={label}
+              label={label}
+              count={group.length}
+              products={group}
+              categoryLabel={collection.subtitle}
+            />
+          ))}
         </div>
       ) : hasGenderSplit ? (
         <div className="flex flex-col gap-12 md:gap-16 pb-32">
