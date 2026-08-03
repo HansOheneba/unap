@@ -66,7 +66,7 @@ export default function BoxerSizeGuide({ variant = "button" }: Props) {
       </DialogTrigger>
 
       <DialogContent
-        className="max-w-lg w-full p-0 overflow-hidden rounded-none border-zinc-200 max-h-[90vh] overflow-y-auto"
+        className="max-w-lg sm:max-w-lg w-full p-0 overflow-hidden rounded-none border-zinc-200 max-h-[90vh] overflow-y-auto"
         showCloseButton={false}
       >
         <DialogHeader className="px-8 pt-8 pb-0">

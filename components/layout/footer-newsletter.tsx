@@ -63,12 +63,12 @@ export default function FooterNewsletter() {
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Your email"
           disabled={submitting}
-          className="min-h-12 w-full flex-1 border border-white/40 bg-transparent px-4 py-3 text-[0.7rem] uppercase tracking-[0.18em] text-white outline-none transition-colors duration-200 placeholder:text-white/40 focus:border-white disabled:opacity-60 sm:tracking-widest"
+          className="min-h-12 w-full flex-1 border border-white/40 bg-transparent px-4 py-3 text-[0.7rem] uppercase tracking-[0.18em] text-white outline-none transition-colors duration-200 placeholder:text-white/55 focus:border-white disabled:opacity-60 sm:tracking-widest"
         />
         <Button
           type="submit"
           disabled={submitting}
-          className="min-h-12 w-full shrink-0 border-white bg-white px-6 text-black hover:border-white hover:bg-black hover:text-white active:scale-[0.98] sm:w-auto"
+          className="min-h-12 w-full shrink-0 border-white bg-white px-6 text-black hover:border-white hover:bg-black hover:text-white sm:w-auto"
         >
           {submitting ? "Joining…" : "Get First Access"}
         </Button>

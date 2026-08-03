@@ -36,6 +36,7 @@ import { useRecentlyViewedStore } from "@/lib/stores/recently-viewed-store";
 import { useIsLoggedIn } from "@/lib/use-is-logged-in";
 import { useRouter } from "next/navigation";
 import { toast } from "@/lib/stores/toast-store";
+import { Button } from "@/components/ui/button";
 import { cn, isLightHex } from "@/lib/utils";
 import { COLLECTIONS_CONTAINER } from "@/lib/layout/collections";
 
@@ -356,13 +357,20 @@ export default function ProductDetailClient({
 
             {/* Size Selection ─────────────────────────────────────── */}
             <div>
-              <div className="flex items-center justify-between mb-4">
-                <p className="text-[0.62rem] font-medium tracking-widest uppercase text-zinc-500">
-                  Size
-                </p>
-                <div className="flex items-center gap-3">
+              <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex items-center justify-between gap-3 sm:justify-start">
+                  <p className="text-[0.62rem] font-medium tracking-widest uppercase text-zinc-500">
+                    Size
+                  </p>
                   {!selectedSize && (
-                    <p className="text-[0.62rem] text-zinc-400 tracking-wide">
+                    <p className="text-[0.62rem] tracking-wide text-zinc-400 sm:hidden">
+                      Select a size
+                    </p>
+                  )}
+                </div>
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                  {!selectedSize && (
+                    <p className="hidden text-[0.62rem] tracking-wide text-zinc-400 sm:block">
                       Select a size
                     </p>
                   )}
@@ -373,7 +381,7 @@ export default function ProductDetailClient({
                     <button
                       type="button"
                       onClick={() => setShowSizeQuiz(true)}
-                      className="text-[0.62rem] tracking-widest uppercase text-zinc-600 hover:text-zinc-900 underline underline-offset-4 transition-colors"
+                      className="text-[0.62rem] tracking-widest uppercase text-zinc-600 underline underline-offset-4 transition-colors hover:text-zinc-900"
                     >
                       Find My Size
                     </button>
@@ -400,12 +408,12 @@ export default function ProductDetailClient({
                           : s.size
                       }
                       className={cn(
-                        "h-11 px-4 min-w-13 border text-sm font-medium transition-all duration-200",
+                        "h-11 min-w-13 border px-4 text-sm font-medium transition-[color,background-color,border-color,transform] duration-150 ease-out active:scale-[0.97]",
                         isSelected
-                          ? "bg-zinc-900 text-white border-zinc-900"
+                          ? "border-zinc-900 bg-zinc-900 text-white"
                           : unavailable
-                            ? "bg-zinc-50 text-zinc-400 border-zinc-200 line-through hover:border-zinc-400"
-                            : "bg-white text-zinc-900 border-zinc-300 hover:border-zinc-900 hover:bg-zinc-50",
+                            ? "border-zinc-200 bg-zinc-50 text-zinc-400 line-through hover:border-zinc-400"
+                            : "border-zinc-300 bg-white text-zinc-900 hover:border-zinc-900 hover:bg-zinc-50",
                       )}
                     >
                       {s.size}
@@ -453,16 +461,16 @@ export default function ProductDetailClient({
 
             {/* Add to Cart + Wishlist ──────────────────────────────── */}
             <div className="flex items-stretch gap-3">
-              <button
+              <Button
                 onClick={handleAddToCart}
                 disabled={!canAdd}
                 className={cn(
-                  "flex-1 py-4 text-[0.68rem] tracking-widest uppercase transition-all duration-300 border font-medium",
+                  "flex-1 py-4 text-[0.68rem] font-medium",
                   added
-                    ? "bg-zinc-900 text-white border-zinc-900"
+                    ? "border-zinc-900 bg-zinc-900 text-white hover:border-zinc-900 hover:bg-zinc-900 hover:text-white"
                     : !canAdd
-                      ? "bg-zinc-50 text-zinc-400 border-zinc-200 cursor-not-allowed"
-                      : "bg-black text-white border-black hover:bg-white hover:text-black",
+                      ? "cursor-not-allowed border-zinc-200 bg-zinc-50 text-zinc-400 hover:border-zinc-200 hover:bg-zinc-50 hover:text-zinc-400"
+                      : undefined,
                 )}
               >
                 {added ? (
@@ -478,10 +486,11 @@ export default function ProductDetailClient({
                 ) : (
                   "Add to Cart"
                 )}
-              </button>
+              </Button>
 
               {/* Wishlist toggle */}
               <button
+                type="button"
                 onClick={() => {
                   if (!isLoggedIn) {
                     router.push(
@@ -496,9 +505,9 @@ export default function ProductDetailClient({
                   isWishlisted ? "Remove from wishlist" : "Add to wishlist"
                 }
                 className={cn(
-                  "w-14 border flex items-center justify-center transition-all duration-200 shrink-0",
+                  "flex w-14 shrink-0 items-center justify-center border transition-[color,background-color,border-color,transform] duration-150 ease-out active:scale-[0.97]",
                   isWishlisted
-                    ? "bg-zinc-900 border-zinc-900 text-white"
+                    ? "border-zinc-900 bg-zinc-900 text-white"
                     : "border-zinc-300 text-zinc-400 hover:border-zinc-900 hover:text-zinc-900",
                 )}
               >
@@ -882,17 +891,16 @@ export default function ProductDetailClient({
       {/* ── STICKY MOBILE CTA ─────────────────────────────────────────── */}
       <div
         className={cn(
-          "fixed bottom-0 left-0 right-0 lg:hidden bg-white border-t border-zinc-200 p-4 z-50 transition-transform duration-300",
+          "fixed right-0 bottom-0 left-0 z-50 border-t border-zinc-200 bg-white p-4 pb-[max(1rem,env(safe-area-inset-bottom))] transition-transform duration-300 ease-out lg:hidden",
           canAdd ? "translate-y-0" : "translate-y-full",
         )}
       >
-        <button
+        <Button
           onClick={handleAddToCart}
           className={cn(
-            "w-full py-4 text-[0.68rem] tracking-widest uppercase transition-all duration-300 border font-medium",
-            added
-              ? "bg-zinc-900 text-white border-zinc-900"
-              : "bg-black text-white border-black hover:bg-zinc-800",
+            "w-full py-4 text-[0.68rem] font-medium",
+            added &&
+              "border-zinc-900 bg-zinc-900 text-white hover:border-zinc-900 hover:bg-zinc-900 hover:text-white",
           )}
         >
           {added ? (
@@ -902,7 +910,7 @@ export default function ProductDetailClient({
           ) : (
             `Add to Cart · ${formatPrice(product.price)}`
           )}
-        </button>
+        </Button>
       </div>
 
       {/* ── Find My Size Quiz Modal ───────────────────────────────────── */}

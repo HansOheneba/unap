@@ -2,8 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { motion, useScroll, useTransform, useInView } from "framer-motion";
-import { useRef } from "react";
+import { motion } from "framer-motion";
 import {
   Shirt,
   Sparkles,
@@ -15,62 +14,11 @@ import {
   Infinity,
 } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
-
-/* ── tiny helpers (kept local, mirrors the-creed / movement pattern) ── */
-function FadeIn({
-  children,
-  delay = 0,
-  className = "",
-}: {
-  children: React.ReactNode;
-  delay?: number;
-  className?: string;
-}) {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-12%" });
-  return (
-    <motion.div
-      ref={ref}
-      className={className}
-      initial={{ opacity: 0, y: 24 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.9, delay, ease: [0.22, 1, 0.36, 1] }}
-    >
-      {children}
-    </motion.div>
-  );
-}
-
-function ParallaxImage({
-  src,
-  speed = 0.2,
-  className = "",
-  overlay,
-}: {
-  src: string;
-  speed?: number;
-  className?: string;
-  overlay?: React.ReactNode;
-}) {
-  const ref = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"],
-  });
-  const y = useTransform(
-    scrollYProgress,
-    [0, 1],
-    [`${-speed * 100}%`, `${speed * 100}%`],
-  );
-  return (
-    <div ref={ref} className={`relative overflow-hidden ${className}`}>
-      <motion.div style={{ y }} className="absolute inset-[-20%] w-full h-[140%]">
-        <Image src={src} alt="" fill className="object-cover" />
-      </motion.div>
-      {overlay}
-    </div>
-  );
-}
+import {
+  FadeIn,
+  ParallaxImage,
+  useHeroParallax,
+} from "@/components/motion/marketing";
 
 const verticals = [
   { icon: Shirt, name: "Fashion", line: "The flagship. The armor. The first language of the unapologetic." },
@@ -116,14 +64,8 @@ function statusColor(status: string) {
 }
 
 export default function FuturePage() {
-  const heroRef = useRef(null);
-  const { scrollYProgress: heroProgress } = useScroll({
-    target: heroRef,
-    offset: ["start start", "end start"],
-  });
-  const heroImgY = useTransform(heroProgress, [0, 1], ["0%", "30%"]);
-  const heroOpacity = useTransform(heroProgress, [0, 0.6], [1, 0]);
-  const heroTextY = useTransform(heroProgress, [0, 1], ["0%", "20%"]);
+  const { heroRef, heroImgY, heroTextY, heroOpacity, prefersReducedMotion } =
+    useHeroParallax();
 
   return (
     <main className="bg-white text-zinc-900 overflow-x-hidden">
@@ -150,15 +92,26 @@ export default function FuturePage() {
             className="eyebrow text-white/65"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 1.2, delay: 0.4 }}
+            transition={{
+              duration: prefersReducedMotion ? 0.2 : 1.2,
+              delay: prefersReducedMotion ? 0 : 0.4,
+            }}
           >
             005 | The Future
           </motion.p>
           <motion.h1
             className="text-white"
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.2, delay: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            initial={
+              prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 24 }
+            }
+            animate={
+              prefersReducedMotion ? { opacity: 1 } : { opacity: 1, y: 0 }
+            }
+            transition={{
+              duration: prefersReducedMotion ? 0.2 : 1.2,
+              delay: prefersReducedMotion ? 0 : 0.7,
+              ease: [0.22, 1, 0.36, 1],
+            }}
           >
             This Is Just
             <br />
@@ -168,7 +121,10 @@ export default function FuturePage() {
             className="text-white/80 max-w-xl text-lg leading-relaxed"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 1, delay: 1.1 }}
+            transition={{
+              duration: prefersReducedMotion ? 0.2 : 1,
+              delay: prefersReducedMotion ? 0 : 1.1,
+            }}
           >
             Unapologetic is not a clothing brand. It is a
             global lifestyle empire in its first chapter. Fashion was the

@@ -187,7 +187,7 @@ export default function CollectionsOverview({
           </motion.div>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-px bg-zinc-100">
+        <div className="grid grid-cols-2 gap-px bg-zinc-100 md:grid-cols-3 lg:grid-cols-5">
           {overviewCards.map((card, i) => {
             const isLastOddOnMobile =
               overviewCards.length % 2 === 1 && i === overviewCards.length - 1;

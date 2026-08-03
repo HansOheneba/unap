@@ -2,14 +2,18 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { motion, useScroll, useTransform, useInView } from "framer-motion";
-import { useRef, useState } from "react";
+import { motion } from "framer-motion";
+import { useState } from "react";
 import { Lock, CalendarDays, BookOpen, Crown, ArrowDown } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
+import {
+  FadeIn as MarketingFadeIn,
+  ParallaxImage,
+  useHeroParallax,
+} from "@/components/motion/marketing";
 import { subscribeNewsletter } from "@/lib/api/forms";
 import { ApiError } from "@/lib/api/client";
 
-/* helpers */
 function FadeIn({
   children,
   delay = 0,
@@ -19,52 +23,10 @@ function FadeIn({
   delay?: number;
   className?: string;
 }) {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-12%" });
   return (
-    <motion.div
-      ref={ref}
-      className={className}
-      initial={{ opacity: 0, y: 28 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 1, delay, ease: [0.22, 1, 0.36, 1] }}
-    >
+    <MarketingFadeIn delay={delay} className={className} y={28} duration={1}>
       {children}
-    </motion.div>
-  );
-}
-
-function ParallaxImage({
-  src,
-  speed = 0.2,
-  className = "",
-  overlay,
-}: {
-  src: string;
-  speed?: number;
-  className?: string;
-  overlay?: React.ReactNode;
-}) {
-  const ref = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"],
-  });
-  const y = useTransform(
-    scrollYProgress,
-    [0, 1],
-    [`${-speed * 100}%`, `${speed * 100}%`],
-  );
-  return (
-    <div ref={ref} className={`relative overflow-hidden ${className}`}>
-      <motion.div
-        style={{ y }}
-        className="absolute inset-[-20%] w-full h-[140%]"
-      >
-        <Image src={src} alt="" fill className="object-cover" />
-      </motion.div>
-      {overlay}
-    </div>
+    </MarketingFadeIn>
   );
 }
 
@@ -78,7 +40,7 @@ function Label({
   return (
     <p
       className={`text-[0.65rem] font-semibold tracking-[0.45em] uppercase ${
-        dark ? "text-white/40" : "text-zinc-400"
+        dark ? "text-white/55" : "text-zinc-400"
       }`}
     >
       {children}
@@ -116,14 +78,8 @@ export default function InnerCirclePage() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
-  const heroRef = useRef(null);
-  const { scrollYProgress: heroProgress } = useScroll({
-    target: heroRef,
-    offset: ["start start", "end start"],
-  });
-  const heroImgY = useTransform(heroProgress, [0, 1], ["0%", "28%"]);
-  const heroOpacity = useTransform(heroProgress, [0, 0.65], [1, 0]);
-  const heroTextY = useTransform(heroProgress, [0, 1], ["0%", "18%"]);
+  const { heroRef, heroImgY, heroTextY, heroOpacity, prefersReducedMotion } =
+    useHeroParallax("28%", "18%", 0.65);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -171,9 +127,16 @@ export default function InnerCirclePage() {
         >
           <motion.div
             className="flex flex-col items-center gap-4"
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.2, delay: 0.4 }}
+            initial={
+              prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 16 }
+            }
+            animate={
+              prefersReducedMotion ? { opacity: 1 } : { opacity: 1, y: 0 }
+            }
+            transition={{
+              duration: prefersReducedMotion ? 0.2 : 1.2,
+              delay: prefersReducedMotion ? 0 : 0.4,
+            }}
           >
             <Label dark>Exclusive Access</Label>
             <div className="w-10 h-px bg-white/25" />
@@ -181,9 +144,17 @@ export default function InnerCirclePage() {
 
           <motion.h1
             className="text-white max-w-4xl"
-            initial={{ opacity: 0, y: 28 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.3, delay: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            initial={
+              prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 28 }
+            }
+            animate={
+              prefersReducedMotion ? { opacity: 1 } : { opacity: 1, y: 0 }
+            }
+            transition={{
+              duration: prefersReducedMotion ? 0.2 : 1.3,
+              delay: prefersReducedMotion ? 0 : 0.7,
+              ease: [0.22, 1, 0.36, 1],
+            }}
           >
             The Inner Circle
           </motion.h1>
@@ -193,7 +164,10 @@ export default function InnerCirclePage() {
             style={{ fontFamily: "var(--font-sora)" }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 1, delay: 1.1 }}
+            transition={{
+              duration: prefersReducedMotion ? 0.2 : 1,
+              delay: prefersReducedMotion ? 0 : 1.1,
+            }}
           >
             For those who don&apos;t just wear the brand. They embody it.
           </motion.p>
@@ -202,12 +176,18 @@ export default function InnerCirclePage() {
             className="mt-8 flex flex-col items-center gap-2"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 1, delay: 1.6 }}
+            transition={{
+              duration: prefersReducedMotion ? 0.2 : 1,
+              delay: prefersReducedMotion ? 0 : 1.6,
+            }}
           >
             <p className="text-[0.6rem] tracking-[0.4em] uppercase text-white/30">
               Scroll
             </p>
-            <ArrowDown size={13} className="text-white/30 animate-bounce" />
+            <ArrowDown
+              size={13}
+              className="text-white/30 animate-bounce motion-reduce:animate-none"
+            />
           </motion.div>
         </motion.div>
       </section>

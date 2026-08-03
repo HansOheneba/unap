@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { CheckCircle2, Info, AlertTriangle, X } from "lucide-react";
 import { useToastStore, type ToastVariant } from "@/lib/stores/toast-store";
 import { cn } from "@/lib/utils";
 
 const DURATION = 3800;
+const EASE_DRAWER = [0.32, 0.72, 0, 1] as const;
 
 const VARIANT_STYLES: Record<
   ToastVariant,
@@ -34,7 +35,7 @@ export default function ToastHost() {
   const dismiss = useToastStore((s) => s.dismiss);
 
   return (
-    <div className="fixed top-20 right-4 md:right-6 z-200 flex flex-col gap-2 pointer-events-none">
+    <div className="pointer-events-none fixed top-20 right-4 z-200 flex flex-col gap-2 md:right-6">
       <AnimatePresence initial={false}>
         {toasts.map((t) => (
           <ToastItem key={t.id} toast={t} onDismiss={() => dismiss(t.id)} />
@@ -56,6 +57,8 @@ function ToastItem({
   };
   onDismiss: () => void;
 }) {
+  const prefersReducedMotion = useReducedMotion();
+
   useEffect(() => {
     const timer = setTimeout(onDismiss, DURATION);
     return () => clearTimeout(timer);
@@ -65,13 +68,23 @@ function ToastItem({
 
   return (
     <motion.div
-      layout
-      initial={{ x: 400, opacity: 0 }}
-      animate={{ x: 0, opacity: 1 }}
-      exit={{ x: 400, opacity: 0 }}
-      transition={{ type: "spring", stiffness: 320, damping: 30 }}
+      layout={!prefersReducedMotion}
+      initial={
+        prefersReducedMotion ? { opacity: 0 } : { x: "110%", opacity: 0 }
+      }
+      animate={
+        prefersReducedMotion ? { opacity: 1 } : { x: 0, opacity: 1 }
+      }
+      exit={
+        prefersReducedMotion ? { opacity: 0 } : { x: "110%", opacity: 0 }
+      }
+      transition={
+        prefersReducedMotion
+          ? { duration: 0.15 }
+          : { duration: 0.28, ease: EASE_DRAWER }
+      }
       className={cn(
-        "pointer-events-auto w-80 max-w-[calc(100vw-2rem)] shadow-lg border overflow-hidden",
+        "pointer-events-auto w-80 max-w-[calc(100vw-2rem)] overflow-hidden border shadow-lg",
         wrap,
       )}
     >
@@ -79,18 +92,19 @@ function ToastItem({
         <Icon
           size={18}
           strokeWidth={2}
-          className={cn("shrink-0 mt-0.5", iconCls)}
+          className={cn("mt-0.5 shrink-0", iconCls)}
         />
-        <div className="flex-1 min-w-0">
+        <div className="min-w-0 flex-1">
           <p className="text-sm font-medium text-zinc-900">{toast.title}</p>
           {toast.description && (
-            <p className="text-xs text-zinc-600 mt-0.5">{toast.description}</p>
+            <p className="mt-0.5 text-xs text-zinc-600">{toast.description}</p>
           )}
         </div>
         <button
+          type="button"
           onClick={onDismiss}
           aria-label="Dismiss"
-          className="shrink-0 text-zinc-400 hover:text-zinc-900 transition-colors -mr-1"
+          className="-mr-1 shrink-0 text-zinc-400 transition-colors duration-150 hover:text-zinc-900 active:scale-95"
         >
           <X size={14} />
         </button>

@@ -95,21 +95,24 @@ export default function CollectionCard({
         {/* Hover overlay */}
         <div className="pointer-events-none absolute inset-0 bg-black/0 group-hover:bg-black/8 transition-colors duration-500 z-10" />
 
-        {/* Wishlist button — top right corner */}
+        {/* Wishlist — always visible on touch; hover-reveal on pointer devices */}
         <div
           className={cn(
             "absolute top-3 right-3 z-20 transition-opacity duration-300",
-            isWishlisted ? "opacity-100" : "opacity-0 group-hover:opacity-100",
+            isWishlisted
+              ? "opacity-100"
+              : "opacity-100 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:opacity-100",
           )}
         >
           <WishlistButton item={wishlistItem} />
         </div>
 
-        {/* Quick Add button — slides up on hover */}
+        {/* Quick Add — always visible on touch; slides up on hover for pointer */}
         <button
+          type="button"
           onClick={handleQuickAdd}
           disabled={loadingQuickAdd}
-          className="absolute bottom-3 inset-x-3 z-20 py-2.5 bg-black/70 backdrop-blur-sm text-white text-[0.6rem] tracking-widest uppercase opacity-0 translate-y-1.5 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 disabled:opacity-50"
+          className="absolute bottom-3 inset-x-3 z-20 py-2.5 bg-black/70 backdrop-blur-sm text-white text-[0.6rem] tracking-widest uppercase opacity-100 translate-y-0 transition-[opacity,transform] duration-300 ease-out active:scale-[0.98] disabled:opacity-50 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:translate-y-1.5 [@media(hover:hover)]:group-hover:opacity-100 [@media(hover:hover)]:group-hover:translate-y-0"
         >
           {loadingQuickAdd ? (
             <Loader2 size={14} className="mx-auto animate-spin" aria-hidden />

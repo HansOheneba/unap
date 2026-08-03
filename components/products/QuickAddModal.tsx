@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import FadeImage from "@/components/ui/fade-image";
 import { X, Check, ArrowRight, ShoppingBag, Package } from "lucide-react";
-import { useAnimate } from "framer-motion";
+import { useAnimate, useReducedMotion } from "framer-motion";
 import { Dialog, DialogContent, DialogClose } from "@/components/ui/dialog";
 import { useCartStore } from "@/lib/stores/cart-store";
 import { toast } from "@/lib/stores/toast-store";
@@ -37,6 +37,7 @@ export default function QuickAddModal({ product, open, onClose }: Props) {
   const cartIconRef = useRef<HTMLDivElement>(null);
   const boxIconRef = useRef<HTMLDivElement>(null);
   const [, animate] = useAnimate();
+  const prefersReducedMotion = useReducedMotion();
 
   // Reset when the modal opens (handles re-opening for the same or a
   // different product) — adjusted during render rather than in an effect,
@@ -82,7 +83,20 @@ export default function QuickAddModal({ product, open, onClose }: Props) {
     if (phase !== "running") return;
     let timeoutId: ReturnType<typeof setTimeout>;
 
+    const finish = (delayMs: number) => {
+      setPhase("done");
+      timeoutId = setTimeout(() => {
+        onClose();
+        setPhase("idle");
+      }, delayMs);
+    };
+
     const run = async () => {
+      if (prefersReducedMotion) {
+        finish(350);
+        return;
+      }
+
       if (!cartIconRef.current || !boxIconRef.current) return;
 
       animate(
@@ -96,16 +110,12 @@ export default function QuickAddModal({ product, open, onClose }: Props) {
         { duration: 1.0, times: [0, 0.45, 1], ease: "easeInOut" },
       );
 
-      setPhase("done");
-      timeoutId = setTimeout(() => {
-        onClose();
-        setPhase("idle");
-      }, 900);
+      finish(900);
     };
 
     run();
     return () => clearTimeout(timeoutId);
-  }, [phase]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [phase, prefersReducedMotion]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleAddToCart = () => {
     if (!canAdd) return;
@@ -141,7 +151,7 @@ export default function QuickAddModal({ product, open, onClose }: Props) {
       }}
     >
       <DialogContent
-        className="max-w-md w-full p-0 overflow-hidden rounded-none border-zinc-200"
+        className="max-w-md sm:max-w-md w-full p-0 overflow-hidden rounded-none border-zinc-200"
         showCloseButton={false}
       >
         {/* ── Product image (changes with color) ───────────────────── */}
@@ -263,15 +273,16 @@ export default function QuickAddModal({ product, open, onClose }: Props) {
 
           {/* Add to cart */}
           <button
+            type="button"
             onClick={handleAddToCart}
             disabled={!canAdd}
             className={cn(
-              "relative w-full py-3.5 overflow-hidden text-[0.65rem] tracking-widest uppercase transition-colors duration-300 font-medium border",
+              "relative w-full overflow-hidden border py-3.5 text-[0.65rem] font-medium tracking-widest uppercase transition-[color,background-color,border-color,transform] duration-150 ease-out active:scale-[0.98]",
               phase === "done"
-                ? "bg-zinc-900 text-white border-zinc-900"
+                ? "border-zinc-900 bg-zinc-900 text-white"
                 : !canAdd
-                  ? "bg-zinc-100 text-zinc-400 border-zinc-200 cursor-not-allowed"
-                  : "bg-zinc-900 text-white border-zinc-900 hover:bg-white hover:text-zinc-900",
+                  ? "cursor-not-allowed border-zinc-200 bg-zinc-100 text-zinc-400"
+                  : "border-zinc-900 bg-zinc-900 text-white hover:bg-white hover:text-zinc-900",
             )}
           >
             {/* Idle label */}

@@ -689,7 +689,7 @@ export default function CheckoutPage() {
   }
 
   return (
-    <main className="min-h-screen bg-white text-zinc-900 pt-24 pb-32">
+    <main className="min-h-screen bg-white text-zinc-900 pt-8 pb-32">
       <div className="max-w-360 mx-auto px-6 md:px-12">
         {/* Header */}
         <div className="mb-10">
@@ -778,7 +778,7 @@ export default function CheckoutPage() {
                     Contact & Delivery
                   </p>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <Field label="First Name" error={errors.firstName}>
                       <input
                         type="text"
@@ -816,7 +816,7 @@ export default function CheckoutPage() {
                     />
                   </Field>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <Field label="Phone" error={errors.phone}>
                       <input
                         type="tel"
@@ -879,7 +879,7 @@ export default function CheckoutPage() {
                     )}
                   </Field>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <Field label="City / Town" error={errors.city}>
                       <input
                         type="text"

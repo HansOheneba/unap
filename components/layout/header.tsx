@@ -65,11 +65,11 @@ function MobileCollections({
       </button>
 
       <div
-        className={`overflow-hidden transition-all duration-300 ease-in-out ${
-          expanded ? "max-h-64 opacity-100" : "max-h-0 opacity-0"
+        className={`overflow-hidden transition-[max-height,opacity] duration-300 ease-out ${
+          expanded ? "max-h-80 opacity-100" : "max-h-0 opacity-0"
         }`}
       >
-        <div className="flex flex-col pb-3 pl-8">
+        <div className="flex max-h-80 flex-col overflow-y-auto pb-3 pl-8">
           {items.map((item) => (
             <Link
               key={item.href}
@@ -288,17 +288,17 @@ export default function Header({
             aria-label="Toggle menu"
           >
             <span
-              className={`block h-px transition-all duration-300 ease-in-out origin-center bg-white ${
+              className={`block h-px origin-center bg-white transition-[width,transform,opacity] duration-200 ease-out ${
                 mobileOpen ? "w-6 translate-y-1.5 rotate-45" : "w-6"
               }`}
- />
- <span
- className={`block h-px transition-all duration-300 ease-in-out bg-white ${
+            />
+            <span
+              className={`block h-px bg-white transition-[width,opacity] duration-200 ease-out ${
                 mobileOpen ? "w-0 opacity-0" : "w-4 opacity-100"
               }`}
- />
- <span
- className={`block h-px transition-all duration-300 ease-in-out origin-center bg-white ${
+            />
+            <span
+              className={`block h-px origin-center bg-white transition-[width,transform,opacity] duration-200 ease-out ${
                 mobileOpen ? "w-6 -translate-y-1.5 -rotate-45" : "w-6"
               }`}
             />
@@ -497,7 +497,7 @@ export default function Header({
                   onChange={(e) => setMobileSearchQuery(e.target.value)}
                   placeholder="Search products..."
                   autoComplete="off"
-                  className="flex-1 bg-transparent text-white placeholder:text-white/40 text-sm outline-none border-b border-white/20 py-1.5 focus:border-white/60 transition-colors"
+                  className="flex-1 bg-transparent text-white placeholder:text-white/55 text-sm outline-none border-b border-white/20 py-1.5 focus:border-white/60 transition-colors"
                 />
                 <button
                   type="button"
@@ -582,11 +582,11 @@ export default function Header({
             ? "opacity-100 pointer-events-auto"
             : "opacity-0 pointer-events-none"
         }`}
- />
+      />
 
- {/* Full-screen panel slides in from left */}
- <div
- className={`fixed inset-0 z-[70] bg-white md:hidden flex flex-col transition-transform duration-500 ease-in-out ${
+      {/* Full-screen panel slides in from left */}
+      <div
+        className={`fixed inset-0 z-[70] flex flex-col bg-white transition-transform duration-300 md:hidden ease-[cubic-bezier(0.32,0.72,0,1)] ${
           mobileOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >

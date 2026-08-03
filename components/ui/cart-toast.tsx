@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import Link from "next/link";
 import { X } from "lucide-react";
 import { useCartStore } from "@/lib/stores/cart-store";
@@ -9,10 +9,12 @@ import { formatPrice } from "@/lib/currency";
 import FadeImage from "@/components/ui/fade-image";
 
 const DURATION = 3500;
+const EASE_DRAWER = [0.32, 0.72, 0, 1] as const;
 
 export default function CartToast() {
   const toast = useCartStore((s) => s.toast);
   const dismissToast = useCartStore((s) => s.dismissToast);
+  const prefersReducedMotion = useReducedMotion();
   const [visible, setVisible] = useState(false);
   const [lastKey, setLastKey] = useState<number | undefined>(undefined);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -46,11 +48,21 @@ export default function CartToast() {
       {visible && toast && (
         <motion.div
           key={toast.key}
-          initial={{ x: "110%", opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          exit={{ x: "110%", opacity: 0 }}
-          transition={{ type: "spring", stiffness: 340, damping: 32 }}
-          className="fixed bottom-6 right-6 z-[200] w-72 bg-zinc-900 shadow-2xl overflow-hidden"
+          initial={
+            prefersReducedMotion ? { opacity: 0 } : { x: "110%", opacity: 0 }
+          }
+          animate={
+            prefersReducedMotion ? { opacity: 1 } : { x: 0, opacity: 1 }
+          }
+          exit={
+            prefersReducedMotion ? { opacity: 0 } : { x: "110%", opacity: 0 }
+          }
+          transition={
+            prefersReducedMotion
+              ? { duration: 0.15 }
+              : { duration: 0.28, ease: EASE_DRAWER }
+          }
+          className="fixed right-4 bottom-[max(1.5rem,env(safe-area-inset-bottom))] z-[200] w-[min(18rem,calc(100vw-2rem))] overflow-hidden bg-zinc-900 shadow-2xl max-lg:bottom-[calc(5.5rem+env(safe-area-inset-bottom,0px))] lg:right-6"
         >
           {/* Main row */}
           <div className="flex gap-3 p-4 pr-8">
@@ -90,20 +102,23 @@ export default function CartToast() {
 
           {/* Dismiss button */}
           <button
+            type="button"
             onClick={handleDismiss}
             aria-label="Dismiss"
-            className="absolute top-3 right-3 text-zinc-600 hover:text-white transition-colors duration-200"
+            className="absolute top-3 right-3 text-zinc-600 transition-colors duration-150 hover:text-white active:scale-95"
           >
             <X size={13} />
           </button>
 
           {/* Progress bar */}
-          <motion.div
-            className="h-[2px] bg-white/30 origin-left"
-            initial={{ scaleX: 1 }}
-            animate={{ scaleX: 0 }}
-            transition={{ duration: DURATION / 1000, ease: "linear" }}
-          />
+          {!prefersReducedMotion && (
+            <motion.div
+              className="h-[2px] origin-left bg-white/30"
+              initial={{ scaleX: 1 }}
+              animate={{ scaleX: 0 }}
+              transition={{ duration: DURATION / 1000, ease: "linear" }}
+            />
+          )}
         </motion.div>
       )}
     </AnimatePresence>

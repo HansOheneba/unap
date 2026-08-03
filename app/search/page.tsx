@@ -84,12 +84,12 @@ function SearchPageInner() {
           <AnimatePresence>
             {hasQuery && (
               <motion.button
-                initial={{ opacity: 0, scale: 0.8 }}
+                initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                transition={{ duration: 0.15 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.15, ease: [0.23, 1, 0.32, 1] }}
                 onClick={() => setQuery("")}
-                className="text-zinc-400 hover:text-zinc-900 transition-colors"
+                className="text-zinc-400 transition-colors duration-150 hover:text-zinc-900 active:scale-95"
               >
                 <X size={16} />
               </motion.button>

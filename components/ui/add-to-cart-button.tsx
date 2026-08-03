@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Loader2, Plus } from "lucide-react";
 import { getProductBySlug, type Product } from "@/lib/products";
 import QuickAddModal from "@/components/products/QuickAddModal";
+import { Button } from "@/components/ui/button";
 import { toast } from "@/lib/stores/toast-store";
 import { cn } from "@/lib/utils";
 
@@ -54,30 +55,42 @@ export default function AddToCartButton({
 
   return (
     <>
-      <button
-        type="button"
-        onClick={handleClick}
-        disabled={loading}
-        className={cn(
-          variant === "inline"
-            ? "inline-flex items-center gap-2 text-[0.65rem] tracking-widest uppercase text-zinc-900 hover:opacity-70 transition-opacity disabled:opacity-50"
-            : "w-full text-[0.6rem] tracking-widest uppercase border border-zinc-900 text-zinc-900 py-2.5 hover:bg-zinc-900 hover:text-white transition-colors disabled:opacity-50",
-          className,
-        )}
-      >
-        {loading ? (
-          <Loader2 size={14} className="animate-spin" aria-hidden />
-        ) : variant === "inline" ? (
-          <>
-            <span className="flex h-5 w-5 items-center justify-center border border-zinc-900">
-              <Plus size={11} strokeWidth={2} />
-            </span>
-            {label}
-          </>
-        ) : (
-          label
-        )}
-      </button>
+      {variant === "inline" ? (
+        <button
+          type="button"
+          onClick={handleClick}
+          disabled={loading}
+          className={cn(
+            "inline-flex items-center gap-2 text-[0.65rem] tracking-widest uppercase text-zinc-900 transition-opacity duration-150 ease-out hover:opacity-70 active:scale-[0.97] disabled:opacity-50",
+            className,
+          )}
+        >
+          {loading ? (
+            <Loader2 size={14} className="animate-spin" aria-hidden />
+          ) : (
+            <>
+              <span className="flex h-5 w-5 items-center justify-center border border-zinc-900">
+                <Plus size={11} strokeWidth={2} />
+              </span>
+              {label}
+            </>
+          )}
+        </button>
+      ) : (
+        <Button
+          type="button"
+          variant="outline"
+          onClick={handleClick}
+          disabled={loading}
+          className={cn("w-full py-2.5 text-[0.6rem]", className)}
+        >
+          {loading ? (
+            <Loader2 size={14} className="animate-spin" aria-hidden />
+          ) : (
+            label
+          )}
+        </Button>
+      )}
       {product && (
         <QuickAddModal
           product={product}

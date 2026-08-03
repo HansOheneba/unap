@@ -246,7 +246,7 @@ export default function MovementSection() {
           <FadeIn
             key={stat.label}
             delay={i * 0.1}
-            className="px-10 py-16 flex flex-col gap-4"
+            className="flex flex-col gap-4 px-4 py-10 sm:px-8 sm:py-14 md:px-10 md:py-16"
           >
             <div
               className="text-zinc-900"

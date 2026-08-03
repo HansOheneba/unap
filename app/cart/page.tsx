@@ -94,7 +94,7 @@ export default function CartPage() {
   const removingItem = items.find((i) => i.id === confirmRemoveId);
 
   return (
-    <main className="min-h-screen bg-white text-zinc-900 pt-24 pb-32">
+    <main className="min-h-screen bg-white text-zinc-900 pt-8 pb-32">
       <div className="max-w-360 mx-auto px-6 md:px-12">
         {/* Header */}
         <div className="mb-10">

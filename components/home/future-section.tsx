@@ -141,7 +141,7 @@ export default function FutureSection() {
             <FadeIn
               key={v.name}
               delay={i * 0.07}
-              className="px-8 py-12 flex flex-col gap-5 group cursor-default"
+              className="group flex cursor-default flex-col gap-5 px-4 py-10 sm:px-8 sm:py-12"
             >
               <Icon
                 size={28}

@@ -2,80 +2,29 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import {
-  motion,
-  useScroll,
-  useTransform,
-  useInView,
-} from "framer-motion";
+import { motion, useInView, useReducedMotion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { Button, buttonVariants } from "@/components/ui/button";
+import {
+  FadeIn,
+  ParallaxImage,
+  useHeroParallax,
+} from "@/components/motion/marketing";
 import { subscribeNewsletter } from "@/lib/api/forms";
 import { ApiError } from "@/lib/api/client";
-
-/* ── tiny helpers (kept local, mirrors the-creed / inner-circle pattern) ── */
-function FadeIn({
-  children,
-  delay = 0,
-  className = "",
-}: {
-  children: React.ReactNode;
-  delay?: number;
-  className?: string;
-}) {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-12%" });
-  return (
-    <motion.div
-      ref={ref}
-      className={className}
-      initial={{ opacity: 0, y: 24 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.9, delay, ease: [0.22, 1, 0.36, 1] }}
-    >
-      {children}
-    </motion.div>
-  );
-}
-
-function ParallaxImage({
-  src,
-  speed = 0.2,
-  className = "",
-  overlay,
-}: {
-  src: string;
-  speed?: number;
-  className?: string;
-  overlay?: React.ReactNode;
-}) {
-  const ref = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"],
-  });
-  const y = useTransform(
-    scrollYProgress,
-    [0, 1],
-    [`${-speed * 100}%`, `${speed * 100}%`],
-  );
-  return (
-    <div ref={ref} className={`relative overflow-hidden ${className}`}>
-      <motion.div style={{ y }} className="absolute inset-[-20%] w-full h-[140%]">
-        <Image src={src} alt="" fill className="object-cover" />
-      </motion.div>
-      {overlay}
-    </div>
-  );
-}
 
 function Counter({ target, suffix = "" }: { target: number; suffix?: string }) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-10% 0px" });
+  const prefersReducedMotion = useReducedMotion();
   const [count, setCount] = useState(0);
 
   useEffect(() => {
     if (!inView) return;
+    if (prefersReducedMotion) {
+      setCount(target);
+      return;
+    }
     const duration = 1800;
     const step = (timestamp: number, startTime: number) => {
       const progress = Math.min((timestamp - startTime) / duration, 1);
@@ -84,9 +33,14 @@ function Counter({ target, suffix = "" }: { target: number; suffix?: string }) {
       if (progress < 1) requestAnimationFrame((t) => step(t, startTime));
     };
     requestAnimationFrame((t) => step(t, t));
-  }, [inView, target]);
+  }, [inView, target, prefersReducedMotion]);
 
-  return <span ref={ref}>{count}{suffix}</span>;
+  return (
+    <span ref={ref}>
+      {count}
+      {suffix}
+    </span>
+  );
 }
 
 const stats = [
@@ -135,14 +89,8 @@ const voices = [
 ];
 
 export default function MovementPage() {
-  const heroRef = useRef(null);
-  const { scrollYProgress: heroProgress } = useScroll({
-    target: heroRef,
-    offset: ["start start", "end start"],
-  });
-  const heroImgY = useTransform(heroProgress, [0, 1], ["0%", "30%"]);
-  const heroOpacity = useTransform(heroProgress, [0, 0.6], [1, 0]);
-  const heroTextY = useTransform(heroProgress, [0, 1], ["0%", "20%"]);
+  const { heroRef, heroImgY, heroTextY, heroOpacity, prefersReducedMotion } =
+    useHeroParallax();
 
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
@@ -196,15 +144,26 @@ export default function MovementPage() {
             className="eyebrow text-white"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 1.2, delay: 0.4 }}
+            transition={{
+              duration: prefersReducedMotion ? 0.2 : 1.2,
+              delay: prefersReducedMotion ? 0 : 0.4,
+            }}
           >
             004 | The Movement
           </motion.p>
           <motion.h1
             className="max-w-3xl text-white"
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.2, delay: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            initial={
+              prefersReducedMotion ? { opacity: 0 } : { opacity: 0, y: 24 }
+            }
+            animate={
+              prefersReducedMotion ? { opacity: 1 } : { opacity: 1, y: 0 }
+            }
+            transition={{
+              duration: prefersReducedMotion ? 0.2 : 1.2,
+              delay: prefersReducedMotion ? 0 : 0.7,
+              ease: [0.22, 1, 0.36, 1],
+            }}
           >
             We Are Not a Brand.
             <br />
@@ -214,7 +173,10 @@ export default function MovementPage() {
             className="text-white/75 max-w-sm"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 1, delay: 1.1 }}
+            transition={{
+              duration: prefersReducedMotion ? 0.2 : 1,
+              delay: prefersReducedMotion ? 0 : 1.1,
+            }}
           >
             Started by those who were told to tone it down. Built for everyone
             who never did.

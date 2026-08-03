@@ -76,9 +76,9 @@ export default function CollectionsPreview({ products }: Props) {
                 {hero.category.replace("-", " ")}
               </span>
             </Link>
-            <div className="flex items-center justify-between px-6 py-5 bg-white border-t border-zinc-100">
-              <h5 className="text-zinc-900">{hero.name}</h5>
-              <span className="text-base font-semibold text-zinc-900 tabular-nums shrink-0">
+            <div className="flex items-center justify-between gap-3 bg-white border-t border-zinc-100 px-6 py-5">
+              <h5 className="min-w-0 truncate text-zinc-900">{hero.name}</h5>
+              <span className="shrink-0 text-base font-semibold tabular-nums text-zinc-900">
                 {formatPrice(hero.price)}
               </span>
             </div>
@@ -107,9 +107,11 @@ export default function CollectionsPreview({ products }: Props) {
                     {product.category.replace("-", " ")}
                   </span>
                 </Link>
-                <div className="flex items-center justify-between px-5 py-4 bg-white border-t border-zinc-100">
-                  <h5 className="text-zinc-900 text-sm">{product.name}</h5>
-                  <span className="text-sm font-semibold text-zinc-900 tabular-nums shrink-0">
+                <div className="flex items-center justify-between gap-3 bg-white border-t border-zinc-100 px-5 py-4">
+                  <h5 className="min-w-0 truncate text-sm text-zinc-900">
+                    {product.name}
+                  </h5>
+                  <span className="shrink-0 text-sm font-semibold tabular-nums text-zinc-900">
                     {formatPrice(product.price)}
                   </span>
                 </div>
