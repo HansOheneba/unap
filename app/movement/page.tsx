@@ -112,7 +112,7 @@ export default function MovementPage() {
     try {
       await subscribeNewsletter({
         email: email.trim(),
-        source: "movement",
+        source: "inner_circle",
       });
       setSubmitted(true);
     } catch (err) {
