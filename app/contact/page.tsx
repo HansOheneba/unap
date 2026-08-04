@@ -148,14 +148,34 @@ export default function ContactPage() {
 
             <FadeIn delay={0.15} className="flex flex-col gap-4 pt-4">
               <p className="eyebrow text-zinc-400">Follow the Movement</p>
-              <a
-                href="https://www.instagram.com/unapologeticnm"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-zinc-900 font-medium border-b border-zinc-900 pb-1 w-fit hover:opacity-70 transition-opacity duration-300"
-              >
-                @unapologeticnm
-              </a>
+              <ul className="flex flex-col gap-3">
+                {[
+                  {
+                    label: "Instagram",
+                    href: "https://www.instagram.com/unapologeticnm",
+                  },
+                  {
+                    label: "TikTok",
+                    href: "https://www.tiktok.com/@unapologeticnm",
+                  },
+                  {
+                    label: "YouTube",
+                    href: "https://youtube.com/@unapologeticnm",
+                  },
+                  { label: "X", href: "https://x.com/unapologeticnm" },
+                ].map((link) => (
+                  <li key={link.label}>
+                    <a
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-zinc-900 font-medium border-b border-zinc-900 pb-1 w-fit hover:opacity-70 transition-opacity duration-300"
+                    >
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
             </FadeIn>
 
             <FadeIn delay={0.25} className="flex flex-col gap-4 pt-6 border-t border-zinc-100">

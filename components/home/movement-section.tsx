@@ -197,11 +197,11 @@ export default function MovementSection() {
         {/* Left: Image */}
         <div className="relative min-h-[50vh] md:min-h-0">
           <Image
-            src="/home/manXmanModels.jpg"
+            src="/creed/movement.jpg"
             alt="The Movement"
             fill
             sizes="(max-width: 768px) 100vw, 50vw"
-            className="object-cover brightness-70"
+            className="object-cover object-center brightness-70"
           />
           {/* diagonal cut overlay */}
           <div

@@ -49,6 +49,13 @@ const stats = [
   { value: 1, suffix: "", label: "Movement", sub: "There is only one. You are either in it or watching it." },
 ];
 
+const socialLinks = [
+  { label: "Instagram", href: "https://www.instagram.com/unapologeticnm" },
+  { label: "TikTok", href: "https://www.tiktok.com/@unapologeticnm" },
+  { label: "YouTube", href: "https://youtube.com/@unapologeticnm" },
+  { label: "X", href: "https://x.com/unapologeticnm" },
+] as const;
+
 const principles = [
   {
     num: "01",
@@ -128,10 +135,11 @@ export default function MovementPage() {
       >
         <motion.div style={{ y: heroImgY }} className="absolute inset-0">
           <Image
-            src="/home/shadesMan.jpg"
+            src="/creed/movement.jpg"
             alt=""
             fill
-            className="object-cover brightness-50"
+            priority
+            className="object-cover object-center brightness-50"
           />
           <div className="absolute inset-0 bg-linear-to-b from-black/60 via-transparent to-black/85" />
         </motion.div>
@@ -393,6 +401,24 @@ export default function MovementPage() {
           >
             Shop Collections
           </Link>
+
+          <div className="flex flex-col items-center gap-4 pt-4">
+            <p className="eyebrow text-white/65">Follow the Movement</p>
+            <ul className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
+              {socialLinks.map((link) => (
+                <li key={link.label}>
+                  <a
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm tracking-widest uppercase text-white/75 transition-colors duration-200 hover:text-white"
+                  >
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
         </FadeIn>
       </section>
     </main>

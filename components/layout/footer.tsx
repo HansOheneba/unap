@@ -12,9 +12,9 @@ const explore = [
 
 const connect = [
   { label: "Instagram", href: "https://www.instagram.com/unapologeticnm" },
-  { label: "TikTok", href: "https://tiktok.com" },
-  { label: "YouTube", href: "https://youtube.com" },
-  { label: "Twitter / X", href: "https://x.com" },
+  { label: "TikTok", href: "https://www.tiktok.com/@unapologeticnm" },
+  { label: "YouTube", href: "https://youtube.com/@unapologeticnm" },
+  { label: "X", href: "https://x.com/unapologeticnm" },
 ];
 
 const support = [

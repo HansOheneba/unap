@@ -27,6 +27,7 @@ type NavLink =
 const navLinks: NavLink[] = [
   { label: "Collections", href: "/collections" },
   { label: "The Creed", href: "/the-creed" },
+  { label: "Movement", href: "/movement" },
   { label: "Inner Circle", href: "/inner-circle" },
 ];
 
