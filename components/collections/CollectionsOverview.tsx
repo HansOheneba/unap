@@ -9,7 +9,10 @@ import FadeImage from "@/components/ui/fade-image";
 import type { CollectionInfo, ProductSummary } from "@/lib/products";
 import { formatPrice } from "@/lib/currency";
 import { getBannerOffset, useBannerStore } from "@/lib/stores/banner-store";
-import { COLLECTIONS_CONTAINER } from "@/lib/layout/collections";
+import {
+  COLLECTIONS_CONTAINER,
+  productGridColumns,
+} from "@/lib/layout/collections";
 import { cn } from "@/lib/utils";
 
 const HERO_IMAGES = [
@@ -121,36 +124,23 @@ type Props = {
   overviewCards: OverviewCard[];
 };
 
-/**
- * Stretch trailing cards so incomplete last rows look intentional.
- * Layouts: 1 featured · 2 even · 3 → 2-col mobile / 3-col md · 4+ → 2-col mobile / 4-col md
- */
-function overviewProductSpanClass(index: number, count: number): string | undefined {
-  if (count <= 2) return undefined;
-
-  const isLast = index === count - 1;
-  const mobileOrphan = count % 2 === 1;
-
-  if (count === 3) {
-    return isLast && mobileOrphan ? "col-span-2 md:col-span-1" : undefined;
-  }
-
-  // count >= 4: grid-cols-2 md:grid-cols-4
-  const mdRem = count % 4;
-
-  // Rem 2: both trailing cards take half width so the row fills
-  if (mdRem === 2 && (index === count - 1 || index === count - 2)) {
-    return cn(isLast && mobileOrphan && "col-span-2", "md:col-span-2");
-  }
-
-  if (!isLast) return undefined;
-
+function overviewGridClass(count: number): string {
+  const cols = productGridColumns(count);
   return cn(
-    mobileOrphan && "col-span-2",
-    mdRem === 1 && "md:col-span-4",
-    mdRem === 3 && "md:col-span-2",
-    mobileOrphan && mdRem === 0 && "md:col-span-1",
+    "grid gap-px bg-zinc-100",
+    cols === 1 && "grid-cols-1 max-w-lg mx-auto",
+    cols === 2 && "grid-cols-2",
+    cols === 3 && "grid-cols-2 md:grid-cols-3",
+    cols === 4 && "grid-cols-2 md:grid-cols-4",
   );
+}
+
+function overviewImageSizes(count: number): string {
+  const cols = productGridColumns(count);
+  if (cols === 1) return "(max-width: 512px) 100vw, 32rem";
+  if (cols === 2) return "50vw";
+  if (cols === 3) return "(max-width: 768px) 50vw, 33vw";
+  return "(max-width: 768px) 50vw, 25vw";
 }
 
 export default function CollectionsOverview({
@@ -459,73 +449,47 @@ export default function CollectionsOverview({
                 New pieces for {col.subtitle} are on the way.
               </p>
             ) : (
-              <div
-                className={cn(
-                  "grid gap-px bg-zinc-100",
-                  products.length === 1 && "grid-cols-1 max-w-lg mx-auto",
-                  products.length === 2 && "grid-cols-2",
-                  products.length === 3 && "grid-cols-2 md:grid-cols-3",
-                  products.length >= 4 && "grid-cols-2 md:grid-cols-4",
-                )}
-              >
-                {products.map((product, index) => {
-                  const spanClass = overviewProductSpanClass(
-                    index,
-                    products.length,
-                  );
-
-                  return (
-                    <div
-                      key={product.slug}
-                      className={cn("group bg-white", spanClass)}
+              <div className={overviewGridClass(products.length)}>
+                {products.map((product) => (
+                  <div key={product.slug} className="group bg-white">
+                    <Link
+                      href={`/collections/${col.id}/${product.slug}`}
+                      className="block"
                     >
-                      <Link
-                        href={`/collections/${col.id}/${product.slug}`}
-                        className="block"
+                      <div
+                        className={cn(
+                          "relative overflow-hidden bg-zinc-50",
+                          products.length === 1 ? "aspect-4/5" : "aspect-3/4",
+                        )}
                       >
-                        <div
-                          className={cn(
-                            "relative overflow-hidden bg-zinc-50",
-                            products.length === 1 ? "aspect-4/5" : "aspect-3/4",
-                          )}
-                        >
-                          {/* Inset + contain: full-bleed cells, packshots keep air */}
-                          <div className="absolute inset-[6%] sm:inset-[7%]">
-                            <FadeImage
-                              src={product.image}
-                              alt={product.name}
-                              fill
-                              sizes={
-                                products.length === 1
-                                  ? "(max-width: 512px) 100vw, 32rem"
-                                  : products.length === 2
-                                    ? "50vw"
-                                    : spanClass
-                                      ? "(max-width: 768px) 100vw, 50vw"
-                                      : "(max-width: 768px) 50vw, 25vw"
-                              }
-                              className="object-contain object-center duration-700 group-hover:scale-[1.04]"
-                            />
-                          </div>
+                        {/* Inset + contain: full-bleed cells, packshots keep air */}
+                        <div className="absolute inset-[6%] sm:inset-[7%]">
+                          <FadeImage
+                            src={product.image}
+                            alt={product.name}
+                            fill
+                            sizes={overviewImageSizes(products.length)}
+                            className="object-contain object-center duration-700 group-hover:scale-[1.04]"
+                          />
                         </div>
+                      </div>
 
-                        <div className="p-5 border-t border-zinc-100">
-                          <p className="eyebrow text-zinc-500 mb-2">
-                            {col.subtitle}
-                          </p>
-                          {products.length === 1 ? (
-                            <h4 className="text-zinc-900">{product.name}</h4>
-                          ) : (
-                            <h5 className="text-zinc-900">{product.name}</h5>
-                          )}
-                          <p className="text-zinc-600 mt-2">
-                            {formatPrice(product.price)}
-                          </p>
-                        </div>
-                      </Link>
-                    </div>
-                  );
-                })}
+                      <div className="p-5 border-t border-zinc-100">
+                        <p className="eyebrow text-zinc-500 mb-2">
+                          {col.subtitle}
+                        </p>
+                        {products.length === 1 ? (
+                          <h4 className="text-zinc-900">{product.name}</h4>
+                        ) : (
+                          <h5 className="text-zinc-900">{product.name}</h5>
+                        )}
+                        <p className="text-zinc-600 mt-2">
+                          {formatPrice(product.price)}
+                        </p>
+                      </div>
+                    </Link>
+                  </div>
+                ))}
               </div>
             )}
 

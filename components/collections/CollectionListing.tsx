@@ -13,7 +13,10 @@ import {
   getSizeGuide,
 } from "@/lib/size-guides";
 import FadeImage from "@/components/ui/fade-image";
-import { COLLECTIONS_CONTAINER } from "@/lib/layout/collections";
+import {
+  COLLECTIONS_CONTAINER,
+  productGridColumns,
+} from "@/lib/layout/collections";
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -222,52 +225,28 @@ export default function CollectionListing({
   );
 }
 
-/** Grid that fills the wall even when a section only has 1–2 styles. */
+/** Grid that keeps cards uniform — never stretch an orphan to full width. */
 function productGridClass(count: number, large: boolean): string {
-  if (count === 1) {
-    // One piece → centered featured card (not a lonely cell in a 3-col grid)
+  if (large) {
+    return "grid grid-cols-1 md:grid-cols-2 gap-px bg-zinc-100";
+  }
+
+  const cols = productGridColumns(count, { maxCols: 3 });
+  if (cols === 1) {
     return "grid grid-cols-1 max-w-md md:max-w-xl mx-auto gap-px bg-zinc-100";
   }
-  if (count === 2 || large) {
-    return "grid grid-cols-1 md:grid-cols-2 gap-px bg-zinc-100";
+  if (cols === 2) {
+    return "grid grid-cols-2 gap-px bg-zinc-100";
   }
   return "grid grid-cols-2 lg:grid-cols-3 gap-px bg-zinc-100";
 }
 
 function productImageSizes(count: number, large: boolean): string {
-  if (count === 1) return "(max-width: 448px) 100vw, 36rem";
-  if (count === 2 || large) return "(max-width: 768px) 100vw, 50vw";
+  if (large) return "(max-width: 768px) 100vw, 50vw";
+  const cols = productGridColumns(count, { maxCols: 3 });
+  if (cols === 1) return "(max-width: 448px) 100vw, 36rem";
+  if (cols === 2) return "50vw";
   return "(max-width: 1024px) 50vw, 33vw";
-}
-
-/**
- * Stretch the last card so an incomplete final row reads as intentional.
- * - 2-col (mobile / large): orphan → full width
- * - 3-col (lg): rem 1 → full width; rem 2 → last spans 2
- */
-function productSpanClass(
-  index: number,
-  count: number,
-  large: boolean,
-): string | undefined {
-  if (count <= 1 || index !== count - 1) return undefined;
-
-  // large / pair layout: md:grid-cols-2
-  if (count === 2 || large) {
-    return count % 2 === 1 ? "md:col-span-2" : undefined;
-  }
-
-  // Default: grid-cols-2 lg:grid-cols-3
-  const mobileOrphan = count % 2 === 1;
-  const desktopRem = count % 3;
-  if (!mobileOrphan && desktopRem === 0) return undefined;
-
-  return cn(
-    mobileOrphan && "col-span-2",
-    desktopRem === 1 && "lg:col-span-3",
-    desktopRem === 2 && "lg:col-span-2",
-    mobileOrphan && desktopRem === 0 && "lg:col-span-1",
-  );
 }
 
 function ProductSection({
@@ -314,14 +293,13 @@ function ProductSection({
       {/* Near full-bleed photography wall within the site content width */}
       <div className="max-w-360 mx-auto">
         <div className={productGridClass(count, large)}>
-          {products.map((product, index) => (
+          {products.map((product) => (
             <CollectionCard
               key={product.slug}
               product={product}
               categoryLabel={categoryLabel}
               large={useLargeCard}
               imageSizes={productImageSizes(count, large)}
-              className={productSpanClass(index, count, large)}
             />
           ))}
         </div>
