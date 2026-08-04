@@ -33,6 +33,8 @@ function FulfillmentTimeline({ status }: { status: TrackingStatus }) {
           const isDone = !isException && currentIdx >= 0 && i < currentIdx;
           const isCurrent = !isException && i === currentIdx;
           const isUpcoming = isException || currentIdx < 0 || i > currentIdx;
+          const label =
+            i === 0 && status === "pre_order" ? "Pre-order" : stage.label;
 
           return (
             <li
@@ -69,7 +71,7 @@ function FulfillmentTimeline({ status }: { status: TrackingStatus }) {
                         : "text-zinc-400"
                 }`}
               >
-                {stage.label}
+                {label}
               </p>
             </li>
           );

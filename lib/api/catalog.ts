@@ -31,6 +31,10 @@ export type ApiProductSummary = {
   tag: string | null;
   imageUrl: string | null;
   isActive: boolean;
+  /** When true, item is sold before warehouse stock arrives. */
+  isPreorder?: boolean;
+  /** Expected availability / ship date (ISO). Required by API when isPreorder. */
+  availableDate?: string | null;
 };
 
 /** `GET /collections/:slug` returns the collection with its products nested. */
@@ -59,6 +63,8 @@ export type ApiProductDetail = {
   details: string[];
   careInstructions: string[];
   isActive: boolean;
+  isPreorder?: boolean;
+  availableDate?: string | null;
   variants: ApiProductVariant[];
   reviewSummary: { average: number; count: number };
 };

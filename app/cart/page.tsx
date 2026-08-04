@@ -15,6 +15,7 @@ import ConfirmDialog from "@/components/ui/confirm-dialog";
 import { toast } from "@/lib/stores/toast-store";
 import { getFeaturedProducts, type ProductSummary } from "@/lib/products";
 import { syncCartStocks } from "@/lib/cart/sync-stock";
+import { preorderShipsLabel } from "@/lib/preorder";
 
 function cartProductId(itemId: string): string {
   return itemId.split("__")[0] ?? itemId;
@@ -222,7 +223,9 @@ export default function CartPage() {
                     <div className="flex-1 flex flex-col justify-between min-w-0">
                       <div>
                         <p className="eyebrow text-zinc-500 mb-1">
-                          {item.category}
+                          {item.isPreorder
+                            ? `Pre-order · ${item.category}`
+                            : item.category}
                         </p>
                         <h5 className="text-zinc-900 text-sm font-medium leading-snug">
                           {item.name}
@@ -230,6 +233,12 @@ export default function CartPage() {
                         <p className="text-zinc-600 text-sm mt-1">
                           {formatPrice(item.price)}
                         </p>
+                        {item.isPreorder && (
+                          <p className="text-zinc-500 text-[0.65rem] mt-1.5 tracking-wide">
+                            {preorderShipsLabel(item.availableDate)}. Pay online
+                            at checkout.
+                          </p>
+                        )}
                       </div>
 
                       {/* Qty + Remove */}
@@ -262,7 +271,8 @@ export default function CartPage() {
                               <Plus size={12} />
                             </button>
                           </div>
-                          {typeof item.stock === "number" &&
+                          {!item.isPreorder &&
+                            typeof item.stock === "number" &&
                             item.stock < Number.MAX_SAFE_INTEGER &&
                             item.stock <= 4 &&
                             item.stock > 0 && (

@@ -101,6 +101,8 @@ export type Product = {
   category: string;
   subcategory?: string;
   tag: string;
+  isPreorder: boolean;
+  availableDate: string | null;
   variants: ColorVariant[];
   details: string[];
   careInstructions: string[];
@@ -118,6 +120,8 @@ export type ProductSummary = {
   subcategory?: string;
   tag: string;
   image: string;
+  isPreorder: boolean;
+  availableDate: string | null;
 };
 
 function toColorVariants(variants: ApiProductVariant[]): ColorVariant[] {
@@ -159,6 +163,8 @@ function toProduct(detail: ApiProductDetail, categorySlug?: string): Product {
     category: categorySlug || detail.collectionId,
     subcategory: detail.subcategory ?? undefined,
     tag: detail.tag ?? "",
+    isPreorder: detail.isPreorder === true,
+    availableDate: detail.availableDate ?? null,
     variants: toColorVariants(detail.variants),
     details: (detail.details ?? []).filter(Boolean),
     careInstructions: (detail.careInstructions ?? []).filter(Boolean),
@@ -180,6 +186,8 @@ function toSummary(
     subcategory: product.subcategory ?? undefined,
     tag: product.tag ?? "",
     image: resolveImageUrl(product.imageUrl),
+    isPreorder: product.isPreorder === true,
+    availableDate: product.availableDate ?? null,
   };
 }
 

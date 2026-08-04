@@ -13,6 +13,7 @@ import {
   collectionSlugFromHref,
 } from "@/lib/collections-nav";
 import { searchProductSummaries, type ProductSummary } from "@/lib/products";
+import { preorderShipsLabel } from "@/lib/preorder";
 import { getBannerOffset, useBannerStore } from "@/lib/stores/banner-store";
 
 function capitalize(s: string) {
@@ -157,11 +158,18 @@ function SearchPageInner() {
                       className="object-cover transition-transform duration-700 group-hover:scale-105"
                       sizes="(max-width: 768px) 50vw, 25vw"
                     />
+                    {product.isPreorder && (
+                      <span className="absolute top-3 left-3 z-10 bg-white/95 px-2 py-1 text-[0.6rem] tracking-widest uppercase text-zinc-900">
+                        Pre-order
+                      </span>
+                    )}
                   </Link>
                   <div className="p-4 flex flex-col gap-3 flex-1">
                     <div>
                       <p className="text-[0.6rem] tracking-[0.3em] uppercase text-zinc-400 mb-1">
-                        {categoryLabel(product.category)}
+                        {product.isPreorder
+                          ? `Pre-order · ${categoryLabel(product.category)}`
+                          : categoryLabel(product.category)}
                       </p>
                       <h5 className="text-zinc-900 text-sm font-medium leading-snug">
                         {product.name}
@@ -169,9 +177,17 @@ function SearchPageInner() {
                       <p className="text-zinc-500 text-sm mt-1">
                         {formatPrice(product.price)}
                       </p>
+                      {product.isPreorder && (
+                        <p className="text-zinc-400 text-[0.65rem] mt-1 tracking-wide">
+                          {preorderShipsLabel(product.availableDate)}
+                        </p>
+                      )}
                     </div>
                     <div className="mt-auto">
-                      <AddToCartButton slug={product.slug} />
+                      <AddToCartButton
+                        slug={product.slug}
+                        label={product.isPreorder ? "Pre-order" : "Quick Add"}
+                      />
                     </div>
                   </div>
                 </motion.div>

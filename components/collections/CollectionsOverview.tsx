@@ -8,6 +8,7 @@ import { buttonVariants } from "@/components/ui/button";
 import FadeImage from "@/components/ui/fade-image";
 import type { CollectionInfo, ProductSummary } from "@/lib/products";
 import { formatPrice } from "@/lib/currency";
+import { preorderShipsLabel } from "@/lib/preorder";
 import { getBannerOffset, useBannerStore } from "@/lib/stores/banner-store";
 import {
   COLLECTIONS_CONTAINER,
@@ -472,11 +473,18 @@ export default function CollectionsOverview({
                             className="object-contain object-center duration-700 group-hover:scale-[1.04]"
                           />
                         </div>
+                        {product.isPreorder && (
+                          <span className="absolute top-3 left-3 z-10 bg-white/95 px-2 py-1 text-[0.6rem] tracking-widest uppercase text-zinc-900">
+                            Pre-order
+                          </span>
+                        )}
                       </div>
 
                       <div className="p-5 border-t border-zinc-100">
                         <p className="eyebrow text-zinc-500 mb-2">
-                          {col.subtitle}
+                          {product.isPreorder
+                            ? `Pre-order · ${col.subtitle}`
+                            : col.subtitle}
                         </p>
                         {products.length === 1 ? (
                           <h4 className="text-zinc-900">{product.name}</h4>
@@ -486,6 +494,11 @@ export default function CollectionsOverview({
                         <p className="text-zinc-600 mt-2">
                           {formatPrice(product.price)}
                         </p>
+                        {product.isPreorder && (
+                          <p className="text-zinc-500 text-[0.65rem] mt-1.5 tracking-wide">
+                            {preorderShipsLabel(product.availableDate)}
+                          </p>
+                        )}
                       </div>
                     </Link>
                   </div>

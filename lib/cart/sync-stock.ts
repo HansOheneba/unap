@@ -1,4 +1,5 @@
 import { getCollectionWithProducts, getProductBySlug } from "@/lib/products";
+import { getOrderableStock } from "@/lib/preorder";
 import { parseCartLineId } from "@/lib/api/orders";
 import { useCartStore, type CartItem } from "@/lib/stores/cart-store";
 
@@ -28,19 +29,31 @@ async function resolveSlug(
 
 /** Live stock for a cart line from the catalog API. `null` if it cannot be resolved. */
 export async function fetchLineStock(
-  item: Pick<CartItem, "id" | "slug" | "category">,
-): Promise<{ stock: number; slug: string } | null> {
+  item: Pick<CartItem, "id" | "slug" | "category" | "isPreorder">,
+): Promise<{
+  stock: number;
+  slug: string;
+  isPreorder: boolean;
+  availableDate: string | null;
+} | null> {
   const slug = await resolveSlug(item);
   if (!slug) return null;
 
   const product = await getProductBySlug(slug, item.category);
-  if (!product) return { stock: 0, slug };
+  if (!product) return { stock: 0, slug, isPreorder: false, availableDate: null };
 
   try {
     const { variantId, size } = parseCartLineId(item.id);
     const variant = product.variants.find((v) => v.id === variantId);
     const sizeRow = variant?.sizes.find((s) => s.size === size);
-    return { stock: sizeRow?.stock ?? 0, slug };
+    const rawStock = sizeRow?.stock ?? 0;
+    const isPreorder = product.isPreorder;
+    return {
+      stock: getOrderableStock(rawStock, isPreorder),
+      slug,
+      isPreorder,
+      availableDate: product.availableDate,
+    };
   } catch {
     return null;
   }
@@ -60,6 +73,21 @@ export async function syncCartStocks(
     items.map(async (item) => {
       const resolved = await fetchLineStock(item);
       if (!resolved) return;
+
+      // Keep pre-order metadata fresh when revalidating.
+      if (resolved.isPreorder || item.isPreorder) {
+        useCartStore.setState({
+          items: useCartStore.getState().items.map((line) =>
+            line.id === item.id
+              ? {
+                  ...line,
+                  isPreorder: resolved.isPreorder,
+                  availableDate: resolved.availableDate,
+                }
+              : line,
+          ),
+        });
+      }
 
       const result = setItemStock(item.id, resolved.stock, resolved.slug);
       if (!result) return;

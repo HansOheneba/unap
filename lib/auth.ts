@@ -334,6 +334,7 @@ export async function mockLogin(
 }
 
 export const orderStatusColor: Partial<Record<OrderStatus, string>> = {
+  pre_order: "text-zinc-800",
   processing: "text-amber-700",
   ready_for_pickup: "text-blue-700",
   picked_up: "text-blue-700",
@@ -344,6 +345,7 @@ export const orderStatusColor: Partial<Record<OrderStatus, string>> = {
 };
 
 export const orderStatusDot: Partial<Record<OrderStatus, string>> = {
+  pre_order: "bg-zinc-900",
   processing: "bg-amber-500",
   ready_for_pickup: "bg-blue-500",
   picked_up: "bg-blue-500",
@@ -354,6 +356,7 @@ export const orderStatusDot: Partial<Record<OrderStatus, string>> = {
 };
 
 export const orderStatusPill: Partial<Record<OrderStatus, string>> = {
+  pre_order: "bg-zinc-100 text-zinc-800 border-zinc-300",
   processing: "bg-amber-50 text-amber-700 border-amber-200",
   ready_for_pickup: "bg-blue-50 text-blue-700 border-blue-200",
   picked_up: "bg-blue-50 text-blue-700 border-blue-200",

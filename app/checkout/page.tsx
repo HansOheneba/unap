@@ -20,6 +20,7 @@ import {
 } from "@/lib/api/orders";
 import { logPricing } from "@/lib/api/pricing-log";
 import { trackingPath } from "@/lib/tracking";
+import { getOrderableStock, preorderShipsLabel } from "@/lib/preorder";
 import {
   listGhanaDeliveryLocations,
   listGhanaRegions,
@@ -144,10 +145,16 @@ export default function CheckoutPage() {
   const { items, totalItems, totalPrice, clearCart, setItemStock, setItemPrice } =
     useCartStore();
   const syncCartFromQuote = (result: CartValidateResult) => {
+    const cartItems = useCartStore.getState().items;
     for (const line of result.items) {
       const id = cartLineIdFromQuoteItem(line);
+      const cartLine = cartItems.find((item) => item.id === id);
       if (line.unitPrice > 0) setItemPrice(id, line.unitPrice);
-      setItemStock(id, line.availableStock);
+      const nextStock = getOrderableStock(
+        line.availableStock,
+        cartLine?.isPreorder === true,
+      );
+      setItemStock(id, nextStock);
     }
   };
   const onboarding = useOnboardingStore();
@@ -169,9 +176,17 @@ export default function CheckoutPage() {
   const [loading, setLoading] = useState(false);
   const [paymentError, setPaymentError] = useState("");
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("pay_now");
+  const cartHasPreorder = items.some((item) => item.isPreorder);
   const [paymentRedirectUrl, setPaymentRedirectUrl] = useState<string | null>(
     null,
   );
+
+  // Pre-orders must be paid online before they ship.
+  useEffect(() => {
+    if (cartHasPreorder && paymentMethod !== "pay_now") {
+      setPaymentMethod("pay_now");
+    }
+  }, [cartHasPreorder, paymentMethod]);
   const [promoCode, setPromoCode] = useState("");
   const [promoError, setPromoError] = useState("");
   const [promoChecking, setPromoChecking] = useState(false);
@@ -250,10 +265,16 @@ export default function CheckoutPage() {
     quote,
     localDelivery,
   });
+  const isPreorderQuoteLine = (line: CartValidateResult["items"][number]) => {
+    const id = cartLineIdFromQuoteItem(line);
+    return items.some((item) => item.id === id && item.isPreorder);
+  };
   const quoteStockIssues =
-    quote?.items.filter(
-      (line) => !line.inStock || line.availableStock < line.quantity,
-    ) ?? [];
+    quote?.items.filter((line) => {
+      // Pre-orders can sell with 0 warehouse stock.
+      if (isPreorderQuoteLine(line)) return false;
+      return !line.inStock || line.availableStock < line.quantity;
+    }) ?? [];
   // Delivery is quoted from the local master list; stock comes from /cart/validate.
   const canPlaceOrder =
     shippingQuoted && quoteStockIssues.length === 0;
@@ -480,19 +501,22 @@ export default function CheckoutPage() {
       setQuote(freshQuote);
       syncCartFromQuote(freshQuote);
 
-      const stockIssues = freshQuote.items.filter(
-        (line) => !line.inStock || line.availableStock < line.quantity,
-      );
+      const committedItems = useCartStore.getState().items;
+      if (committedItems.length === 0) {
+        setPaymentError("Your cart is empty.");
+        return;
+      }
+
+      const stockIssues = freshQuote.items.filter((line) => {
+        const id = cartLineIdFromQuoteItem(line);
+        const cartLine = committedItems.find((item) => item.id === id);
+        if (cartLine?.isPreorder) return false;
+        return !line.inStock || line.availableStock < line.quantity;
+      });
       if (stockIssues.length > 0) {
         setPaymentError(
           "Stock changed for some items. Quantities were updated to match what is available. Review your bag and try again.",
         );
-        return;
-      }
-
-      const committedItems = useCartStore.getState().items;
-      if (committedItems.length === 0) {
-        setPaymentError("Your cart is empty.");
         return;
       }
 
@@ -525,6 +549,8 @@ export default function CheckoutPage() {
         return;
       }
 
+      const orderHasPreorder = committedItems.some((item) => item.isPreorder);
+
       logPricing("checkout.client.totals", {
         location: {
           country: form.country,
@@ -537,6 +563,7 @@ export default function CheckoutPage() {
           price: item.price,
           quantity: item.quantity,
           lineTotal: item.price * item.quantity,
+          isPreorder: item.isPreorder === true,
         })),
         subtotal: totals.subtotal,
         discount: discount
@@ -550,6 +577,7 @@ export default function CheckoutPage() {
         apiShippingStatus: freshQuote.shippingStatus,
         grandTotal: totals.grandTotal,
         paymentMethod,
+        orderHasPreorder,
       });
 
       const shippingPayload = {
@@ -558,12 +586,12 @@ export default function CheckoutPage() {
         city: localAtCommit?.location || form.city,
       };
 
+      const mustPayOnline = orderHasPreorder || paymentMethod === "pay_now";
       const result = await placeOrder({
         items: committedOrderItems,
         shipping: shippingPayload,
         payment: {
-          method:
-            paymentMethod === "pay_now" ? "paystack" : "pay_on_delivery",
+          method: mustPayOnline ? "paystack" : "pay_on_delivery",
         },
         promoCode: discount?.code || promoCode.trim() || undefined,
       });
@@ -578,7 +606,7 @@ export default function CheckoutPage() {
         payment: result.payment ?? null,
       });
 
-      if (paymentMethod === "pay_now") {
+      if (mustPayOnline) {
         const paymentUrl = result.payment?.authorizationUrl;
         if (!paymentUrl) {
           setPaymentError("Could not start payment. Try again.");
@@ -602,8 +630,14 @@ export default function CheckoutPage() {
   };
 
   const selectedPayment = PAYMENT_METHODS.find((p) => p.id === paymentMethod);
-  const isPayNow = paymentMethod === "pay_now";
+  const isPayNow = cartHasPreorder || paymentMethod === "pay_now";
   const showPaidOnline = step === "confirmed" && isPayNow;
+  const preorderShipHint = cartHasPreorder
+    ? items
+        .filter((item) => item.isPreorder)
+        .map((item) => preorderShipsLabel(item.availableDate))
+        .find(Boolean) ?? "Ships when available"
+    : null;
 
   /* ── Confirmed Screen ── */
   if (step === "confirmed") {
@@ -658,8 +692,9 @@ export default function CheckoutPage() {
             {showPaidOnline
               ? "Payment received. "
               : "Pay in cash or MoMo when your order arrives. "}
-            If you are in Accra, your order should be sent within 24 to 48
-            working hours. Outside Accra, delivery timing will vary.
+            {preorderShipHint
+              ? `Pre-order items ${preorderShipHint.toLowerCase()}. We'll dispatch when they're ready.`
+              : "If you are in Accra, your order should be sent within 24 to 48 working hours. Outside Accra, delivery timing will vary."}
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 w-full mt-4">
@@ -956,7 +991,10 @@ export default function CheckoutPage() {
                   <div className="flex flex-col gap-3 mt-2">
                     <p className="eyebrow text-zinc-500">Payment Method</p>
                     <div className="flex flex-col gap-2">
-                      {PAYMENT_METHODS.map((pm) => (
+                      {(cartHasPreorder
+                        ? PAYMENT_METHODS.filter((pm) => pm.id === "pay_now")
+                        : PAYMENT_METHODS
+                      ).map((pm) => (
                         <label
                           key={pm.id}
                           className={`flex items-center gap-4 border px-4 py-3 cursor-pointer transition-colors duration-200 ${
@@ -964,7 +1002,7 @@ export default function CheckoutPage() {
                               ? "border-zinc-900 bg-zinc-50"
                               : "border-zinc-200 hover:border-zinc-400"
                           }`}
- >
+                        >
                           <div
                             className={`w-3.5 h-3.5 rounded-full border-2 flex items-center justify-center shrink-0 ${
                               paymentMethod === pm.id
@@ -995,11 +1033,20 @@ export default function CheckoutPage() {
                         </label>
                       ))}
                     </div>
-                    {isPayNow && (
+                    {cartHasPreorder ? (
+                      <p className="text-xs text-zinc-500 leading-relaxed">
+                        Your cart includes a pre-order. Pay online now. We ship
+                        when the piece is ready
+                        {preorderShipHint
+                          ? ` (${preorderShipHint.toLowerCase()})`
+                          : ""}
+                        . Pay on delivery is not available.
+                      </p>
+                    ) : isPayNow ? (
                       <p className="text-xs text-zinc-400 leading-relaxed">
                         Card, Mobile Money, and bank transfer supported.
                       </p>
-                    )}
+                    ) : null}
                   </div>
 
                   {(paymentError || quoteError) && step === "details" && (
@@ -1103,6 +1150,7 @@ export default function CheckoutPage() {
                             {item.name}
                           </p>
                           <p className="text-zinc-500 text-xs mt-0.5">
+                            {item.isPreorder ? "Pre-order · " : ""}
                             {item.category} · Qty {item.quantity}
                           </p>
                         </div>
@@ -1190,7 +1238,8 @@ export default function CheckoutPage() {
                           {item.name}
                         </p>
                         <p className="text-zinc-400 text-[0.6rem]">
-                          ×{item.quantity}
+                          {item.isPreorder ? "Pre-order · " : ""}×
+                          {item.quantity}
                         </p>
                       </div>
                       <p className="text-zinc-900 text-xs shrink-0">

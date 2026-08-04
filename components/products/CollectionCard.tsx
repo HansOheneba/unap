@@ -6,6 +6,7 @@ import { Loader2 } from "lucide-react";
 import { formatPrice } from "@/lib/currency";
 import { cn } from "@/lib/utils";
 import { getProductBySlug, type Product, type ProductSummary } from "@/lib/products";
+import { preorderShipsLabel } from "@/lib/preorder";
 import QuickAddModal from "./QuickAddModal";
 import FadeImage from "@/components/ui/fade-image";
 import { PRODUCT_IMAGE_SURFACE_CLASS } from "@/lib/media/resolve-image-url";
@@ -88,6 +89,12 @@ export default function CollectionCard({
         {/* Hover overlay */}
         <div className="pointer-events-none absolute inset-0 bg-black/0 group-hover:bg-black/8 transition-colors duration-500 z-10" />
 
+        {product.isPreorder && (
+          <span className="pointer-events-none absolute top-3 left-3 z-20 bg-white/95 px-2 py-1 text-[0.6rem] tracking-widest uppercase text-zinc-900">
+            Pre-order
+          </span>
+        )}
+
         {/* Quick Add — always visible on touch; slides up on hover for pointer */}
         <button
           type="button"
@@ -97,6 +104,8 @@ export default function CollectionCard({
         >
           {loadingQuickAdd ? (
             <Loader2 size={14} className="mx-auto animate-spin" aria-hidden />
+          ) : product.isPreorder ? (
+            "Pre-order"
           ) : (
             "Quick Add"
           )}
@@ -111,13 +120,20 @@ export default function CollectionCard({
           large ? "px-5 py-5 flex flex-col gap-2" : "px-4 py-4 sm:px-5 sm:py-5",
         )}
       >
-        <p className="eyebrow text-zinc-500 mb-1.5">{categoryLabel}</p>
+        <p className="eyebrow text-zinc-500 mb-1.5">
+          {product.isPreorder ? `Pre-order · ${categoryLabel}` : categoryLabel}
+        </p>
         {large ? (
           <h4 className="text-zinc-900 leading-snug">{product.name}</h4>
         ) : (
           <h5 className="text-zinc-900 leading-snug">{product.name}</h5>
         )}
         <p className="text-zinc-600 mt-1.5">{formatPrice(product.price)}</p>
+        {product.isPreorder && (
+          <p className="text-zinc-500 text-[0.65rem] mt-1 tracking-wide">
+            {preorderShipsLabel(product.availableDate)}
+          </p>
+        )}
       </Link>
 
       {quickAddProduct && (

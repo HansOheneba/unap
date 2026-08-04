@@ -22,6 +22,7 @@ import {
   type ColorVariant,
   type Review,
 } from "@/lib/products";
+import { getOrderableStock, preorderShipsLabel } from "@/lib/preorder";
 import { submitReview, type ApiReview } from "@/lib/api/catalog";
 import { createStockAlert } from "@/lib/api/forms";
 import ProductGallery from "./ProductGallery";
@@ -134,15 +135,21 @@ export default function ProductDetailClient({
   const selectedSizeData = selectedVariant.sizes.find(
     (s) => s.size === selectedSize,
   );
-  const currentStock = selectedSizeData?.stock ?? 0;
+  const rawStock = selectedSizeData?.stock ?? 0;
+  const currentStock = getOrderableStock(rawStock, product.isPreorder);
   const lineId =
     selectedSize != null
       ? `${product.id}__${selectedVariant.id}__${selectedSize}`
       : null;
   const inCartQty = lineId ? getLineQuantity(lineId) : 0;
   const roomLeft = Math.max(0, currentStock - inCartQty);
-  const isLowStock = !!selectedSize && currentStock > 0 && currentStock <= 4;
-  const isOutOfStock = !!selectedSize && currentStock === 0;
+  const isLowStock =
+    !!selectedSize &&
+    !product.isPreorder &&
+    rawStock > 0 &&
+    rawStock <= 4;
+  const isOutOfStock =
+    !!selectedSize && !product.isPreorder && rawStock === 0;
   const canAdd = !!selectedSize && !isOutOfStock && roomLeft > 0;
 
   // Keep the qty picker within what can still be added for this size.
@@ -158,13 +165,20 @@ export default function ProductDetailClient({
     if (autoSize) {
       const sizeData = variant.sizes[0];
       setSelectedSize(autoSize);
-      setQuantity((q) => Math.min(q, sizeData.stock));
+      setQuantity((q) =>
+        Math.min(q, getOrderableStock(sizeData.stock, product.isPreorder)),
+      );
     } else if (selectedSize) {
       const newSizeData = variant.sizes.find((s) => s.size === selectedSize);
       if (!newSizeData) {
         setSelectedSize(null);
       } else {
-        setQuantity((q) => Math.min(q, newSizeData.stock));
+        setQuantity((q) =>
+          Math.min(
+            q,
+            getOrderableStock(newSizeData.stock, product.isPreorder),
+          ),
+        );
       }
     }
   };
@@ -180,12 +194,14 @@ export default function ProductDetailClient({
         category: product.category,
         stock: currentStock,
         slug: product.slug,
+        isPreorder: product.isPreorder,
+        availableDate: product.availableDate,
       },
       quantity,
     );
     if (result.added <= 0) {
       toast.error(
-        "Not enough stock",
+        product.isPreorder ? "Pre-order limit reached" : "Not enough stock",
         `Only ${currentStock} available. You already have ${result.quantityInCart} in your cart.`,
       );
       return;
@@ -193,7 +209,9 @@ export default function ProductDetailClient({
     if (result.added < quantity) {
       toast.info(
         "Quantity adjusted",
-        `Only ${result.added} added. ${currentStock} in stock.`,
+        product.isPreorder
+          ? `Only ${result.added} added to your pre-order.`
+          : `Only ${result.added} added. ${currentStock} in stock.`,
       );
     }
     setAdded(true);
@@ -288,6 +306,9 @@ export default function ProductDetailClient({
           <div className="lg:sticky lg:top-28 lg:self-start space-y-7">
             {/* Tag + Name + Price ─────────────────────────────────── */}
             <div>
+              {product.isPreorder && (
+                <p className="eyebrow text-zinc-500 mb-2">Pre-order</p>
+              )}
               <h1 className="text-3xl lg:text-4xl font-medium tracking-tight leading-tight mt-1 mb-4">
                 {product.name}
               </h1>
@@ -295,25 +316,40 @@ export default function ProductDetailClient({
                 <span className="text-2xl font-semibold">
                   {formatPrice(product.price)}
                 </span>
-                {selectedSize && !isOutOfStock && !isLowStock && (
-                  <span className="inline-flex items-center gap-1.5 text-[0.65rem] tracking-widest uppercase text-emerald-600 font-medium">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                    In Stock
+                {product.isPreorder ? (
+                  <span className="inline-flex items-center gap-1.5 text-[0.65rem] tracking-widest uppercase text-zinc-700 font-medium">
+                    <span className="w-1.5 h-1.5 rounded-full bg-zinc-900" />
+                    {preorderShipsLabel(product.availableDate)}
                   </span>
-                )}
-                {isLowStock && (
-                  <span className="inline-flex items-center gap-1.5 text-[0.65rem] tracking-widest uppercase text-amber-500 font-medium">
-                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-                    Only {currentStock} left
-                  </span>
-                )}
-                {isOutOfStock && (
-                  <span className="inline-flex items-center gap-1.5 text-[0.65rem] tracking-widest uppercase text-red-500 font-medium">
-                    <span className="w-1.5 h-1.5 rounded-full bg-red-400" />
-                    Out of Stock
-                  </span>
+                ) : (
+                  <>
+                    {selectedSize && !isOutOfStock && !isLowStock && (
+                      <span className="inline-flex items-center gap-1.5 text-[0.65rem] tracking-widest uppercase text-emerald-600 font-medium">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                        In Stock
+                      </span>
+                    )}
+                    {isLowStock && (
+                      <span className="inline-flex items-center gap-1.5 text-[0.65rem] tracking-widest uppercase text-amber-500 font-medium">
+                        <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+                        Only {rawStock} left
+                      </span>
+                    )}
+                    {isOutOfStock && (
+                      <span className="inline-flex items-center gap-1.5 text-[0.65rem] tracking-widest uppercase text-red-500 font-medium">
+                        <span className="w-1.5 h-1.5 rounded-full bg-red-400" />
+                        Out of Stock
+                      </span>
+                    )}
+                  </>
                 )}
               </div>
+              {product.isPreorder && (
+                <p className="mt-3 text-sm text-zinc-600 leading-relaxed">
+                  Pay online now. We ship this piece when it arrives.
+                  Cash on delivery is not available for pre-orders.
+                </p>
+              )}
             </div>
 
             <div className="h-px bg-zinc-100" />
@@ -399,7 +435,8 @@ export default function ProductDetailClient({
               <div className="flex flex-wrap gap-2">
                 {selectedVariant.sizes.map((s) => {
                   const isSelected = s.size === selectedSize;
-                  const unavailable = s.stock === 0;
+                  const unavailable = !product.isPreorder && s.stock === 0;
+                  const orderable = getOrderableStock(s.stock, product.isPreorder);
                   return (
                     <button
                       key={s.size}
@@ -407,7 +444,7 @@ export default function ProductDetailClient({
                       onClick={() => {
                         setSelectedSize(s.size);
                         setQuantity((q) =>
-                          unavailable ? 1 : Math.min(q, s.stock),
+                          unavailable ? 1 : Math.min(q, orderable),
                         );
                       }}
                       aria-label={
@@ -429,7 +466,8 @@ export default function ProductDetailClient({
                   );
                 })}
               </div>
-              {selectedVariant.sizes.some((s) => s.stock === 0) &&
+              {!product.isPreorder &&
+                selectedVariant.sizes.some((s) => s.stock === 0) &&
                 !isOutOfStock && (
                   <p className="mt-3 text-xs text-zinc-500">
                     Struck-through sizes are out of stock. Select one to sign up
@@ -483,7 +521,8 @@ export default function ProductDetailClient({
               >
                 {added ? (
                   <span className="inline-flex items-center justify-center gap-2">
-                    <Check size={15} /> Added to Cart
+                    <Check size={15} />{" "}
+                    {product.isPreorder ? "Pre-order Added" : "Added to Cart"}
                   </span>
                 ) : !selectedSize ? (
                   "Select a Size to Continue"
@@ -491,6 +530,8 @@ export default function ProductDetailClient({
                   "Out of Stock"
                 ) : roomLeft <= 0 ? (
                   "Max in Cart"
+                ) : product.isPreorder ? (
+                  "Pre-order"
                 ) : (
                   "Add to Cart"
                 )}
@@ -528,7 +569,8 @@ export default function ProductDetailClient({
             </div>
 
             {/* Back-in-Stock Notify ─────────────────────────────────── */}
-            {isOutOfStock &&
+            {!product.isPreorder &&
+              isOutOfStock &&
               selectedSize &&
               (() => {
                 const key = `${selectedVariant.id}-${selectedSize}`;
@@ -916,7 +958,7 @@ export default function ProductDetailClient({
               <Check size={15} /> Added
             </span>
           ) : (
-            `Add to Cart · ${formatPrice(product.price)}`
+            `${product.isPreorder ? "Pre-order" : "Add to Cart"} · ${formatPrice(product.price)}`
           )}
         </Button>
       </div>

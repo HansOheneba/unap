@@ -8,6 +8,7 @@
 import { apiRequest, ApiError } from "@/lib/api/client";
 
 export type TrackingStatus =
+  | "pre_order"
   | "processing"
   | "ready_for_pickup"
   | "picked_up"
@@ -153,6 +154,7 @@ export const statusConfig: Record<
   TrackingStatus,
   { color: string; dot: string }
 > = {
+  pre_order: { color: "text-zinc-800", dot: "bg-zinc-900" },
   processing: { color: "text-amber-700", dot: "bg-amber-500" },
   ready_for_pickup: { color: "text-blue-700", dot: "bg-blue-500" },
   picked_up: { color: "text-blue-700", dot: "bg-blue-500" },
@@ -179,6 +181,7 @@ export type FulfillmentStageKey = (typeof fulfillmentStages)[number]["key"];
 
 /** Map API / legacy statuses onto the 5-step customer timeline. */
 const STATUS_TO_STAGE_INDEX: Record<TrackingStatus, number> = {
+  pre_order: 0,
   processing: 0,
   ready_for_pickup: 1,
   picked_up: 2,
@@ -195,6 +198,7 @@ export function fulfillmentStageIndex(status: TrackingStatus): number {
 
 export function normalizeTrackingStatus(status: string | undefined): TrackingStatus {
   switch (status) {
+    case "pre_order":
     case "processing":
     case "ready_for_pickup":
     case "picked_up":
@@ -214,6 +218,11 @@ export const customerStatusCopy: Record<
   TrackingStatus,
   { headline: string; detail: string }
 > = {
+  pre_order: {
+    headline: "Pre-order reserved",
+    detail:
+      "Payment received. We're holding your order until the piece is ready to ship.",
+  },
   processing: {
     headline: "Being prepared",
     detail: "We're getting your order ready for dispatch.",

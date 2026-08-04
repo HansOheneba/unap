@@ -15,6 +15,7 @@ import {
   type Product,
   type ColorVariant,
 } from "@/lib/products";
+import { getOrderableStock, preorderShipsLabel } from "@/lib/preorder";
 
 type Phase = "idle" | "running" | "done";
 
@@ -66,15 +67,21 @@ export default function QuickAddModal({ product, open, onClose }: Props) {
 
   // Per color+size stock info
   const sizeData = selectedVariant.sizes.find((s) => s.size === selectedSize);
-  const currentStock = sizeData?.stock ?? 0;
+  const rawStock = sizeData?.stock ?? 0;
+  const currentStock = getOrderableStock(rawStock, product.isPreorder);
   const lineId =
     selectedSize != null
       ? `${product.id}__${selectedVariant.id}__${selectedSize}`
       : null;
   const inCartQty = lineId ? getLineQuantity(lineId) : 0;
   const roomLeft = Math.max(0, currentStock - inCartQty);
-  const isOutOfStock = !!selectedSize && currentStock === 0;
-  const isLowStock = !!selectedSize && currentStock > 0 && currentStock <= 4;
+  const isOutOfStock =
+    !!selectedSize && !product.isPreorder && rawStock === 0;
+  const isLowStock =
+    !!selectedSize &&
+    !product.isPreorder &&
+    rawStock > 0 &&
+    rawStock <= 4;
   const canAdd =
     !!selectedSize && !isOutOfStock && roomLeft > 0 && phase === "idle";
 
@@ -128,12 +135,14 @@ export default function QuickAddModal({ product, open, onClose }: Props) {
         category: product.category,
         stock: currentStock,
         slug: product.slug,
+        isPreorder: product.isPreorder,
+        availableDate: product.availableDate,
       },
       1,
     );
     if (result.added <= 0) {
       toast.error(
-        "Not enough stock",
+        product.isPreorder ? "Pre-order limit reached" : "Not enough stock",
         currentStock <= 0
           ? "This size is out of stock."
           : `Only ${currentStock} available. You already have ${result.quantityInCart} in your cart.`,
@@ -177,11 +186,18 @@ export default function QuickAddModal({ product, open, onClose }: Props) {
           <div className="flex items-start justify-between gap-3">
             <div>
               <p className="eyebrow text-zinc-400 mb-1 capitalize">
-                {product.category}
+                {product.isPreorder
+                  ? `Pre-order · ${product.category}`
+                  : product.category}
               </p>
               <h4 className="text-zinc-900 font-semibold leading-snug">
                 {product.name}
               </h4>
+              {product.isPreorder && (
+                <p className="text-xs text-zinc-500 mt-1.5">
+                  {preorderShipsLabel(product.availableDate)}. Pay online only.
+                </p>
+              )}
             </div>
             <span className="text-lg font-semibold text-zinc-900 shrink-0">
               {formatPrice(product.price)}
@@ -248,7 +264,7 @@ export default function QuickAddModal({ product, open, onClose }: Props) {
             </div>
             <div className="flex flex-wrap gap-2">
               {selectedVariant.sizes.map((s) => {
-                const unavailable = s.stock === 0;
+                const unavailable = !product.isPreorder && s.stock === 0;
                 const isSelected = s.size === selectedSize;
                 return (
                   <button
@@ -298,7 +314,9 @@ export default function QuickAddModal({ product, open, onClose }: Props) {
                   ? "Out of Stock"
                   : roomLeft <= 0
                     ? "Max in Cart"
-                    : "Add to Cart"}
+                    : product.isPreorder
+                      ? "Pre-order"
+                      : "Add to Cart"}
             </span>
 
             {/* Running animation icons */}

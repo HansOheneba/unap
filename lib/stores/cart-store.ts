@@ -13,6 +13,9 @@ export interface CartItem {
   stock: number;
   /** Product slug — used to revalidate stock from the API. */
   slug: string;
+  /** Pre-order lines must be paid online; ships when available. */
+  isPreorder?: boolean;
+  availableDate?: string | null;
 }
 
 export interface CartToast {
@@ -79,6 +82,8 @@ export const useCartStore = create<CartState>()(
             ...item,
             stock,
             slug: item.slug,
+            isPreorder: item.isPreorder === true,
+            availableDate: item.availableDate ?? null,
           };
 
           if (added <= 0) {
@@ -86,7 +91,16 @@ export const useCartStore = create<CartState>()(
               set({
                 items: get().items.map((i) =>
                   i.id === item.id
-                    ? { ...i, stock, slug: item.slug, img: item.img, name: item.name, price: item.price }
+                    ? {
+                        ...i,
+                        stock,
+                        slug: item.slug,
+                        img: item.img,
+                        name: item.name,
+                        price: item.price,
+                        isPreorder: line.isPreorder,
+                        availableDate: line.availableDate,
+                      }
                     : i,
                 ),
               });
@@ -227,7 +241,7 @@ export const useCartStore = create<CartState>()(
         merge: (persisted, current) => {
           const persistedState = persisted as Partial<CartState> | undefined;
           const rawItems = persistedState?.items ?? [];
-          // Backfill stock/slug for carts saved before stock awareness.
+          // Backfill stock/slug/preorder for carts saved before those fields.
           const items: CartItem[] = rawItems.map((item) => ({
             ...item,
             stock:
@@ -235,6 +249,11 @@ export const useCartStore = create<CartState>()(
                 ? normalizeStock(item.stock)
                 : Number.MAX_SAFE_INTEGER,
             slug: typeof item.slug === "string" ? item.slug : "",
+            isPreorder: item.isPreorder === true,
+            availableDate:
+              typeof item.availableDate === "string" || item.availableDate === null
+                ? item.availableDate
+                : null,
           }));
           return { ...current, ...persistedState, items };
         },
