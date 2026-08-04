@@ -51,7 +51,7 @@ const directLines = [
   {
     icon: MapPin,
     label: "Based In",
-    value: "Accra, Ghana. Shipping worldwide.",
+    value: "Accra, Ghana. Shipping within Ghana.",
   },
 ];
 

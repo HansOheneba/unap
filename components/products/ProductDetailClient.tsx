@@ -26,9 +26,8 @@ import { submitReview, type ApiReview } from "@/lib/api/catalog";
 import { createStockAlert } from "@/lib/api/forms";
 import ProductGallery from "./ProductGallery";
 import CollectionCard from "./CollectionCard";
-import BoxerSizeGuide, {
-  isBoxerCollection,
-} from "./BoxerSizeGuide";
+import ProductSizeGuide from "./ProductSizeGuide";
+import { resolveSizeGuide } from "@/lib/size-guides";
 import FindMySizeQuiz from "./FindMySizeQuiz";
 import { useCartStore } from "@/lib/stores/cart-store";
 import { useWishlistStore } from "@/lib/stores/wishlist-store";
@@ -374,8 +373,17 @@ export default function ProductDetailClient({
                       Select a size
                     </p>
                   )}
-                  {isBoxerCollection(product.category) && (
-                    <BoxerSizeGuide variant="link" />
+                  {resolveSizeGuide({
+                    name: product.name,
+                    slug: product.slug,
+                    category: product.category,
+                  }) && (
+                    <ProductSizeGuide
+                      variant="link"
+                      name={product.name}
+                      slug={product.slug}
+                      category={product.category}
+                    />
                   )}
                   {!["sunglasses", "accessories"].includes(product.category) && (
                     <button

@@ -86,15 +86,25 @@ export default function ProductGallery({
 
   const safeIndex = Math.min(activeIndex, images.length - 1);
   const active = images[safeIndex];
+  const hasThumbs = images.length > 1;
 
   return (
-    <div className="flex flex-col-reverse lg:flex-row gap-3 lg:gap-4">
+    <div
+      className={cn(
+        "flex flex-col-reverse gap-3",
+        // Desktop: one row sized by the main image aspect ratio. Thumbs scroll
+        // inside that height via h-0 + min-h-full so they never stretch the frame.
+        hasThumbs &&
+          "lg:grid lg:grid-cols-[7rem_minmax(0,1fr)] lg:grid-rows-1 lg:gap-4",
+      )}
+    >
       {/* ── THUMBNAIL STRIP ──────────────────────────────────────────── */}
-      {images.length > 1 && (
+      {hasThumbs && (
         <div
           className={cn(
             "flex gap-2.5 overflow-x-auto pb-1 scrollbar-none",
-            "lg:flex-col lg:gap-3 lg:overflow-y-auto lg:overflow-x-hidden lg:pb-0 lg:max-h-[min(100%,48rem)] lg:shrink-0",
+            "lg:flex-col lg:gap-3 lg:overflow-y-auto lg:overflow-x-hidden lg:pb-0",
+            "lg:h-0 lg:min-h-full lg:self-stretch",
           )}
         >
           {images.map((img, i) => (
@@ -103,7 +113,7 @@ export default function ProductGallery({
               type="button"
               onClick={() => handleSelect(i)}
               className={cn(
-                "relative shrink-0 w-16 h-16 sm:w-20 sm:h-20 lg:w-28 lg:h-28 overflow-hidden border-2 transition-all duration-300",
+                "relative shrink-0 size-16 sm:size-20 lg:size-28 min-h-16 sm:min-h-20 lg:min-h-28 overflow-hidden border-2 transition-[border-color] duration-200 ease-out active:scale-[0.97]",
                 PRODUCT_IMAGE_SURFACE_CLASS,
                 i === safeIndex
                   ? "border-zinc-900"
@@ -130,7 +140,7 @@ export default function ProductGallery({
       {/* ── MAIN IMAGE ───────────────────────────────────────────────── */}
       <div
         className={cn(
-          "relative flex-1 aspect-square lg:aspect-5/6 overflow-hidden min-w-0 cursor-zoom-in max-lg:cursor-default",
+          "relative w-full aspect-square lg:aspect-5/6 overflow-hidden min-w-0 cursor-zoom-in max-lg:cursor-default",
           PRODUCT_IMAGE_SURFACE_CLASS,
         )}
         onMouseMove={handleMouseMove}
@@ -143,7 +153,7 @@ export default function ProductGallery({
           priority
           sizes="(max-width: 1024px) 100vw, 50vw"
           className={cn(
-            "object-cover will-change-transform",
+            "object-cover object-top will-change-transform",
             isTransitioning ? "opacity-0" : "opacity-100",
             isZooming
               ? "transition-opacity duration-150"

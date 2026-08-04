@@ -6,9 +6,12 @@ import { ArrowLeft } from "lucide-react";
 import type { CollectionInfo, ProductSummary } from "@/lib/products";
 import { formatPrice } from "@/lib/currency";
 import CollectionCard from "@/components/products/CollectionCard";
-import BoxerSizeGuide, {
+import ProductSizeGuide from "@/components/products/ProductSizeGuide";
+import {
   isBoxerCollection,
-} from "@/components/products/BoxerSizeGuide";
+  resolveSizeGuide,
+  getSizeGuide,
+} from "@/lib/size-guides";
 import FadeImage from "@/components/ui/fade-image";
 import { COLLECTIONS_CONTAINER } from "@/lib/layout/collections";
 import { cn } from "@/lib/utils";
@@ -80,6 +83,14 @@ export default function CollectionListing({
       ? groupAccessories(products)
       : null;
 
+  const collectionGuideKey = resolveSizeGuide({ category: collectionId });
+  const collectionGuide = getSizeGuide(collectionGuideKey);
+  const collectionGuideBlurb = collectionGuide
+    ? isBoxerCollection(collectionId)
+      ? "Waist sizes run S through XXXL. Check the boxers size chart before you add to bag."
+      : `Official measurements for ${collectionGuide.eyebrow}. Open the size guide before you add to bag.`
+    : null;
+
   return (
     <main className="bg-white text-zinc-900 min-h-dvh overflow-x-hidden">
       <section className="relative w-full h-[65dvh] overflow-hidden">
@@ -137,17 +148,19 @@ export default function CollectionListing({
         </Link>
       </div>
 
-      {isBoxerCollection(collectionId) && (
+      {collectionGuide && collectionGuideBlurb && (
         <div className={cn(COLLECTIONS_CONTAINER, "pt-6")}>
           <div className="flex flex-col gap-4 border border-zinc-100 bg-zinc-50 p-5 sm:flex-row sm:items-center sm:justify-between">
             <div className="min-w-0">
               <p className="eyebrow text-zinc-500 mb-1">Fit</p>
               <p className="text-sm text-zinc-700 leading-relaxed max-w-md">
-                Waist sizes run S through XXXL. Check the boxers size chart
-                before you add to bag.
+                {collectionGuideBlurb}
               </p>
             </div>
-            <BoxerSizeGuide />
+            <ProductSizeGuide
+              category={collectionId}
+              guideKey={collectionGuideKey ?? undefined}
+            />
           </div>
         </div>
       )}
