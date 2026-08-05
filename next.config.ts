@@ -6,6 +6,20 @@ import type { NextConfig } from "next";
 // rewrite can't set/read cookies or manage token refresh, which is why this
 // file intentionally has no `rewrites()` for `/api/backend/*` anymore.
 const nextConfig: NextConfig = {
+  async redirects() {
+    return [
+      {
+        source: "/track",
+        destination: "/tracking",
+        permanent: true,
+      },
+      {
+        source: "/track/:trackingNumber",
+        destination: "/tracking/:trackingNumber",
+        permanent: true,
+      },
+    ];
+  },
   images: {
     // Product images now come from the catalog API and may be hosted on any
     // domain the backend/admin team uploads to (in addition to our own
